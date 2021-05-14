@@ -1,0 +1,17 @@
+<!-- nye section -->
+<section class="rsp-nye-section rsp-wrap">
+    <div class="container">
+        <div class="row">
+            {{#each post}}
+                {{#if @first}}
+                    {{> noticias-eventos/noticias-eventos-card-head}}
+                    {{else}}
+                        {{> noticias-eventos/noticias-eventos-card-body}}
+                {{/if}}
+            {{/each}}
+            <div class="col-12 d-flex justify-content-center ">
+                {{> pagination}}
+            </div>  
+        </div>                 
+    </div>
+</section>

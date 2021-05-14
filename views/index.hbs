@@ -1,0 +1,181 @@
+<!-- banner section -->
+<section class="rsp-banner">
+    <div class="carousel slide" data-ride="carousel" data-interval="3000">
+    <!-- The slideshow -->
+        <div class="carousel-inner">
+            <div class="carousel-item active img-banner">
+                <img src="img/banner/observatorio1v2.png">
+                    <div class="rsp-ban-desc  delete-padding">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-9 col-md-8 mx-auto d-none d-md-block">
+                                    <!--
+                                    <h1 class="ft-bold">
+                                        Bienvenido al Observatorio Nacional 
+                                        de Seguridad Vial
+                                    </h1>
+                                    -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="carousel-item">
+                <img src="img/banner/observatorio2v2.png">
+                    <div class="rsp-ban-desc  delete-padding">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-9 col-md-8 mx-auto d-none d-md-block">
+                                    <!--
+                                    <h1 class="ft-bold">
+                                        Construyendo conocimiento
+                                    </h1>
+                                    -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="carousel-item">
+                <img src="img/banner/observatorio3v2.png">
+                    <div class="rsp-ban-desc  delete-padding">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-9 col-md-8 mx-auto d-none d-md-block">
+                                    <!--
+                                    <h1 class="ft-bold">
+                                        Para la seguridad vial
+										del país
+                                    </h1>
+                                    -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="rsp-ban-desc">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 col-md-8 mx-auto d-md-none d-lg-none d-xl-none">
+                    <h1 class="ft-bold">
+                        Bienvenido al Observatorio Nacional 
+                        de Seguridad Vial
+                    </h1>
+                    <p class="text-justify">
+                        El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre riesgos, causas y consecuencias de los siniestros viales utilizando las buenas prácticas en la gestión de datos. Tiene como finalidad servir de insumo a las entidades competentes para mejorar las políticas entorno a la prevención, fiscalización y respuesta frente a la ocurrencia de hechos de tránsito de manera y así garantizar el cuidado de la vida y la salud de todos los usuarios y usuaris de las vías del Perú.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End banner section -->
+
+<section class="rsp-hs-ic-sec rsp-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="rsp-hs-ic-blk">
+                    <div class="rsp-hs-ic-img">
+                        <img class="icon-slider" src="img/hs-icons/hs-2.png" alt="hs-icon">
+                    </div>
+                    <h3 class="ft-bold">95800</h3>
+                    <p>{{t "es" "Siniestros"}}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rsp-hs-ic-blk">
+                    <div class="rsp-hs-ic-img">
+                        <img class="icon-slider" src="img/hs-icons/hs-3.png" alt="hs-icon">
+                    </div>
+                    <h3 class="ft-bold">63953</h3>
+                    <p>{{t "es" "Lesionados"}}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rsp-hs-ic-blk">
+                    <div class="rsp-hs-ic-img">
+                        <img class="icon-slider" src="img/hs-icons/hs-4.png" alt="hs-icon">
+                    </div>
+                    <h3 class="ft-bold">3110</h3>
+                    <p>{{t "es" "Fallecidos"}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- vu section -->
+<section class="rsp-vu-sec rsp-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-7 vu-map-col">
+                <h3 class="rsp-title ft-bold">{{t "es" "Visor de Alerta de Siniestros"}} <br/>
+                {{t "es" "de Tránsito"}}</h3>
+                <div class="vu-map">
+                    <div class="mapouter">
+                        <div class="gmap_canvas">
+                            <iframe width="100%" height="550" id="gmap_canvas" src="https://sratma.mtc.gob.pe/SRATMA/mapa/" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-5 vu-list-col">
+                <h3 class="rsp-title ft-bold text-center">{{ "Ultimos"}} <br/>
+                    {{t "es" "10 accidentes"}}</h3>
+                <div class="vu-list">
+                        {{#each accidents}}
+                            {{>"accident"}}
+                        {{/each}}
+                    <!--<ul id="lista_accidentes">
+                        <div class="mt-5 pt-5 ml-5">
+                            <div class="d-flex justify-content-center mt-5 pt-5">
+                                <div class="col-md-6">
+                                    <div class="fa-5x">
+                                        <i class="fas fa-spinner fa-pulse"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End vu section -->
+<section class="rsp-res-sec rsp-wrap">
+    <div class="container">
+        <div class="row mb-2">
+            <div class="col-md-9 res-tit">
+                <h3 class="rsp-title ft-bold">{{t "es" "Resumen de Noticias Eventos"}}</h3>
+            </div>
+            <div class="col-md-3 res-btn">
+                <a href="/noticias-eventos/" class="btn btn-rsp-outline ft-bold">{{t "es" "Ver mas"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
+            </div>
+        </div> 
+        <div class="row">
+         {{#each post2}}
+               {{>"noticias-eventos-card" }}
+            {{/each}}
+        </div>
+    </div>
+</section>
+
+<section class="rsp-ult-sec rsp-wrap">
+    <div class="container">
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <h3 class="rsp-title ft-bold">{{t "es" "Ultimas 3 publicaciones"}}</h3>
+            </div>
+        </div>
+        <div class="row">
+            {{#each post3}}
+               {{>"post-card" }}
+            {{/each}}
+        </div>
+            
+    </div>
+</section>
