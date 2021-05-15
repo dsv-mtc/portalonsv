@@ -2,6 +2,7 @@ const exphbs=require("express-handlebars");
 const path=require("path");
 const fs=require("fs");
 const moment =require("moment");
+const { parse } = require("dotenv");
 
 moment.defineLocale('es',{
     months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
@@ -23,6 +24,10 @@ function t(lang,text){
 function parseDate(dateString){
     return moment(dateString).format("MMM DD YYYY");
 }
+
+function parseHour(dateString,format){
+    return moment(dateString).format(format);
+}
 function parseHttp(urlString){
     const pattern=/^http:/
     if(pattern.test(urlString)){
@@ -32,6 +37,21 @@ function parseHttp(urlString){
 }
 function assets(pathImg){
     return  path.join(__dirname,`../public/assets/${pathImg}`);
+}
+
+function page_url(url_page,index){
+    const url=process.env.URL_PATH
+    return `${url}/${url_page}/${index}`
+}
+
+function endpointPostParse(url){
+    const pattern=process.env.URL_PATH_API
+    return url.replace(pattern,`${process.env.URL_PATH}/post`)
+}
+
+function endpointRebase(url){
+    const pattern=process.env.URL_PATH_API
+    return url.replace(pattern,`${process.env.URL_PATH}`)
 }
 
 
@@ -44,7 +64,11 @@ var hbs=exphbs.create({
         t:t,
         parseDate:parseDate,
         parseHttp:parseHttp,
-        assets:assets
+        assets:assets,
+        page_url:page_url,
+        endpointPostParse:endpointPostParse,
+        endpointRebase:endpointRebase,
+        parseHour:parseHour
     }
 });
 

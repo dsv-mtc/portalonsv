@@ -1,0 +1,11 @@
+<li>
+    <div class="dt-blk">
+        <a href="{{endpointPostParse (parseHttp url) }}"><span><i class="fal fa-calendar-alt"></i> {{parseDate created_at  }} </span></a>
+        <a href="{{ endpointPostParse (parseHttp url) }}"><span><i class="fal fa-clock pl-2"></i> {{parseHour created_at "hh:mm" }} </span></a>
+    </div>
+    <p class="mt-2 text-justify">
+        <a href="{{endpointPostParse (parseHttp url)}}">
+            {{excerpt}}
+        </a>
+    </p>
+</li>

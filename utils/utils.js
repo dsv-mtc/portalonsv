@@ -12,10 +12,10 @@ const transformHttps=(element)=>{
 }
 
 const getAccidents=async ()=>{
+    let accidents=[]
     try {
         let results= await (await axios.get("https://sratma.mtc.gob.pe/WSSRATMA/api/Mapa/listarUltimosDiezAccidentes")).data;
         let accidents_raw= results['lista_accidentes']['accidentes'];
-        let accidents=[]
         accidents_raw.forEach((accident,index)=>{
             let accident_raw={}
             for(const property in accident){
@@ -36,11 +36,22 @@ const getAccidents=async ()=>{
         return accidents;        
     } catch (error) {
         console.error(error);
+        return accidents;
     }
 
 }
 
+const sendEmail= async (form)=>{
+    try {
+        const response=(await axios.post("https://www.onsv.gob.pe/api/contact",form)).data
+        return {success:true,message:response}
+    } catch (error) {
+        console.error(error);
+        return {success:false, message:'Error sending email'}
+    }
+}
 module.exports ={
     transformHttps:transformHttps,
-    getAccidents:getAccidents
+    getAccidents:getAccidents,
+    sendEmail: sendEmail
 }

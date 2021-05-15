@@ -8,7 +8,7 @@ const api=new GhostContentApi({
 })
 class GhostApi {
     
-    getPosts=async (limit=0,include="tags",filter="featured:false", order="published_at DESC")=>{
+    getPosts=async (limit=0,include="tags",filter="featured:false", order="published_at DESC",page=1)=>{
         let posts=[];
         try {
             posts=await api.posts
@@ -16,18 +16,17 @@ class GhostApi {
                 filter:filter,
                 limit:limit,
                 include:include,
-                order:order
+                order:order,
+                page:page
             })
             .catch(err=>console.log(err))
     
             posts.forEach(post => {
                 readingTime(post,{minute: "a hot minute",minutes:"% minutes"})
             });
-            const data=posts.forEach(post=>{
+            posts.forEach(post=>{
                 tags(post,{suffix:'.'})
             })
-            console.log(data)
-                
         } catch (error) {
             console.error(error);
             return posts            
@@ -38,6 +37,9 @@ class GhostApi {
         let settings = await api.settings.browse();
         settings = utils.transformHttps(settings);
         return settings
+    }
+    getPost=async (slug)=>{
+        return api.posts.read({slug:slug},{include:['tags','authors']},{formats:['html','plaintext']})
     }
 
 }

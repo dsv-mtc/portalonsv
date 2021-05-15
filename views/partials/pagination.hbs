@@ -1,20 +1,17 @@
-<div class="l-wrapper">
-    <p>{{#post}}
-            <p>Hola</p>
-            {{meta}}
-        {{/post}}
-    </p>
-    <nav class="m-pagination" aria-label="{{t "es" "Paginación"}}">
-    {{#if prev}}
-    <a href="{{page_url prev}}" class="btn btn-rsp ft-bold" aria-label="{{t "es" "Posts Nuevos"}}">
-        <span class="fal fa-long-arrow-left"></span>
-    </a>
-    {{/if}}
-    <span class="m-pagination__text">{{t "es" "Página"}} {{page}} {{t "es" "de"}} {{pages}}</span>
-    {{#if next}}
-    <a href="{{page_url next}}" class="btn btn-rsp ft-bold" aria-label="{{t "es" "Posts Antiguos"}}">
-        <span class="fal fa-long-arrow-right"></span>
-    </a>
-    {{/if}}
-    </nav>
-</div>
+{{#pagination}}
+    <div class="l-wrapper">        
+        <nav class="m-pagination" aria-label="{{t "es" "Paginación"}}">
+        {{#if prev}}
+        <a href="{{page_url url_page prev}}" class="btn btn-rsp ft-bold" aria-label="{{t "es" "Posts Nuevos"}}">
+            <span class="fal fa-long-arrow-left"></span>
+        </a>
+        {{/if}}
+        <span class="m-pagination__text">{{t "es" "Página"}} {{page}} {{t "es" "de"}} {{pages}}</span>
+        {{#if next}}
+        <a href="{{page_url url_page next}}" class="btn btn-rsp ft-bold" aria-label="{{t "es" "Posts Antiguos"}}">
+            <span class="fal fa-long-arrow-right"></span>
+        </a>
+        {{/if}}
+        </nav>
+    </div>
+{{/pagination}}

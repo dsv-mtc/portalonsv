@@ -1,13 +1,13 @@
 <div class="col-md-6 col-lg-4 pb-5">
     <div class="rsp-res-blk">
         <div class="rsp-res-img">
-            <a href="{{url}}">
+            <a href="{{endpointPostParse (parseHttp url)}}">
                 <img class="noticias-img" src="{{parseHttp feature_image}}" alt="imagen">
             </a>
         </div>
         <div class="rsp-res-blk-desc">
-            <a href="{{ url }}">
-                <h6 class="ft-bold noticias-tit"><a href="{{ url }}">{{ title}}</h6>
+            <a href="{{endpointPostParse (parseHttp url) }}">
+                <h6 class="ft-bold noticias-tit">{{ title}}</h6>
             </a>
         </div>
         <div class="rsp-pro-det">
@@ -29,7 +29,7 @@
         </p>
         <div class="nye-link-blk">
             <div class="ny-btn">
-                <a href="{{url}}" class="btn btn-rsp ft-bold">
+                <a href="{{endpointPostParse (parseHttp url)}}" class="btn btn-rsp ft-bold">
                     {{t "es" "leer más"}} <i class="fal fa-long-arrow-right pl-2"></i>
                 </a>
             </div>

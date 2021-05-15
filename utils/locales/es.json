@@ -26,5 +26,16 @@
     "de":"de",
     "Posts Nuevos":"Posts Nuevos",
     "Posts Antiguos": "Posts Antiguos",
-    "Página":"Página"
+    "Página":"Página",
+    "contact-intro": "El Observatorio Nacional de Seguridad Vial, es un mecanismo de articulación multisectorial, gestionado por la Dirección de Seguridad Vial del Ministerio de Transportes y Comunicaciones.",
+    "Contáctenos":"Contáctenos",
+    "Nombre":"Nombre",
+    "Asunto":"Asunto",
+    "ingrese_nombre":"Por favor ingrese un nombre",
+    "ingrese_correo":"Por favor ingrese un correo",
+    "ingrese_asunto": "Por favor debe indicar un asunto",
+    "ingrese_mensaje": "Por favor debe ingresar un mensaje",
+    "Mensaje":"Mensaje",
+    "Enviar":"Enviar"
+    
 }
