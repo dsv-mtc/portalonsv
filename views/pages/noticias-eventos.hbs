@@ -4,13 +4,15 @@
         <div class="row">
             {{#each post}}
                 {{#if @first}}
-                    {{> noticias-eventos/noticias-eventos-card-head}}
+                    {{> noticias-eventos/noticias-eventos-card-head lang=../lang}}
                     {{else}}
-                        {{> noticias-eventos/noticias-eventos-card-body}}
+                        {{> noticias-eventos/noticias-eventos-card-body lang=../lang}}
                 {{/if}}
             {{/each}}
             <div class="col-12 d-flex justify-content-center ">
-                {{> pagination}}
+                {{#if pagination}}
+                    {{> pagination pag=pagination}}
+                {{/if}}
             </div>  
         </div>                 
     </div>

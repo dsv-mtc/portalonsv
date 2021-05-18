@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-10 mx-auto">
                 <div class="input-group mb-3">
-                    <input type="text" id="search-input" class="form-control main-search" placeholder="{{t "es" "buscar"}}" >
+                    <input type="text" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" >
                     <div class="input-group-append">
                         <span id="search-button" class="input-group-text search-input">
                             <i class="fal fa-search"></i>
@@ -14,16 +14,16 @@
             </div>
         </div>
         <div id="search-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
-            No se encontraron resultados
+            {{t lang "no-results"}}
         </div>
         <div class="row mt-5">
              <!--Listado de resultado-->
             <div class="col-lg-8">
-                <h3 class="rsp-title ft-bold mb-4">{{t "es" "resultados"}}</h3>
+                <h3 class="rsp-title ft-bold mb-4">{{t lang "resultados"}}</h3>
                 <div class="re-blk">
                     <div id="default">
                         {{#each post}}
-                            {{>publicaciones/publicaciones-card-body}}
+                            {{>publicaciones/publicaciones-card-body lang=../lang}}
                         {{/each}}
                     </div>
                     <div id="results-template">
@@ -33,16 +33,13 @@
             </div>
             <!--Sidebar-->
             <div class="col-lg-4">
-                <h6 class="des ft-bold">{{t "es" "destacados"}}</h6>
+                <h6 class="des ft-bold">{{t lang "destacados"}}</h6>
                 <div class="des-blk">
                     <ul>
                         {{> sidebar-widgets/tags}}
                     </ul>
                 </div>
             </div>   
-        </div>
-        <div class="col-12 d-flex justify-content pt-5">
-            {{>pagination}}
         </div>
     </div>
 </section>

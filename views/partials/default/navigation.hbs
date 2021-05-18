@@ -37,9 +37,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav nav-rsp">
-                    {{#each settings.navigation}}
-                        <li><a class="nav-link" href="{{this.url}}" target="{{setTarget this.label}}">{{this.label}}</a></li>
-                    {{/each}}
+                   {{#if secondary_navigation}}
+                        {{#each settings.secondary_navigation}}
+                            <li><a class="nav-link" href="{{this.url}}" target="{{setTarget this.label}}">{{this.label}}</a></li>
+                        {{/each}}
+                   {{else}}
+                        {{#each settings.navigation}}
+                            <li><a class="nav-link" href="{{this.url}}" target="{{setTarget this.label}}">{{this.label}}</a></li>
+                        {{/each}}
+                    {{/if}}
                 </ul>
             </div>
         </div>

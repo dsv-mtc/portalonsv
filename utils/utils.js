@@ -42,14 +42,46 @@ const getAccidents=async ()=>{
 }
 
 const sendEmail= async (form)=>{
+    const cuerpo={nombre:form.nombre,email:form.mail,subject:form.subject,text:form.text}
+    let message="";
     try {
-        const response=(await axios.post("https://www.onsv.gob.pe/api/contact",form)).data
-        return {success:true,message:response}
+        if(validationForm(cuerpo)){
+            const response=(await axios.post("https://www.onsv.gob.pe/api/contact",cuerpo)).data
+            if(form.lang=='en'){
+                message="Thank you for contact to Observatory"
+            }else{
+                message="¡Gracias por contactar al Observatorio!"
+            }
+            
+            return {success:true,message:message}
+    
+        }else{
+            if(form.lang=='en'){
+                message="Some fields are wrong, try again"
+            }else{
+                message="Algunos campos están mal, inténtalo de nuevo"
+            }
+            console.log("no se envía el correo")
+            return {success:false, message:message}
+        }
     } catch (error) {
         console.error(error);
-        return {success:false, message:'Error sending email'}
+        if(form.lang=='en'){
+            message="something went wrong, try again"
+        }else{
+            message="Algo salió mal, inténtalo de nuevo"
+        }
+        return {success:false, message:message}
     }
 }
+
+const validationForm=(form)=>{
+    const emailPattern=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if(form.nombre=='' || form.email=='' || form.subject=='' || form.text=='' ||  !emailPattern.test(form.email)){
+        return false;
+    }
+    return true;
+}   
 
 const deleteDiacritics= (text)=>{
     return text

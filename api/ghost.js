@@ -61,7 +61,7 @@ class GhostApi {
         resultsRaw = await  api.posts.browse({
             limit:"all",
             filter:filter,
-            include:['tag','authors']
+            include:['tags','authors']
             //fields:"id,title"
         })
         miniSearch.addAll(resultsRaw);

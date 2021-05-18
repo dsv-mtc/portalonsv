@@ -28,7 +28,7 @@
     "Posts Antiguos": "Posts Antiguos",
     "Página":"Página",
     "contact-intro": "El Observatorio Nacional de Seguridad Vial, es un mecanismo de articulación multisectorial, gestionado por la Dirección de Seguridad Vial del Ministerio de Transportes y Comunicaciones.",
-    "Contáctenos":"Contáctenos",
+    "Contacte":"Contáctenos",
     "Nombre":"Nombre",
     "Asunto":"Asunto",
     "ingrese_nombre":"Por favor ingrese un nombre",
@@ -41,6 +41,15 @@
     "not_reg":"Noticias Regionales",
     "buscar":"Buscar aquí...",
     "destacados":"Destacados",
-    "resultados":"Resultados"
+    "resultados":"Resultados",
+    "clase":"Clase",
+    "lugar":"Lugar",
+    "coord":"Coordenadas",
+    "vehiculos":"Vehículos",
+    "consecuencias":"Consecuencias",
+    "cifras-al":"*Cifras totales al 2020",
+    "cifras-resumen":"En el año 2019 se registraron las siguientes cifras: Accidentes: 95800, Lesionados: 63953, Fallecidos: 3110",
+    "no-results":"No se encontraron resultados"
+
     
 }

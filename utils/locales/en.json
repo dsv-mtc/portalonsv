@@ -1,6 +1,6 @@
 {
     "Visor de Alerta de Siniestros": "Loss Alert Viewer",
-    "de Tránsito": "traffic",
+    "de Tránsito": "Traffic",
     "Ultimos": "Last",
     "10 accidentes": "10 accidents",
     "Resumen de Noticias Eventos": "Summary of News Events",
@@ -11,7 +11,8 @@
     "Redes Sociales": "Social Networks",
     "Direccion": "Address: Av. República de Chile 388 Oficina 202",
     "Telefono": "Telephone",
-    "Correo": "Mail",
+   
+    "copy-right":" 2020, Gob. All rights reserved.",
     "Horario": "Schedule",
     "Ver mas": "See more",
     "Siniestros": "Sinisters",
@@ -27,5 +28,37 @@
     "minutos": "minutes",
     "copy-rigth": "2020, Gob. All rights reserved.",
     "leer más": "read more",
-    "Autor":"Author"
+    "Autor":"Author",
+    "clase":"Class",
+    "lugar":"Location",
+    "coord":"Coordinates",
+    "vehiculos":"Vehicles",
+    "consecuencias":"Consecuences",
+    "cifras-al":"*Totals at 2020",
+    "cifras-resumen":"The 2019 were recorded : Siniesters: 95800, Injureds: 63953, Deads: 3110",
+    "Paginación":"Pagination",
+    "de":"of",
+    "Posts Nuevos":"New Posts",
+    "Posts Antiguos": "Old Posts",
+    "Página":"Page",
+    "res_regional":"Regional responsable",
+    
+    "not_reg":"Regional News",
+    "buscar":"Search here...",
+    "no-results":"Not results found",
+    "resultados":"Results",
+    "destacados":"Featured",
+    "contact-intro": "The National Road Safety Observatory is a multi-sectoral articulation mechanism, managed by the Road Safety Directorate of the Ministry of Transport and Communications.",
+    
+    "Contacte":"Contact us",
+    "Nombre":"Name",
+    "ingrese_nombre":"Please enter your name",
+    "Correo": "Mail",
+    "ingrese_correo":"Please enter your email",
+    "Asunto":"Subject",
+    "ingrese_asunto": "Please enter your subject",
+    "Mensaje":"Message",
+    "ingrese_mensaje": "Please enter your message",
+    "Enviar":"Send"
+
 }

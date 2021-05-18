@@ -5,6 +5,14 @@ const utils = require("../utils/utils")
 
 routes.use(async(req,res,next)=>{
     res.locals.settings= await apiGhost.getSettings();
+    if(req.originalUrl.includes("/en/")){
+       res.locals.secondary_navigation=true;
+       req.url= req.originalUrl.replace("en/","")
+       res.locals.lang="en"
+    }
+    else{
+       res.locals.lang="es"
+    }
     if(!res.locals.enabledFooter){
         res.locals.enabledFooter=true;
     }
@@ -15,6 +23,7 @@ routes.use(async(req,res,next)=>{
 })
 
 routes.get("/",async (req,res)=>{
+   console.log("url",req.url)
     const accidents=await utils.getAccidents();
     const post2=await apiGhost.getPosts(4,"tags","tags: [noticias-eventos]");
     const post3=await apiGhost.getPosts(3);
@@ -37,8 +46,7 @@ routes.get("/",async (req,res)=>{
  })
 
  routes.get("/regiones",async(req,res)=>{
-    const post = await apiGhost.getPosts(8,"tags,authors","tag:noticias-eventos", "published_at DESC")
-    console.log(post[0])
+    const post = await apiGhost.getPosts(8,"tags,authors","tag:noticias-eventos", "published_at DESC");
     res.render("pages/regiones",{post});
  })
 
@@ -60,7 +68,9 @@ routes.get("/",async (req,res)=>{
  })
 
  routes.get("/normas-legales",async(req,res)=>{
-    res.render("pages/normas-legales")
+   const post = await apiGhost.getPosts(6,"tags,authors","tags:[normas-legales]","published_at DESC")
+   const tags = await apiGhost.getTags("tags","all");
+    res.render("pages/normas-legales",{post,tags})
  })
 
  routes.get("/contacto",async(req,res)=>{
@@ -70,24 +80,28 @@ routes.get("/",async (req,res)=>{
 
  routes.post("/contacto",async(req,res)=>{
     const form = req.body;
-    //TODO validar formulario desde el backend
+      //existe validación desde el backend
     console.log(form);
     const response= await utils.sendEmail(form);
     if (response.success){
-        req.flash("info",{style:"alert alert-success alert-dismissible fade show",message:"¡Gracias por contactar al Observatorio!"})
+        req.flash("info",{style:"alert alert-success alert-dismissible fade show",message:response.message})
     }else{
-        req.flash('info',{style:"alert alert-danger alert-dismissible fade show",message:'Error al enviar el formulario; intentelo de nuevo'});
+        req.flash('info',{style:"alert alert-danger alert-dismissible fade show",message:response.message});
     }
-    res.redirect("/contacto")
+    if(form.lang=='en'){
+      res.redirect("/en/contacto")
+    }else{
+      res.redirect("/contacto")
+    }
+
  })
 
  routes.post("/search",async(req,res)=>{
-    const slug = req.body["search"]
-    res.locals.enabledFooter=false;
-    res.locals.enabledNavigation=false;
+    const slug = req.body["search"];
+   const lang =req.body["lang"];
     const results = await apiGhost.getSearchPosts(`tags:${req.body["filter"]}`,slug);
     if(results.success){
-      res.render("partials/search-results",{posts: results.posts, layout:false});
+      res.render("partials/search-results",{posts: results.posts,lang:lang, layout:false});
     }else{
       res.send(results.success)
     }

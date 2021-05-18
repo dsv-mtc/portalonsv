@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    validationForm();
+   validationForm();
     carousel();
     back();
     search();
@@ -14,9 +14,8 @@ function back(){
 }
 
 function validationForm(){
-    'use strict';
     window.addEventListener('load', function() {
-      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
       var forms = document.getElementsByClassName('needs-validation');
       // Loop over them and prevent submission
       var validation = Array.prototype.filter.call(forms, function(form) {
@@ -61,16 +60,22 @@ function search(){
         e.preventDefault();
         const currentUrl=$(location).attr("href");
         let filter=""
-        if(currentUrl.search("publicaciones")){
+        let lang="es";
+        console.log(currentUrl)
+        if(currentUrl.includes("publicaciones")){
             filter ="publicaciones";
         }else{
-            filter="noticias-legales"
+            filter="normas-legales"
         }
+        if(currentUrl.includes("/en/")){
+            lang="en";
+        }
+        console.log(filter)
         let searchWord=$("#search-input").val();
         if(searchWord!=""){
             $("#search-alert").removeClass("show");
             $("#search-alert").addClass("hide");
-            $.post("/search",{search:searchWord, filter:filter}).done(function(response){
+            $.post("/search",{search:searchWord, filter:filter,lang:lang}).done(function(response){
                 if(response){
                     $("#default").hide();
                     $("#results-template").empty();
@@ -83,6 +88,9 @@ function search(){
                     $("#default").show();
                 }
             })
+        }else{
+            $("#search-alert").removeClass("show");
+            $("#search-alert").addClass("hide");
         }
         //console.log(searchWord)
 

@@ -6,7 +6,7 @@
                 <div class="rsp-c-tab-blk">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#" role="tab" aria-controls="home" aria-selected="true">{{t "es" "res_regional"}}</a>
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#" role="tab" aria-controls="home" aria-selected="true">{{t lang "res_regional"}}</a>
                         </li>
                     </ul>
                       <div class="tab-content" id="myTabContent">
@@ -19,17 +19,17 @@
                                     </div>
                                     <div class="col-md-12 mt-5">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="nombre" id="nombre" placeholder=" {{t "es" "Nombre"}}" readonly>
+                                            <input type="text" class="form-control" name="nombre" id="nombre" placeholder=" {{t lang "Nombre"}}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="telefono" id="telefono" placeholder=" {{t "es" "Telefono"}}" readonly>
+                                            <input type="text" class="form-control" name="telefono" id="telefono" placeholder=" {{t lang "Telefono"}}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="Email" id="Email" placeholder=" {{t "es" "Correo"}}" readonly>
+                                            <input type="text" class="form-control" name="Email" id="Email" placeholder=" {{t lang "Correo"}}" readonly>
                                         </div>
                                     </div>
                                 </div> 
@@ -55,7 +55,7 @@
         <div class="row">
             <div class="col-md-12 mb-4">
                 <h3 class="rsp-title ft-bold">
-                    {{t "es" "not_reg"}}
+                    {{t lang "not_reg"}}
                 </h3>
             </div>
         </div>
@@ -63,7 +63,7 @@
             <div class="col-md-12">
                 <div class="owl-carousel owl-theme" id="noti">
                     {{#each post}}
-                        {{>regiones/carousel-regions}}
+                        {{>regiones/carousel-regions lang=../lang}}
                     {{/each}}
                 </div>
             </div>

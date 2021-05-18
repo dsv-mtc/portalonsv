@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-12">
                 <p class="text-justify">
-                    {{t "es" "contact-intro"}}
+                    {{t lang "contact-intro"}}
                 </p>
             </div>
             {{#if info}}
@@ -21,44 +21,52 @@
             <div class="col-md-12">
                 <!--Formulario -->
                 <div class="conf-blk">
-                    <h3 class="rsp-title ft-bold mb-4 text-center">{{t "es" "Contáctenos"}}</h3>
+                    <h3 class="rsp-title ft-bold mb-4 text-center">{{t lang "Contacte"}}</h3>
                     <form action="/contacto" method="POST" class="needs-validation" novalidate >
-                        <div class="row mt-5">
+                        <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="{{t "es" "Nombre"}}" required>
-                                    <small class="invalid-feedback">{{t "es" "ingrese_nombre"}}</small>
+                                    <input type="text" hidden class="form-control" name="lang" id="lang" value="{{lang}}">
+                                    <small class="invalid-feedback">{{t lang "ingrese_nombre"}}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="row mt-5">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="email" class="form-control" name="email" id="email" placeholder="{{t "es" "Correo"}}" required>
-                                     <small class="invalid-feedback">{{t "es" "ingrese_correo"}}</small>
+                                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="{{t lang "Nombre"}}" required>
+                                    <small class="invalid-feedback">{{t lang "ingrese_nombre"}}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="row mt-5">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" name="subject" id="subject" placeholder="{{t "es" "Asunto"}}" required>
-                                    <small class="invalid-feedback" >{{t "es" "ingrese_asunto"}}</small>
+                                    <input type="text" class="form-control" name="mail" id="mail" placeholder="{{t lang "Correo"}}" required>
+                                    <small class="invalid-feedback" >{{t lang "ingrese_correo"}}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="row mt-5">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" name="text" id="text" placeholder="{{t "es" "Mensaje"}}" required>
-                                    <small class="invalid-feedback" >{{t "es" "ingrese_mensaje"}}</small>
+                                    <input type="text" class="form-control" name="subject" id="subject" placeholder="{{t lang "Asunto"}}" required>
+                                    <small class="invalid-feedback" >{{t lang "ingrese_asunto"}}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="text" id="text" placeholder="{{t lang "Mensaje"}}" required>
+                                    <small class="invalid-feedback" >{{t lang "ingrese_mensaje"}}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="row mt-5">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-rsp ft-bold">
-                                    {{t "es" "Enviar"}} <i class="fal fa-long-arrow-right pl-2"></i>
+                                    {{t lang "Enviar"}} <i class="fal fa-long-arrow-right pl-2"></i>
                                 </button>
                             </div>
                         </div>

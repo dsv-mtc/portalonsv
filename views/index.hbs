@@ -4,7 +4,7 @@
     <!-- The slideshow -->
         <div class="carousel-inner">
             <div class="carousel-item active img-banner">
-                <img src="img/banner/observatorio1v2.png">
+                <img src="/img/banner/observatorio1v2.png">
                     <div class="rsp-ban-desc  delete-padding">
                         <div class="container">
                             <div class="row">
@@ -21,7 +21,7 @@
                     </div>
             </div>
             <div class="carousel-item">
-                <img src="img/banner/observatorio2v2.png">
+                <img src="/img/banner/observatorio2v2.png">
                     <div class="rsp-ban-desc  delete-padding">
                         <div class="container">
                             <div class="row">
@@ -37,7 +37,7 @@
                     </div>
             </div>
             <div class="carousel-item">
-                <img src="img/banner/observatorio3v2.png">
+                <img src="/img/banner/observatorio3v2.png">
                     <div class="rsp-ban-desc  delete-padding">
                         <div class="container">
                             <div class="row">
@@ -79,31 +79,33 @@
             <div class="col-md-4">
                 <div class="rsp-hs-ic-blk">
                     <div class="rsp-hs-ic-img">
-                        <img class="icon-slider" src="img/hs-icons/hs-2.png" alt="hs-icon">
+                        <img class="icon-slider" src="/img/hs-icons/hs-2.png" alt="hs-icon">
                     </div>
-                    <h3 class="ft-bold">95800</h3>
-                    <p>{{t "es" "Siniestros"}}</p>
+                    <h3 class="ft-bold">57396*</h3>
+                    <p>{{t lang "Siniestros"}}</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="rsp-hs-ic-blk">
                     <div class="rsp-hs-ic-img">
-                        <img class="icon-slider" src="img/hs-icons/hs-3.png" alt="hs-icon">
+                        <img class="icon-slider" src="/img/hs-icons/hs-3.png" alt="hs-icon">
                     </div>
-                    <h3 class="ft-bold">63953</h3>
-                    <p>{{t "es" "Lesionados"}}</p>
+                    <h3 class="ft-bold">38447*</h3>
+                    <p>{{t lang "Lesionados"}}</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="rsp-hs-ic-blk">
                     <div class="rsp-hs-ic-img">
-                        <img class="icon-slider" src="img/hs-icons/hs-4.png" alt="hs-icon">
+                        <img class="icon-slider" src="/img/hs-icons/hs-4.png" alt="hs-icon">
                     </div>
-                    <h3 class="ft-bold">3110</h3>
-                    <p>{{t "es" "Fallecidos"}}</p>
+                    <h3 class="ft-bold">2159</h3>
+                    <p>{{t lang "Fallecidos"}}</p>
                 </div>
             </div>
         </div>
+        <p class="mt-2"><span class="cita">{{t lang "cifras-al"}}</span></p>
+        <p><span class="cita">{{t lang "cifras-resumen"}}</span></p>
     </div>
 </section>
 
@@ -112,8 +114,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-7 vu-map-col">
-                <h3 class="rsp-title ft-bold">{{t "es" "Visor de Alerta de Siniestros"}} <br/>
-                {{t "es" "de Tránsito"}}</h3>
+                <h3 class="rsp-title ft-bold">{{t lang "Visor de Alerta de Siniestros"}} <br/>
+                {{t lang "de Tránsito"}}</h3>
                 <div class="vu-map">
                     <div class="mapouter">
                         <div class="gmap_canvas">
@@ -123,23 +125,12 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-5 vu-list-col">
-                <h3 class="rsp-title ft-bold text-center">{{ "Ultimos"}} <br/>
-                    {{t "es" "10 accidentes"}}</h3>
+                <h3 class="rsp-title ft-bold text-center">{{t lang "Ultimos"}} <br/>
+                    {{t lang "10 accidentes"}}</h3>
                 <div class="vu-list">
                         {{#each accidents}}
-                            {{>index/accident}}
+                            {{>index/accident lang=../lang}}
                         {{/each}}
-                    <!--<ul id="lista_accidentes">
-                        <div class="mt-5 pt-5 ml-5">
-                            <div class="d-flex justify-content-center mt-5 pt-5">
-                                <div class="col-md-6">
-                                    <div class="fa-5x">
-                                        <i class="fas fa-spinner fa-pulse"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </ul>-->
                 </div>
             </div>
         </div>
@@ -150,15 +141,15 @@
     <div class="container">
         <div class="row mb-2">
             <div class="col-md-9 res-tit">
-                <h3 class="rsp-title ft-bold">{{t "es" "Resumen de Noticias Eventos"}}</h3>
+                <h3 class="rsp-title ft-bold">{{t lang "Resumen de Noticias Eventos"}}</h3>
             </div>
             <div class="col-md-3 res-btn">
-                <a href="/noticias-eventos/" class="btn btn-rsp-outline ft-bold">{{t "es" "Ver mas"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
+                <a href="/noticias-eventos/" class="btn btn-rsp-outline ft-bold">{{t lang "Ver mas"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
             </div>
         </div> 
         <div class="row">
          {{#each post2}}
-               {{>index/noticias-eventos-card }}
+               {{>index/noticias-eventos-card lang=../lang }}
             {{/each}}
         </div>
     </div>
@@ -168,12 +159,12 @@
     <div class="container">
         <div class="row mb-2">
             <div class="col-md-12">
-                <h3 class="rsp-title ft-bold">{{t "es" "Ultimas 3 publicaciones"}}</h3>
+                <h3 class="rsp-title ft-bold">{{t lang "Ultimas 3 publicaciones"}}</h3>
             </div>
         </div>
         <div class="row">
             {{#each post3}}
-               {{>index/post-card }}
+               {{>index/post-card lang=../lang }}
             {{/each}}
         </div>
             
