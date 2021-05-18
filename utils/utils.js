@@ -50,8 +50,16 @@ const sendEmail= async (form)=>{
         return {success:false, message:'Error sending email'}
     }
 }
+
+const deleteDiacritics= (text)=>{
+    return text
+    .normalize('NFD')
+    .replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi,"$1")
+    .normalize();
+}
 module.exports ={
     transformHttps:transformHttps,
     getAccidents:getAccidents,
-    sendEmail: sendEmail
+    sendEmail: sendEmail,
+    deleteDiacritics:deleteDiacritics
 }

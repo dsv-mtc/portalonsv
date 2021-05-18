@@ -1,7 +1,8 @@
 $(document).ready(function () {
-   validationForm();
-    servicioMapas();
+    validationForm();
+    carousel();
     back();
+    search();
 });
 
 function back(){
@@ -28,6 +29,64 @@ function validationForm(){
         }, false);
       });
     }, false); 
+}
+
+function carousel(){
+    $('#noti').owlCarousel({
+        loop:true,
+        margin: 6,
+        nav:true,
+        dots: false,
+        autoplay: true,
+        autoplayHoverPause: true,
+        responsive:{
+            0:{
+                items:1
+            },
+            600:{
+                items:2
+            },
+            1000:{
+                items:3
+            },
+            1280: {
+                items: 4
+            }
+        }
+    });
+}
+
+function search(){
+    $("#search-button").click(function (e) { 
+        e.preventDefault();
+        const currentUrl=$(location).attr("href");
+        let filter=""
+        if(currentUrl.search("publicaciones")){
+            filter ="publicaciones";
+        }else{
+            filter="noticias-legales"
+        }
+        let searchWord=$("#search-input").val();
+        if(searchWord!=""){
+            $("#search-alert").removeClass("show");
+            $("#search-alert").addClass("hide");
+            $.post("/search",{search:searchWord, filter:filter}).done(function(response){
+                if(response){
+                    $("#default").hide();
+                    $("#results-template").empty();
+                    $("#results-template").append(response);
+                }else{
+                    $("#results-template").empty();
+                    $("#search-alert").removeClass("hide");
+                    $("#search-alert").addClass("show");
+                    
+                    $("#default").show();
+                }
+            })
+        }
+        //console.log(searchWord)
+
+});
 }
 
 

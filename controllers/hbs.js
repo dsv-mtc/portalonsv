@@ -54,6 +54,13 @@ function endpointRebase(url){
     return url.replace(pattern,`${process.env.URL_PATH}`)
 }
 
+function setTarget(label){
+    if(label=="srat"){
+        return "_blank"
+    }
+    return "_self"
+}
+
 
 var hbs=exphbs.create({
     extname:'hbs', 
@@ -68,7 +75,8 @@ var hbs=exphbs.create({
         page_url:page_url,
         endpointPostParse:endpointPostParse,
         endpointRebase:endpointRebase,
-        parseHour:parseHour
+        parseHour:parseHour,
+        setTarget:setTarget
     }
 });
 

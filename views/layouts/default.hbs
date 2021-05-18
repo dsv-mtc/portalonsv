@@ -15,12 +15,16 @@
     
 </head>
 <body>
-    {{> navigation}}
+    {{#if enabledNavigation}}
+        {{> default/navigation}}
+    {{/if}}
     {{{body}}}
-    {{> footer}}
+    {{#if enabledFooter}}
+        {{> default/footer}}
+    {{/if}}
     
     <!--Scripts -->
-    <script src="/js/ghost-search/dist/ghost-finder.js"></script>
+    <!--<script src="/js/ghost-search/dist/ghost-finder.js"></script>-->
     <!--Facebookk-->
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v10.0&appId=432011537895587&autoLogAppEvents=1" nonce="jzJ5ofo4"></script>
 

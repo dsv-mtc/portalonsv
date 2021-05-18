@@ -36,6 +36,11 @@
     "ingrese_asunto": "Por favor debe indicar un asunto",
     "ingrese_mensaje": "Por favor debe ingresar un mensaje",
     "Mensaje":"Mensaje",
-    "Enviar":"Enviar"
+    "Enviar":"Enviar",
+    "res_regional":"Responsable regional",
+    "not_reg":"Noticias Regionales",
+    "buscar":"Buscar aquí...",
+    "destacados":"Destacados",
+    "resultados":"Resultados"
     
 }

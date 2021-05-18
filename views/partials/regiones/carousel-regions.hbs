@@ -1,0 +1,30 @@
+<div class="item">
+    <div class="rsp-res-blk">
+        <div class="rsp-res-img">
+            <a href="{{ endpointPostParse (parseHttp url) }}"><img class="regiones-img" src="{{parseHttp feature_image}}" alt="h-map"></a>
+        </div>
+        <div class="rsp-res-blk-desc">
+            <a href="{{ endpointPostParse (parseHttp url) }}"><h6 class="ft-bold publicaciones-tit">{{ title }}</h6></a> 
+        </div>
+        <div class="rsp-pro-det">
+            <div class="pd-desc">
+                <div class="au"><i class="fas fa-user"></i>  {{t "es" "Autor"}}:{{#primary_author}}<a href="{{ url }}">{{ name }}</a>{{/primary_author}} </div>
+                <div class="tg"><i class="fas fa-tags"></i>
+                    {{#each tags }}
+                        <a href="{{url}}">{{slug}}</a>,
+                        {{#if @last}}
+                            <a href="{{url}}">{{slug}}</a>.
+                        {{/if}} 
+                    {{/each}}
+                 </div>
+                <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
+            </div>
+        </div>
+        <p>
+            {{excerpt}}
+        </p>
+        <a href="{{endpointPostParse (parseHttp url)}}" class="btn btn-rsp ft-bold">
+            {{t "es" "leer más"}} <i class="fal fa-long-arrow-right pl-2"></i>
+        </a>
+    </div>
+</div>
