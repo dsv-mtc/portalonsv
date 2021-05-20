@@ -2,7 +2,6 @@ const exphbs=require("express-handlebars");
 const path=require("path");
 const fs=require("fs");
 const moment =require("moment");
-const { parse } = require("dotenv");
 
 moment.defineLocale('es',{
     months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
@@ -38,10 +37,15 @@ function parseHttp(urlString){
 function assets(pathImg){
     return  path.join(__dirname,`../public/assets/${pathImg}`);
 }
-
-function page_url(url_page,index){
+//Usado solo en la paginación
+function page_url(url_page,index,lang){
     const url=process.env.URL_PATH
-    return `${url}/${url_page}/${index}`
+    if(lang=="es"){
+        return `${url}/${url_page}/${index}`
+    }else{
+        return `${url}/${lang}/${url_page}/${index}`
+    }
+
 }
 
 function endpointPostParse(url){

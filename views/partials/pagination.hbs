@@ -1,13 +1,13 @@
 <div class="l-wrapper">        
     <nav class="m-pagination" aria-label="{{t lang "Paginación"}}">
         {{#if pag.prev}}
-            <a href="{{page_url url_page pag.prev}}" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Nuevos"}}">
+            <a href="{{page_url pag.url_page pag.prev lang}}" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Nuevos"}}">
                 <span class="fal fa-long-arrow-left"></span>
             </a>
         {{/if}}
         <span class="m-pagination__text">{{t lang "Página"}} {{pag.page}} {{t lang "de"}} {{pag.pages}}</span>
         {{#if pag.next}}
-            <a href="{{page_url url_page pag.next}}" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Antiguos"}}">
+            <a href="{{page_url pag.url_page pag.next lang}}" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Antiguos"}}">
                 <span class="fal fa-long-arrow-right"></span>
             </a>
         {{/if}}

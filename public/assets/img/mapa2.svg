@@ -21,7 +21,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -44,11 +44,12 @@
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg2985" />
+     inkscape:current-layer="svg2985"
+     inkscape:document-rotation="0" />
   <defs
      id="defs2989" />
   <g
-     transform="matrix(0.69091958,0,0,0.69203804,127.94748,58.294044)"
+     transform="matrix(0.96410765,0,0,0.96566835,72.404486,19.322186)"
      id="g8012">
     <g
        transform="translate(0.3866964,-0.3866964)"

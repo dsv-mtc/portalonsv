@@ -1,4 +1,6 @@
 const axios = require("axios").default;
+const regions=require("./regiones")
+
 const transformHttps=(element)=>{
     const patttern = /^http:/ 
     Object.keys(element).forEach(function(key){
@@ -16,7 +18,7 @@ const getAccidents=async ()=>{
     try {
         let results= await (await axios.get("https://sratma.mtc.gob.pe/WSSRATMA/api/Mapa/listarUltimosDiezAccidentes")).data;
         let accidents_raw= results['lista_accidentes']['accidentes'];
-        accidents_raw.forEach((accident,index)=>{
+        accidents_raw.forEach((accident)=>{
             let accident_raw={}
             for(const property in accident){
                 if(accident[property]!=null){
@@ -46,7 +48,7 @@ const sendEmail= async (form)=>{
     let message="";
     try {
         if(validationForm(cuerpo)){
-            const response=(await axios.post("https://www.onsv.gob.pe/api/contact",cuerpo)).data
+            await axios.post("https://www.onsv.gob.pe/api/contact",cuerpo);
             if(form.lang=='en'){
                 message="Thank you for contact to Observatory"
             }else{
@@ -89,9 +91,23 @@ const deleteDiacritics= (text)=>{
     .replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi,"$1")
     .normalize();
 }
+
+const serviceMap=(region)=>{
+    let data={regionData:{},tags:''}
+    region=deleteDiacritics(region).toUpperCase();
+    //console.log(region)
+    regions.REGIONES.forEach(x=>{
+        //console.log(x.REGION,region)
+        if(x.REGION==region){
+            data.regionData =x;
+        }})
+    data.tags = `tags:${region}`;
+    return data;
+}
 module.exports ={
     transformHttps:transformHttps,
     getAccidents:getAccidents,
     sendEmail: sendEmail,
-    deleteDiacritics:deleteDiacritics
+    deleteDiacritics:deleteDiacritics,
+    serviceMap:serviceMap
 }

@@ -23,7 +23,7 @@
 .enlace:hover{
     background-color: #ee1d27 !important;
 }
-svg g g path:hover{
+svg g g path:hover, svg g g path:focus{
     cursor: pointer;
     fill:blue;
     stroke:blue;
@@ -33,6 +33,10 @@ svg g g path {
    stroke: none;
    fill:#e0e0e0;
    fill-opacity:1
+}
+#svg2985{
+    width: 630px;
+    height: 920px;
 }
 
 #analitica{

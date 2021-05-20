@@ -23,18 +23,18 @@ routes.use(async(req,res,next)=>{
 })
 
 routes.get("/",async (req,res)=>{
-   console.log("url",req.url)
+   
     const accidents=await utils.getAccidents();
     const post2=await apiGhost.getPosts(4,"tags","tags: [noticias-eventos]");
     const post3=await apiGhost.getPosts(3);
     res.render("index",{post3,post2,accidents});
  })
 
- routes.get("/noticias-eventos/:page?", async(req,res)=>{
-     const page=req.params.page?req.params.page:1;
+ routes.get("/noticias-eventos/:page?", async(req,res)=>{  
+   const page=req.params.page?req.params.page:1;
      const post=await apiGhost.getPosts(7,"tags,authors","tag:noticias-eventos","published_at DESC",page);
      const pagination = post.meta.pagination;
-     pagination.url_page='noticias-eventos'
+     pagination.url_page='noticias-eventos';
      res.render("pages/noticias-eventos",{post,pagination});
  })
 
@@ -106,6 +106,12 @@ routes.get("/",async (req,res)=>{
       res.send(results.success)
     }
 
+ })
+
+ routes.post("/services-map",(req,res)=>{
+    const regionRequest= req.body['region']
+    const data=utils.serviceMap(regionRequest)
+    res.send(data)
  })
  
 
