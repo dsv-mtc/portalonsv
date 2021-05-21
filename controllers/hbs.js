@@ -2,6 +2,7 @@ const exphbs=require("express-handlebars");
 const path=require("path");
 const fs=require("fs");
 const moment =require("moment");
+const handlebars=require("handlebars");
 
 moment.defineLocale('es',{
     months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
@@ -84,4 +85,18 @@ var hbs=exphbs.create({
     }
 });
 
-module.exports=hbs;
+var hbs2=handlebars.create()
+hbs2.registerHelper({
+    t:t,
+    parseDate:parseDate,
+    parseHttp:parseHttp,
+    assets:assets,
+    page_url:page_url,
+    endpointPostParse:endpointPostParse,
+    endpointRebase:endpointRebase,
+    parseHour:parseHour,
+    setTarget:setTarget
+})
+
+
+module.exports={hbs,hbs2};

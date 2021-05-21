@@ -1,6 +1,5 @@
 const routes=require("express").Router();
 const apiGhost=new (require("../api/ghost"));
-const { Router } = require("express");
 const utils = require("../utils/utils")
 
 routes.use(async(req,res,next)=>{
@@ -108,9 +107,14 @@ routes.get("/",async (req,res)=>{
 
  })
 
- routes.post("/services-map",(req,res)=>{
-    const regionRequest= req.body['region']
-    const data=utils.serviceMap(regionRequest)
+ routes.post("/services-map",async (req,res)=>{
+    //TODO es posible que en algunas regiones no existan noticias  y los posts sean vacío
+    const regionRequest= req.body['region'];
+    const lang=req.body['lang']
+    const filter=`tags:[noticias-eventos,${regionRequest}]`;
+    const post = await apiGhost.getPosts(8,"tags,authors",filter, "published_at DESC");
+    
+    const data=utils.serviceMap(regionRequest,{post,lang})
     res.send(data)
  })
  

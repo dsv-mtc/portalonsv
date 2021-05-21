@@ -101,13 +101,29 @@ function search(){
 function getMap(){
     $("path").click(function (e) { 
         e.preventDefault();
+        const currentUrl=$(location).attr("href");
+        let lang="es";
+        if(currentUrl.includes("/en/")){
+            lang="en";
+        }
         const region=e.target.id
-        $.post("/services-map",{region:region}).done(function(response){
-            console.log(response.regionData)
+        $.post("/services-map",{region:region,lang:lang}).done(function(response){
+            //console.log(response.template)
+            $("path").removeClass("map-selected");
+            $("path").addClass("map");
+            $("#"+region).removeClass("map")
+            $("#"+region).addClass("map-selected")
             $("#nombre").val(response.regionData.NOMBRE);
             $("#telefono").val(response.regionData.TELEFONO);
             $("#email").val(response.regionData['E-MAIL']);
-            setImage(response.regionData.REGION)
+            setImage(response.regionData.REGION);
+            $("#noti").empty();
+            $("#noti").append(response.template);
+            $("#noti").trigger('destroy.owl.carousel');
+            carousel();
+           
+
+
         })
     });
 }
@@ -118,12 +134,10 @@ function setImage(region){
     console.log(region)
     $.get("/img/regiones/"+region.toLowerCase()+".png")
         .done(function(){
-            console.log("funciono la ruta")
             ruta =`/img/regiones/${region.toLowerCase()}.png"`;
             $("#img-region").append(`<img src="${ruta}"></img>`);
         })
         .fail(function(){
-            console.log("fallo la ruta")
             ruta="/img/regiones/escudo.jpg";
             $("#img-region").append(`<img src="${ruta}"></img>`);
         });

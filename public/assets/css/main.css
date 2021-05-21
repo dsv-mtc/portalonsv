@@ -23,17 +23,31 @@
 .enlace:hover{
     background-color: #ee1d27 !important;
 }
-svg g g path:hover, svg g g path:focus{
+svg g g path.map:hover{
     cursor: pointer;
     fill:blue;
     stroke:blue;
     transition: all ease 0.3s;
 }
-svg g g path {
-   stroke: none;
-   fill:#e0e0e0;
-   fill-opacity:1
+
+svg g g path.map {
+    stroke:#646464;
+    stroke-width:0.489192;
+    stroke-linecap:square;
+    stroke-linejoin:miter;
+    stroke-miterlimit:4;
+    stroke-dasharray:none;
+    stroke-dashoffset:0;
+    stroke-opacity:1;
+    fill:#e0e0e0;
+    fill-opacity:1
 }
+svg g g path.map-selected{
+    fill:blue !important;
+    stroke:blue;
+    /*transition: all ease 0.3s;*/
+}
+
 #svg2985{
     width: 630px;
     height: 920px;

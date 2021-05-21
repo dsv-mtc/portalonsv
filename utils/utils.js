@@ -1,5 +1,8 @@
 const axios = require("axios").default;
-const regions=require("./regiones")
+const regions=require("./regiones");
+const {hbs2}= require("../controllers/hbs");
+const fs=require("fs");
+const path= require("path");
 
 const transformHttps=(element)=>{
     const patttern = /^http:/ 
@@ -92,8 +95,8 @@ const deleteDiacritics= (text)=>{
     .normalize();
 }
 
-const serviceMap=(region)=>{
-    let data={regionData:{},tags:''}
+const serviceMap=(region,dataGhost)=>{
+    let data={regionData:{},template:''}
     region=deleteDiacritics(region).toUpperCase();
     //console.log(region)
     regions.REGIONES.forEach(x=>{
@@ -101,13 +104,20 @@ const serviceMap=(region)=>{
         if(x.REGION==region){
             data.regionData =x;
         }})
-    data.tags = `tags:${region}`;
+    data.template = renderCarouselRegions(dataGhost) ;
     return data;
+}
+
+const renderCarouselRegions=(data)=>{
+    let template =fs.readFileSync(path.join(__dirname,"../views/partials/regiones/carousel-regions.hbs"),'utf-8')
+    let compiled=hbs2.compile(template);
+    return compiled(data);
 }
 module.exports ={
     transformHttps:transformHttps,
     getAccidents:getAccidents,
     sendEmail: sendEmail,
     deleteDiacritics:deleteDiacritics,
-    serviceMap:serviceMap
+    serviceMap:serviceMap,
+    renderCarouselRegions:renderCarouselRegions
 }
