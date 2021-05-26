@@ -6,4 +6,4 @@
 -   Falta template de tags
 
 #   DATOS ABIERTOS
--   Se debe definir si será on premise o cloud
+-   Se debe definir si será on premise o cloud.
