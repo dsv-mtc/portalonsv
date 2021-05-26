@@ -13,10 +13,12 @@
   "author": "Henry Medina",
   "license": "ISC",
   "dependencies": {
+    "@mailchimp/mailchimp_marketing": "^3.0.43",
     "@tryghost/content-api": "^1.4.13",
     "@tryghost/helpers": "^1.1.37",
     "axios": "^0.21.1",
     "connect-flash": "^0.1.1",
+    "crypto-js": "^4.0.0",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
@@ -24,6 +26,7 @@
     "handlebars": "^4.7.7",
     "minisearch": "^3.0.2",
     "moment": "^2.29.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.0"
   }
 }

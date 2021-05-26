@@ -59,6 +59,9 @@
     "ingrese_asunto": "Please enter your subject",
     "Mensaje":"Message",
     "ingrese_mensaje": "Please enter your message",
-    "Enviar":"Send"
+    "Enviar":"Send",
+    "ingrese_seleccion": "Please, you must choice at least one topic",
+    "temas":"All topics",
+    "form-subs":"Suscription Form"
 
 }

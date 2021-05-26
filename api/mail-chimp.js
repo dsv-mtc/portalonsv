@@ -1,0 +1,132 @@
+const axios = require("axios").default;
+const mailchimp=require("@mailchimp/mailchimp_marketing");
+require("dotenv").config(); //using environment variables
+//set Id audiencia or list
+const list_id=process.env.ONSV_ID_AUDIENCE;
+//Set mailchimp
+mailchimp.setConfig({
+    apiKey:process.env.API_KEY_MAIL_CHIMP,
+    server:"us6"
+})
+
+class MailChimp{
+    /**
+     * @description: Get health status connection from mailchimp 
+     */
+    getAll= async()=>{
+        try {
+            const response=await mailchimp.ping.get();
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    /**
+     * @description: By default only has one public in free tier, then if
+     * you dont have a bussiness plan you cannot create another list than default
+     */
+    addList=async()=>{
+        try {
+            const response=await mailchimp.lists.createList({
+                name: "test",
+                permission_reminder: "permission_reminder",
+                email_type_option: false,
+                contact: {
+                  company: "onsv",
+                  address1: "address1",
+                  city: "Lima",
+                  country: "Perú",
+                },
+                campaign_defaults: {
+                  from_name: "Henry",
+                  from_email: "elpadredelcordero@gmail.com",
+                  subject: "prueba",
+                  language: "es",
+                },
+            })
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    /**
+     * @description: get all list from your account, 
+     * the list comming like a object and has a property named list, the list is an object array
+     */
+    getAllLists=async()=>{
+        try {
+            const response = await mailchimp.lists.getAllLists();
+            console.log(response);       
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    getAllSegments=async()=>{
+        
+        try {
+            const response= await mailchimp.lists.listSegments(list_id);
+            console.log(response);            
+        } catch (error) {
+            console.error(error)
+        }
+
+    }
+    getSegment=async()=>{
+        
+    }
+
+    addMemberToList=async(form)=>{
+        const {email, topic,name} = form;
+        try {
+            console.log({[name]:topic});       
+            await mailchimp.lists.addListMember(list_id,{
+                email_address:email,
+                status:"subscribed",
+                tags:[name]
+            })
+            return {success:true,message:"User was added to list"}            
+        } catch (error) {
+            // error details in error.response.body
+            console.log(error )
+            if(error.status==400){
+                return {success:false, message:error.response.body.detail}
+            }else{
+                return {success:false,message:"Something went wrong"}
+            }
+
+        }
+
+    }
+
+    getMemberFromList=async(subscriber_hash)=>{
+        try {
+            const response = await mailchimp.lists.getListMember(list_id, subscriber_hash)
+            return {success:true,data:response}
+        } catch (error) {
+            let message="";
+            //console.error(error.status)
+            if(error.status==404){
+                message="User not found"
+            }else{
+                message="Unknow error"
+            }
+            return {success:false,message:message}
+                        
+        }
+    }
+    updateTagsFromMemberInList=async(subscriber_hash,tag)=>{
+        try {
+            await mailchimp.lists.updateListMemberTags(
+                list_id,subscriber_hash,{
+                    tags:[{name:tag,status:"active"}]
+                })
+            return {success:true,message:"User updated"}
+        } catch (error) {
+            return {success:false,message:"Something went wrong"}
+        }
+    }
+
+}
+
+module.exports = MailChimp;

@@ -6,6 +6,8 @@ const {hbs}=require("./controllers/hbs");
 const morgan=require("morgan");
 const flash= require("connect-flash");
 const session=require("express-session");
+const utils=require("./utils/utils");
+
 
 dotenv.config();
 
@@ -27,6 +29,9 @@ app.use(express.urlencoded({extended:true}));
 app.use(routes);
 
 
+//cronjob
+
 app.listen(process.env.PORT || 3000,()=>{
+    utils.sendingNewsLetter()
     console.log("Estamos online")
 })

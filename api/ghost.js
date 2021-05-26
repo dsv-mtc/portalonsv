@@ -2,7 +2,6 @@ const GhostContentApi=require("@tryghost/content-api");
 const {readingTime, tags}=require("@tryghost/helpers");
 const utils = require("../utils/utils");
 const MiniSearch = require("minisearch");
-const { deleteDiacritics } = require("../utils/utils");
 const api=new GhostContentApi({
     url:"https://www.onsv.gob.pe",
     key:"a20fd9a819b97254868897c806",
@@ -50,6 +49,12 @@ class GhostApi {
             limit:limit,
             
         });
+    }
+    getTagsTitles=async()=>{
+        return api.tags.browse({
+            limit:"all",
+            fields:['name','id']
+        })
     }
     getSearchPosts=async(filter,slug)=>{
         let posts=[];

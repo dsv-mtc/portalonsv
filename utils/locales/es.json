@@ -35,6 +35,7 @@
     "ingrese_correo":"Por favor ingrese un correo",
     "ingrese_asunto": "Por favor debe indicar un asunto",
     "ingrese_mensaje": "Por favor debe ingresar un mensaje",
+    "ingrese_seleccion": "Por favor debe elegir un tema de interés",
     "Mensaje":"Mensaje",
     "Enviar":"Enviar",
     "res_regional":"Responsable regional",
@@ -49,7 +50,9 @@
     "consecuencias":"Consecuencias",
     "cifras-al":"*Cifras totales al 2020",
     "cifras-resumen":"En el año 2019 se registraron las siguientes cifras: Accidentes: 95800, Lesionados: 63953, Fallecidos: 3110",
-    "no-results":"No se encontraron resultados"
+    "no-results":"No se encontraron resultados",
+    "temas":"Todos los temas",
+    "form-subs":"Formulario de suscripción"
 
     
 }

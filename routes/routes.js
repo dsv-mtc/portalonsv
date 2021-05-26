@@ -1,9 +1,10 @@
 const routes=require("express").Router();
 const apiGhost=new (require("../api/ghost"));
-const utils = require("../utils/utils")
+const utils = require("../utils/utils");
 
 routes.use(async(req,res,next)=>{
     res.locals.settings= await apiGhost.getSettings();
+    res.locals.allTags=await apiGhost.getTagsTitles();
     if(req.originalUrl.includes("/en/")){
        res.locals.secondary_navigation=true;
        req.url= req.originalUrl.replace("en/","")
@@ -73,6 +74,8 @@ routes.get("/",async (req,res)=>{
  })
 
  routes.get("/contacto",async(req,res)=>{
+    //await apiMailChimp.getAllLists();
+    //await apiMailChimp.getSegment("aebee11048")
     const info = req.flash('info')
     res.render("pages/contacto",{info:info})
  })
@@ -116,6 +119,13 @@ routes.get("/",async (req,res)=>{
     
     const data=utils.serviceMap(regionRequest,{post,lang})
     res.send(data)
+ })
+
+ routes.post("/subscribe",async(req,res)=>{
+    const form=req.body;
+    const response=await utils.subscribeUser(form)
+    console.log(response);
+    res.send(response);
  })
  
 

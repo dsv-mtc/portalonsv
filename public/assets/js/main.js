@@ -4,12 +4,12 @@ $(document).ready(function () {
     back();
     search();
     getMap();
+    modal();
 });
 
 function back(){
     $("#back").click(function (e) { 
         e.preventDefault();
-        console.log("back")
         window.history.back();
     });
 }
@@ -143,3 +143,24 @@ function setImage(region){
         });
 }
 
+function modal(){
+    $("#suscriber-modal-form").on("hidden.bs.modal",function(event){
+        $("#subscriber-form").trigger("reset");
+        $("#subscriber-form").removeClass("was-validated");
+    });
+   $("#subscriber-form").submit(function (e) { 
+       e.preventDefault();
+       const email =$("#mail-subscriber").val()
+       let regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+       if(email!=""  && regex.test(email)){
+        let dataToSend={
+            email:email,
+            topic:$("#tag-subscriber").val(),
+            name:$("#tag-subscriber").find("option:selected").text()
+         }
+         $.post("/subscribe",dataToSend).done(function(response){
+             $("#suscriber-modal-form").modal("hide");
+         })
+       }
+   });
+}

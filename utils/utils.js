@@ -3,6 +3,19 @@ const regions=require("./regiones");
 const {hbs2}= require("../controllers/hbs");
 const fs=require("fs");
 const path= require("path");
+const cron=require("node-cron");
+const apiMailChimp=new (require("../api/mail-chimp"));
+const CryptoJs= require("crypto-js")
+
+
+const sendingNewsLetter=()=>{
+    //send newsletter every sunday, this function wil be executed in the main file index
+    // reference: https://www.digitalocean.com/community/tutorials/nodejs-cron-jobs-by-examples#step-2-%E2%80%94-building-the-backend-server-and-scheduling-a-task
+    const task=cron.schedule('0 0 * * 7',()=>{
+       console.log("hola")
+   })
+   task.start(); 
+}
 
 const transformHttps=(element)=>{
     const patttern = /^http:/ 
@@ -113,11 +126,30 @@ const renderCarouselRegions=(data)=>{
     let compiled=hbs2.compile(template);
     return compiled(data);
 }
+
+
+const subscribeUser=async (form)=>{  
+    const subscriber_hash=CryptoJs.MD5(form.email).toString() //mailchimp require md5 hash 
+    const responseGetMember=await apiMailChimp.getMemberFromList(subscriber_hash)
+    if(responseGetMember.success){
+       return apiMailChimp.updateTagsFromMemberInList(subscriber_hash,form.name);
+    }else{
+        return apiMailChimp.addMemberToList(form); 
+    } 
+
+}
+
+const unSubscribeUser=async()=>{
+    console.log("método desconocido")
+}
 module.exports ={
     transformHttps:transformHttps,
     getAccidents:getAccidents,
     sendEmail: sendEmail,
     deleteDiacritics:deleteDiacritics,
     serviceMap:serviceMap,
-    renderCarouselRegions:renderCarouselRegions
+    renderCarouselRegions:renderCarouselRegions,
+    sendingNewsLetter:sendingNewsLetter,
+    subscribeUser:subscribeUser,
+    unSubscribeUser:unSubscribeUser
 }
