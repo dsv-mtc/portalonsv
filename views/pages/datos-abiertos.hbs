@@ -1,0 +1,60 @@
+<!--Banner section-->
+<section class="rsp-navbar banner">
+    <div class="logo">
+        <!--Cambiar la imagen-->
+        <a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img" src="{{parseHttp settings.logo }}" alt="{{ settings.title }}"></a>
+    </div>
+</section>
+<!--search section-->
+<section class="rsp-conf-section rsp-wrap">
+    <div class="container">
+ <!--form search-->
+    <form id="open-data-form">
+        <div class="form-row">
+            <div class="form-group col-12 col-md-6">
+                <label for="search-data">Descripción</label>
+                <input type="text" id="search-data" class="form-control" placeholder="{{t lang "buscar"}}" >
+            </div>
+             <div class="form-group col-12 col-md-2">
+                <label for="category-data">Categoría</label>
+                <select class="form-control" name="category-data" id="category-data">
+                    <option value="0">Todas</option>
+                 </select>
+            </div>
+            <div class="form-group col-12 col-md-2">
+                <label for="order-data">Ordenar por</label>
+                <select class="form-control" name="order-data" id="order-data">
+                    <option value="1">Fecha Cambiada</option>
+                    <option value="2">Título</option>
+                </select>
+            </div>
+            <div class="form-group col-12 col-md-2">
+                <label for="ask-data">Pedido</label>
+                <select class="form-control" name="ask-data" id="ask-data">
+                    <option value="1">Descendente</option>
+                    <option value="2">Ascendente</option>
+                </select>
+            </div>
+             
+        </div>
+        <div class="form-row d-flex flex-row-reverse">
+            <div class="form-group row col-md-3 mt-3 mr-3">
+                <div class="col-6">
+                    <button type="submit" class="btn btn-rsp ft-bold">
+                         Consultar
+                   </button>
+                </div>
+                <div class="col-6 pl-5">
+                    <button type="button" id="open-data-button-clear" class="btn btn-rsp ft-bold">
+                        Limpiar
+                    </button>
+                </div>  
+            </div>
+        </div>
+    </form>
+    </div>
+</section>
+<!-- main section-->
+<main>
+    {{>datos-abiertos/datos-abiertos-card-body}}
+</main>

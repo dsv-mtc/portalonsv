@@ -7,3 +7,11 @@
 
 #   DATOS ABIERTOS
 -   Se debe definir si será on premise o cloud.
+
+#   FUNCIONALIDADES
+-   Implementar un spinner time para evitar las rellamadas constantes
+
+#   DATOS ABIERTOS
+-   Se implementó la vista general pero no los card-body de cada uno de ellos
+-   Se implementó la interfaz de logeo, se va requerir mysql
+-   Se implementó los middlewares de control de acceso de usuario

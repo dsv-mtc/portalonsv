@@ -1,6 +1,7 @@
 const routes=require("express").Router();
 const apiGhost=new (require("../api/ghost"));
 const utils = require("../utils/utils");
+const passport=require("passport");
 
 routes.use(async(req,res,next)=>{
     res.locals.settings= await apiGhost.getSettings();
@@ -97,6 +98,64 @@ routes.get("/",async (req,res)=>{
     }
 
  })
+
+ /* ZONA DE DATOS ABIERTOS */
+ routes.get("/datosabiertos",(req,res)=>{
+   res.locals.enabledFooter=false;
+   res.locals.enabledNavigation=false;
+    res.render("pages/datos-abiertos")
+ })
+
+ routes.post("/datosabiertos",(req,res)=>{
+    const form = req.body;
+    console.log(form);
+    res.send("ok");
+ })
+
+ routes.get("/datosabiertos-login",isNotAuthenticated,(req,res)=>{
+   const info_login=req.flash('login');
+   res.locals.enabledFooter=false;
+   res.locals.enabledNavigation=false;
+   res.render("pages/datos-abiertos-login",{info_login});
+ })
+
+ routes.get("/datosabiertos-logout",(req,res)=>{
+    req.logOut(); 
+    res.redirect("/datosabiertos-login")
+ })
+
+routes.post("/datosabiertos-login",passport.authenticate('local-login',{
+   successRedirect:"/datosabiertos-admin",
+   failureRedirect:"/datosabiertos-login",
+   passReqToCallback:true
+}))
+
+routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
+   res.locals.enabledFooter=false;
+   res.locals.enabledNavigation=false;
+   const {categories, types}=utils.constants
+   res.render("pages/datos-abiertos-admin",{categories,types})
+ })
+ routes.post("/datosabiertos-admin",(req,res)=>{
+   res.send("hola2");
+ })
+
+ function isAuthenticated(req,res,next){
+    if(req.isAuthenticated()){
+       return next();
+    }
+    res.redirect('/datosabiertos-login')
+ }
+
+ function isNotAuthenticated(req,res,next){
+   if(req.isAuthenticated()){
+      res.redirect('/datosabiertos-admin');
+   }
+   return next();
+   
+ }
+
+ /* FIN DE ZONA DE DATOS ABIERTOS */
 
  routes.post("/search",async(req,res)=>{
     const slug = req.body["search"];

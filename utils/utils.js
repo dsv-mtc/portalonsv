@@ -142,6 +142,32 @@ const subscribeUser=async (form)=>{
 const unSubscribeUser=async()=>{
     console.log("método desconocido")
 }
+
+const constants={
+    categories:[
+        {key:"Economía y Finanzas",value:"economia"},
+        {key:"Gobernabilidad", value:"gobernabilidad"},
+        {key:"Transporte", value:"transporte"},
+        {key:"Desarrollo Social", value:"desarrollo-social"},
+        {key:"Desarrollo Urbano", value:"desarrollo-urbano"},
+        {key:"Educación", value:"educacion"},
+        {key:"Medio Ambiente", value:"medio-ambiente"},
+        {key:"Salud", value:"salud"},
+        {key:"COVID-19", value:"covid"},
+        {key:"Energía", value:"energia"},
+        {key:"Agua y Saneamiento", value:"agua-saneamiento"},
+        {key:"Alimentación y Nutrición", value:"alimentacion-nutricion"},
+        
+    ],
+    types:[
+        {key:"Recurso",value:"recurso"},
+        {key:"Dataset",value:"dataset"},
+        {key:"Grupo",value:"grupo"},
+        {key:"Harvest Source",value:"harvest-source"},
+        {key:"Página",value:"pagina"},
+        {key:"Data Dashboard",value:"dashboard"},
+    ]
+}
 module.exports ={
     transformHttps:transformHttps,
     getAccidents:getAccidents,
@@ -151,5 +177,6 @@ module.exports ={
     renderCarouselRegions:renderCarouselRegions,
     sendingNewsLetter:sendingNewsLetter,
     subscribeUser:subscribeUser,
-    unSubscribeUser:unSubscribeUser
+    unSubscribeUser:unSubscribeUser,
+    constants:constants
 }

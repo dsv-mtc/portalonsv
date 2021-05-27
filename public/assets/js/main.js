@@ -5,6 +5,7 @@ $(document).ready(function () {
     search();
     getMap();
     modal();
+    openDataForm();
 });
 
 function back(){
@@ -163,4 +164,26 @@ function modal(){
          })
        }
    });
+}
+
+function openDataForm(){
+    //Clean inputs
+    $("#open-data-button-clear").click(function (e) { 
+        e.preventDefault();
+        $("#open-data-form").trigger("reset");
+    });
+    //get results
+    $("#open-data-form").submit(function (e) { 
+        e.preventDefault();
+        let dataToSend={
+            search:$("#search-data").val(),
+            category:$("#category-data").val(),
+            order_by:$("#order-data").val(),
+            ask:$("#ask-data").val()
+        }
+        $.post("/datosabiertos",dataToSend).done(function(response){
+            console.log(response);
+        });
+    });
+
 }
