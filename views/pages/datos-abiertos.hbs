@@ -19,6 +19,9 @@
                 <label for="category-data">Categoría</label>
                 <select class="form-control" name="category-data" id="category-data">
                     <option value="0">Todas</option>
+                        {{#each categories}}
+                            <option value="{{value}}">{{key}}</option>
+                        {{/each}}
                  </select>
             </div>
             <div class="form-group col-12 col-md-2">
@@ -55,6 +58,6 @@
     </div>
 </section>
 <!-- main section-->
-<main>
-    {{>datos-abiertos/datos-abiertos-card-body}}
+<main class="container">
+    {{>datos-abiertos/datos-abiertos-card-body documentsList=documentsList}}
 </main>

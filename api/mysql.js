@@ -28,8 +28,11 @@ class DataBase{
                 }
             }
         )
-        //Habilitamos el uso de asyn await
-        this.query=util.promisify(client.query).bind(client);
+        
+    }
+    setQuery=()=>{
+    //Habilitamos el uso de asyn await
+    this.query=util.promisify(client.query).bind(client);
     }
     getUser=async (user)=>{
         try {
@@ -53,7 +56,7 @@ class DataBase{
             const passwordEncrypted=crypto.AES.encrypt(password,process.env.CRYPTO_SECRET_KEY);
             const queryString=`INSERT INTO ${process.env.USER_TABLE} (user,password) VALUES ("${email}","${passwordEncrypted}")`
             const result=await this.query(queryString)
-            console.log(result);            
+            return {success:true,data:result};   
         } catch (error) {
             console.error(error);
             return {success:false,message:"Cannot save user"}
@@ -61,13 +64,40 @@ class DataBase{
 
     }
     comparePassword=(passIn,passSaved)=>{
-        console.log(passSaved)
         const passwordDecrypted=crypto.AES.decrypt(passSaved,process.env.CRYPTO_SECRET_KEY).toString(crypto.enc.Utf8);
-        console.log(passwordDecrypted)
         if(passIn == passwordDecrypted){
             return true;
         }
         return false;
+    }
+
+    getDocuments=async ()=>{
+        const queryString=`SELECT * FROM ${process.env.DOCUMENTS_TABLE} `;
+        try {
+            const results=await this.query(queryString);
+            return {success:true,data:results}            
+        } catch (error) {
+            console.error(error);
+            return {success:false,message:"No se pudo recuperar los datos, recargue la página"}
+        }
+
+
+    }
+    getDocument=()=>{
+
+    }
+    saveDocument=async (data)=>{
+        try {
+            const {title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile} = data;
+            const queryString=`INSERT INTO ${process.env.DOCUMENTS_TABLE} 
+                (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile) 
+                VALUES ("${title}","${author}","${description}","${category1}","${category2}","${category3}","${type}","${excelfile}","${pdffile}","${csvfile}")`
+            await this.query(queryString);
+            return {success:true,message:"El documento ha sido guardado"}
+        } catch (error) {
+            console.error(error);
+            return {success:false,message:"Al parecer algo salió mal, comuníquese con el administrador de la plataforma"}
+        }
     }
 }
 

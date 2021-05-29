@@ -6,7 +6,10 @@ const path= require("path");
 const cron=require("node-cron");
 const apiMailChimp=new (require("../api/mail-chimp"));
 const CryptoJs= require("crypto-js")
+const  DataBase=require("../api/mysql");
+const mysqlClient=new DataBase();
 
+mysqlClient.setQuery()
 
 const sendingNewsLetter=()=>{
     //send newsletter every sunday, this function wil be executed in the main file index
@@ -143,6 +146,42 @@ const unSubscribeUser=async()=>{
     console.log("método desconocido")
 }
 
+const saveDocument=async(request)=>{
+    const files_name=['excel-file','csv-file','pdf-file'];
+    let data = {...request.body}
+    files_name.forEach(name=>{
+        const folder=name.split("-")[0];
+        if(name in request.files){
+            const filePath=`../../docs_uploaded/${folder}/${request.files[name][0].originalname}`
+            Object.defineProperty(data,`${folder}file`,{
+                value:path.join(__dirname,filePath),
+                writable:true,
+                enumerable:true,
+                configurable:true
+            })
+            //data[`${folder}file`]=path.join(__dirname,filePath)
+        }else{
+            Object.defineProperty(data,`${folder}file`,{
+                value:null,
+                writable:true,
+                enumerable:true,
+                configurable:true
+            })
+        }
+
+    })
+    return  mysqlClient.saveDocument(data);
+}
+
+const getDocuments=async()=>{
+    const response = await mysqlClient.getDocuments();
+    if(response.success){
+        return response.data;
+    }else{
+        return null;
+    }
+}
+
 const constants={
     categories:[
         {key:"Economía y Finanzas",value:"economia"},
@@ -178,5 +217,7 @@ module.exports ={
     sendingNewsLetter:sendingNewsLetter,
     subscribeUser:subscribeUser,
     unSubscribeUser:unSubscribeUser,
-    constants:constants
+    constants:constants,
+    saveDocument:saveDocument,
+    getDocuments:getDocuments
 }

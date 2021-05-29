@@ -20,6 +20,20 @@
 .login-form-size{
     width: 21rem;
 }
+.title-data{
+    color:#0a77bd ;
+    font-weight: bold;
+    font-size: 32px;
+}
+.author-data,.category-data{
+    color:#ad999c ;
+    font-weight: bold;
+}
+.description-data{
+    color: #473b3b;
+    font-weight: bold;
+    font-size: 24px;
+}
 
 #suscriber-button:focus{
     box-shadow: none;

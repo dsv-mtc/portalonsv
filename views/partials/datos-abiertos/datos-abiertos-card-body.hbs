@@ -1,0 +1,28 @@
+{{#if documentsList}}
+    {{#each documentsList}}
+        <h2 class="title-data text-justify">{{title}}</h2>
+        <div>
+            <p class="author-data"><i class="fas fa-user"></i> Autor: {{author}}</p>
+        </div>
+        <div class="row category-data">
+            <div class="col-4">
+                <small>
+                    <i class="{{parseIcon category1}}"></i> {{parseCategory category1}}
+                </small>
+            </div>
+             <div class="col-4">
+                <small>
+                    <i class="{{parseIcon category2}}"></i> {{parseCategory category2}}
+                </small>
+            </div>
+             <div class="col-4">
+                <small>
+                    <i class="{{parseIcon category3}}"></i> {{parseCategory category3}}
+                </small>
+            </div>
+        </div>
+        <div>
+            <p class="text-justify description-data">{{description}}</p>
+        </div>
+    {{/each}}
+{{/if}}

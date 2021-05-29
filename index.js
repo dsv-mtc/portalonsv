@@ -9,7 +9,11 @@ const session=require("express-session");
 const utils=require("./utils/utils");
 const passport=require("passport");
 const cookieParser = require("cookie-parser");
+
 dotenv.config();
+//calling database
+const mysqlClient = new (require("./api/mysql"))
+mysqlClient.getConnection();
 
 //calling passport
 require("./api/passport")

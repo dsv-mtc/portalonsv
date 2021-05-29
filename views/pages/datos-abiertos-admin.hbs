@@ -17,29 +17,56 @@
         <div class="col-12">
             <div class="conf-blk">
                 <h3 class="rsp-title ft-bold mb-4 text-center">Subir Archivos</h3>
-                <form id="datos-abiertos-form" action="/datos-abiertos-admin" method="POST" class="needs-validation" enctype="multipart/form-data">
+                {{#if info_document}}
+                    {{#each info_document}}
+                        <div class="col-12">
+                            <div class="{{style}}" role="alert">
+                                <strong>{{message}}</strong> 
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    {{/each}}
+                {{/if}}
+                <form id="datosabiertos-form" action="/datosabiertos-admin" method="POST" class="needs-validation" enctype="multipart/form-data" novalidate>
                     <div class="form-group row">
                         <label for="title" class="col-12 col-md-2 col-form-label">Título:</label>
                         <div class="col-12 col-md-10">
-                            <input type="text" id="title" name="title" class="form-control">
+                            <input type="text" id="title" name="title" class="form-control" required>
+                            <small class="invalid-feedback">Debe introducir un título</small>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="description" class="col-12 col-md-2 col-form-label">Descripción:</label>
                         <div class="col-12 col-md-10">
-                            <textarea type="text" id="description" name="description" class="form-control" rows="3"></textarea>
+                            <textarea type="text" id="description" name="description" class="form-control" rows="3" required></textarea>
+                           <small class="invalid-feedback">Debe introducir una descripción</small>
                         </div>
+
                     </div>
                     <div class="form-group row">
                         <label for="author" class="col-12 col-md-2 col-form-label">Autor:</label>
                         <div class="col-12 col-md-10">
-                            <input type="text" id="author" name="author" class="form-control">
+                            <input type="text" id="author" name="author" class="form-control" required>
+                            <small class="invalid-feedback">Debe introducir un autor</small>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="category-1" class="col-12 col-md-2 col-form-label">Categoría 1:</label>
+                        <label for="category1" class="col-12 col-md-2 col-form-label">Categoría 1:</label>
                         <div class="col-12 col-md-10">
-                            <select class="form-control" name="category-1" id="category-1">
+                            <select class="form-control" name="category1" id="category1" required>
+                            {{#each categories}}
+                                <option value="{{value}}">{{key}}</option>
+                            {{/each}}
+                            </select>
+                            <small class="invalid-feedback">Debe Seleccionar la primera categoría</small>
+                        </div>                        
+                    </div>
+                    <div class="form-group row">
+                        <label for="category2" class="col-12 col-md-2 col-form-label">Categoría 2:</label>
+                        <div class="col-12 col-md-10">
+                            <select class="form-control" name="category2" id="category2">
                             <option value="0">Ninguna</option>
                             {{#each categories}}
                                 <option value="{{value}}">{{key}}</option>
@@ -48,20 +75,9 @@
                         </div>                        
                     </div>
                     <div class="form-group row">
-                        <label for="category-2" class="col-12 col-md-2 col-form-label">Categoría 2:</label>
+                        <label for="category3" class="col-12 col-md-2 col-form-label">Categoría 3:</label>
                         <div class="col-12 col-md-10">
-                            <select class="form-control" name="category-2" id="category-2">
-                            <option value="0">Ninguna</option>
-                            {{#each categories}}
-                                <option value="{{value}}">{{key}}</option>
-                            {{/each}}
-                            </select>
-                        </div>                        
-                    </div>
-                    <div class="form-group row">
-                        <label for="category-3" class="col-12 col-md-2 col-form-label">Categoría 3:</label>
-                        <div class="col-12 col-md-10">
-                            <select class="form-control" name="category-3" id="category-3">
+                            <select class="form-control" name="category3" id="category3">
                             <option value="0">Ninguna</option>
                             {{#each categories}}
                                 <option value="{{value}}">{{key}}</option>
@@ -73,23 +89,22 @@
                         <label for="type" class="col-12 col-md-2 col-form-label">Tipo de Contenido:</label>
                         <div class="col-12 col-md-10">
                             <select class="form-control" name="type" id="type">
-                            <option value="0">Ninguno</option>
                             {{#each types}}
                                 <option value="{{value}}">{{key}}</option>
                             {{/each}}
                             </select>
                         </div>                        
                     </div>
-                    <div class="custom-file mt-3 shadow-none">
-                        <input type="file" name="excel-file" id="excel-file" class="custom-file-input shadow-none">
+                    <div class="custom-file mt-3">
+                        <input type="file" name="excel-file" id="excel-file" class="custom-file-input">
                         <label for="excel-file" class="custom-file-label shadow-none">Agregar archivo tipo EXCEL</label>
                     </div>
-                    <div class="custom-file mt-5 shadow-none">
-                        <input type="file" name="pdf-file" id="pdf-file" class="custom-file-input shadow-none">
+                    <div class="custom-file mt-5">
+                        <input type="file" name="pdf-file" id="pdf-file" class="custom-file-input">
                         <label for="pdf-file" class="custom-file-label shadow-none">Agregar archivo tipo PDF</label>
                     </div>
-                    <div class="custom-file mt-5 shadow-none">
-                        <input type="file" name="csv-file" id="csv-file" class="custom-file-input shadow-none">
+                    <div class="custom-file mt-5">
+                        <input type="file" name="csv-file" id="csv-file" class="custom-file-input">
                         <label for="csv-file" class="custom-file-label shadow-none">Agregar archivo tipo CSV</label>
                     </div>
                     <div class="form-group d-flex flex-row-reverse mt-5">

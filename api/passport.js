@@ -3,9 +3,7 @@ const Strategy=require("passport-local").Strategy;
 const DataBase=require("./mysql");
 
 const mysqlClient=new DataBase();
-
-mysqlClient.getConnection();
-
+mysqlClient.setQuery();
 passport.use('local-login', new Strategy({
     usernameField:'email',
     passwordField:'password',

@@ -6,6 +6,7 @@ $(document).ready(function () {
     getMap();
     modal();
     openDataForm();
+    fileSelectedName()
 });
 
 function back(){
@@ -186,4 +187,11 @@ function openDataForm(){
         });
     });
 
+}
+
+function fileSelectedName(){
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+      });
 }

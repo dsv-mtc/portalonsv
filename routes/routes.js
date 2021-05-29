@@ -2,6 +2,8 @@ const routes=require("express").Router();
 const apiGhost=new (require("../api/ghost"));
 const utils = require("../utils/utils");
 const passport=require("passport");
+const uploader=require("../controllers/multer");
+
 
 routes.use(async(req,res,next)=>{
     res.locals.settings= await apiGhost.getSettings();
@@ -75,10 +77,8 @@ routes.get("/",async (req,res)=>{
  })
 
  routes.get("/contacto",async(req,res)=>{
-    //await apiMailChimp.getAllLists();
-    //await apiMailChimp.getSegment("aebee11048")
-    const info = req.flash('info')
-    res.render("pages/contacto",{info:info})
+    const info = req.flash('info');
+    res.render("pages/contacto",{info:info});
  })
 
  routes.post("/contacto",async(req,res)=>{
@@ -100,10 +100,12 @@ routes.get("/",async (req,res)=>{
  })
 
  /* ZONA DE DATOS ABIERTOS */
- routes.get("/datosabiertos",(req,res)=>{
+ routes.get("/datosabiertos",async (req,res)=>{
    res.locals.enabledFooter=false;
    res.locals.enabledNavigation=false;
-    res.render("pages/datos-abiertos")
+   const {categories}=utils.constants;
+   const documentsList= await utils.getDocuments();
+    res.render("pages/datos-abiertos",{categories,documentsList})
  })
 
  routes.post("/datosabiertos",(req,res)=>{
@@ -133,11 +135,18 @@ routes.post("/datosabiertos-login",passport.authenticate('local-login',{
 routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
    res.locals.enabledFooter=false;
    res.locals.enabledNavigation=false;
-   const {categories, types}=utils.constants
-   res.render("pages/datos-abiertos-admin",{categories,types})
+   const {categories, types}=utils.constants;
+   const info_document = req.flash('document');
+   res.render("pages/datos-abiertos-admin",{categories,types,info_document})
  })
- routes.post("/datosabiertos-admin",(req,res)=>{
-   res.send("hola2");
+ routes.post("/datosabiertos-admin",uploader,async (req,res)=>{
+   const response=await utils.saveDocument(req);
+   if (response.success){
+      req.flash("document",{style:"alert alert-success alert-dismissible fade show",message:response.message})
+  }else{
+      req.flash('document',{style:"alert alert-danger alert-dismissible fade show",message:response.message});
+  }
+   res.redirect("/datosabiertos-admin")
  })
 
  function isAuthenticated(req,res,next){
