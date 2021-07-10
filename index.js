@@ -6,17 +6,17 @@ const {hbs}=require("./controllers/hbs");
 const morgan=require("morgan");
 const flash= require("connect-flash");
 const session=require("express-session");
-const utils=require("./utils/utils");
+const campaigns=require("./controllers/campaigns");
 const passport=require("passport");
 const cookieParser = require("cookie-parser");
 
 dotenv.config();
 //calling database
-const mysqlClient = new (require("./api/mysql"))
-mysqlClient.getConnection();
+//const mysqlClient = new (require("./api/mysql"))
+//mysqlClient.getConnection();
 
 //calling passport
-require("./api/passport")
+//require("./api/passport")
 const app=express();
 //Settings
 
@@ -41,6 +41,6 @@ app.use(routes);
 //cronjob
 
 app.listen(process.env.PORT || 3000,()=>{
-    utils.sendingNewsLetter()
+    //campaigns.sendingNewsLetter()
     console.log("Estamos online")
 })

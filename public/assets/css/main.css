@@ -98,6 +98,13 @@ svg g g path.map-selected{
 .search-input{
     cursor: pointer;
 }
+.titulo-newsletter{
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.icon-newsletter{
+    color: #ee1d27;
+}
 
 /*Small devices (landscape phones, 576px and up)*/
 @media (min-width: 576px) {}
@@ -127,6 +134,8 @@ svg g g path.map-selected{
     
 
  }
+
+ 
 
 /*Extra large devices (large desktops, 1200px and up)*/
 @media (min-width: 1200px) {}
@@ -633,6 +642,13 @@ footer {
 .nav-tabs .nav-item {
     margin-bottom: -1px;
     margin-right: 6px;
+}
+.newsletter{
+    background-color: #f1f1f1;
+    border: 2px solid #c00e0e;
+    display: flex;
+    justify-content: left;
+    align-items: center;
 }
 #myTabContent {
     border: 1px solid #a2a2a2;

@@ -157,8 +157,8 @@ function modal(){
        if(email!=""  && regex.test(email)){
         let dataToSend={
             email:email,
-            topic:$("#tag-subscriber").val(),
-            name:$("#tag-subscriber").find("option:selected").text()
+            name:$("#name-subscriber").val(),
+            lastname:$("#lastname-subscriber").val()
          }
          $.post("/subscribe",dataToSend).done(function(response){
              $("#suscriber-modal-form").modal("hide");

@@ -3,7 +3,6 @@ const regions=require("./regiones");
 const {hbs2}= require("../controllers/hbs");
 const fs=require("fs");
 const path= require("path");
-const cron=require("node-cron");
 const apiMailChimp=new (require("../api/mail-chimp"));
 const CryptoJs= require("crypto-js")
 const  DataBase=require("../api/mysql");
@@ -11,14 +10,12 @@ const mysqlClient=new DataBase();
 
 mysqlClient.setQuery()
 
-const sendingNewsLetter=()=>{
-    //send newsletter every sunday, this function wil be executed in the main file index
-    // reference: https://www.digitalocean.com/community/tutorials/nodejs-cron-jobs-by-examples#step-2-%E2%80%94-building-the-backend-server-and-scheduling-a-task
-    const task=cron.schedule('0 0 * * 7',()=>{
-       console.log("hola")
-   })
-   task.start(); 
-}
+
+
+
+
+
+
 
 const transformHttps=(element)=>{
     const patttern = /^http:/ 
@@ -61,7 +58,11 @@ const getAccidents=async ()=>{
     }
 
 }
-
+/**
+ * @description: Método empleado para el envío de formulario de la zona de contacto
+ * @param {*} form : Objeto  de la forma {nombre:String, correo:String, asunto:String, mensaje:String}
+ * @returns Un objeto {succes:bool, message:String}
+ */
 const sendEmail= async (form)=>{
     const cuerpo={nombre:form.nombre,email:form.mail,subject:form.subject,text:form.text}
     let message="";
@@ -130,12 +131,35 @@ const renderCarouselRegions=(data)=>{
     return compiled(data);
 }
 
-
-const subscribeUser=async (form)=>{  
+/**
+ * @description Método utilizado al momento de la suscripción del usuario a la plataforma, el método conecta con la APi
+ * de MailChimp suscribiendolo a la audiencia por defecto agregando los tags suscritos; Si el usuario existe se actualiza su información de tags, sino
+ * Se le suscribe con el valor del formulario.
+ * @param {*} form Objeto de la forma {email:String, name:String, lastname:String}
+ * @returns 
+ */
+const subscribeUserWithTags=async (form)=>{  
     const subscriber_hash=CryptoJs.MD5(form.email).toString() //mailchimp require md5 hash 
     const responseGetMember=await apiMailChimp.getMemberFromList(subscriber_hash)
     if(responseGetMember.success){
        return apiMailChimp.updateTagsFromMemberInList(subscriber_hash,form.name);
+    }else{
+        return apiMailChimp.addMemberToList(form); 
+    } 
+
+}
+/**
+ * @description Método utilizado al momento de la suscripción del usuario a la plataforma, el método conecta con la APi
+ * de MailChimp suscribiendolo a la audiencia por defecto; Si el usuario existe se actualiza su información de tags, sino
+ * Se le suscribe con el valor del formulario.
+ * @param {*} form Objeto de la forma {email:String, name:String, lastname:String}
+ * @returns 
+ */
+const subscribeUser=async (form)=>{ 
+    const subscriber_hash=CryptoJs.MD5(form.email).toString() //mailchimp require md5 hash 
+    const responseGetMember=await apiMailChimp.getMemberFromList(subscriber_hash)
+    if(responseGetMember.success){
+       return {success:true,message:'User already subscribe'}
     }else{
         return apiMailChimp.addMemberToList(form); 
     } 
@@ -182,6 +206,7 @@ const getDocuments=async()=>{
     }
 }
 
+
 const constants={
     categories:[
         {key:"Economía y Finanzas",value:"economia"},
@@ -214,7 +239,6 @@ module.exports ={
     deleteDiacritics:deleteDiacritics,
     serviceMap:serviceMap,
     renderCarouselRegions:renderCarouselRegions,
-    sendingNewsLetter:sendingNewsLetter,
     subscribeUser:subscribeUser,
     unSubscribeUser:unSubscribeUser,
     constants:constants,

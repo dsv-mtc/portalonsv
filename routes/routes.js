@@ -189,6 +189,7 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
     res.send(data)
  })
 
+//SusCripción
  routes.post("/subscribe",async(req,res)=>{
     const form=req.body;
     const response=await utils.subscribeUser(form)

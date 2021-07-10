@@ -114,7 +114,7 @@ function parseIcon(categoryValue){
             iconToSend=icon.key;
         }
     })
-    console.log(iconToSend)
+    //console.log(iconToSend)
     return iconToSend;
 }
 
