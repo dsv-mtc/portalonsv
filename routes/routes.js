@@ -7,7 +7,7 @@ const uploader=require("../controllers/multer");
 
 routes.use(async(req,res,next)=>{
     res.locals.settings= await apiGhost.getSettings();
-    res.locals.allTags=await apiGhost.getTagsTitles();
+   res.locals.titlesPosts= await apiGhost.getLastFivePostsTitle();
     if(req.originalUrl.includes("/en/")){
        res.locals.secondary_navigation=true;
        req.url= req.originalUrl.replace("en/","")
@@ -32,7 +32,7 @@ routes.get("/",async (req,res)=>{
     const post3=await apiGhost.getPosts(3);
     res.render("index",{post3,post2,accidents});
  })
-
+/**NOTICIAS Y EVENTOS */
  routes.get("/noticias-eventos/:page?", async(req,res)=>{  
    const page=req.params.page?req.params.page:1;
      const post=await apiGhost.getPosts(7,"tags,authors","tag:noticias-eventos","published_at DESC",page);
@@ -41,6 +41,7 @@ routes.get("/",async (req,res)=>{
      res.render("pages/noticias-eventos",{post,pagination});
  })
 
+ /**POSTS */
  routes.get("/post/:slug", async(req,res)=>{
     const post = await apiGhost.getPost(req.params.slug);
     const primary_author=`authors:${post.primary_author.slug}`;
@@ -48,34 +49,49 @@ routes.get("/",async (req,res)=>{
     res.render("pages/post",{post,postsRelatives});
  })
 
+ /**REGIONES*/
  routes.get("/regiones",async(req,res)=>{
     const post = await apiGhost.getPosts(8,"tags,authors","tag:noticias-eventos", "published_at DESC");
     res.render("pages/regiones",{post});
  })
 
+ routes.post("/services-map",async (req,res)=>{
+   //TODO es posible que en algunas regiones no existan noticias  y los posts sean vacío
+   const regionRequest= req.body['region'];
+   const lang=req.body['lang']
+   const filter=`tags:[${regionRequest}]`;
+   const post = await apiGhost.getPosts(8,"tags,authors",filter, "published_at DESC");
+   const data=utils.serviceMap(regionRequest,{post,lang})
+   res.send(data)
+})
+
+/**ANALÍTICA */
  routes.get("/analitica",async(req,res)=>{
      res.locals.enabledFooter=false;
      res.render("pages/analitica")
  })
 
+ /**SRAT */
  routes.get("/srat", async(req,res)=>{
     res.locals.enabledFooter=false;
     res.locals.enabledNavigation=false;
     res.render("pages/srat");
  })
-
+/**PUBLICACIONES */
  routes.get("/publicaciones",async(req,res)=>{
     const post = await apiGhost.getPosts(6,"tags,authors","tags:[publicaciones]","published_at DESC")
     const tags = await apiGhost.getTags("tags","all");
     res.render("pages/publicaciones",{post,tags});
  })
 
+ /**NORMAS LEGALES */
  routes.get("/normas-legales",async(req,res)=>{
    const post = await apiGhost.getPosts(6,"tags,authors","tags:[normas-legales]","published_at DESC")
    const tags = await apiGhost.getTags("tags","all");
     res.render("pages/normas-legales",{post,tags})
  })
 
+ /**CONTACTO */
  routes.get("/contacto",async(req,res)=>{
     const info = req.flash('info');
     res.render("pages/contacto",{info:info});
@@ -97,6 +113,17 @@ routes.get("/",async (req,res)=>{
       res.redirect("/contacto")
     }
 
+ })
+
+ /** BÚSQUEDA POR TAGS */
+ routes.get("/tag/:tag/:page?",async(req,res)=>{
+    const tag =req.params.tag;
+    const page=req.params.page?req.params.page:1;
+    const filter=`tags:[${tag}]`;
+    const post = await apiGhost.getPosts(6,'tags,authors',filter,'published_at DESC',page);
+    const pagination=post.meta.pagination;
+    pagination.url_page=`tag/${tag}`;
+    res.render('pages/tags',{tag,post,pagination})
  })
 
  /* ZONA DE DATOS ABIERTOS */
@@ -178,16 +205,7 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
 
  })
 
- routes.post("/services-map",async (req,res)=>{
-    //TODO es posible que en algunas regiones no existan noticias  y los posts sean vacío
-    const regionRequest= req.body['region'];
-    const lang=req.body['lang']
-    const filter=`tags:[noticias-eventos,${regionRequest}]`;
-    const post = await apiGhost.getPosts(8,"tags,authors",filter, "published_at DESC");
-    
-    const data=utils.serviceMap(regionRequest,{post,lang})
-    res.send(data)
- })
+ 
 
 //SusCripción
  routes.post("/subscribe",async(req,res)=>{

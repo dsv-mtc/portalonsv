@@ -63,6 +63,9 @@
     "Enviar":"Send",
     "ingrese_seleccion": "Please, you must choice at least one topic",
     "temas":"All topics",
-    "form-subs":"Suscription Form"
+    "form-subs":"Suscription Form",
+    "news-text":"Do you want to stay informed?",
+    "news-button":"Subscribe",
+    "ver":"See"
 
 }

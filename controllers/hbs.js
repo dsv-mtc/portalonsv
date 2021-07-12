@@ -50,13 +50,35 @@ function page_url(url_page,index,lang){
 
 }
 
-function endpointPostParse(url){
+function endpointPostParse(url,lang){
+    url=parseHttp(url);
     const pattern=process.env.URL_PATH_API
-    return url.replace(pattern,`${process.env.URL_PATH}/post`)
+    if(lang=='es'){
+        return url.replace(pattern,`${process.env.URL_PATH}/post`);
+
+    }else{
+        return url.replace(pattern,`${process.env.URL_PATH}/${lang}/post`);
+    }
+
 }
 
+/**
+ * @description: Usado para convertir un url tipo (HTTPS) https:w3.onsve.gob.pe/X a localhost/X
+ * @param {*} url Endpoint al que apunta originalmente la plataforma
+ * @returns  Un url parseado con la url origen de la web
+ */
 function endpointRebase(url){
     const pattern=process.env.URL_PATH_API
+    return url.replace(pattern,`${process.env.URL_PATH}`)
+}
+
+/**
+ * @description: Usado para convertir un url tipo (HTTP) http:w3.onsve.gob.pe/X a localhost/X
+ * @param {*} url Endpoint al que apunta originalmente la plataforma
+ * @returns  Un url parseado con la url origen de la web
+ */
+function endpointRebase2(url){
+    const pattern=process.env.URL_PATH_API2
     return url.replace(pattern,`${process.env.URL_PATH}`)
 }
 
@@ -65,6 +87,11 @@ function setTarget(label){
         return "_blank"
     }
     return "_self"
+}
+
+function checkHtml(htmlString){
+    console.log(htmlString);
+    return htmlString;
 }
 
 function parseCategory(categoryValue){
@@ -131,10 +158,12 @@ var hbs=exphbs.create({
         page_url:page_url,
         endpointPostParse:endpointPostParse,
         endpointRebase:endpointRebase,
+        endpointRebase2:endpointRebase2,
         parseHour:parseHour,
         setTarget:setTarget,
         parseCategory:parseCategory,
-        parseIcon:parseIcon
+        parseIcon:parseIcon,
+        checkHtml:checkHtml
     }
 });
 
@@ -147,10 +176,12 @@ hbs2.registerHelper({
     page_url:page_url,
     endpointPostParse:endpointPostParse,
     endpointRebase:endpointRebase,
+    endpointRebase2:endpointRebase2,
     parseHour:parseHour,
     setTarget:setTarget,
     parseCategory:parseCategory,
-    parseIcon:parseIcon
+    parseIcon:parseIcon,
+    checkHtml:checkHtml
 })
 
 

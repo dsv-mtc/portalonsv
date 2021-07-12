@@ -24,9 +24,9 @@
                                                 <div class="au"><i class="fas fa-user"></i> {{t "es" "Autor"}}: {{#primary_author}}{{ name }}{{/primary_author}} </div>
                                                 <div class="tg"><i class="fas fa-tags"></i>
                                                     {{#each tags }}
-                                                        <a href="{{url}}">{{slug}}</a>,
+                                                        <a href="{{endpointRebase2 url}}">{{slug}}</a>,
                                                         {{#if @last}}
-                                                            <a href="{{url}}">{{slug}}</a>.
+                                                            <a href="{{endpointRebase2 url}}">{{slug}}</a>.
                                                         {{/if}} 
                                                     {{/each}}
                                                 </div>
@@ -35,7 +35,7 @@
                                     </div>
                                     <!--Contenido del post -->
                                     <main class="text-justify">
-                                        {{{html}}}
+                                        {{{checkHtml html}}}
                                     </main>
                                     <div class="nye-link-blk">
                                         <div class="ny-btn">

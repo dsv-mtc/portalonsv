@@ -5,6 +5,17 @@
     height: 30px;
     
 }
+
+.disclaimer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    background-color: #0355a3;
+    font-size: 8.5pt;
+    color: white;
+    font-weight: bold;
+}
 .mapa{
     display: flex;
     margin: auto;

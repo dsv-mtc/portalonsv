@@ -1,3 +1,19 @@
+<section class="disclaimer">
+    <div id="disclaimer" class="carousel slide" data-ride="carousel" data-interval="5000">
+        <div class="carousel-inner">
+            {{#each titlesPosts}}
+                {{#if @last}}
+                    <div class="carousel-item active">
+                        <p>{{title}}</p>
+                    </div>
+                {{/if}}
+                <div class="carousel-item">
+                    <p>{{title}}</p>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>
 <!--================ Start header Top Area =================-->
 <section class="rsp-navbar">
     <div class="container logo-container">

@@ -1,0 +1,25 @@
+<div class="main-body section-gap">
+    <div class="container section-gap box_1170">
+        <div class="row">
+            <div class="col-12 py-5">
+                <div class="tag-details">
+                    <h1 class="title">{{tag}}</h1>
+                </div>    
+            </div>
+            <div class="col-lg-12 post-list">
+                <section class="post-area">
+                    <div class="row">
+                        {{#each post}}
+                            {{>index/post-card lang=../lang}}
+                        {{/each}}
+                    </div>
+                </section>
+            </div>
+            <div class="col-12 d-flex justify-content-center py-5">
+                {{#if pagination}}
+                    {{>pagination pag=pagination}}
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>

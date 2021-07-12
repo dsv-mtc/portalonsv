@@ -123,9 +123,6 @@ function getMap(){
             $("#noti").append(response.template);
             $("#noti").trigger('destroy.owl.carousel');
             carousel();
-           
-
-
         })
     });
 }

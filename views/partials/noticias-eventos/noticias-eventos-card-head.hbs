@@ -1,13 +1,13 @@
 <div class="col-md-6 pb-5">
     <div class="rsp-res-img">
-        <a href="{{endpointPostParse (parseHttp url)}}">
+        <a href="{{endpointPostParse (parseHttp url) lang}}">
             <img class="noticias-p-img" src="{{parseHttp feature_image}}" alt="imagen">
         </a>
     </div>
 </div>
 <div class="col-md-6 pb-5">
     <div class="rsp-res-blk rsp-nye-desc">
-        <a href="{{ endpointPostParse (parseHttp url) }}">
+        <a href="{{ endpointPostParse (parseHttp url) lang }}">
             <h6 class="ft-bold"><a href="{{ url }}">{{ title}}</h6>
         </a>
     </div>
@@ -16,9 +16,9 @@
             <div class="au"><i class="fas fa-user"></i> {{t "es" "Autor"}}: {{#primary_author}}{{ name }}{{/primary_author}} </div>
             <div class="tg"><i class="fas fa-tags"></i>
                 {{#each tags }}
-                    <a href="{{url}}">{{slug}}</a>,
+                    <a href="{{ endpointRebase2 url}}">{{slug}}</a>,
                     {{#if @last}}
-                        <a href="{{url}}">{{slug}}</a>.
+                        <a href="{{ endpointRebase2 url}}">{{slug}}</a>.
                     {{/if}} 
                 {{/each}}
              </div>
@@ -30,7 +30,7 @@
     </p>
     <div class="nye-link-blk">
         <div class="ny-btn">
-            <a href="{{endpointPostParse (parseHttp url)}}" class="btn btn-rsp ft-bold">
+            <a href="{{endpointPostParse (parseHttp url) lang}}" class="btn btn-rsp ft-bold">
                 {{t lang "leer más"}} <i class="fal fa-long-arrow-right pl-2"></i>
             </a>
         </div>

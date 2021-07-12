@@ -53,7 +53,10 @@
     "cifras-resumen":"En el año 2019 se registraron las siguientes cifras: Accidentes: 95800, Lesionados: 63953, Fallecidos: 3110",
     "no-results":"No se encontraron resultados",
     "temas":"Todos los temas",
-    "form-subs":"Formulario de suscripción"
+    "form-subs":"Formulario de suscripción",
+    "news-text":"¿Quieres mantenerte informado?",
+    "news-button":"Suscríbete al newsletter",
+    "ver":"Ver"
 
     
 }

@@ -20,7 +20,11 @@ class GhostApi {
                 order:order,
                 page:page
             })
-            .catch(err=>console.log(err))
+            .catch(err=>{
+                // console.error(err);
+                console.error('Doesnt exist post with region tag')
+                return [];
+            });
     
             posts.forEach(post => {
                 readingTime(post,{minute: "a hot minute",minutes:"% minutes"})
@@ -53,8 +57,16 @@ class GhostApi {
     getTagsTitles=async()=>{
         return api.tags.browse({
             limit:"all",
-            fields:['name','id']
+            fields:['name','id'],
         })
+    }
+    getLastFivePostsTitle=async()=>{
+        return await api.posts.browse(
+            {
+                limit:5,
+                fields:['title'],
+                order:"published_at DESC"
+            });
     }
     getSearchPosts=async(filter,slug)=>{
         let posts=[];
