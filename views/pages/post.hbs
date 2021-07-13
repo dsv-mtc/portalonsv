@@ -1,20 +1,20 @@
+
+<section class="content-imagen-principal">
+    {{#post}}
+        <img class="imagen-principal-post" src="{{parseHttp feature_image}}" alt="nye">
+    {{/post}}
+</section>
 <section class="rsp-vu-sec rsp-wrap">
     <div class="container container-post">
         <div class="row pt-5">
             <!--Contenido del post-->
             {{#post}}
-                <div class="col-lg-8 col-md-7 vu-map-col">
-                    <h3 class="rsp-title ft-bold mb-4 text-center">
+                <div class="col-lg-12 col-md-7 vu-map-col titulo-index">
+                    <h3 class="rsp-title ft-bold mb-4 text-center pt-4 ">
                         {{title}}
                     </h3>
                     <div class="re-blk-post">
                         <div class="row">
-                            <!--imagen principal-->
-                            <div class="col-md-12">
-                                <div class="rsp-nye-img post-img">
-                                    <img class="post-img" src="{{parseHttp feature_image}}" alt="nye">
-                                </div>
-                            </div>
                             <!--Estructura del post -->
                             <div class="col-md-12">
                                 <div class="rsp-nye-desc">
@@ -64,18 +64,25 @@
                 </div>
             {{/post}}
             <!--Contenido del sidebar-->
-            <div class="col-lg-4 col-md-5 vu-list-col">
-                <h6 class="rsp-title ft-bold text-center">
-                    Artículos Relacionados
-                </h6>
-                <div class="vu-list">
-                    <ul>
-                        {{#each postsRelatives}}
-                            {{> posts/post-card-sidebar}}
-                        {{/each}}
-                    </ul>
+            <section class="rsp-noti-sec rsp-wrap">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <h3 class="rsp-title ft-bold">
+                                {{t lang "relacionado"}}
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="owl-carousel owl-theme" id="noti">
+                                {{>posts/post-card-carousel lang=lang post=postsRelatives}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+            </section>
         </div>
     </div>
 </section>

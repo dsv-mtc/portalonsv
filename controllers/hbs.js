@@ -89,9 +89,20 @@ function setTarget(label){
     return "_self"
 }
 
+/**
+ * @description: Regulas direcciones que contienen http a https, busca en todo el string y los modifica, si
+ * la dirección ya posee un https, lo retorna tal cual
+ * @param {*} htmlString: Contenido del post estructurado en html e inserto en un string
+ * @returns 
+ */
 function checkHtml(htmlString){
-    console.log(htmlString);
-    return htmlString;
+    if(htmlString.search('https')==-1){
+        return htmlString.replace('http','https');        
+    }else{
+        return htmlString;
+    }
+
+    
 }
 
 function parseCategory(categoryValue){

@@ -4,7 +4,7 @@
     "Ultimos": "Last",
     "10 accidentes": "10 accidents",
     "Resumen de Noticias Eventos": "Summary of News Events",
-    "Ultimas 3 publicaciones": "Last 3 posts",
+    "ultimas publicaciones": "Last posts",
     "Contacto": "Contact",
     "Contactos Generales": "General Contacts",
     "Contactos Regionales": "Regional Contacts",
@@ -66,6 +66,7 @@
     "form-subs":"Suscription Form",
     "news-text":"Do you want to stay informed?",
     "news-button":"Subscribe",
-    "ver":"See"
+    "ver":"See",
+    "relacionado":"Related Posts"
 
 }

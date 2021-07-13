@@ -4,7 +4,7 @@
     "Ultimos": "Últimos",
     "10 accidentes": "10 accidentes",
     "Resumen de Noticias Eventos": "Resumen de Noticias Eventos",
-    "Ultimas 3 publicaciones": "Últimas 3 publicaciones",
+    "ultimas publicaciones": "Últimas publicaciones",
     "Contacto": "Contacto",
     "Contactos Generales": "Contactos Generales",
     "Contactos Regionales": "Contactos Regionales",
@@ -56,7 +56,8 @@
     "form-subs":"Formulario de suscripción",
     "news-text":"¿Quieres mantenerte informado?",
     "news-button":"Suscríbete al newsletter",
-    "ver":"Ver"
+    "ver":"Ver",
+    "relacionado":"Artículos relacionados"
 
     
 }

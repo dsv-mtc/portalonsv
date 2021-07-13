@@ -51,16 +51,19 @@ routes.get("/",async (req,res)=>{
 
  /**REGIONES*/
  routes.get("/regiones",async(req,res)=>{
-    const post = await apiGhost.getPosts(8,"tags,authors","tag:noticias-eventos", "published_at DESC");
+    //general: tags:[noticias-eventos]
+    const post = await apiGhost.getPosts(8,"tags,authors","tags:[lima]", "published_at DESC");
     res.render("pages/regiones",{post});
  })
 
  routes.post("/services-map",async (req,res)=>{
    //TODO es posible que en algunas regiones no existan noticias  y los posts sean vacío
+   console.log(req.body);
    const regionRequest= req.body['region'];
    const lang=req.body['lang']
    const filter=`tags:[${regionRequest}]`;
    const post = await apiGhost.getPosts(8,"tags,authors",filter, "published_at DESC");
+   console.log(post);
    const data=utils.serviceMap(regionRequest,{post,lang})
    res.send(data)
 })

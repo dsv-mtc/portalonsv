@@ -37,14 +37,45 @@
                         </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
+            <!--Map svg-->
+            <div class="col-12 col-lg-6 d-none d-sm-block">
                 <div class="vu-map">
-                    <div class="mapouter">
+                    <div class="mapouter  ">
                         <div class="gmap_canvas">
                            {{>regiones/map}}
                         </div>
                     </div>
                 </div>
+            </div>
+            <!--Map Form-->
+            <div class="col-12 col-lg-6 d-block d-sm-none">
+                <p class="text-center">Seleccione una región</p>
+                <select name="select-region" id="select-region" class="custom-select">
+                    <option value="Lima">Lima</option>
+                    <option value="Amazonas">Amazonas</option>
+                    <option value="Ancash">Ancash</option>
+                    <option value="Apurímac">Apurímac</option>
+                    <option value="Arequipa">Arequipa</option>
+                    <option value="Ayacucho">Ayacucho</option>
+                    <option value="Cajamarca">Cajamarca</option>
+                    <option value="Callao">Callao</option>
+                    <option value="Cusco">Cusco</option>
+                    <option value="Huancavelica">Huancavelica</option>
+                    <option value="Huanuco">Huánuco</option>
+                    <option value="Ica">Ica</option>
+                    <option value="Junin">Junín</option>
+                    <option value="La Libertad">La Libertad</option>
+                    <option value="Lambayeque">Lambayeque</option>
+                    <option value="Loreto">Loreto</option>
+                    <option value="Madre de Dios">Madre De Dios</option>
+                    <option value="Moquegua">Moquegua</option>
+                    <option value="Pasco">Pasco</option>
+                    <option value="Piura">Piura</option>
+                    <option value="San Martín">San Martín</option>
+                    <option value="Tacna">Tacna</option>
+                     <option value="Tumbes">Tumbes</option>
+                    <option value="Ucayali">Ucayali</option>
+                </select>
             </div>
         </div>
     </div>

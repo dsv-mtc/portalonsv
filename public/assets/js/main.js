@@ -7,6 +7,7 @@ $(document).ready(function () {
     modal();
     openDataForm();
     fileSelectedName()
+    getMapFromForm();
 });
 
 function back(){
@@ -100,7 +101,47 @@ function search(){
 });
 }
 
+
+function getMapFromForm(){
+    const currentPage=$(location).attr("href");
+    let lang="es";
+    if(currentPage.includes("/en/")){
+        lang="en";
+    }
+    if(currentPage.includes('regiones')){
+        $("#select-region").change(function (e) { 
+            e.preventDefault();
+            const region=e.target.value
+            $.post("/services-map",{region:region,lang:lang}).done(function(response){
+                console.log(response)
+                $("#nombre").val(response.regionData.NOMBRE);
+                $("#telefono").val(response.regionData.TELEFONO);
+                $("#email").val(response.regionData['E-MAIL']);
+                setImage(response.regionData.REGION);
+                $("#noti").empty();
+                $("#noti").append(response.template);
+                $("#noti").trigger('destroy.owl.carousel');
+                carousel();
+            })
+            
+        });
+    }
+}
+
+
 function getMap(){
+    //By default
+    const currentPage=$(location).attr("href");
+    if(currentPage.includes('regiones')){
+        let lima=document.querySelectorAll('svg g g path')[4];
+        lima.classList.remove('map');
+        lima.classList.add('map-selected');
+        $("#nombre").val('JOSÉ EDUARDO PRETEL SALDAÑA');
+        $("#telefono").val('943990699');
+        $("#email").val('jpretel@regionlima.gob.pe');
+        setImage('lima'); 
+    }
+    //For click event
     $("path").click(function (e) { 
         e.preventDefault();
         const currentUrl=$(location).attr("href");
@@ -130,7 +171,6 @@ function getMap(){
 function setImage(region){
     $("#img-region").empty();
     let ruta="";
-    console.log(region)
     $.get("/img/regiones/"+region.toLowerCase()+".png")
         .done(function(){
             ruta =`/img/regiones/${region.toLowerCase()}.png"`;

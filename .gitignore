@@ -2,3 +2,4 @@ node_modules
 .gcloudignore
 app.yaml
 .env
+ignore-templates
