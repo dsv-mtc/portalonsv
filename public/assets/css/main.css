@@ -4,6 +4,7 @@
     height: 400px;
     overflow: hidden;
 }
+
 .imagen-principal-post{
     width: 100%;
 }
@@ -17,8 +18,8 @@
     margin-top: -148px !important;
     background-color: white;
     border-radius: 25px;
-}
 
+}
 .disclaimer{
     display: flex;
     align-items: center;
@@ -28,6 +29,9 @@
     font-size: 8.5pt;
     color: white;
     font-weight: bold;
+}
+.disclaimer-text, .disclaimer-text:hover{
+    color: white;
 }
 .mapa{
     display: flex;

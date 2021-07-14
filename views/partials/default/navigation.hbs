@@ -1,16 +1,30 @@
 <section class="disclaimer">
     <div id="disclaimer" class="carousel slide" data-ride="carousel" data-interval="5000">
         <div class="carousel-inner">
-            {{#each titlesPosts}}
-                {{#if @last}}
-                    <div class="carousel-item active">
-                        <p>{{title}}</p>
+             {{#if secondary_navigation}}
+                {{#each titlesPosts}}
+                    {{#if @last}}
+                        <div class="carousel-item active">
+                            <a class="disclaimer-text" href="{{endpointPostParse (parseHttp url) 'en'}}">{{title}}</a> 
+                        </div>
+                    {{/if}}
+                    <div class="carousel-item">
+                        <a class="disclaimer-text" href="{{endpointPostParse (parseHttp url) 'en'}}">{{title}}</a>
                     </div>
-                {{/if}}
-                <div class="carousel-item">
-                    <p>{{title}}</p>
-                </div>
-            {{/each}}
+                {{/each}}
+            {{else}}
+               {{#each titlesPosts}}
+                    {{#if @last}}
+                        <div class="carousel-item active">
+                            <a class="disclaimer-text" href="{{endpointPostParse (parseHttp url) 'es'}}">{{title}}</a> 
+                        </div>
+                    {{/if}}
+                    <div class="carousel-item">
+                        <a class="disclaimer-text" href="{{endpointPostParse (parseHttp url) 'es'}}">{{title}}</a>
+                    </div>
+                {{/each}}
+            {{/if}}
+            
         </div>
     </div>
 </section>

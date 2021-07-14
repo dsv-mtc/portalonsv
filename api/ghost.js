@@ -60,11 +60,11 @@ class GhostApi {
             fields:['name','id'],
         })
     }
-    getLastFivePostsTitle=async()=>{
+    getLastFivePostsTitleAndUrl=async()=>{
         return await api.posts.browse(
             {
                 limit:5,
-                fields:['title'],
+                fields:['title','url'],
                 order:"published_at DESC"
             });
     }

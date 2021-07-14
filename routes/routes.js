@@ -7,7 +7,7 @@ const uploader=require("../controllers/multer");
 
 routes.use(async(req,res,next)=>{
     res.locals.settings= await apiGhost.getSettings();
-   res.locals.titlesPosts= await apiGhost.getLastFivePostsTitle();
+   res.locals.titlesPosts= await apiGhost.getLastFivePostsTitleAndUrl();
     if(req.originalUrl.includes("/en/")){
        res.locals.secondary_navigation=true;
        req.url= req.originalUrl.replace("en/","")
