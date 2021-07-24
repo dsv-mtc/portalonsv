@@ -13,6 +13,7 @@
   "author": "Henry Medina",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/storage": "^5.10.0",
     "@mailchimp/mailchimp_marketing": "^3.0.43",
     "@tryghost/content-api": "^1.4.13",
     "@tryghost/helpers": "^1.1.37",
@@ -24,6 +25,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
     "express-session": "^1.17.1",
+    "google-auth-library": "^7.3.0",
     "handlebars": "^4.7.7",
     "minisearch": "^3.0.2",
     "moment": "^2.29.1",
@@ -32,7 +34,9 @@
     "mysql": "^2.18.1",
     "node-cron": "^3.0.0",
     "passport": "^0.4.1",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "rss": "^1.2.2",
+    "string-to-stream": "^3.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.9"

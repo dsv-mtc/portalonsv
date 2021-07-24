@@ -10,23 +10,31 @@ const mysqlClient=new DataBase();
 
 mysqlClient.setQuery()
 
-
-
-
-
-
-
-
 const transformHttps=(element)=>{
     const patttern = /^http:/ 
     Object.keys(element).forEach(function(key){
         if(patttern.test(element[key])){
             element[key]= element[key].replace(/http:/,'https:')
-            console.log(element[key]);
+            //console.log(element[key]);
             //utils.transformHttps()
         }
      })
     return element
+}
+const filterTags=(posts)=>{
+    let tagsWithOutFilter=[];
+    let tagsFiltered=[];
+    posts.forEach(post=>{
+        post.tags.forEach(tag=>{
+            const auxTag={name:tag.name,url:tag.url}
+            tagsWithOutFilter.push(auxTag);
+        })
+    });
+    //reference: https://dev.to/marinamosti/removing-duplicates-in-an-array-of-objects-in-js-with-sets-3fep
+    tagsFiltered=Array.from(new Set(tagsWithOutFilter.map(tag=>tag.name))).map(name=>{
+        return tagsWithOutFilter.find(tag=>tag.name==name)
+    })
+    return tagsFiltered
 }
 
 const getAccidents=async ()=>{
@@ -127,6 +135,17 @@ const serviceMap=(region,dataGhost)=>{
 
 const renderCarouselRegions=(data)=>{
     let template =fs.readFileSync(path.join(__dirname,"../views/partials/regiones/carousel-regions.hbs"),'utf-8')
+    let compiled=hbs2.compile(template);
+    return compiled(data);
+}
+
+const renderSearchTemplate=(data)=>{
+    let template = fs.readFileSync(path.join(__dirname,"../views/partials/search-results.hbs"),'utf-8');
+    let compiled=hbs2.compile(template);
+    return compiled(data);
+}
+const renderTagTemplate=(data)=>{
+    let template = fs.readFileSync(path.join(__dirname,"../views/partials/sidebar-widgets/tags.hbs"),'utf-8');
     let compiled=hbs2.compile(template);
     return compiled(data);
 }
@@ -243,5 +262,8 @@ module.exports ={
     unSubscribeUser:unSubscribeUser,
     constants:constants,
     saveDocument:saveDocument,
-    getDocuments:getDocuments
+    getDocuments:getDocuments,
+    filterTags:filterTags,
+    renderSearchTemplate:renderSearchTemplate,
+    renderTagTemplate:renderTagTemplate
 }

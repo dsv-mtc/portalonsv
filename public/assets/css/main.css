@@ -4,6 +4,52 @@
     height: 400px;
     overflow: hidden;
 }
+li>.dropdown-menu{
+    background-color: #585856;
+    max-width: 180px !important;
+    padding-left: 0px !important;
+    border: 0px !important;
+    border-radius: 0px !important;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: inherit;
+    
+}
+.pu-3-extend,.regiones-img-extend{
+    height: 200px;
+}
+
+.dropdown-item{
+    color: white;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+
+.dropdown .dropdown-menu a:hover{
+    background-color: #ee1d27;
+    color: white;
+    width: 180px;
+}
+
+.rsp-navbar .nav-rsp .nav-link-dropdown {
+    display: block !important;
+    width: 100%;
+    clear: both;    
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    color: #fff;
+    padding-left: -10px !important;
+    font-size: 15px;
+    font-weight: 700;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 5px;
+    text-transform: uppercase;
+}
 
 .imagen-principal-post{
     width: 100%;
@@ -407,9 +453,12 @@ button:focus {
     text-transform: uppercase;
     background-color: transparent;
 }
+
+
 .rsp-navbar .nav-rsp .nav-link:hover, .rsp-navbar .nav-rsp .nav-link:focus, .rsp-navbar .nav-rsp .nav-link.active, .rsp-navbar .nav-rsp  .nav-link.nav-current { 
     background-color: #ee1d27;
 }
+
 .fixed-header .logo-container {
     display: none;
 }
@@ -680,7 +729,7 @@ footer {
 }
 #myTabContent {
     border: 1px solid #a2a2a2;
-    border-top: none;
+    /*border-top: none;*/
     padding: 15px;
     height: 552px;
 }
@@ -831,11 +880,11 @@ footer {
     color: #4d4d4d;
 }
 .re-blk {
-    background-color: #f6f6f6;
+   /* background-color: #f6f6f6;*/
     padding: 15px;
     height: 1030px;
     overflow-y: auto;
-    border: 1px solid #a2a2a2;
+    /*border: 1px solid #a2a2a2;*/
 }
 .rsp-pub-section .rsp-nye-desc {
     box-shadow: none;
@@ -858,8 +907,11 @@ footer {
     align-items: center;
     margin: 6px 0 0 0;
 }
+.jumbotron{
+    background-color: white;
+}
 .des-blk {
-    background: #e1e1e1;
+    /*background: #e1e1e1;*/
     padding: 15px;
 }
 .des-blk ul li {
@@ -905,6 +957,9 @@ footer {
     border-color: #ababab;
     outline: 0;
     box-shadow: none;
+}
+.form-control[readonly]{
+    background-color: white;
 }
 .rsp-nye-img img {
     width: 100%;

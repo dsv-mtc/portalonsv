@@ -68,8 +68,10 @@ function search(){
         console.log(currentUrl)
         if(currentUrl.includes("publicaciones")){
             filter ="publicaciones";
-        }else{
+        }else if(currentUrl.includes('normas-legales')){
             filter="normas-legales"
+        }else{
+            filter="noticias-eventos"
         }
         if(currentUrl.includes("/en/")){
             lang="en";
@@ -80,17 +82,8 @@ function search(){
             $("#search-alert").removeClass("show");
             $("#search-alert").addClass("hide");
             $.post("/search",{search:searchWord, filter:filter,lang:lang}).done(function(response){
-                if(response){
-                    $("#default").hide();
-                    $("#results-template").empty();
-                    $("#results-template").append(response);
-                }else{
-                    $("#results-template").empty();
-                    $("#search-alert").removeClass("hide");
-                    $("#search-alert").addClass("show");
-                    
-                    $("#default").show();
-                }
+               reloadPosts(response);
+               reloadTags(response);
             })
         }else{
             $("#search-alert").removeClass("show");
@@ -101,6 +94,28 @@ function search(){
 });
 }
 
+function reloadTags(response){
+    if(response.success){
+        $("#sidebar-default").hide();
+        $("#sidebar-template").empty();
+        $("#sidebar-template").append(response.tags);    
+    }else{
+        $("#sidebar-template").empty();
+        $("#sidebar-default").show();
+    }
+}
+ function reloadPosts(response){
+    if(response.success){
+        $("#default").hide();
+        $("#results-template").empty();
+        $("#results-template").append(response.posts);
+    }else{
+        $("#results-template").empty();
+        $("#search-alert").removeClass("hide");
+        $("#search-alert").addClass("show");
+        $("#default").show();
+    }
+ }
 
 function getMapFromForm(){
     const currentPage=$(location).attr("href");

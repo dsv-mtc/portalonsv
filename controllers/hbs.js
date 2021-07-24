@@ -22,6 +22,75 @@ function t(lang,text){
     return data[text];
 }
 
+function createMenu(menuList,secondary_navigation){
+    //console.log(secondary_navigation);
+    let htmlMenu="";
+    menuList.forEach(menuObj=>{
+        const target=setTarget(menuObj.label);
+     
+        if(menuObj.label=='analítica' || menuObj.label=='analytics'){
+            const auxTarget=setTarget(menuList[4].url);//SRAT
+            htmlMenu+=`<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tableros</a>
+                    <div class="dropdown-menu" aria-labelledby="menudrop1">
+                        <a class="dropdown-item" href="${menuObj.url}" target="${target}">${menuObj.label}</a>
+                        <a class="dropdown-item" href="${menuList[4].url} target="${auxTarget}">${menuList[4].label}</a>
+                    </div>
+                </li>`;
+        }else{
+            if(menuObj.label=='srat'){
+                return;
+            }else{
+                htmlMenu+= `<li class="nav-item"><a class="nav-link" href="${menuObj.url}" target="${target}">${menuObj.label}</a></li>`;   
+            }
+        }
+
+        
+
+    });
+
+    if(secondary_navigation){
+        const menu={
+            title:'Vial Education',
+            urls:{
+                url1:"/en/webinars",
+                url2:"/en/virtualroom"
+            },
+            labels:{
+                label1:"Webinars",
+                label2:"Virtual Room"
+            }
+        }
+        htmlMenu+=`<li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
+                        <div class="dropdown-menu" aria-labelledby="menudrop1">
+                            <a class="dropdown-item" href="${menu.urls.url1}" target="_blank">${menu.labels.label1}</a>
+                            <a class="dropdown-item" href="${menu.urls.url2}" target="_blank">${menu.labels.label2}</a>
+                        </div>
+                    </li>`
+    }else{
+        const menu={
+            title:'Educación Vial',
+            urls:{
+                url1:"/webinars",
+                url2:"/virtualroom"
+            },
+            labels:{
+                label1:"Webinars",
+                label2:"Aula Virtual"
+            }
+        }
+        htmlMenu+=`<li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
+                        <div class="dropdown-menu" aria-labelledby="menudrop1">
+                            <a class="dropdown-item" href="${menu.urls.url1}" target="_blank">${menu.labels.label1}</a>
+                            <a class="dropdown-item" href="${menu.urls.url2}" target="_blank">${menu.labels.label2}</a>
+                        </div>
+                    </li>`
+    }
+    return htmlMenu;
+}
+
 function parseDate(dateString){
     return moment(dateString).format("MMM DD YYYY");
 }
@@ -174,7 +243,8 @@ var hbs=exphbs.create({
         setTarget:setTarget,
         parseCategory:parseCategory,
         parseIcon:parseIcon,
-        checkHtml:checkHtml
+        checkHtml:checkHtml,
+        createMenu:createMenu
     }
 });
 
@@ -192,7 +262,8 @@ hbs2.registerHelper({
     setTarget:setTarget,
     parseCategory:parseCategory,
     parseIcon:parseIcon,
-    checkHtml:checkHtml
+    checkHtml:checkHtml,
+    createMenu:createMenu
 })
 
 

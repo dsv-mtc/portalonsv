@@ -9,15 +9,6 @@
             <a href="{{endpointPostParse (parseHttp url) lang}}"><h6 class="ft-bold publicaciones-tit">{{ title }}</h6></a>
             <div class="rsp-pro-det">
                 <div class="pd-desc">
-                    <div class="au"><i class="fas fa-user"></i> {{t "es" "Autor"}}: {{#primary_author}}<a href="{{endpointPostParse (parseHttp url) }}">{{ name }}</a>{{/primary_author}} </div>
-                    <div class="tg"><i class="fas fa-tags"></i>
-                        {{#each tags }}
-                            <a href="{{ endpointRebase2 url}}">{{slug}}</a>,
-                            {{#if @last}}
-                                <a href="{{endpointRebase2 url}}">{{slug}}</a>.
-                            {{/if}} 
-                        {{/each}}
-                    </div>
                     <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
                 </div>
             </div>

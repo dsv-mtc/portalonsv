@@ -27,7 +27,7 @@
                         {{/each}}
                     </div>
                     <div id="results-template">
-                      
+                      <!--Resultados de la búsqueda-->
                     </div>
                 </div>
             </div>
@@ -36,10 +36,14 @@
                 {{>sidebar-widgets/subscribers lang=lang}}
                 <h6 class="des ft-bold">{{t lang "destacados"}}</h6>
                 <div class="des-blk">
-                    <ul>
+                    <ul id="sidebar-default">
                         {{> sidebar-widgets/tags}}
                     </ul>
+                    <ul id="sidebar-template">
+                        <!--Tags cambiados-->
+                    </ul>
                 </div>
+                
             </div>   
         </div>
     </div>

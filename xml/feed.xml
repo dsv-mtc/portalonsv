@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[Observatorio Nacional de Seguridad Vial]]></title>
+        <description><![CDATA[Observatorio Nacional de Seguridad Vial]]></description>
+        <link>http://github.com/dylang/node-rss</link>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 23 Jul 2021 16:33:17 GMT</lastBuildDate>
+        <author><![CDATA[ONSV]]></author>
+        <item>
+            <title><![CDATA[El MTC aprobó, por Decreto Supremo, cambios al Reglamento del Sistema de Control de Licencias de Conducir por Puntos]]></title>
+            <description><![CDATA[Decreto Supremo N° 025-2021-MTC modifica los límites máximos de velocidad para el tránsito.]]></description>
+            <guid isPermaLink="false">El MTC aprobó, por Decreto Supremo, cambios al Reglamento del Sistema de Control de Licencias de Conducir por Puntos</guid>
+            <dc:creator><![CDATA[ONSV]]></dc:creator>
+            <pubDate>Wed, 07 Jul 2021 16:47:36 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Decreto Supremo que aprueba el Reglamento del Sistema de Control de Licencias de Conducir por Puntos y establece otras disposiciones]]></title>
+            <description><![CDATA[Decreto Supremo Nº 025-2021-MTC. 
+Decreto Supremo que aprueba el Reglamento del Sistema de Control de Licencias de
+Conducir por Puntos.]]></description>
+            <guid isPermaLink="false">Decreto Supremo que aprueba el Reglamento del Sistema de Control de Licencias de Conducir por Puntos y establece otras disposiciones</guid>
+            <dc:creator><![CDATA[ONSV]]></dc:creator>
+            <pubDate>Mon, 19 Jul 2021 17:26:57 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[DSV realizó encuentro virtual con Consejos Regionales de Seguridad Vial]]></title>
+            <description><![CDATA[Encuentro virtual con Consejos Regionales de Seguridad Vial.]]></description>
+            <guid isPermaLink="false">DSV realizó encuentro virtual con Consejos Regionales de Seguridad Vial</guid>
+            <dc:creator><![CDATA[ONSV]]></dc:creator>
+            <pubDate>Sun, 18 Jul 2021 22:39:17 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Callao: Emisión de Licencias de conducir en la Región Callao]]></title>
+            <description><![CDATA[Emisión de licencias de conducir en la Región Callao.]]></description>
+            <guid isPermaLink="false">Callao: Emisión de Licencias de conducir en la Región Callao</guid>
+            <dc:creator><![CDATA[ONSV]]></dc:creator>
+            <pubDate>Fri, 16 Jul 2021 03:25:34 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Callao: Capacitación en seguridad vial a conductores infractores de la Región Callao]]></title>
+            <description><![CDATA[Capacitación en seguridad vial a conductores infractores de la Región Callao.]]></description>
+            <guid isPermaLink="false">Callao: Capacitación en seguridad vial a conductores infractores de la Región Callao</guid>
+            <dc:creator><![CDATA[ONSV]]></dc:creator>
+            <pubDate>Fri, 16 Jul 2021 03:17:49 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Callao: TVIAL, el canal online de seguridad vial]]></title>
+            <description><![CDATA[Gobierno Regional del Callao, cuenta con TVial, canal online de seguridad vial.]]></description>
+            <guid isPermaLink="false">Callao: TVIAL, el canal online de seguridad vial</guid>
+            <dc:creator><![CDATA[ONSV]]></dc:creator>
+            <pubDate>Wed, 14 Jul 2021 23:27:31 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Callao: Campañas de sensibilización a la comunidad sobre seguridad y educación vial en la Región Callao]]></title>
+            <description><![CDATA[La GRTC de la Región Callao inicia campañas de sensibilización sobre seguridad y educación vial.]]></description>
+            <guid isPermaLink="false">Callao: Campañas de sensibilización a la comunidad sobre seguridad y educación vial en la Región Callao</guid>
+            <dc:creator><![CDATA[ONSV]]></dc:creator>
+            <pubDate>Wed, 14 Jul 2021 16:33:38 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ica: Reinician capacitación y curso de sensibilización de seguridad vial]]></title>
+            <description><![CDATA[DRTC Ica reinicia capacitación y curso de sensibilización de seguridad vial.]]></description>
+            <guid isPermaLink="false">Ica: Reinician capacitación y curso de sensibilización de seguridad vial</guid>
+            <dc:creator><![CDATA[ONSV]]></dc:creator>
+            <pubDate>Tue, 13 Jul 2021 13:53:31 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

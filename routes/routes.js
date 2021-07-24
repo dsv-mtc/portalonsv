@@ -3,6 +3,7 @@ const apiGhost=new (require("../api/ghost"));
 const utils = require("../utils/utils");
 const passport=require("passport");
 const uploader=require("../controllers/multer");
+const feedController=new (require("../controllers/feed"))
 
 
 routes.use(async(req,res,next)=>{
@@ -26,7 +27,6 @@ routes.use(async(req,res,next)=>{
 })
 
 routes.get("/",async (req,res)=>{
-   
     const accidents=await utils.getAccidents();
     const post2=await apiGhost.getPosts(4,"tags","tags: [noticias-eventos]");
     const post3=await apiGhost.getPosts(3);
@@ -58,12 +58,10 @@ routes.get("/",async (req,res)=>{
 
  routes.post("/services-map",async (req,res)=>{
    //TODO es posible que en algunas regiones no existan noticias  y los posts sean vacío
-   console.log(req.body);
    const regionRequest= req.body['region'];
    const lang=req.body['lang']
    const filter=`tags:[${regionRequest}]`;
    const post = await apiGhost.getPosts(8,"tags,authors",filter, "published_at DESC");
-   console.log(post);
    const data=utils.serviceMap(regionRequest,{post,lang})
    res.send(data)
 })
@@ -83,14 +81,16 @@ routes.get("/",async (req,res)=>{
 /**PUBLICACIONES */
  routes.get("/publicaciones",async(req,res)=>{
     const post = await apiGhost.getPosts(6,"tags,authors","tags:[publicaciones]","published_at DESC")
-    const tags = await apiGhost.getTags("tags","all");
+    //const tags = await apiGhost.getTags("tags","all");
+    const tags=utils.filterTags(post);
     res.render("pages/publicaciones",{post,tags});
  })
 
  /**NORMAS LEGALES */
  routes.get("/normas-legales",async(req,res)=>{
    const post = await apiGhost.getPosts(6,"tags,authors","tags:[normas-legales]","published_at DESC")
-   const tags = await apiGhost.getTags("tags","all");
+   //const tags = await apiGhost.getTags("tags","all");
+   const tags=utils.filterTags(post);
     res.render("pages/normas-legales",{post,tags})
  })
 
@@ -127,6 +127,13 @@ routes.get("/",async (req,res)=>{
     const pagination=post.meta.pagination;
     pagination.url_page=`tag/${tag}`;
     res.render('pages/tags',{tag,post,pagination})
+ })
+
+ /**FEED */
+ routes.get("/feed",async(req,res)=>{
+   const xmlString=await feedController._createFeedXml();
+   res.set('Content-Type','application/xml');
+   res.send(xmlString)
  })
 
  /* ZONA DE DATOS ABIERTOS */
@@ -196,16 +203,19 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
 
  /* FIN DE ZONA DE DATOS ABIERTOS */
 
+ /****SEARCH **/
  routes.post("/search",async(req,res)=>{
     const slug = req.body["search"];
    const lang =req.body["lang"];
     const results = await apiGhost.getSearchPosts(`tags:${req.body["filter"]}`,slug);
     if(results.success){
-      res.render("partials/search-results",{posts: results.posts,lang:lang, layout:false});
+      const searchRendered=utils.renderSearchTemplate({posts: results.posts,lang:lang});
+      const tags=utils.filterTags(results.posts);
+      const tagsRendered=utils.renderTagTemplate({tags})
+      res.send({success:true,posts:searchRendered,tags:tagsRendered});
     }else{
-      res.send(results.success)
+      res.send({success:false})
     }
-
  })
 
  
