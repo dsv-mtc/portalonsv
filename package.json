@@ -35,22 +35,28 @@
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
     "node-cron": "^3.0.0",
+    "owl.carousel": "^2.3.4",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "rss": "^1.2.2",
     "string-to-stream": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "babel-loader": "^8.2.2",
     "bootstrap": "^5.0.2",
     "css-loader": "^6.2.0",
     "jquery": "^3.6.0",
     "mini-css-extract-plugin": "^2.1.0",
     "nodemon": "^2.0.9",
     "popper.js": "^1.16.1",
+    "postcss": "^8.3.6",
+    "postcss-loader": "^6.1.1",
     "sass": "^1.36.0",
     "sass-loader": "^12.1.0",
     "style-loader": "^3.2.1",
-    "webpack": "^5.47.0",
+    "webpack": "^5.47.1",
     "webpack-cli": "^4.7.2"
   }
 }
