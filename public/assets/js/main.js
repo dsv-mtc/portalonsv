@@ -3,6 +3,7 @@ $(document).ready(function () {
     carousel();
     back();
     search();
+    search2();
     getMap();
     modal();
     openDataForm();
@@ -70,9 +71,8 @@ function search(){
             filter ="publicaciones";
         }else if(currentUrl.includes('normas-legales')){
             filter="normas-legales"
-        }else{
-            filter="noticias-eventos"
         }
+
         if(currentUrl.includes("/en/")){
             lang="en";
         }
@@ -84,6 +84,38 @@ function search(){
             $.post("/search",{search:searchWord, filter:filter,lang:lang}).done(function(response){
                reloadPosts(response);
                reloadTags(response);
+            })
+        }else{
+            $("#search-alert").removeClass("show");
+            $("#search-alert").addClass("hide");
+        }
+        //console.log(searchWord)
+
+});
+}
+/**
+ * @description: Search aplicado a noticias y eventos
+ */
+function search2(){
+    $("#search-button2").click(function (e) { 
+        e.preventDefault();
+        const currentUrl=$(location).attr("href");
+        let filter=""
+        let lang="es";
+        console.log(currentUrl)
+        if(currentUrl.includes("noticias-eventos")){
+            filter ="noticias-eventos";
+        }
+        if(currentUrl.includes("/en/")){
+            lang="en";
+        }
+        //console.log(filter)
+        let searchWord=$("#search-input").val();
+        if(searchWord!=""){
+            $("#search-alert").removeClass("show");
+            $("#search-alert").addClass("hide");
+            $.post("/search",{search:searchWord, filter:filter,lang:lang}).done(function(response){
+               reloadPosts(response);
             })
         }else{
             $("#search-alert").removeClass("show");

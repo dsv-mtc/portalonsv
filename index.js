@@ -42,6 +42,6 @@ app.use(routes);
 
 app.listen(process.env.PORT || 3000,async ()=>{
     //campaigns.sendingNewsLetter()
-    console.log(await campaigns._renderCampaign());
+    //console.log(await campaigns._renderCampaign());
     console.log("Estamos online")
 })

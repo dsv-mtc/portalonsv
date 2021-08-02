@@ -42,10 +42,13 @@ routes.get("/",async (req,res)=>{
  })
 
  /**POSTS */
+ /**
+  * @description: Retorna el post con el contenido de noticias relacionadas en función del tag primario del post
+  */
  routes.get("/post/:slug", async(req,res)=>{
     const post = await apiGhost.getPost(req.params.slug);
-    const primary_author=`authors:${post.primary_author.slug}`;
-    const postsRelatives = await apiGhost.getPosts(3,"tags,authors",primary_author,"published_at DESC");
+    const primary_tag=`tag:${post.primary_tag.slug}`
+    const postsRelatives = await apiGhost.getPosts(4,"tags,authors",primary_tag,"published_at DESC");
     res.render("pages/post",{post,postsRelatives});
  })
 

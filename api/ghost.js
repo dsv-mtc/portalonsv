@@ -85,7 +85,7 @@ class GhostApi {
         let searchResults = miniSearch.search(slug,{fuzzy:0.2});
         if(searchResults.length==0){
             let suggestions=miniSearch.autoSuggest(slug,{fuzzy:0.2});
-            console.log("suggestions",suggestions)
+            //console.log("suggestions",suggestions)
             if(suggestions.length==0){
                 return {success:false, posts:posts};
             }

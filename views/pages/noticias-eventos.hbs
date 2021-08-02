@@ -6,14 +6,14 @@
                 <div class="input-group mb-3">
                     <input type="text" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" >
                     <div class="input-group-append">
-                        <span id="search-button" class="input-group-text search-input">
+                        <span id="search-button2" class="input-group-text search-input">
                             <i class="fal fa-search"></i>
                         </span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" id="default">
             {{#each post}}
                 {{#if @first}}
                     {{> noticias-eventos/noticias-eventos-card-head lang=../lang}}
@@ -26,6 +26,9 @@
                     {{> pagination pag=pagination}}
                 {{/if}}
             </div>  
+        </div>
+        <div class="row" id="results-template">
+            
         </div>                 
     </div>
 </section>
