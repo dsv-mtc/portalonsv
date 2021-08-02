@@ -25,13 +25,18 @@ const sendingNewsLetter=()=>{
 }
 
 const updateCampaign=async(campaignId)=>{
+    const content =_renderCampaign();
+    return await apiMailChimp.setContent(campaignId,content);
+
+}
+
+const _renderCampaign=async()=>{
     const post = await apiGhost.getPosts(8,"tags,authors","featured:false", "published_at DESC");
     const dataGhost={post,lang:'es'};
     const template = fs.readFileSync(path.join(__dirname,"../views/pages/newsletter.hbs"),'utf-8');
     let compiled=hbs2.compile(template);
     const content =compiled(dataGhost);
-    return await apiMailChimp.setContent(campaignId,content);
-
+    return content
 }
 /**
  * @description: Use el método cuando la campaña existe y no ha sido enviada
@@ -109,4 +114,4 @@ const _getCampaignId=async()=>{
 }
 
 
-module.exports={sendingNewsLetter}
+module.exports={sendingNewsLetter,_renderCampaign}
