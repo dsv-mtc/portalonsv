@@ -6,12 +6,15 @@
                 <div class="input-group mb-3">
                     <input type="text" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" >
                     <div class="input-group-append">
-                        <span id="search-button2" class="input-group-text search-input">
+                        <span id="search-button" class="input-group-text search-input">
                             <i class="fal fa-search"></i>
                         </span>
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="search-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
+            {{t lang "no-results"}}
         </div>
         <div class="row" id="default">
             {{#each post}}

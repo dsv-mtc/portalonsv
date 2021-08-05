@@ -3,7 +3,6 @@ $(document).ready(function () {
     carousel();
     back();
     search();
-    search2();
     getMap();
     modal();
     openDataForm();
@@ -61,69 +60,44 @@ function carousel(){
 }
 
 function search(){
-    $("#search-button").click(function (e) { 
-        e.preventDefault();
-        const currentUrl=$(location).attr("href");
-        let filter=""
-        let lang="es";
-        console.log(currentUrl)
-        if(currentUrl.includes("publicaciones")){
-            filter ="publicaciones";
-        }else if(currentUrl.includes('normas-legales')){
-            filter="normas-legales"
-        }
+    const boolSearch=/(noticias-eventos|publicaciones|normas-legales)/.test(location.href);
+    if(boolSearch){
+        document.getElementById("search-button").addEventListener('click',(e)=>{
+            e.preventDefault();
+            let filter=location.href.match(/(noticias-eventos|publicaciones|normas-legales)/)[0];
+            let lang=location.href.includes('/en/')?'en':'es';
+            let searchWord=document.getElementById('search-input').value;
+            if(searchWord!=''){
+                document.getElementById('search-alert').classList.remove('show');
+                document.getElementById('search-alert').classList.add('hide');
+                fetch('/search',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({filter,lang,search:searchWord})
+                })
+                .then(results=>{
+                    return results.json()
+                })
+                .then(data=>{
+                    if(filter!='noticias-eventos'){
+                        reloadPosts(data);
+                        reloadTags(data);
+    
+                    }else{
+                        reloadPosts(data);
+                    }
+                
+                })
+                .catch(errors=>{
+                    console.error(errors);
+                }) 
+            }else{
+                document.getElementById('search-alert').classList.remove('show');
+                document.getElementById('search-alert').classList.add('hide');
+            }
 
-        if(currentUrl.includes("/en/")){
-            lang="en";
-        }
-        //console.log(filter)
-        let searchWord=$("#search-input").val();
-        if(searchWord!=""){
-            $("#search-alert").removeClass("show");
-            $("#search-alert").addClass("hide");
-            $.post("/search",{search:searchWord, filter:filter,lang:lang}).done(function(response){
-               reloadPosts(response);
-               reloadTags(response);
-            })
-        }else{
-            $("#search-alert").removeClass("show");
-            $("#search-alert").addClass("hide");
-        }
-        //console.log(searchWord)
-
-});
-}
-/**
- * @description: Search aplicado a noticias y eventos
- */
-function search2(){
-    $("#search-button2").click(function (e) { 
-        e.preventDefault();
-        const currentUrl=$(location).attr("href");
-        let filter=""
-        let lang="es";
-        console.log(currentUrl)
-        if(currentUrl.includes("noticias-eventos")){
-            filter ="noticias-eventos";
-        }
-        if(currentUrl.includes("/en/")){
-            lang="en";
-        }
-        //console.log(filter)
-        let searchWord=$("#search-input").val();
-        if(searchWord!=""){
-            $("#search-alert").removeClass("show");
-            $("#search-alert").addClass("hide");
-            $.post("/search",{search:searchWord, filter:filter,lang:lang}).done(function(response){
-               reloadPosts(response);
-            })
-        }else{
-            $("#search-alert").removeClass("show");
-            $("#search-alert").addClass("hide");
-        }
-        //console.log(searchWord)
-
-});
+        })
+    } 
 }
 
 function reloadTags(response){

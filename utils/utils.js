@@ -15,8 +15,6 @@ const transformHttps=(element)=>{
     Object.keys(element).forEach(function(key){
         if(patttern.test(element[key])){
             element[key]= element[key].replace(/http:/,'https:')
-            //console.log(element[key]);
-            //utils.transformHttps()
         }
      })
     return element
@@ -149,6 +147,17 @@ const renderTagTemplate=(data)=>{
     let compiled=hbs2.compile(template);
     return compiled(data);
 }
+const _createPagination=(itemsPerPage,totalItems)=>{
+    console.log(totalItems.length)
+    return {}
+}
+
+const renderNoticiasEventosTemplate=(data)=>{
+    let template = fs.readFileSync(path.join(__dirname,"../views/partials/noticias-eventos/search-noticias-eventos.hbs"),'utf-8');
+    let compiled=hbs2.compile(template);
+    data.pagination=_createPagination(7,data.post)
+    return compiled(data);
+}
 
 /**
  * @description Método utilizado al momento de la suscripción del usuario a la plataforma, el método conecta con la APi
@@ -265,5 +274,6 @@ module.exports ={
     getDocuments:getDocuments,
     filterTags:filterTags,
     renderSearchTemplate:renderSearchTemplate,
-    renderTagTemplate:renderTagTemplate
+    renderTagTemplate:renderTagTemplate,
+    renderNoticiasEventosTemplate:renderNoticiasEventosTemplate
 }

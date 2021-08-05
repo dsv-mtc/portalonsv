@@ -1,0 +1,12 @@
+{{#each post}}
+    {{#if @first}}
+        {{>noticias-eventos-card-head lang=../lang}}
+        {{else}}
+            {{>noticias-eventos-card-body lang=../lang}}
+    {{/if}}
+{{/each}}
+<div class="col-12 d-flex justify-content-center ">
+    {{#if pagination}}
+        {{>search-pagination pag=pagination}}
+    {{/if}}
+</div>

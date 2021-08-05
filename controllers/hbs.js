@@ -225,6 +225,12 @@ function parseIcon(categoryValue){
     return iconToSend;
 }
 
+function _createTemplate(foldername,filename){
+ const basePathPartial=path.join(__dirname,'../views/partials/');
+ let template = fs.readFileSync(`${basePathPartial}${foldername}/${filename}.hbs`,'utf-8')
+ return template;
+}
+
 var hbs=exphbs.create({
     extname:'hbs', 
     layoutsDir:path.join(__dirname,'../views/layouts'),
@@ -264,6 +270,14 @@ hbs2.registerHelper({
     parseIcon:parseIcon,
     checkHtml:checkHtml,
     createMenu:createMenu
+})
+
+
+
+hbs2.registerPartial({
+    "noticias-eventos-card-head":_createTemplate('noticias-eventos','noticias-eventos-card-head'),
+    "noticias-eventos-card-body":_createTemplate('noticias-eventos','noticias-eventos-card-body'),
+    "search-pagination":_createTemplate('noticias-eventos','search-pagination')
 })
 
 

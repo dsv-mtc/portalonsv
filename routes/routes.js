@@ -211,11 +211,14 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
     const slug = req.body["search"];
    const lang =req.body["lang"];
     const results = await apiGhost.getSearchPosts(`tags:${req.body["filter"]}`,slug);
-    if(results.success){
+    if(results.success && req.body['filter']!='noticias-eventos'){
       const searchRendered=utils.renderSearchTemplate({posts: results.posts,lang:lang});
       const tags=utils.filterTags(results.posts);
       const tagsRendered=utils.renderTagTemplate({tags})
       res.send({success:true,posts:searchRendered,tags:tagsRendered});
+    }else if(results.success && req.body['filter']=='noticias-eventos'){
+      const searchRendered= utils.renderNoticiasEventosTemplate({post:results.posts,lang})
+      res.send({success:true,posts:searchRendered});
     }else{
       res.send({success:false})
     }
