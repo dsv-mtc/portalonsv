@@ -102,6 +102,7 @@ function search(){
 
 function reloadTags(response){
     if(response.success){
+       // document.getElementById("sidebar-default").style.display=none;
         $("#sidebar-default").hide();
         $("#sidebar-template").empty();
         $("#sidebar-template").append(response.tags);    

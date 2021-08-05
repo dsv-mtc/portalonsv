@@ -147,15 +147,17 @@ const renderTagTemplate=(data)=>{
     let compiled=hbs2.compile(template);
     return compiled(data);
 }
-const _createPagination=(itemsPerPage,totalItems)=>{
+const _createPagination=(page=1,itemsPerPage,totalItems)=>{
     console.log(totalItems.length)
-    return {}
+
+    return {page:1,limit:itemsPerPage,pages:9,total:totalItems.length,next:2,prev:null}
 }
 
 const renderNoticiasEventosTemplate=(data)=>{
     let template = fs.readFileSync(path.join(__dirname,"../views/partials/noticias-eventos/search-noticias-eventos.hbs"),'utf-8');
     let compiled=hbs2.compile(template);
-    data.pagination=_createPagination(7,data.post)
+    data.pagination=_createPagination(7,data.post);
+    data.pagination.url_page='noticias-eventos';
     return compiled(data);
 }
 
