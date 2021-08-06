@@ -217,15 +217,14 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
       const tagsRendered=utils.renderTagTemplate({tags})
       res.send({success:true,posts:searchRendered,tags:tagsRendered});
     }else if(results.success && req.body['filter']=='noticias-eventos'){
-      const searchRendered= utils.renderNoticiasEventosTemplate({post:results.posts,lang})
+      const page=req.body['page']?req.body['page']:1;
+      const searchRendered= utils.renderNoticiasEventosTemplate({post:results.posts,lang,keyword:req.body['search'],page})
       res.send({success:true,posts:searchRendered});
     }else{
       res.send({success:false})
     }
  })
-
  
-
 //SusCripción
  routes.post("/subscribe",async(req,res)=>{
     const form=req.body;

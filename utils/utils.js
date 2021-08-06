@@ -147,17 +147,47 @@ const renderTagTemplate=(data)=>{
     let compiled=hbs2.compile(template);
     return compiled(data);
 }
-const _createPagination=(page=1,itemsPerPage,totalItems)=>{
-    console.log(totalItems.length)
+const _createPagination=(itemsPerPage,totalItems,page)=>{
+    console.log(totalItems.length,itemsPerPage,page)
+    let pagination={page:1,limit:1,pages:1,total:1,next:2,prev:null}
+    if(itemsPerPage>=totalItems.length){
+        pagination.limit=itemsPerPage;
+        pagination.total=totalItems;
+        pagination.next=null;
+    }else{
+        pagination.limit=itemsPerPage;
+        pagination.total=totalItems;
+        pagination.page=page;
+        pagination.prev=page==1?pagination.prev:(page-1)
+        pagination.pages=Math.round(totalItems.length/itemsPerPage)+1
+        pagination.next=page>=pagination.pages?null:(page+1)
+    }
 
-    return {page:1,limit:itemsPerPage,pages:9,total:totalItems.length,next:2,prev:null}
+    return pagination;
+}
+
+const _resizeLengthPosts=(size,posts,page)=>{
+    if(posts.length>size){
+        let postsFiltereds= posts.filter((element,index)=>{
+            if(index<size){
+                return element;
+            }
+        })
+        //referencia: https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+        return postsFiltereds.sort((a,b)=>{
+            return new Date(b.created_at)-new Date(a.created_at)
+        })
+    }
+    return posts
 }
 
 const renderNoticiasEventosTemplate=(data)=>{
     let template = fs.readFileSync(path.join(__dirname,"../views/partials/noticias-eventos/search-noticias-eventos.hbs"),'utf-8');
+    data.pagination=_createPagination(7,data.post,data.page);
+    data.post=_resizeLengthPosts(7,data.post,data.page)
     let compiled=hbs2.compile(template);
-    data.pagination=_createPagination(7,data.post);
-    data.pagination.url_page='noticias-eventos';
+    data.pagination.url_page='search';
+    data.pagination.keyword=data.keyword;
     return compiled(data);
 }
 

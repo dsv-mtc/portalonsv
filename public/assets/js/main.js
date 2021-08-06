@@ -100,6 +100,25 @@ function search(){
     } 
 }
 
+function searchNoticiasEventos(keyword,page,lang){
+    console.log(keyword,page)
+    fetch('/search',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({filter:'noticias-eventos',lang,search:keyword,page})
+    })
+    .then(results=>{
+        return results.json()
+    })
+    .then(data=>{
+      reloadPosts(data);
+    
+    })
+    .catch(errors=>{
+        console.error(errors);
+    })
+}
+
 function reloadTags(response){
     if(response.success){
        // document.getElementById("sidebar-default").style.display=none;

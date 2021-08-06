@@ -118,6 +118,14 @@ function page_url(url_page,index,lang){
     }
 
 }
+function page_url_search(url_page,index,lang,keyword){
+    const url=process.env.URL_PATH
+    if(lang=="es"){
+        return `${url}/${url_page}/${index}?keyword=${keyword}`
+    }else{
+        return `${url}/${lang}/${url_page}/${index}?keyword=${keyword}`
+    }
+}
 
 function endpointPostParse(url,lang){
     url=parseHttp(url);
@@ -250,7 +258,8 @@ var hbs=exphbs.create({
         parseCategory:parseCategory,
         parseIcon:parseIcon,
         checkHtml:checkHtml,
-        createMenu:createMenu
+        createMenu:createMenu,
+        page_url_search:page_url_search
     }
 });
 
@@ -269,7 +278,8 @@ hbs2.registerHelper({
     parseCategory:parseCategory,
     parseIcon:parseIcon,
     checkHtml:checkHtml,
-    createMenu:createMenu
+    createMenu:createMenu,
+    page_url_search:page_url_search
 })
 
 

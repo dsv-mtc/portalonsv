@@ -1,15 +1,15 @@
 <div class="l-wrapper">        
     <nav class="m-pagination" aria-label="{{t lang "Paginación"}}">
         {{#if pag.prev}}
-            <a href="{{page_url pag.url_page pag.prev lang}}" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Nuevos"}}">
+            <button href="{{page_url_search pag.url_page pag.prev lang pag.keyword}}" id="pag-search-prev" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Nuevos"}}" onclick="searchNoticiasEventos('{{pag.keyword}}',{{pag.prev}},'{{lang}}')">
                 <span class="fal fa-long-arrow-left"></span>
-            </a>
+            </button>
         {{/if}}
         <span class="m-pagination__text">{{t lang "Página"}} {{pag.page}} {{t lang "de"}} {{pag.pages}}</span>
         {{#if pag.next}}
-            <a href="{{page_url pag.url_page pag.next lang}}" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Antiguos"}}">
+            <button href="{{page_url_search pag.url_page pag.next lang pag.keyword}}" id="pag-search-next" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Antiguos"}}" onclick="searchNoticiasEventos('{{pag.keyword}}',{{pag.next}},'{{lang}}')">
                 <span class="fal fa-long-arrow-right"></span>
-            </a>
+            </button>
         {{/if}}
     </nav>
 </div>
