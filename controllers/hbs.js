@@ -23,7 +23,6 @@ function t(lang,text){
 }
 
 function createMenu(menuList,secondary_navigation){
-    //console.log(secondary_navigation);
     let htmlMenu="";
     menuList.forEach(menuObj=>{
         const target=setTarget(menuObj.label);
