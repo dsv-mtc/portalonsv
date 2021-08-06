@@ -100,7 +100,7 @@ function search(){
     } 
 }
 
-function searchNoticiasEventos(keyword,pages,lang){
+function searchNoticiasEventos(keyword,pages,lang,step){
     console.log(pages)
     let [pag_prev,pag_page,pag_next]=pages.split('_');
     pag_prev=pag_prev==''?null:parseInt(pag_prev);
@@ -110,7 +110,7 @@ function searchNoticiasEventos(keyword,pages,lang){
     fetch('/search',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({filter:'noticias-eventos',lang,search:keyword,page:pag_page,prev:pag_prev,next:pag_next})
+        body:JSON.stringify({filter:'noticias-eventos',lang,search:keyword,page:pag_page,prev:pag_prev,next:pag_next,step})
     })
     .then(results=>{
         return results.json()

@@ -217,10 +217,8 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
       const tagsRendered=utils.renderTagTemplate({tags})
       res.send({success:true,posts:searchRendered,tags:tagsRendered});
     }else if(results.success && req.body['filter']=='noticias-eventos'){
-      const page=req.body['page']?req.body['page']:1;
-      const prev=req.body['prev'];
-      const next=req.body['next'];
-      const searchRendered= utils.renderNoticiasEventosTemplate({post:results.posts,lang,keyword:req.body['search'],page,prev,next})
+     const {page,prev,next,step}=req.body;
+      const searchRendered= utils.renderNoticiasEventosTemplate({post:results.posts,lang,keyword:req.body['search'],page,prev,next,step})
       res.send({success:true,posts:searchRendered});
     }else{
       res.send({success:false})
