@@ -100,12 +100,17 @@ function search(){
     } 
 }
 
-function searchNoticiasEventos(keyword,page,lang){
-    console.log(keyword,page)
+function searchNoticiasEventos(keyword,pages,lang){
+    console.log(pages)
+    let [pag_prev,pag_page,pag_next]=pages.split('_');
+    pag_prev=pag_prev==''?null:parseInt(pag_prev);
+    pag_next=pag_next==''?null:parseInt(pag_next);
+    pag_page=parseInt(pag_page);
+    console.log(pag_prev,pag_page,pag_next);
     fetch('/search',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({filter:'noticias-eventos',lang,search:keyword,page})
+        body:JSON.stringify({filter:'noticias-eventos',lang,search:keyword,page:pag_page,prev:pag_prev,next:pag_next})
     })
     .then(results=>{
         return results.json()

@@ -1,13 +1,13 @@
 <div class="l-wrapper">        
     <nav class="m-pagination" aria-label="{{t lang "Paginación"}}">
         {{#if pag.prev}}
-            <button href="{{page_url_search pag.url_page pag.prev lang pag.keyword}}" id="pag-search-prev" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Nuevos"}}" onclick="searchNoticiasEventos('{{pag.keyword}}',{{pag.prev}},'{{lang}}')">
+            <button href="{{page_url_search pag.url_page pag.prev lang pag.keyword}}" id="pag-search-prev" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Nuevos"}}" onclick="searchNoticiasEventos('{{pag.keyword}}','{{pag.prev}}_{{pag.page}}_{{pag.next}}','{{lang}}')">
                 <span class="fal fa-long-arrow-left"></span>
             </button>
         {{/if}}
         <span class="m-pagination__text">{{t lang "Página"}} {{pag.page}} {{t lang "de"}} {{pag.pages}}</span>
         {{#if pag.next}}
-            <button href="{{page_url_search pag.url_page pag.next lang pag.keyword}}" id="pag-search-next" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Antiguos"}}" onclick="searchNoticiasEventos('{{pag.keyword}}',{{pag.next}},'{{lang}}')">
+            <button href="{{page_url_search pag.url_page pag.next lang pag.keyword}}" id="pag-search-next" class="btn btn-rsp ft-bold" aria-label="{{t lang "Posts Antiguos"}}" onclick="searchNoticiasEventos('{{pag.keyword}}','{{pag.prev}}_{{pag.page}}_{{pag.next}}','{{lang}}')">
                 <span class="fal fa-long-arrow-right"></span>
             </button>
         {{/if}}

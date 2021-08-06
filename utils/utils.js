@@ -147,8 +147,8 @@ const renderTagTemplate=(data)=>{
     let compiled=hbs2.compile(template);
     return compiled(data);
 }
-const _createPagination=(itemsPerPage,totalItems,page)=>{
-    console.log(totalItems.length,itemsPerPage,page)
+const _createPagination=(itemsPerPage,totalItems,page,prev,next)=>{
+    //console.log(page,prev,next)
     let pagination={page:1,limit:1,pages:1,total:1,next:2,prev:null}
     if(itemsPerPage>=totalItems.length){
         pagination.limit=itemsPerPage;
@@ -166,7 +166,7 @@ const _createPagination=(itemsPerPage,totalItems,page)=>{
     return pagination;
 }
 
-const _resizeLengthPosts=(size,posts,page)=>{
+const _resizeLengthPosts=(size,posts,page,prev,next)=>{
     if(posts.length>size){
         let postsFiltereds= posts.filter((element,index)=>{
             if(index<size){
@@ -182,9 +182,10 @@ const _resizeLengthPosts=(size,posts,page)=>{
 }
 
 const renderNoticiasEventosTemplate=(data)=>{
+    console.log(data.prev,data.next)
     let template = fs.readFileSync(path.join(__dirname,"../views/partials/noticias-eventos/search-noticias-eventos.hbs"),'utf-8');
-    data.pagination=_createPagination(7,data.post,data.page);
-    data.post=_resizeLengthPosts(7,data.post,data.page)
+    data.pagination=_createPagination(7,data.post,data.page,data.prev,data.next);
+    data.post=_resizeLengthPosts(7,data.post,data.page,data.prev,data.next)
     let compiled=hbs2.compile(template);
     data.pagination.url_page='search';
     data.pagination.keyword=data.keyword;
