@@ -11,10 +11,19 @@ $(document).ready(function () {
 });
 
 function back(){
+    if(document.getElementById('back')){
+        document.getElementById('back').addEventListener('click',(e)=>{
+            e.preventDefault();
+            window.history.back();
+        });
+    }
+
+    /*
     $("#back").click(function (e) { 
         e.preventDefault();
         window.history.back();
     });
+    */
 }
 
 function validationForm(){
@@ -101,12 +110,10 @@ function search(){
 }
 
 function searchNoticiasEventos(keyword,pages,lang,step){
-    console.log(pages)
     let [pag_prev,pag_page,pag_next]=pages.split('_');
     pag_prev=pag_prev==''?null:parseInt(pag_prev);
     pag_next=pag_next==''?null:parseInt(pag_next);
     pag_page=parseInt(pag_page);
-    console.log(pag_prev,pag_page,pag_next);
     fetch('/search',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
@@ -126,13 +133,17 @@ function searchNoticiasEventos(keyword,pages,lang,step){
 
 function reloadTags(response){
     if(response.success){
-       // document.getElementById("sidebar-default").style.display=none;
-        $("#sidebar-default").hide();
+        document.getElementById('sidebar-default').style.display='none';
+        document.getElementById('sidebar-template').innerHTML=response.tags;
+        /* $("#sidebar-default").hide();
         $("#sidebar-template").empty();
-        $("#sidebar-template").append(response.tags);    
+        $("#sidebar-template").append(response.tags);*/    
     }else{
+        document.getElementById('sidebar-template').innerHTML='';
+        document.getElementById('sidebar-default').style.display='block'
+        /*
         $("#sidebar-template").empty();
-        $("#sidebar-default").show();
+        $("#sidebar-default").show();*/
     }
 }
  function reloadPosts(response){
@@ -149,6 +160,24 @@ function reloadTags(response){
  }
 
 function getMapFromForm(){
+    let lang=location.href.includes('/en/')?'en':'es';
+    if(location.href.includes('regiones')){
+        document.getElementById('select-region').addEventListener('change',(e)=>{
+            e.preventDefault();
+            fetch('/services-map',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({region:e.target.value,lang})
+            })
+            .then(results=>{
+                return results.json();
+            })
+            .then(response=>{
+                console.log(response)
+            })  
+        })
+    }
+    /*
     const currentPage=$(location).attr("href");
     let lang="es";
     if(currentPage.includes("/en/")){
@@ -171,7 +200,7 @@ function getMapFromForm(){
             })
             
         });
-    }
+    }*/
 }
 
 
