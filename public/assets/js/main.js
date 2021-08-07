@@ -17,13 +17,6 @@ function back(){
             window.history.back();
         });
     }
-
-    /*
-    $("#back").click(function (e) { 
-        e.preventDefault();
-        window.history.back();
-    });
-    */
 }
 
 function validationForm(){
@@ -134,16 +127,10 @@ function searchNoticiasEventos(keyword,pages,lang,step){
 function reloadTags(response){
     if(response.success){
         document.getElementById('sidebar-default').style.display='none';
-        document.getElementById('sidebar-template').innerHTML=response.tags;
-        /* $("#sidebar-default").hide();
-        $("#sidebar-template").empty();
-        $("#sidebar-template").append(response.tags);*/    
+        document.getElementById('sidebar-template').innerHTML=response.tags;  
     }else{
         document.getElementById('sidebar-template').innerHTML='';
-        document.getElementById('sidebar-default').style.display='block'
-        /*
-        $("#sidebar-template").empty();
-        $("#sidebar-default").show();*/
+        document.getElementById('sidebar-default').style.display='block';
     }
 }
  function reloadPosts(response){
@@ -173,34 +160,18 @@ function getMapFromForm(){
                 return results.json();
             })
             .then(response=>{
-                console.log(response)
+                document.getElementById('nombre').value=response.regionData.NOMBRE;
+                document.getElementById('telefono').value=response.regionData.TELEFONO;
+                document.getElementById('email').value=response.regionData['E-MAIL'];
+                setImage(response.regionData.REGION);
+                document.getElementById('noti').innerHTML=response.template;
+                $("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
+                carousel();
+
+
             })  
         })
     }
-    /*
-    const currentPage=$(location).attr("href");
-    let lang="es";
-    if(currentPage.includes("/en/")){
-        lang="en";
-    }
-    if(currentPage.includes('regiones')){
-        $("#select-region").change(function (e) { 
-            e.preventDefault();
-            const region=e.target.value
-            $.post("/services-map",{region:region,lang:lang}).done(function(response){
-                console.log(response)
-                $("#nombre").val(response.regionData.NOMBRE);
-                $("#telefono").val(response.regionData.TELEFONO);
-                $("#email").val(response.regionData['E-MAIL']);
-                setImage(response.regionData.REGION);
-                $("#noti").empty();
-                $("#noti").append(response.template);
-                $("#noti").trigger('destroy.owl.carousel');
-                carousel();
-            })
-            
-        });
-    }*/
 }
 
 
