@@ -177,55 +177,45 @@ function getMapFromForm(){
 
 function getMap(){
     //By default
-    const currentPage=$(location).attr("href");
-    if(currentPage.includes('regiones')){
-        let lima=document.querySelectorAll('svg g g path')[4];
-        lima.classList.remove('map');
-        lima.classList.add('map-selected');
-        $("#nombre").val('JOSÉ EDUARDO PRETEL SALDAÑA');
-        $("#telefono").val('943990699');
-        $("#email").val('jpretel@regionlima.gob.pe');
-        setImage('lima'); 
+    if(location.href.includes('regiones')){
+        document.querySelector('svg g g path[id="Lima"]').classList.replace('map','map-selected');
+        document.getElementById('nombre').value='JOSÉ EDUARDO PRETEL SALDAÑA';
+        document.getElementById('telefono').value='943990699';
+        document.getElementById('email').value='jpretel@regionlima.gob.pe';
+        setImage('Lima');
     }
     //For click event
-    $("path").click(function (e) { 
+    if(document.querySelectorAll('path')) document.querySelectorAll('path').forEach(element=>element.addEventListener('click',(e)=>{
         e.preventDefault();
-        const currentUrl=$(location).attr("href");
-        let lang="es";
-        if(currentUrl.includes("/en/")){
-            lang="en";
-        }
-        const region=e.target.id
-        $.post("/services-map",{region:region,lang:lang}).done(function(response){
-            //console.log(response.template)
-            $("path").removeClass("map-selected");
-            $("path").addClass("map");
-            $("#"+region).removeClass("map")
-            $("#"+region).addClass("map-selected")
-            $("#nombre").val(response.regionData.NOMBRE);
-            $("#telefono").val(response.regionData.TELEFONO);
-            $("#email").val(response.regionData['E-MAIL']);
+        let lang=location.href.includes('/en/')?'en':'es';
+        fetch('/services-map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region:e.target.id,lang})})
+        .then(results=>results.json())
+        .then(response=>{
+            document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
+            document.getElementById(e.target.id).classList.replace('map','map-selected');
+            document.getElementById('nombre').value=response.regionData.NOMBRE;
+            document.getElementById('telefono').value=response.regionData.TELEFONO;
+            document.getElementById('email').value=response.regionData['E-MAIL'];
             setImage(response.regionData.REGION);
-            $("#noti").empty();
-            $("#noti").append(response.template);
-            $("#noti").trigger('destroy.owl.carousel');
+            document.getElementById('noti').innerHTML=response.template;
+            $("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
             carousel();
         })
-    });
+        .catch(error=>console.error(error))
+    })); 
 }
 
 function setImage(region){
-    $("#img-region").empty();
-    let ruta="";
-    $.get("/img/regiones/"+region.toLowerCase()+".png")
-        .done(function(){
-            ruta =`/img/regiones/${region.toLowerCase()}.png"`;
-            $("#img-region").append(`<img src="${ruta}"></img>`);
-        })
-        .fail(function(){
-            ruta="/img/regiones/escudo.jpg";
-            $("#img-region").append(`<img src="${ruta}"></img>`);
-        });
+    document.getElementById('img-region').innerHTML='';
+    fetch(`/img/regiones/${region.toLowerCase()}.png`,{method:'GET'})
+    .then(results=>results)
+    .then(response=>{
+        if(response.status==200) document.getElementById('img-region').innerHTML=`<img src="/img/regiones/${region.toLowerCase()}.png"></img>`;
+        if(response.status!=200) document.getElementById('img-region').innerHTML=`<img src="/img/regiones/escudo.jpg"></img>`;    
+    })
+    .catch(error=>{
+        console.log(error);
+    })
 }
 
 function modal(){
