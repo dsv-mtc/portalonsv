@@ -9,29 +9,22 @@ const sendingNewsLetter=()=>{
     //send newsletter every sunday, this function wil be executed in the main file index
     // reference: https://www.digitalocean.com/community/tutorials/nodejs-cron-jobs-by-examples#step-2-%E2%80%94-building-the-backend-server-and-scheduling-a-task
     const task=cron.schedule('* * * * *',async ()=>{
-      
-        const data=await  _getCampaignId();
-       if(data.success){
-            if(data.info.status =='save' || data.info.status =='paused' || data.info.status =='scheduled' || data.info.status=='draft' ){
-                sendCampaignv1(data.info.id);
-            }else{
-                sendCampaignV2(data.info.id)
-            }
-       }else{
-           console.log(data.message);
-       }
+        const result=await  _getCampaignId();
+        console.log(result)
+        result.success?_sendCampaign(result):console.log(result.message);
    })
    task.start(); 
 }
 
 const updateCampaign=async(campaignId)=>{
-    const content =_renderCampaign();
+    const content =await _renderCampaign();
     return await apiMailChimp.setContent(campaignId,content);
 
 }
 
 const _renderCampaign=async()=>{
     const post = await apiGhost.getPosts(8,"tags,authors","featured:false", "published_at DESC");
+    //console.log(post)
     const dataGhost={post,lang:'es'};
     const template = fs.readFileSync(path.join(__dirname,"../views/pages/newsletter.hbs"),'utf-8');
     let compiled=hbs2.compile(template);
@@ -43,6 +36,30 @@ const _renderCampaign=async()=>{
  * @param {*} campaignId: Id de la campaña  
  * @returns El resultado de la campaña enviada
  */
+const _sendCampaign=async(data)=>{
+    let campaignId='';
+    try {
+       
+        if(/('save'|'paused'|'scheduled'|'draft')/.test(data.info.status)==false){
+            if(data.info.id!=null) await apiMailChimp.deleteCampaign(data.info.id);
+            campaignId = (await apiMailChimp.createCampaign()).campaign.id;
+            console.log('ID de nueva camapaña',campaignId)
+        }else{
+            campaignId=data.info.id;
+        }
+        const content = await _renderCampaign(campaignId);
+        //console.log(content)
+        
+        await apiMailChimp.setContent(campaignId,content);
+        console.log('Contenido de campaña actualizado');
+        await apiMailChimp.sendCampaign(campaignId);
+        console.log('Campaña enviada');
+                
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const sendCampaignv1=async (campaignId)=>{
     const updateContent= await updateCampaign(campaignId);
     if(updateContent.success){
@@ -98,14 +115,13 @@ const sendCampaignV3=async()=>{
 
 const _getCampaignId=async()=>{
     const response= await apiMailChimp.getAllCampaigns(); //Obtenemos todas las campañas
-    
     if(response.success){
         //caso:2 existen campañas en consecuencia existe un id
         if(response.campaigns && response.campaigns.length>0){
             const campaign=response.campaigns[0];
-            return {success:true,info:{id:campaign.id,status:campaign.status}}
+            return {success:true,info:{id:campaign.id,status:campaign.status,message:'Campaigns finded'}}
         }else{
-            return {success:false, message:"Doesn't found some campaign"};
+            return {success:true, info:{ id:null,status:null, message:"Doesn't found some campaign, creating campaign"}};
         }
     }else{
       return response;
@@ -114,4 +130,4 @@ const _getCampaignId=async()=>{
 }
 
 
-module.exports={sendingNewsLetter,_renderCampaign}
+module.exports={sendingNewsLetter}

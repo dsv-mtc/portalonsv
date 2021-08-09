@@ -3,8 +3,7 @@ const apiGhost=new (require("../api/ghost"));
 const utils = require("../utils/utils");
 const passport=require("passport");
 const uploader=require("../controllers/multer");
-const feedController=new (require("../controllers/feed"))
-
+const feedController=new (require("../controllers/feed"));
 
 routes.use(async(req,res,next)=>{
     res.locals.settings= await apiGhost.getSettings();

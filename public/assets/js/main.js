@@ -135,14 +135,22 @@ function reloadTags(response){
 }
  function reloadPosts(response){
     if(response.success){
+        document.getElementById('default').style.display='none';
+        document.getElementById('results-template').innerHTML=response.posts;
+        /*
         $("#default").hide();
         $("#results-template").empty();
         $("#results-template").append(response.posts);
+        */
     }else{
+        document.getElementById('results-template').innerHTML='';
+        document.getElementById('search-alert').classList.replace('hide','show');
+        /*
         $("#results-template").empty();
         $("#search-alert").removeClass("hide");
         $("#search-alert").addClass("show");
         $("#default").show();
+        */
     }
  }
 
@@ -223,11 +231,11 @@ function modal(){
         $("#subscriber-form").trigger("reset");
         $("#subscriber-form").removeClass("was-validated");
     });
-   $("#subscriber-form").submit(function (e) { 
-       e.preventDefault();
-       const email =$("#mail-subscriber").val()
-       let regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-       if(email!=""  && regex.test(email)){
+    document.getElementById('subscriber-form').addEventListener('submit',(e)=>{
+        e.preventDefault();
+        const email =$("#mail-subscriber").val()
+        let regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        if(email!=""  && regex.test(email)){
         let dataToSend={
             email:email,
             name:$("#name-subscriber").val(),
@@ -237,7 +245,7 @@ function modal(){
              $("#suscriber-modal-form").modal("hide");
          })
        }
-   });
+    });
 }
 
 function openDataForm(){

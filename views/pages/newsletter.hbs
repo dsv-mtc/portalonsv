@@ -4,161 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
-    <style type="text/css">
-    .rsp-nye-section{
-        padding: 60px 0;;
-    }
-    .rsp-wrap{
-        position: relative;
-        float: left;
-        width: 100%;
-    }
-    .rsp-res-blk{
-        background: #fff;
-        padding: 5px;
-        border-top-left-radius: 18px;
-        border-top-right-radius: 18px;
-        border-bottom-left-radius: 18px;
-        border-bottom-right-radius: 18px;
-        box-shadow: rgba(0,0,0,0.1) 0 0 8px;
-    }
-    .rsp-res-img{
-        position: relative;
-    }
-    .noticias-img{
-        height: 230px;
-    }
-    .rsp-res-blk-desc{
-        padding: 8px 12px; 
-    }
-    .ft-bold{
-       font-weight: 700 !important; 
-    }
-    .noticias-tit{
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        height: 50px;
-    }
-    .rsp-pro-det{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-    }
-    .pd-desc{
-        max-width: calc(100%);
-        margin: 0 0 0 15px;
-        flex-basis: calc(100%);
-    }
-   
-    .noticias-det{
-        display: -webkit-box;
-        -webkit-line-clamp: 5;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        height: 130px;
-    }
-    .nye-link-blk{
-        display: flex;
-        justify-content: space-between;
-        flex-direction: row;
-        align-items: center;
-        margin: 20px 0 0 0;
-    }
-
-    .ny-btn{}
-    .btn{
-        padding: 11px 30px;
-        font-size: 18px;
-        line-height: 28px;
-    }
-    .btn-rsp{
-        background-color: #ee1d27;
-        color: #fff;
-        border-radius: 100px;
-        box-shadow: none;
-        border: 1px solid #ee1d27;
-    }
-    .ft-bold{font-weight: 700 !important;}
-  
-    .so-links li {
-        display: inline-flex;
-        margin: 0 10px 0 0;
-    }
-    .so-links li a {
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
-    }
-      .ny-link{}
-     .au{}
-    .tg{}
-    .cl{}
-</style>
-    <title>ONSV NEWSLETTER</title>
+    <title>ONSV NewsLetter</title>
+    <style type="">
+        .boton, .boton:hover, .boton:active, .boton:visited {
+        background-color: #eb1e23;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <section class="rsp-nye-section rsp-wrap">
-        <div class="container">
-            {{#each post }}
-                <div class="col-6 pb-5">
-                    <div class="rsp-res-blk">
-                        <div class="rsp-res-img">
-                            <a href="{{endpointPostParse (parseHttp url)}}">
-                                <img class="img-fluid" src="{{parseHttp feature_image}}" alt="imagen">
-                            </a>
-                        </div>
-                        <div class="rsp-res-blk-desc">
-                            <a href="{{endpointPostParse (parseHttp url) }}">
-                                <h6 class="ft-bold noticias-tit">{{ title}}</h6>
-                            </a>
-                        </div>
-                        <div class="rsp-pro-det">
-                            <div class="pd-desc">
-                                <div class="au"><i class="fas fa-user"></i> {{t "es" "Autor"}}: {{#primary_author}}{{ name }}{{/primary_author}} </div>
-                                <div class="tg"><i class="fas fa-tags"></i>
-                                    {{#each tags }}
-                                        <a href="{{url}}">{{slug}}</a>,
-                                        {{#if @last}}
-                                            <a href="{{url}}">{{slug}}</a>.
-                                        {{/if}} 
-                                    {{/each}}
-                                </div>
-                                <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }}</div>
-                            </div>
-                        </div>
-                        <p class="noticias-det">
-                            {{ excerpt}}
-                        </p>
-                        <div class="nye-link-blk">
-                            <div class="ny-btn">
-                                <a href="{{endpointPostParse (parseHttp url)}}" class="btn btn-rsp ft-bold">
-                                    {{t ../lang "leer más"}} <i class="fal fa-long-arrow-right pl-2"></i>
-                                </a>
-                            </div>
-                            <div class="ny-link">
-                                <ul class="so-links">
-                                    <li>
-                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="https://twitter.com/intent/tweet?text={{title}}&url={{url }}" target="_blank"><i class="fab fa-twitter"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="whatsapp://send?text={{url}}" data-action="share/whatsapp/share"  target="_blank"><i class="fas fa-share-alt"></i></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+    <div style="padding: 15px 10px;">
+        {{#each post}}
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+                <div style="text-align: center; padding-bottom: 15px;">
+                    <img src="{{parseHttp feature_image}}" alt="imagen" style="width: 350px; height: 100%;">
                 </div>
-            {{/each}}
-        </div>
-    </section>    
-
+                <div style="padding: 15px 15px; max-width: 350px;">
+                    <h2 style="text-align: center; font-weight: bold;">{{title}}</h2>
+                    <span style="font-size: 12px; font-weight: bold;">Fecha de publicación: {{parseDate created_at}}</span>
+                    <p style="text-align: justify;">{{excerpt}}</p>
+                    <a href="{{endpointPostParse (parseHttp url) 'es'}}" class="boton">
+                        {{t ../lang "leer más"}}
+                    </a>
+                </div>
+            </div>
+        {{/each}}
+    </div>    
 </body>
 </html>

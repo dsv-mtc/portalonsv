@@ -156,14 +156,17 @@ class MailChimp{
 
 
    /**
-    * @description:Obtiene todas las campañas en formato de lista
+    * @description:Obtiene todas las campañas de tipo regular en formato de lista
     * @example: https://mailchimp.com/developer/marketing/api/campaigns/list-campaigns/
     * @returns Un objeto de la forma {campaigns:List, total_items: int, _links: List}
     */
     getAllCampaigns=async()=>{
         try {
-            let response=await mailchimp.campaigns.list();
-            return {success:true,campaigns:response.campaigns};
+            let campaigns=(await mailchimp.campaigns.list()).campaigns;
+            let regularCampaigns=campaigns.filter((element)=>{
+                if(element.type=='regular') return element;
+            })
+            return {success:true,campaigns:regularCampaigns};
         } catch (error) {
             console.error(error);
             return {success:false,message:'Something wnet wrong'}
@@ -190,9 +193,8 @@ class MailChimp{
      * @returns : El objeto enviado de la campaña
      */
     setContent=async(campaignId,content)=>{
-        const campaign_id=campaignId;
         try {
-            const response=await mailchimp.campaigns.setContent(campaign_id,{html:content});
+            const response=await mailchimp.campaigns.setContent(campaignId,{html:content});
             return {success:true,message:response};            
         } catch (error) {
             console.error(error);
@@ -229,6 +231,7 @@ class MailChimp{
     deleteCampaign=async(campaignId)=>{
         try {
             await mailchimp.campaigns.remove(campaignId);
+            console.log('Campaign deleted');
             return {success:true, message: 'Delete campaign succesful'}            
         } catch (error) {
             console.error(error);
@@ -258,6 +261,7 @@ class MailChimp{
 
             }
             const campaign= await mailchimp.campaigns.create(config);
+            console.log('campaign created')
             return {success:true, message:'Create campaign successful',  campaign};
         } catch (error) {
             console.error(error);
