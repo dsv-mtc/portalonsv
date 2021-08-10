@@ -9,6 +9,7 @@ const session=require("express-session");
 const campaigns=require("./controllers/campaigns");
 const passport=require("passport");
 const cookieParser = require("cookie-parser");
+const logger= require("./controllers/logger");
 
 dotenv.config();
 //calling database
@@ -43,5 +44,5 @@ app.use(routes);
 app.listen(process.env.PORT || 3000,async ()=>{
     //campaigns.sendingNewsLetter()
     //console.log(await campaigns._renderCampaign());
-    console.log("Estamos online")
+    logger.debug(`La aplicación se inició con éxito y a la escucha en el puerto ${process.env.PORT || 3000}`)
 })

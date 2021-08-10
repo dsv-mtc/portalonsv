@@ -1,5 +1,5 @@
-$(document).ready(function () {
-   validationForm();
+document.addEventListener('DOMContentLoaded',()=>{
+    validationForm();
     carousel();
     back();
     search();
@@ -8,7 +8,7 @@ $(document).ready(function () {
     openDataForm();
     fileSelectedName()
     getMapFromForm();
-});
+})
 
 function back(){
     if(document.getElementById('back')){
@@ -70,8 +70,7 @@ function search(){
             let lang=location.href.includes('/en/')?'en':'es';
             let searchWord=document.getElementById('search-input').value;
             if(searchWord!=''){
-                document.getElementById('search-alert').classList.remove('show');
-                document.getElementById('search-alert').classList.add('hide');
+                document.getElementById('search-alert').classList.replace('show','hide');
                 fetch('/search',{
                     method:'POST',
                     headers:{'Content-Type':'application/json'},
@@ -94,8 +93,7 @@ function search(){
                     console.error(errors);
                 }) 
             }else{
-                document.getElementById('search-alert').classList.remove('show');
-                document.getElementById('search-alert').classList.add('hide');
+                document.getElementById('search-alert').classList.replace('show','hide');
             }
 
         })
@@ -137,20 +135,9 @@ function reloadTags(response){
     if(response.success){
         document.getElementById('default').style.display='none';
         document.getElementById('results-template').innerHTML=response.posts;
-        /*
-        $("#default").hide();
-        $("#results-template").empty();
-        $("#results-template").append(response.posts);
-        */
     }else{
         document.getElementById('results-template').innerHTML='';
         document.getElementById('search-alert').classList.replace('hide','show');
-        /*
-        $("#results-template").empty();
-        $("#search-alert").removeClass("hide");
-        $("#search-alert").addClass("show");
-        $("#default").show();
-        */
     }
  }
 
@@ -231,7 +218,7 @@ function modal(){
         $("#subscriber-form").trigger("reset");
         $("#subscriber-form").removeClass("was-validated");
     });
-    document.getElementById('subscriber-form').addEventListener('submit',(e)=>{
+    if(document.getElementById('subscriber-form')) document.getElementById('subscriber-form').addEventListener('submit',(e)=>{
         e.preventDefault();
         const email =$("#mail-subscriber").val()
         let regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -250,12 +237,12 @@ function modal(){
 
 function openDataForm(){
     //Clean inputs
-    $("#open-data-button-clear").click(function (e) { 
+    if(document.getElementById('open-data-button-clear')) document.getElementById('open-data-button-clear').addEventListener('click',(e)=>{
         e.preventDefault();
-        $("#open-data-form").trigger("reset");
+        document.getElementById('open-data-form').reset();
     });
     //get results
-    $("#open-data-form").submit(function (e) { 
+    if(document.getElementById('open-data-form')) document.getElementById('open-data-form').addEventListener('submit',(e)=>{
         e.preventDefault();
         let dataToSend={
             search:$("#search-data").val(),
@@ -263,11 +250,13 @@ function openDataForm(){
             order_by:$("#order-data").val(),
             ask:$("#ask-data").val()
         }
-        $.post("/datosabiertos",dataToSend).done(function(response){
-            console.log(response);
-        });
+        fetch('/datosabiertos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dataToSend)})
+        .then(results=>results.json())
+        .then(response=>{
+           console.log(response);
+        })
+        .catch(error=>console.error(error));
     });
-
 }
 
 function fileSelectedName(){
