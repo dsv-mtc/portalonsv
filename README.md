@@ -1,6 +1,17 @@
+#   PROCESO DE INSTALACIÓN
+-   Descargar el código fuente
+-   Revisar la consistencia de las variables de entorno del archivo .env; si las condiciones siguen siendo las mismas, no modificar
+-   Son de vital importancia revisar las variables URL_PATH y las asociadas a la base de datos y mailchinp
+-   Usar la secuencia de comando npm install --> instala todas las dependencias
+-   Usar la secuencia de comando npm run webpack --> crea los assets estáticos js y css
+
+
 #   MAILCHIMP
 -   Se logró la conexión y ya se almacena usuarios por tag en la plataforma
--   Falta definir el template de envíos, y las funciones de envío
+-   El template indica se encuentra en la view/pages/newsletter
+-   Se implementó la estrategia por envío RSS y no por envío de campaña regular haciendo uso de una tarea de tipo cron
+
+#   PERSONALIZACIÓN DE REGIONES
 
 #   MIGRACIÓN
 -   Falta template de tags

@@ -25,12 +25,15 @@ routes.use(async(req,res,next)=>{
     next();
 })
 
+
 routes.get("/",async (req,res)=>{
     const accidents=await utils.getAccidents();
     const post2=await apiGhost.getPosts(4,"tags","tags: [noticias-eventos]");
     const post3=await apiGhost.getPosts(3);
     res.render("index",{post3,post2,accidents});
  })
+
+ 
 /**NOTICIAS Y EVENTOS */
  routes.get("/noticias-eventos/:page?", async(req,res)=>{  
    const page=req.params.page?req.params.page:1;
@@ -231,7 +234,18 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
     console.log(response);
     res.send(response);
  })
+
+ //SITEMAP
+ routes.get('/sitemap',async(req,res)=>{
+   res.header('Content-Type','application/xml');
+   res.header('Content-Encoding','gzip');
+   res.send('Hola sitemap');
+ })
  
+// REDIRECCIÓN DE ERRORES
+ routes.use((req,res)=>{
+    res.status(404).redirect('/');
+ })
 
 
 module.exports=routes;
