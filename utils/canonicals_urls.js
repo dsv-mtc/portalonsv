@@ -6,7 +6,7 @@ const _defaultPriority=0.5;
  * @returns la frecuencia en String
  */
 const _getFrecuency=(freq)=>{
-    switch (frec) {
+    switch (freq) {
         case 0:
             return 'always';
         case 1:
@@ -86,63 +86,63 @@ const canonicals=[
 
 const canonical_description=[
     {
-        url:`${process.env.URL_PATH}/`,
-        description:`El Observatorio Nacional de Seguridad Vial sistematiza, 
-        analiza y difunde información sobre riesgos, causas y consecuencias de 
-        los siniestros viales utilizando las buenas prácticas en la gestión de datos. 
-        Tiene como finalidad servir de insumo a las entidades competentes para mejorar 
-        las políticas entorno a la prevención, fiscalización y respuesta frente a la 
-        ocurrencia de hechos de tránsito de manera y así garantizar el cuidado de la 
-        vida y la salud de todos los usuarios y usuaris de las vías del Perú.`
+        url:`/`,
+        title:'Observatorio Nacional de Seguridad Vial',
+        description:`El Observatorio Nacional de Seguridad Vial sistematiza,analiza y difunde información sobre riesgos, causas y consecuencias de los siniestros viales utilizando las buenas prácticas en la gestión de datos. Tiene como finalidad servir de insumo a las entidades competentes para mejorar las políticas entorno a la prevención, fiscalización y respuesta frente a la ocurrencia de hechos de tránsito de manera y así garantizar el cuidado de la vida y la salud de todos los usuarios y usuaris de las vías del Perú.`
     },
     {
-        url:`${process.env.URL_PATH}/en`,
-        description:`The National Road Safety Observatory systematizes,
-        analyzes and disseminates information on risks, causes and consequences of
-        road accidents using good practices in data management.
-        Its purpose is to serve as an input to the competent entities to improve
-        the policies around the prevention, inspection and response to the
-        occurrence of traffic events in a manner and thus guarantee the care of the
-        life and health of all users of the roads of Peru.`
+        url:`/en/`,
+        title:'Observatorio Nacional de Seguridad Vial',
+        description:`The National Road Safety Observatory systematizes, analyzes and disseminates information on risks, causes and consequences of road accidents using good practices in data management. Its purpose is to serve as an input to the competent entities to improve the policies around the prevention, inspection and response to the  occurrence of traffic events in a manner and thus guarantee the care of the life and health of all users of the roads of Peru.`
     },
     {
-        url:`${process.env.URL_PATH}/noticias-eventos`,
+        url:`/noticias-eventos/`,
+        title:'ONSV - Noticias y Eventos',
         description:`Noticias y eventos`
     },
     {
-        url:`${process.env.URL_PATH}/en/noticias-eventos`,
+        url:`/en/noticias-eventos/`,
+        title:'ONSV - News and Events',
         description:`News and Events`
     },
     {
-        url:`${process.env.URL_PATH}/regiones/`,
+        url:`/regiones/`,
+        title:'ONSV - Regiones',
         description:`Regiones`
     },
     {
-        url:`${process.env.URL_PATH}/en/regiones/`,
+        url:`/en/regiones/`,
+        title:'ONSV - Regions',
         description:`Regions`
     },
     {
-        url:`${process.env.URL_PATH}/publicaciones`,
+        url:`/publicaciones/`,
+        title:'ONSV - Publicaciones',
         description:`Publicaciones`
     },
     {
-        url:`${process.env.URL_PATH}/en/publicaciones`,
+        url:`/en/publicaciones/`,
+        title:'ONSV - Publications',
         description: `Publications`
     },
     {
-        url:`${process.env.URL_PATH}/normas-legales`,
+        url:`/normas-legales/`,
+        title:'ONSV - Normas Legales',
         description: `Normas Legales`
     },
     {
-        url:`${process.env.URL_PATH}/en/normas-legales`,
+        url:`/en/normas-legales/`,
+        title:'ONSV - Laws',
         description: `Laws`
     },
     {
-        url:`${process.env.URL_PATH}/contacto`,
+        url:`/contacto/`,
+        title:'ONSV - Contacto',
         description:`Contacto`
     },
     {
-        url:`${process.env.URL_PATH}/en/contacto`,
+        url:`/en/contacto/`,
+        title:'ONSV - Contact',
         description:`Contact`
     }
 
