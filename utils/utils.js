@@ -6,7 +6,6 @@ const path= require("path");
 const apiMailChimp=new (require("../api/mail-chimp"));
 const CryptoJs= require("crypto-js")
 const  DataBase=require("../api/mysql");
-const {canonical_description} = require('./canonicals_urls');
 const mysqlClient=new DataBase();
 
 
@@ -273,17 +272,6 @@ const getDocuments=async()=>{
     }
 }
 
-const setMetaTags=async(url)=>{
-    let metaTags={description:null,url:null, title:null};
-    canonical_description.forEach(canonicalUrl=>{
-        if(url.includes(canonicalUrl.url)) metaTags=canonicalUrl; 
-    })
-    
-    if(!metaTags.description) metaTags=canonical_description.find(canonicalUrl=>canonicalUrl.url=='/')
-
-    return metaTags
-}
-
 const constants={
     categories:[
         {key:"Economía y Finanzas",value:"economia"},
@@ -325,5 +313,4 @@ module.exports ={
     renderSearchTemplate:renderSearchTemplate,
     renderTagTemplate:renderTagTemplate,
     renderNoticiasEventosTemplate:renderNoticiasEventosTemplate,
-    setMetaTags:setMetaTags
 }

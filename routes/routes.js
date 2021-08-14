@@ -3,14 +3,15 @@ const apiGhost=new (require("../api/ghost"));
 const utils = require("../utils/utils");
 const passport=require("passport");
 const uploader=require("../controllers/multer");
+const seo=require("../controllers/seo");
 const feedController=new (require("../controllers/feed"));
+
 
 routes.use(async(req,res,next)=>{
    res.locals.settings= await apiGhost.getSettings();
    res.locals.titlesPosts= await apiGhost.getLastFivePostsTitleAndUrl();
-   res.locals.seoMetas=await utils.setMetaTags(req.originalUrl);
-   console.log(req.originalUrl)
-    if(req.originalUrl.includes("/en/")){
+   res.locals.seoMetas=await seo.setMetaTags(req.originalUrl);
+   if(req.originalUrl.includes("/en/")){
        res.locals.secondary_navigation=true;
        req.url= req.originalUrl.replace("en/","")
        res.locals.lang="en"
@@ -51,6 +52,7 @@ routes.get("/",async (req,res)=>{
   */
  routes.get("/post/:slug", async(req,res)=>{
     const post = await apiGhost.getPost(req.params.slug);
+    //console.log(post)
     const primary_tag=`tag:${post.primary_tag.slug}`
     const postsRelatives = await apiGhost.getPosts(4,"tags,authors",primary_tag,"published_at DESC");
     res.render("pages/post",{post,postsRelatives});

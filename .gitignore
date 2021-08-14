@@ -4,5 +4,10 @@ app.yaml
 .env
 ignore-templates
 utils/keys
-utils/webpack/*
+utils/webpack/css/*
+!utils/webpack/css/main.css
+utils/webpack/font/*
+utils/webpack/img/*
+utils/webpack/js/*
+!utils/webpack/js/main.js
 !utils/webpack/webpack.config.js

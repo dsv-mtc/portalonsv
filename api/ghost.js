@@ -44,7 +44,7 @@ class GhostApi {
         return settings
     }
     getPost=async (slug)=>{
-        return api.posts.read({slug:slug},{include:['tags','authors']},{formats:['html','plaintext']})
+        return await api.posts.read({slug:slug},{include:['tags','authors']},{formats:['html','plaintext']})
     }
 
     getTags=async (include,limit)=>{
@@ -102,6 +102,13 @@ class GhostApi {
         posts.push(aux)
         })
         return {success:true,posts:posts};
+    }
+    getTitleAndExcerptBySlug=async(slug)=>{
+        return await api.posts.read({slug:slug},{fields:'title,custom_excerpt,excerpt'});
+    }
+
+    getTitleAndExcerptByTag=async(slug)=>{
+        return await api.tags.read({slug:slug})
     }
 
 }
