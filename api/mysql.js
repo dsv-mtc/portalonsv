@@ -3,6 +3,7 @@ const dotenv=require("dotenv");
 const crypto=require("crypto-js");
 dotenv.config();
 const util=require("util");
+const logger=require('../controllers/logger');
 
 const client=mysql.createConnection({
     host:process.env.DATABASE_HOST,
@@ -19,11 +20,11 @@ class DataBase{
         client.connect(
             (error)=>{
                 if(!error){
-                    console.log("connected")
+                    logger.info('La base de datos está conectada');
                     
                 }
                 else{
-                    console.error(error);
+                    logger.error(error);
                     throw error
                 }
             }

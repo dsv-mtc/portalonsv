@@ -26,15 +26,15 @@ function createMenu(menuList,secondary_navigation){
     let htmlMenu="";
     menuList.forEach(menuObj=>{
         const target=setTarget(menuObj.label);
-     
         if(menuObj.label=='analítica' || menuObj.label=='analytics'){
             const tablero=secondary_navigation?'Tables':'Tableros'
-            const auxTarget=setTarget(menuList[4].url);//SRAT
+            const srat = menuList.find(menu=>{if(menu.label=='srat') return menu});
+            const auxTarget=setTarget(srat.label);//SRAT
             htmlMenu+=`<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${tablero}</a>
                     <div class="dropdown-menu" aria-labelledby="menudrop1">
                         <a class="dropdown-item" href="${menuObj.url}" target="${target}">${menuObj.label}</a>
-                        <a class="dropdown-item" href="${menuList[4].url} target="${auxTarget}">${menuList[4].label}</a>
+                        <a class="dropdown-item" href="${srat.url}" target="${auxTarget}">${srat.label}</a>
                     </div>
                 </li>`;
         }else{

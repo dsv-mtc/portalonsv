@@ -13,11 +13,11 @@ const logger= require("./controllers/logger");
 
 dotenv.config();
 //calling database
-//const mysqlClient = new (require("./api/mysql"))
-//mysqlClient.getConnection();
+const mysqlClient = new (require("./api/mysql"))
+mysqlClient.getConnection();
 
 //calling passport
-//require("./api/passport")
+require("./api/passport")
 const app=express();
 //Settings
 
