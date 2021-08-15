@@ -9,7 +9,7 @@ passport.use('local-login', new Strategy({
     passwordField:'password',
     passReqToCallback:true //envía los datos request=req
 },async (req,email,password,done)=>{
-    const result=await mysqlClient.getUser(email)
+    const result=await mysqlClient.getUserByEmail(email)
     if(!result.success){
         return done(null,false,req.flash('login','Usuario no encontrado'))
     }
@@ -17,15 +17,14 @@ passport.use('local-login', new Strategy({
         if(!mysqlClient.comparePassword(password,result.data['password'])){
             return done(null,false,req.flash('login','Usuario o clave incorrecto'))
         }
-        return done(null,result.data['user'])
+        return done(null,result.data['id'])
     }
 }))
 
-passport.serializeUser((user,done)=>{
-    console.log(user)
-    done(null,user)
+passport.serializeUser((userId,done)=>{
+    done(null,userId)
 })
-passport.deserializeUser(async (user,done)=>{
-    const result=await mysqlClient.getUser(user)
-    done(null,result.data);
+passport.deserializeUser(async (userId,done)=>{
+    const result=await mysqlClient.getUserById(userId)
+    done(null,result.data.id);
 })

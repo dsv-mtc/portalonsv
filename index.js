@@ -15,7 +15,6 @@ dotenv.config();
 //calling database
 const mysqlClient = new (require("./api/mysql"))
 mysqlClient.getConnection();
-
 //calling passport
 require("./api/passport")
 const app=express();
@@ -29,7 +28,13 @@ app.set("view engine","hbs");
 //Usos
 app.use(morgan("dev"));
 app.use(cookieParser(process.env.SECRET_APPLICATION))
-app.use(session({secret:process.env.SECRET_APPLICATION,resave:true,saveUninitialized:true}));
+app.use(session({
+    secret:process.env.SECRET_APPLICATION,
+    resave:false,
+    saveUninitialized:true,
+    store:mysqlClient.sessionStore(session),
+    cookie:{maxAge:1000*60*60*24} //Es igual a 1 día
+}));
 app.use(flash());
 app.use(express.static(path.join(__dirname,"public/assets")));
 app.use(express.json());

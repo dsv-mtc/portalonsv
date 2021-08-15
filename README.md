@@ -13,6 +13,12 @@
 
 #   PERSONALIZACIÓN DE REGIONES
 
+#   CONEXIÓN DE MYSQL
+-   Ingresar la siguiente data dentro de index.js luego de la sentencia de conexión: 
+    mysqlClient.setQuery();
+    mysqlClient.saveUser('elpadredelcordero@gmail.com','123456')
+-   Reemplazar los valores de prueba por el valor real del admin de ONSV
+
 #   MIGRACIÓN
 -   Falta template de tags
 

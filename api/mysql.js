@@ -4,13 +4,15 @@ const crypto=require("crypto-js");
 dotenv.config();
 const util=require("util");
 const logger=require('../controllers/logger');
-
-const client=mysql.createConnection({
+const  MySQLStore = require('express-mysql-session');
+const dataConnection={
     host:process.env.DATABASE_HOST,
     user:process.env.DATABASE_USER,
     password:process.env.DATABASE_PASSWORD,
     database:process.env.DATABASE_NAME
-})
+}
+
+const client=mysql.createConnection(dataConnection)
 
 class DataBase{
     constructor(){
@@ -35,7 +37,7 @@ class DataBase{
     //Habilitamos el uso de asyn await
     this.query=util.promisify(client.query).bind(client);
     }
-    getUser=async (user)=>{
+    getUserByEmail=async (user)=>{
         try {
             const queryString=`SELECT * FROM ${process.env.USER_TABLE} WHERE user="${user}" `;
             let result=await this.query(queryString)
@@ -51,6 +53,22 @@ class DataBase{
         }
 
         
+    }
+
+    getUserById=async (id)=>{
+        try {
+            const queryString=`SELECT * FROM ${process.env.USER_TABLE} WHERE id="${id}" `;
+            let result=await this.query(queryString)
+            if(result.length>0){
+                return {success:true,data:result[0]}    
+            }else{
+                return {success:false,message:"User not found"}
+            }
+
+        } catch (error) {
+            console.error(error)
+            return {success:false,message:"Cannot get user"}
+        }
     }
     saveUser=async (email,password)=>{
         try {
@@ -99,6 +117,15 @@ class DataBase{
             console.error(error);
             return {success:false,message:"Al parecer algo salió mal, comuníquese con el administrador de la plataforma"}
         }
+    }
+
+    //MANEJO DE SESIONES
+    //doc: https://www.cleverclouds.im/es/blog/2018/06/guardar-la-sesi%C3%B3n-en-mysql-para-el-framework-express-en-node
+
+    sessionStore= (session)=>{
+        MySQLStore(session);
+        let sessionStoreVar = new MySQLStore(dataConnection);
+        return sessionStoreVar;
     }
 }
 
