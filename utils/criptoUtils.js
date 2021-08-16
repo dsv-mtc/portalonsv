@@ -3,6 +3,7 @@ const fs = require('fs');
 const path=require('path');
 const logger=require('../controllers/logger');
 const hash=crypto.createHash('sha256');
+const base64url=require('base64url');
 
 const genKeyPair=()=>{
 if(!fs.existsSync(path.join(__dirname,'/keys/id_rsa_pub.pem')) && !fs.existsSync(path.join(__dirname,'/keys/id_rsa_priv.pem')) ){
@@ -72,12 +73,33 @@ const verifyIdentity=(receivedData)=>{
     const decryptedMessageHex=decryptMessage.toString();
     const hashOfOriginal=hash.update(JSON.stringify(receivedData.originalData))
     const hashOfOriginalHex=hash.digest('hex');
-    if(hashOfOriginal===decryptMessage){
+    if(hashOfOriginalHex===decryptedMessageHex){
         logger.debug('Éxito, el sender es válido')
     }else{
         logger.warn('Cuidado, alguien está tratando de manipular la identidad')
     }
 }
 
+const encryptUserId=(userId)=>{
+    const cryptThat=`${userId}-${process.env.DATA_TO_CRYPT}`;
+    return base64url(cryptThat);
+}
 
-module.exports={genKeyPair,encryptWithPublicKey,decryptWithPrivateKey,decryptWithPublicKey,signMessage};
+const decryptUserId=(userCrypted)=>{
+    const decryptThat=base64url.decode(userCrypted);
+    return decryptThat.split('-')[0];
+}
+
+
+
+
+module.exports={
+    genKeyPair,
+    encryptWithPublicKey,
+    decryptWithPrivateKey,
+    decryptWithPublicKey,
+    signMessage,
+    encryptUserId,
+    decryptUserId
+
+};

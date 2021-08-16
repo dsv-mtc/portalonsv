@@ -20,6 +20,7 @@
     "@tryghost/content-api": "^1.4.13",
     "@tryghost/helpers": "^1.1.37",
     "axios": "^0.21.1",
+    "base64url": "^3.0.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "crypto-js": "^4.0.0",

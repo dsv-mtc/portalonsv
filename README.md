@@ -19,6 +19,10 @@
     mysqlClient.saveUser('elpadredelcordero@gmail.com','123456') || mysqlClient.saveUser('elpadredelcordero@gmail.com','admin')
 -   Reemplazar los valores de prueba por el valor real del admin de ONSV
 
+# CRYPTO UTILS
+- variable de entorno : DATA_TO_CRYPT="{propiedad:'ONSV',autor:'Henry Medina Rodríguez',contacto:'hmedinar@uni.pe'}"
+
+
 #   MIGRACIÓN
 -   Falta template de tags
 

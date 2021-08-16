@@ -38,12 +38,13 @@ app.use(session({
     store:mysqlClient.sessionStore(session),
     cookie:{maxAge:1000*60*60*24} //Es igual a 1 día
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(flash());
 app.use(express.static(path.join(__dirname,"public/assets")));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(passport.initialize());
-app.use(passport.session());
+
 app.use(routes);
 
 
