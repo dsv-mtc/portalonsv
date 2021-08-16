@@ -179,6 +179,7 @@ routes.post("/datosabiertos-login",passport.authenticate('local-login',{
 }))
 
 routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
+   console.log(req.session);
    res.locals.enabledFooter=false;
    res.locals.enabledNavigation=false;
    const {categories, types}=utils.constants;
@@ -186,6 +187,7 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
    res.render("pages/datos-abiertos-admin",{categories,types,info_document})
  })
  routes.post("/datosabiertos-admin",uploader,async (req,res)=>{
+   
    const response=await utils.saveDocument(req);
    if (response.success){
       req.flash("document",{style:"alert alert-success alert-dismissible fade show",message:response.message})

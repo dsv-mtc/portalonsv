@@ -3,7 +3,6 @@ node_modules
 app.yaml
 .env
 ignore-templates
-utils/keys
 utils/webpack/css/*
 !utils/webpack/css/main.css
 utils/webpack/font/*
@@ -11,3 +10,4 @@ utils/webpack/img/*
 utils/webpack/js/*
 !utils/webpack/js/main.js
 !utils/webpack/webpack.config.js
+utils/keys/pruebasfiisuni-3cd345507254.json

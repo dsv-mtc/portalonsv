@@ -10,8 +10,11 @@ const campaigns=require("./controllers/campaigns");
 const passport=require("passport");
 const cookieParser = require("cookie-parser");
 const logger= require("./controllers/logger");
+const {genKeyPair}=require("./utils/criptoUtils");
 
 dotenv.config();
+//check if keys exist
+genKeyPair();
 //calling database
 const mysqlClient = new (require("./api/mysql"))
 mysqlClient.getConnection();
