@@ -26,62 +26,78 @@ const _getFrecuency=(freq)=>{
 
 const canonicals=[
     {
-        url:`${process.env.URL_PATH}/`,
+        url:`/`,
+        httpProtocol:['get'],
         changefreq:_getFrecuency(3),
         priority:_defaultPriority,
         links:[
-            {lang:'es',url:`${process.env.URL_PATH}/`},
-            {lang:'en',url:`${process.env.URL_PATH}/en/`}
+            {lang:'es',url:`/`},
+            {lang:'en',url:`/en/`}
         ]
     },
     {
-        url:`${process.env.URL_PATH}/noticias-eventos`,
+        url:`/noticias-eventos`,
+        httpProtocol:['get'],
         changefreq:_getFrecuency(3),
         priority:0.8,
         links:[
-            {lang:'es',url:`${process.env.URL_PATH}/noticias-eventos`},
-            {lang:'en',url:`${process.env.URL_PATH}/en/noticias-eventos`}
+            {lang:'es',url:`/noticias-eventos`},
+            {lang:'en',url:`/en/noticias-eventos`}
         ]
     },
     {
-        url:`${process.env.URL_PATH}/regiones/`,
+        url:`/regiones/`,
+        httpProtocol:['get'],
         changefreq:_getFrecuency(3),
         priority:0.8,
         links:[
-            {lang:'es',url:`${process.env.URL_PATH}/regiones`},
-            {lang:'en',url:`${process.env.URL_PATH}/en/regiones`}
+            {lang:'es',url:`/regiones/`},
+            {lang:'en',url:`/en/regiones/`}
         ]
 
     },
     {
-        url:`${process.env.URL_PATH}/publicaciones`,
+        url:`/publicaciones/`,
+        httpProtocol:['get'],
         changefreq:_getFrecuency(3),
         priority:0.8,
         links:[
-            {lang:'es',url:`${process.env.URL_PATH}/publicaciones`},
-            {lang:'en',url:`${process.env.URL_PATH}/en/publicaciones`}
+            {lang:'es',url:`/publicaciones/`},
+            {lang:'en',url:`/en/publicaciones/`}
         ]
 
     },
     {
-        url:`${process.env.URL_PATH}/normas-legales`,
+        url:`/normas-legales/`,
+        httpProtocol:['get'],
         changefreq:_getFrecuency(3),
         priority:0.8,
         links:[
-            {lang:'es',url:`${process.env.URL_PATH}/normas-legales`},
-            {lang:'en',url:`${process.env.URL_PATH}/en/normas-legales`}
+            {lang:'es',url:`/normas-legales/`},
+            {lang:'en',url:`/en/normas-legales/`}
         ]
     },
     {
-        url:`${process.env.URL_PATH}/contacto`,
+        url:`/contacto/`,
+        httpProtocol:['get','post'],
         changefreq:_getFrecuency(),
         priority:_defaultPriority,
         links:[
-            {lang:'es',url:`${process.env.URL_PATH}/contacto`},
-            {lang:'en',url:`${process.env.URL_PATH}/en/contacto`}
+            {lang:'es',url:`/contacto/`},
+            {lang:'en',url:`/en/contacto/`}
         ]
 
-    }
+    },
+    {
+        url:`/datosabiertos/`,
+        httpProtocol:['get'],
+        changefreq:_getFrecuency(3),
+        priority:0.8,
+        links:[
+            {lang:'es',url:`/datosabiertos/`},
+            {lang:'en',url:`/en/datosabiertos/`}
+        ]
+    },
 ]
 
 const canonical_description=[

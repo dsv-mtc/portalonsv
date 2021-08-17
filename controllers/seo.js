@@ -1,12 +1,58 @@
-const { SitemapStream, streamToPromise } = require( 'sitemap' );
-const { Readable } = require( 'stream' );
+
 const {canonicals, canonical_description}= require('../utils/canonicals_urls');
+const logger = require('./logger');
 const apiGhost=new (require("../api/ghost"));
+const sitemap=require('express-sitemap');
+const {hbs2}= require("./hbs");
+const fs=require('fs');
+const path=require('path');
+
 //protocols: https://www.sitemaps.org/protocol.html
 
-const _createUrls=()=>{
+
+const _modifyUrl=(url)=>{
+    const urlModified=url.replace(/https?:\/\//,'')
+    return urlModified;
+}
+
+const createSiteMapV2=()=>{
+    sites=[];
+    let canonicalUrls=[...canonicals];
+    sites=canonicalUrls.map(cannonicalUrl=>{
+        let element={}
+        element.url=`${process.env.URL_PATH}${cannonicalUrl.url}`;
+        element.changefreq=`${cannonicalUrl.changefreq}`;
+        element.priority=`${cannonicalUrl.priority}`;
+        element.alternate=`${process.env.URL_PATH}${cannonicalUrl.links[1].url}`
+        return element;
+    })
+    let template=fs.readFileSync(path.join(__dirname,"../views/pages/sitemap.hbs"),'utf-8');
+    let compiled=hbs2.compile(template);
+    return compiled({sites});
+}
+
+const createSiteMapV1=async()=>{
+    _modifyUrl(process.env.URL_PATH)
     let canonicalUrls=[...canonicals];
     let urls=[];
+    const siteMapOptions={
+        http:`${process.env.PROTOCOL_HTTP}`, 
+        url:_modifyUrl(process.env.URL_PATH),
+        map:{},
+        route:{}
+    };
+
+    canonicalUrls.forEach(cannonicalUrl=>{
+        siteMapOptions.map[`${cannonicalUrl.url}`]=cannonicalUrl.httpProtocol;
+        siteMapOptions.route[`${cannonicalUrl.url}`]={
+            changefreq:cannonicalUrl.changefreq,
+            priority:cannonicalUrl.priority,
+            
+        }
+    });
+     //const sitemap=await seo.createSiteMapV1(); 
+    //sitemap.XMLtoWeb(res);
+    return sitemap(siteMapOptions);
 }
 
 const setMetaTags=async(url)=>{
@@ -34,5 +80,7 @@ const setMetaTags=async(url)=>{
     return metaTags
 }
 module.exports= {
+    createSiteMapV1,
+    createSiteMapV2,   
     setMetaTags
 }

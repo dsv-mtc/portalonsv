@@ -1,1 +1,4 @@
 [31m[2021-08-09T20:54:19.950Z] error La aplicación se inició con éxito y a la escucha en el puerto 3000[39m
+[31m[2021-08-16T19:22:51.556Z] error Cannot read property 'on' of undefined[39m
+[31m[2021-08-16T20:37:54.697Z] error You have ended the stream before anything was written. streamToPromise MUST be called before ending the stream.[39m
+[31m[2021-08-16T20:49:56.137Z] error You have ended the stream before anything was written. streamToPromise MUST be called before ending the stream.[39m

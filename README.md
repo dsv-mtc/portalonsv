@@ -5,6 +5,8 @@
 -   Usar la secuencia de comando npm install --> instala todas las dependencias
 -   Usar la secuencia de comando npm run webpack --> crea los assets estáticos js y css
 
+# SITEMAP
+-   La generación del sitemap tiene dos mecanismos de creación; v1 y v2, haciendo uso de v1 se debe emplear sitemap.XMLToWeb(res)
 
 #   MAILCHIMP
 -   Se logró la conexión y ya se almacena usuarios por tag en la plataforma

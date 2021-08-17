@@ -179,7 +179,7 @@ routes.post("/datosabiertos-login",passport.authenticate('local-login',{
 }))
 
 routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
-   console.log(req.session);
+   console.log(req.session); // TODO eliminar el comentario cuando se lance a producción
    res.locals.enabledFooter=false;
    res.locals.enabledNavigation=false;
    const {categories, types}=utils.constants;
@@ -201,12 +201,14 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
     if(req.isAuthenticated()){
        return next();
     }
-    res.redirect('/datosabiertos-login')
+    res.redirect('/datosabiertos-login');
+    return;
  }
 
  function isNotAuthenticated(req,res,next){
    if(req.isAuthenticated()){
       res.redirect('/datosabiertos-admin');
+      return;
    }
    return next();
    
@@ -243,9 +245,9 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
 
  //SITEMAP
  routes.get('/sitemap',async(req,res)=>{
-   res.header('Content-Type','application/xml');
-   res.header('Content-Encoding','gzip');
-   res.send('Hola sitemap');
+   res.set('Content-Type','application/xhtml+xml');
+   const sitemap=seo.createSiteMapV2();
+   res.status(200).send(sitemap);
  })
  
 // REDIRECCIÓN DE ERRORES
