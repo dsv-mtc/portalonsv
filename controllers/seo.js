@@ -15,10 +15,10 @@ const _modifyUrl=(url)=>{
     return urlModified;
 }
 
-const createSiteMapV2=()=>{
-    sites=[];
+const createSiteMapV2= ()=>{
+    // Problemas constantes en la implementación de xml y sus esquemas: https://stackoverflow.com/questions/36193346/validation-of-xml-sitemap-urlset-with-xhtmllink-inside-url-element
     let canonicalUrls=[...canonicals];
-    sites=canonicalUrls.map(cannonicalUrl=>{
+    const sites=canonicalUrls.map(cannonicalUrl=>{
         let element={}
         element.url=`${process.env.URL_PATH}${cannonicalUrl.url}`;
         element.changefreq=`${cannonicalUrl.changefreq}`;

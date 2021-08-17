@@ -245,8 +245,8 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
 
  //SITEMAP
  routes.get('/sitemap',async(req,res)=>{
-   res.set('Content-Type','application/xhtml+xml');
    const sitemap=seo.createSiteMapV2();
+   res.set('Content-Type','application/xhtml+xml');
    res.status(200).send(sitemap);
  })
  
