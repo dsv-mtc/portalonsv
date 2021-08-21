@@ -33,7 +33,8 @@ routes.get("/",async (req,res)=>{
     const accidents=await utils.getAccidents();
     const post2=await apiGhost.getPosts(4,"tags","tags: [noticias-eventos]");
     const post3=await apiGhost.getPosts(3);
-    res.render("index",{post3,post2,accidents});
+    const banners=await utils.getImagesFiles('banner')
+    res.render("index",{post3,post2,accidents,banners});
  })
 
  
@@ -77,7 +78,8 @@ routes.get("/",async (req,res)=>{
 
 /**ANALÍTICA */
  routes.get("/analitica",async(req,res)=>{
-     res.locals.enabledFooter=false;
+   res.locals.enabledNavigation=false;  
+   res.locals.enabledFooter=false;
      res.render("pages/analitica")
  })
 

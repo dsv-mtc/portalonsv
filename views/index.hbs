@@ -3,56 +3,17 @@
     <div class="carousel slide" data-ride="carousel" data-interval="3000">
     <!-- The slideshow -->
         <div class="carousel-inner">
-            <div class="carousel-item active img-banner">
-                <img src="/img/banner/observatorio1v2.png">
-                    <div class="rsp-ban-desc  delete-padding">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-9 col-md-8 mx-auto d-none d-md-block">
-                                    <!--
-                                    <h1 class="ft-bold">
-                                        Bienvenido al Observatorio Nacional 
-                                        de Seguridad Vial
-                                    </h1>
-                                    -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="carousel-item">
-                <img src="/img/banner/observatorio2v2.png">
-                    <div class="rsp-ban-desc  delete-padding">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-9 col-md-8 mx-auto d-none d-md-block">
-                                    <!--
-                                    <h1 class="ft-bold">
-                                        Construyendo conocimiento
-                                    </h1>
-                                    -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="carousel-item">
-                <img src="/img/banner/observatorio3v2.png">
-                    <div class="rsp-ban-desc  delete-padding">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-9 col-md-8 mx-auto d-none d-md-block">
-                                    <!--
-                                    <h1 class="ft-bold">
-                                        Para la seguridad vial
-										del país
-                                    </h1>
-                                    -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
+            {{#each banners}}
+                {{#if @first}}
+                <div class="carousel-item active img-banner">
+                    <img src="dist/resources/{{this}}" >
+                </div>
+                {{else}}
+                <div class="carousel-item">
+                    <img src="dist/resources/{{this}}" >
+                </div>
+                {{/if}}
+            {{/each}}
         </div>
     </div>
     <div class="rsp-ban-desc">

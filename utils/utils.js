@@ -272,6 +272,14 @@ const getDocuments=async()=>{
     }
 }
 
+const getImagesFiles=async(prefixName)=>{
+    const imageFilesName=await fs.promises.readdir(path.join(__dirname,`../public/assets/dist/resources/`));
+    const imagesRequest=imageFilesName.filter(filename=>{
+        if(filename.match(prefixName)) return filename
+    })
+    return imagesRequest;
+}
+
 const constants={
     categories:[
         {key:"Economía y Finanzas",value:"economia"},
@@ -313,4 +321,5 @@ module.exports ={
     renderSearchTemplate:renderSearchTemplate,
     renderTagTemplate:renderTagTemplate,
     renderNoticiasEventosTemplate:renderNoticiasEventosTemplate,
+    getImagesFiles:getImagesFiles
 }
