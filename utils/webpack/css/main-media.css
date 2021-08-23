@@ -1,25 +1,46 @@
 @media screen and (min-width: 2388px) {
+    .disclaimer{
+        height: 20px;
+      }
     
 }
 @media screen and (min-width: 1800px) and (max-width: 2387px) {
+    .disclaimer{
+        height: 20px;
+      }
    
 }
 @media screen and (min-width: 1500px) and (max-width: 1799px){
+    .disclaimer{
+        height: 20px;
+      }
     
 }
 @media screen and (min-width: 1440px) and (max-width: 1499px) {
+    .disclaimer{
+        height: 20px;
+      }
     
 }
 
 @media screen and (min-width: 1366px) and (max-width: 1439px) {
+    .disclaimer{
+        height: 20px;
+      }
     
 }
 
 @media screen and (min-width: 1280px) and (max-width: 1365px) {
+    .disclaimer{
+        height: 20px;
+      }
     
 }
 
 @media screen and (min-width: 1025px) and (max-width: 1279px) { 
+    .disclaimer{
+        height: 20px;
+      }
     
 }
 
@@ -38,6 +59,9 @@
     .rsp-noti-sec .owl-next span {
         right: -34px;
     }
+    .disclaimer{
+        height: 20px;
+      }
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {

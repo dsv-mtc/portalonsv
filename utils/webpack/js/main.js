@@ -176,7 +176,7 @@ function getMap(){
     //By default
     if(location.href.includes('regiones')){
         document.querySelector('svg g g path[id="Lima"]').classList.replace('map','map-selected');
-        document.getElementById('nombre').value='JOSÉ EDUARDO PRETEL SALDAÑA';
+        document.getElementById('nombre').value='José Eduardo Pretel Saldaña';
         document.getElementById('telefono').value='943990699';
         document.getElementById('email').value='jpretel@regionlima.gob.pe';
         setImage('Lima');

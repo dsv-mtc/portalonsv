@@ -78,11 +78,12 @@ li>.dropdown-menu{
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 20px;
+    height: 40px;
     background-color: #0355a3;
     font-size: 8.5pt;
     color: white;
     font-weight: bold;
+    text-align: center;
 }
 .disclaimer-text, .disclaimer-text:hover{
     color: white;
