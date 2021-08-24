@@ -83,6 +83,10 @@ routes.get("/",async (req,res)=>{
      res.render("pages/analitica")
  })
 
+ /**WEBINARS */
+routes.get("/webinars",async(req,res)=>{
+   res.render("pages/webinars");
+})
  /**SRAT */
  routes.get("/srat", async(req,res)=>{
     res.locals.enabledFooter=false;
@@ -127,6 +131,13 @@ routes.get("/",async (req,res)=>{
       res.redirect("/contacto")
     }
 
+ })
+
+ /** AULA VIRTUAL */
+ routes.get("/aulavirtual",async(req,res)=>{
+   res.locals.enabledNavigation=false;  
+   res.locals.enabledFooter=false;
+   res.render("pages/aula-virtual");
  })
 
  /** BÚSQUEDA POR TAGS */

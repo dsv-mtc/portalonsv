@@ -1,6 +1,7 @@
 const path=require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
+const { extendDefaultPlugins } = require("svgo");
 const webpack= require("webpack");
 
 module.exports={
@@ -65,6 +66,20 @@ module.exports={
               ["gifsicle", { interlaced: true }],
               ["jpegtran", { progressive: true }],
               ["optipng", { optimizationLevel: 5 }],
+              ["svgo",{
+                plugins:[
+                  {
+                    name:"removeViewBox",
+                    active:false,
+                  },
+                  {
+                    name: "addAttributesToSVGElement",
+                    params: {
+                      attributes: [{ xmlns: "http://www.w3.org/2000/svg" }],
+                    },
+                  }
+                ]
+              }]
             ]
           }
         })

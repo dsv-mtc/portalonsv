@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     getMap();
     modal();
     modalCampaign();
+    modalAnalytics();
     openDataForm();
     fileSelectedName()
     getMapFromForm();
@@ -204,11 +205,11 @@ function getMap(){
 
 function setImage(region){
     document.getElementById('img-region').innerHTML='';
-    fetch(`/img/regiones/${region.toLowerCase()}.png`,{method:'GET'})
+    fetch(`/dist/resources${region.toLowerCase()}.svg`,{method:'GET'})
     .then(results=>results)
     .then(response=>{
-        if(response.status==200) document.getElementById('img-region').innerHTML=`<img src="/img/regiones/${region.toLowerCase()}.png"></img>`;
-        if(response.status!=200) document.getElementById('img-region').innerHTML=`<img src="/img/regiones/escudo.jpg"></img>`;    
+        if(response.status==200) document.getElementById('img-region').innerHTML=`<img src="/dist/resources/${region.toLowerCase()}.svg"></img>`;
+        if(response.status!=200) document.getElementById('img-region').innerHTML=`<img src="/dist/resources/escudo.jpg"></img>`;    
     })
     .catch(error=>{
         console.log(error);
@@ -239,6 +240,9 @@ function modal(){
 
 function modalCampaign(){
     if(document.querySelector("#campaign-modal"))  $('#campaign-modal').modal('show');
+}
+function modalAnalytics(){
+    if(document.querySelector("#analytic-modal"))  $('#analytic-modal').modal('show');
 }
 
 function openDataForm(){

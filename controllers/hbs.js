@@ -27,7 +27,7 @@ function createMenu(menuList,secondary_navigation){
     menuList.forEach(menuObj=>{
         const target=setTarget(menuObj.label);
         if(menuObj.label=='analítica' || menuObj.label=='analytics'){
-            const tablero=secondary_navigation?'Tables':'Tableros'
+            const tablero=secondary_navigation?'Applications':'Aplicaciones'
             const srat = menuList.find(menu=>{if(menu.label=='srat') return menu});
             const auxTarget=setTarget(srat.label);//SRAT
             htmlMenu+=`<li class="nav-item dropdown">
@@ -54,7 +54,7 @@ function createMenu(menuList,secondary_navigation){
             title:'Vial Education',
             urls:{
                 url1:"/en/webinars",
-                url2:"/en/virtualroom"
+                url2:"/en/aulavirtual"
             },
             labels:{
                 label1:"Webinars",
@@ -73,7 +73,7 @@ function createMenu(menuList,secondary_navigation){
             title:'Educación Vial',
             urls:{
                 url1:"/webinars",
-                url2:"/virtualroom"
+                url2:"/aulavirtual"
             },
             labels:{
                 label1:"Webinars",
