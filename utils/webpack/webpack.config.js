@@ -8,8 +8,8 @@ module.exports={
     mode:"production",
     entry:path.join(__dirname,"js/index.js"),
     output:{
-        path:path.resolve(__dirname,"../../public/assets/dist"),
-        assetModuleFilename: './resources/[name][ext]'
+        path:path.resolve(__dirname,"../../public"),
+        assetModuleFilename: './assets/[name][ext]'
     },
     module:{
         rules:[
@@ -28,7 +28,11 @@ module.exports={
                 use:[
                     {loader:"style-loader"},
                     {
-                        loader:MiniCssExtractPlugin.loader
+                        loader:MiniCssExtractPlugin.loader,
+                        options:{
+                          esModule:false
+                        }
+                        
                     },
                     {
                         loader: "css-loader"
@@ -37,11 +41,9 @@ module.exports={
                         loader: 'postcss-loader',
                         options: {
                           postcssOptions: {
-                            plugins: function () {
-                              return [
+                            plugins:[
                                 require('autoprefixer')
-                              ];
-                            }
+                              ] 
                           }
                         }
                     },
@@ -54,7 +56,9 @@ module.exports={
         ]
     },
     plugins:[
-        new MiniCssExtractPlugin({}),
+        new MiniCssExtractPlugin({
+          ignoreOrder:true
+        }),
         new webpack.ProvidePlugin({
             $: 'jquery',
             jQuery: 'jquery',
@@ -66,20 +70,6 @@ module.exports={
               ["gifsicle", { interlaced: true }],
               ["jpegtran", { progressive: true }],
               ["optipng", { optimizationLevel: 5 }],
-              ["svgo",{
-                plugins:[
-                  {
-                    name:"removeViewBox",
-                    active:false,
-                  },
-                  {
-                    name: "addAttributesToSVGElement",
-                    params: {
-                      attributes: [{ xmlns: "http://www.w3.org/2000/svg" }],
-                    },
-                  }
-                ]
-              }]
             ]
           }
         })

@@ -205,11 +205,11 @@ function getMap(){
 
 function setImage(region){
     document.getElementById('img-region').innerHTML='';
-    fetch(`/dist/resources${region.toLowerCase()}.svg`,{method:'GET'})
+    fetch(`/assets${region.toLowerCase()}.svg`,{method:'GET'})
     .then(results=>results)
     .then(response=>{
-        if(response.status==200) document.getElementById('img-region').innerHTML=`<img src="/dist/resources/${region.toLowerCase()}.svg"></img>`;
-        if(response.status!=200) document.getElementById('img-region').innerHTML=`<img src="/dist/resources/escudo.jpg"></img>`;    
+        if(response.status==200) document.getElementById('img-region').innerHTML=`<img src="../assets/${region.toLowerCase()}.png"></img>`;
+        if(response.status!=200) document.getElementById('img-region').innerHTML=`<img src="../assets/escudo.jpg"></img>`;    
     })
     .catch(error=>{
         console.log(error);

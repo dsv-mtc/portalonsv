@@ -273,7 +273,7 @@ const getDocuments=async()=>{
 }
 
 const getImagesFiles=async(prefixName)=>{
-    const imageFilesName=await fs.promises.readdir(path.join(__dirname,`../public/assets/dist/resources/`));
+    const imageFilesName=await fs.promises.readdir(path.join(__dirname,`../public/assets/`));
     const imagesRequest=imageFilesName.filter(filename=>{
         if(filename.match(prefixName)) return filename
     })

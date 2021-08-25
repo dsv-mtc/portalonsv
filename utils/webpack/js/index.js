@@ -1,8 +1,8 @@
-import  'bootstrap/dist/css/bootstrap.css';
-import 'owl.carousel/dist/assets/owl.carousel.css';
-import '../css/all.css';
-import '../css/main.css';
-import '../css/main-media.css';
+import * as styles1 from 'bootstrap/dist/css/bootstrap.css';
+import * as styles2 from 'owl.carousel/dist/assets/owl.carousel.css';
+import * as styles3 from '../css/all.css';
+import * as styles4 from '../css/main.css';
+import * as styles5 from '../css/main-media.css';
 import 'bootstrap';
 //import '../scss/_custom.scss'; //carga de todos los estilos scss
 import 'owl.carousel';
@@ -10,37 +10,41 @@ import './main'; //carga de archivos js
 //Carga de popups
 import popup1 from '../img/popups/aficheanalitica.png';
 import popup2 from '../img/popups/aficheindex.png';
+//Carga de iconos
+import icono1 from '../img/iconos/hs1.png'
+import icono2 from '../img/iconos/hs2.png'
+import icono3 from '../img/iconos/hs3.png'
+import icono4 from '../img/iconos/hs4.png'
 //Carga de banners
 import banner1 from '../img/banner/banner1.png';
 import banner2 from '../img/banner/banner2.png';
 import banner3 from '../img/banner/banner3.png';
 //Carga de regiones
-import r1 from '../img/regions/Amazonas.svg';
-import r2 from '../img/regions/Amazonas.svg';
-import r3 from '../img/regions/Ancash.svg';
-import r4 from '../img/regions/Apurimac.svg';
-import r5 from '../img/regions/Arequipa.svg';
-import r6 from '../img/regions/Ayacucho.svg';
-import r7 from '../img/regions/Cajamarca.svg';
-import r8 from '../img/regions/Callao.svg';
-import r9 from '../img/regions/Cusco.svg';
-import r10 from '../img/regions/Huancavelica.svg';
-import r11 from '../img/regions/Huánuco.svg';
-import r12 from '../img/regions/Ica.svg';
-import r13 from '../img/regions/Junín.svg';
-import r14 from '../img/regions/La Libertad.svg';
-import r15 from '../img/regions/Lambayeque.svg';
-import r16 from '../img/regions/Lima.svg';
-import r17 from '../img/regions/Loreto.svg';
-import r19 from '../img/regions/Madre de Dios.svg';
-import r20 from '../img/regions/Moquegua.svg';
-import r21 from '../img/regions/Pasco.svg';
-import r22 from '../img/regions/Piura.svg';
-import r23 from '../img/regions/Puno.svg';
-import r24 from '../img/regions/San Martín.svg';
-import r25 from '../img/regions/Tacna.svg';
-import r26 from '../img/regions/Tumbes.svg';
-import r27 from '../img/regions/Ucayali.svg';
-import r28 from '../img/regions/Lima Metropolitana.svg';
+import r1 from '../img/regions/amazonas.png';
+import r2 from '../img/regions/ancash.png';
+import r3 from '../img/regions/apurimac.png';
+import r4 from '../img/regions/arequipa.png';
+import r5 from '../img/regions/ayacucho.png';
+import r6 from '../img/regions/cajamarca.png';
+import r7 from '../img/regions/callao.png';
+import r8 from '../img/regions/cusco.png';
+import r9 from '../img/regions/huancavelica.png';
+import r10 from '../img/regions/huánuco.png';
+import r11 from '../img/regions/ica.png';
+import r12 from '../img/regions/junín.png';
+import r13 from '../img/regions/la libertad.png';
+import r14 from '../img/regions/lambayeque.png';
+import r15 from '../img/regions/lima.png';
+import r16 from '../img/regions/loreto.png';
+import r17 from '../img/regions/madre de dios.png';
+import r18 from '../img/regions/moquegua.png';
+import r19 from '../img/regions/pasco.png';
+import r20 from '../img/regions/piura.png';
+import r21 from '../img/regions/puno.png';
+import r22 from '../img/regions/san martín.png';
+import r23 from '../img/regions/tacna.png';
+import r24 from '../img/regions/tumbes.png';
+import r25 from '../img/regions/ucayali.png';
+import r26 from '../img/regions/lima metropolitana.png';
 
 

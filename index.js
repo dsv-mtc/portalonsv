@@ -16,10 +16,10 @@ dotenv.config();
 //check if keys exist
 genKeyPair();
 //calling database
-const mysqlClient = new (require("./api/mysql"))
-mysqlClient.getConnection();
+//const mysqlClient = new (require("./api/mysql"))
+//mysqlClient.getConnection();
 //calling passport
-require("./api/passport")
+//require("./api/passport")
 const app=express();
 //Settings
 
@@ -31,7 +31,13 @@ app.set("view engine","hbs");
 //Usos
 app.use(morgan("dev"));
 app.use(cookieParser(process.env.SECRET_APPLICATION))
+//Eliminar en producción
 app.use(session({
+    secret:process.env.SECRET_APPLICATION,
+    resave:false,
+    saveUninitialized:true,
+}));
+/*app.use(session({
     secret:process.env.SECRET_APPLICATION,
     resave:false,
     saveUninitialized:true,
@@ -39,9 +45,9 @@ app.use(session({
     cookie:{maxAge:1000*60*60*24} //Es igual a 1 día
 }));
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session());*/
 app.use(flash());
-app.use(express.static(path.join(__dirname,"public/assets")));
+app.use(express.static(path.join(__dirname,"/public")));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
