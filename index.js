@@ -47,7 +47,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());*/
 app.use(flash());
-app.use(express.static(path.join(__dirname,"/public")));
+//reference:https://expressjs.com/es/4x/api.html#express.static
+app.use(express.static(path.join(__dirname,"/public"),{
+    etag:true,
+    maxAge:'30 days',
+    redirect:true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
