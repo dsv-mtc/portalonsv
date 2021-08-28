@@ -5,7 +5,7 @@ const passport=require("passport");
 const uploader=require("../controllers/multer");
 const seo=require("../controllers/seo");
 const feedController=new (require("../controllers/feed"));
-
+const youtubeApi = new (require("../api/gcp/Youtube"));
 
 routes.use(async(req,res,next)=>{
    res.locals.settings= await apiGhost.getSettings();
@@ -85,7 +85,9 @@ routes.get("/",async (req,res)=>{
 
  /**WEBINARS */
 routes.get("/webinars",async(req,res)=>{
-   res.render("pages/webinars");
+  //await youtubeApi.getPlayLists();
+  const playlist=await youtubeApi.getItemsFromPlayList(); 
+  res.render("pages/webinars",{playlist});
 })
  /**SRAT */
  routes.get("/srat", async(req,res)=>{

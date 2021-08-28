@@ -64,7 +64,7 @@ function createMenu(menuList,secondary_navigation){
         htmlMenu+=`<li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
                         <div class="dropdown-menu" aria-labelledby="menudrop1">
-                            <a class="dropdown-item" href="${menu.urls.url1}" target="_blank">${menu.labels.label1}</a>
+                            <a class="dropdown-item" href="${menu.urls.url1}" target="_self">${menu.labels.label1}</a>
                             <a class="dropdown-item" href="${menu.urls.url2}" target="_blank">${menu.labels.label2}</a>
                         </div>
                     </li>`
@@ -83,7 +83,7 @@ function createMenu(menuList,secondary_navigation){
         htmlMenu+=`<li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
                         <div class="dropdown-menu" aria-labelledby="menudrop1">
-                            <a class="dropdown-item" href="${menu.urls.url1}" target="_blank">${menu.labels.label1}</a>
+                            <a class="dropdown-item" href="${menu.urls.url1}" target="_self">${menu.labels.label1}</a>
                             <a class="dropdown-item" href="${menu.urls.url2}" target="_blank">${menu.labels.label2}</a>
                         </div>
                     </li>`
