@@ -11,7 +11,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     fileSelectedName()
     getMapFromForm();
 })
-
+/**
+ * @description: Función auxiliar utilizada en los post para el retorno al menú inmediato desde donde se originó su llamada
+ */
 function back(){
     if(document.getElementById('back')){
         document.getElementById('back').addEventListener('click',(e)=>{
@@ -20,7 +22,9 @@ function back(){
         });
     }
 }
-
+/**
+ * @description: Función asignada para la validación de todos los formularios con la clase needs-validation; comunmente usada en contacto y suscripción
+ */
 function validationForm(){
     window.addEventListener('load', function() {
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -38,6 +42,10 @@ function validationForm(){
     }, false); 
 }
 
+/**
+ * @description: Función encargada de la construcción del carousel, carousel tiene como dependencia a jquery y sus
+ * eventos se administran a través de eventos jquery 
+ */
 function carousel(){
     $('#noti').owlCarousel({
         loop:true,
@@ -62,7 +70,11 @@ function carousel(){
         }
     });
 }
-
+/**
+ * @description: Función encargada de procesar la búsqueda, en las páginas de publicaciones y normas legales, la función obtiene el segmento del menú
+ * el lang para el idioa y el valor de la palabra buscada, ejecura un fetch y  entrega la data a reloadPosts y reloadTags para sobresscribir el html y ocultar
+ * la información que se despliega por defecto, así como emitir una alerta en caso la información con los datos suministrados no se encuentre
+ */
 function search(){
     const boolSearch=/(noticias-eventos|publicaciones|normas-legales)/.test(location.href);
     
@@ -102,7 +114,13 @@ function search(){
         })
     } 
 }
-
+/**
+ * @description: Función encargada de procesar la búsqueda en noticias-eventos
+ * @param {*} keyword : Palabra buscada
+ * @param {*} pages :Página actual
+ * @param {*} lang :Lenguaje de procedencia (es/en)
+ * @param {*} step :Cantidad de posts visible por búsqueda
+ */
 function searchNoticiasEventos(keyword,pages,lang,step){
     let [pag_prev,pag_page,pag_next]=pages.split('_');
     pag_prev=pag_prev==''?null:parseInt(pag_prev);
