@@ -1,4 +1,7 @@
 /* Henry Medina */
+h1.title{
+    line-height: 1;
+}
 .content-imagen-principal{
     z-index: -2;
     height: 400px;
