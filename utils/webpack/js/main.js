@@ -143,6 +143,10 @@ function searchNoticiasEventos(keyword,pages,lang,step){
     })
 }
 
+/**
+ * @description: Función encargada de la recarga de tags, redibujando la sección del sidebar
+ * @param {String} response : Objeto de respuesta de consulta que contiene la propiedad tags
+ */
 function reloadTags(response){
     if(response.success){
         document.getElementById('sidebar-default').style.display='none';
@@ -152,6 +156,10 @@ function reloadTags(response){
         document.getElementById('sidebar-default').style.display='block';
     }
 }
+/**
+ * @description: Función encargada de la recarga de posts; redibujando el contenido de las búsquedas 
+ * @param {*} response : Objeto de respuesta de consulta que contiene la propiedad posts
+ */
  function reloadPosts(response){
     if(response.success){
         document.getElementById('default').style.display='none';
@@ -162,6 +170,11 @@ function reloadTags(response){
     }
  }
 
+/**
+ * @description: Función encargada de agregar un listener de tipo change al select asociado al menú de regiones, el cual es visible en dispositivos móviles;
+ *  ante la generación del evento envía el valor a la ruta /service-map; la respuesta sobreescribe los valores del formulario del contacto regional y 
+ * obtiene las noticias asociadas a la región seleccionada y que coloca sobre el carousel.
+ */ 
 function getMapFromForm(){
     let lang=location.href.includes('/en/')?'en':'es';
     if(location.href.includes('regiones')){
@@ -190,7 +203,11 @@ function getMapFromForm(){
     }
 }
 
-
+/**
+ * @description: Función encargada de agregar un listener de tipo click a todos los paths (regiones) del mapa svg  ubicado en el menú de regiones, el cual es visible en dispositivos diferentes al móvil;
+ *  ante la generación del evento envía el valor a la ruta /service-map; la respuesta sobreescribe los valores del formulario del contacto regional y 
+ * obtiene las noticias asociadas a la región seleccionada y que coloca sobre el carousel.
+ */ 
 function getMap(){
     //By default
     if(location.href.includes('regiones')){
@@ -220,7 +237,11 @@ function getMap(){
         .catch(error=>console.error(error))
     })); 
 }
-
+/**
+ * @description: Función encargada de validar si la imagen de la región seleccionada existe; si existe la despliega, y sino invoca 
+ * una imagen por defecto
+ * @param {String} region: Nombre de la región seleccionada, que coincide con el nombre de la imagen de la región. 
+ */
 function setImage(region){
     document.getElementById('img-region').innerHTML='';
     fetch(`/assets${region.toLowerCase()}.svg`,{method:'GET'})
@@ -233,7 +254,10 @@ function setImage(region){
         console.log(error);
     })
 }
-
+/**
+ * @description: Función encargada de desplegar el modal de suscripción al portal; valida el campo de correo y envía el mismo para 
+ * su suscripción
+ */
 function modal(){
     $("#suscriber-modal-form").on("hidden.bs.modal",function(event){
         $("#subscriber-form").trigger("reset");
@@ -256,9 +280,17 @@ function modal(){
     });
 }
 
+/**
+ * @description: Función encargada del despliegue del modal del menún inicio | home; por defecto se auto ejecutan; si desea cambiar el comportamiento
+ * cambie el valor show por hide
+ */
 function modalCampaign(){
     if(document.querySelector("#campaign-modal"))  $('#campaign-modal').modal('show');
 }
+/**
+ * @description: Función encargada del despliegue del modal del menú analítica por defecto se auto ejecutan; si desea cambiar el comportamiento
+ * cambie el valor show por hide
+ */
 function modalAnalytics(){
     if(document.querySelector("#analytic-modal"))  $('#analytic-modal').modal('show');
 }
