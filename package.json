@@ -34,6 +34,7 @@
     "google-auth-library": "^7.3.0",
     "googleapis": "^84.0.0",
     "handlebars": "^4.7.7",
+    "helmet": "^4.6.0",
     "minisearch": "^3.0.2",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",

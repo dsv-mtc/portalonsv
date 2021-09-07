@@ -11,6 +11,7 @@ const passport=require("passport");
 const cookieParser = require("cookie-parser");
 const logger= require("./controllers/logger");
 const {genKeyPair}=require("./utils/criptoUtils");
+const helmet=require("helmet");
 
 dotenv.config();
 //check if keys exist
@@ -30,6 +31,7 @@ app.set("view engine","hbs");
 
 //Usos
 app.use(morgan("dev"));
+app.use(helmet());
 app.use(cookieParser(process.env.SECRET_APPLICATION))
 //Eliminar en producción
 app.use(session({
