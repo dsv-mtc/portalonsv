@@ -29,16 +29,19 @@ function createMenu(menuList,secondary_navigation){
         if(menuObj.label=='analítica' || menuObj.label=='analytics'){
             const tablero=secondary_navigation?'Applications':'Aplicaciones'
             const srat = menuList.find(menu=>{if(menu.label=='srat') return menu});
+            const peruWorld = menuList.find(menu=>{if(menu.label=='peru-in-world') return menu});
             const auxTarget=setTarget(srat.label);//SRAT
+            const auxTarget2=setTarget(srat.label)
             htmlMenu+=`<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${tablero}</a>
                     <div class="dropdown-menu" aria-labelledby="menudrop1">
                         <a class="dropdown-item" href="${menuObj.url}" target="${target}">${menuObj.label}</a>
                         <a class="dropdown-item" href="${srat.url}" target="${auxTarget}">${srat.label}</a>
+                        <a class="dropdown-item" href="${peruWorld.url}" target="${auxTarget2}">${peruWorld.label}</a>
                     </div>
                 </li>`;
         }else{
-            if(menuObj.label=='srat'){
+            if(menuObj.label=='srat' || menuObj.label=='peru-in-world'){
                 return;
             }else{
                 htmlMenu+= `<li class="nav-item"><a class="nav-link" href="${menuObj.url}" target="${target}">${menuObj.label}</a></li>`;   
@@ -54,7 +57,8 @@ function createMenu(menuList,secondary_navigation){
             title:'Vial Education',
             urls:{
                 url1:"/en/webinars",
-                url2:"/en/aulavirtual"
+                url2:"/en/aulavirtual",
+               
             },
             labels:{
                 label1:"Webinars",
@@ -73,11 +77,13 @@ function createMenu(menuList,secondary_navigation){
             title:'Educación Vial',
             urls:{
                 url1:"/webinars",
-                url2:"/aulavirtual"
+                url2:"/aulavirtual",
+          
             },
             labels:{
                 label1:"Webinars",
-                label2:"Aula Virtual"
+                label2:"Aula Virtual",
+                
             }
         }
         htmlMenu+=`<li class="nav-item dropdown">

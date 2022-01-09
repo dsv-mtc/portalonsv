@@ -95,6 +95,13 @@ routes.get("/webinars",async(req,res)=>{
     res.locals.enabledNavigation=false;
     res.render("pages/srat");
  })
+
+ /** PERU-WORLD */
+ routes.get("/peru-in-world", async(req,res)=>{
+   res.locals.enabledFooter=false;
+   res.locals.enabledNavigation=false;
+   res.render("pages/peru-world");
+})
 /**PUBLICACIONES */
  routes.get("/publicaciones",async(req,res)=>{
     const post = await apiGhost.getPosts(6,"tags,authors","tags:[publicaciones]","published_at DESC")
