@@ -13,14 +13,28 @@ const logger= require("./controllers/logger");
 const {genKeyPair}=require("./utils/criptoUtils");
 const helmet=require("helmet");
 
+
 dotenv.config();
 //check if keys exist
 genKeyPair();
-//calling database
-//const mysqlClient = new (require("./api/mysql"))
-//mysqlClient.getConnection();
-//calling passport
-//require("./api/passport")
+
+if(process.env.STRATEGY_MODE==='GCP'){
+    logger.debug("Trabajando en modo GCP");
+
+}
+
+if(process.env.STRATEGY_MODE==='ON_PREMISE'){
+   logger.debug("Trabajando en modeo On Premise");
+    //calling database
+    const mysqlClient = new (require("./api/mysql"))
+    mysqlClient.getConnection();
+    //calling passport
+    require("./api/passport");
+}
+
+
+
+
 const app=express();
 //Settings
 
@@ -39,15 +53,18 @@ app.use(session({
     resave:false,
     saveUninitialized:true,
 }));
-/*app.use(session({
+if(process.env.STRATEGY_MODE==='ON_PREMISE'){
+    app.use(session({
     secret:process.env.SECRET_APPLICATION,
     resave:false,
     saveUninitialized:true,
     store:mysqlClient.sessionStore(session),
     cookie:{maxAge:1000*60*60*24} //Es igual a 1 día
-}));
-app.use(passport.initialize());
-app.use(passport.session());*/
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+}
+
 app.use(flash());
 //reference:https://expressjs.com/es/4x/api.html#express.static
 app.use(express.static(path.join(__dirname,"/public"),{

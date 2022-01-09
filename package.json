@@ -14,6 +14,7 @@
   "author": "Henry Medina",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/firestore": "^5.0.2",
     "@google-cloud/local-auth": "^1.0.1",
     "@google-cloud/storage": "^5.10.0",
     "@mailchimp/mailchimp_marketing": "^3.0.43",
