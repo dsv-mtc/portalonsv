@@ -24,5 +24,25 @@
         <div>
             <p class="text-justify description-data">{{description}}</p>
         </div>
+        <div class="row category-data">
+            <div class="col-3 row">
+                <div class="col-4">
+                    <small>
+                        <a href="{{parseUrlToDownload excel}}" target="_blank" style="{{parseClassToDownload excel}}">excel</a>
+                    </small>
+                </div>
+                <div class="col-4">
+                    <small>
+                        <a href="{{parseUrlToDownload pdf}}" target="_blank" style="{{parseClassToDownload pdf}}">pdf</a>
+                    </small>
+                </div>
+                <div class="col-4">
+                    <small>
+                        <a href="{{parseUrlToDownload csv}}" target="_blank" style="{{parseClassToDownload csv}}">csv</a>
+                    </small>
+                </div>
+
+            </div>
+        </div>
     {{/each}}
 {{/if}}

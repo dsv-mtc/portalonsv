@@ -1,6 +1,5 @@
 node_modules
 .gcloudignore
 app.yaml
-.env
 ignore-templates
 utils/keys/pruebasfiisuni-3cd345507254.json

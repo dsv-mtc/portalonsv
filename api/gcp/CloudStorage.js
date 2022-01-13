@@ -1,7 +1,7 @@
 const {Storage} = require('@google-cloud/storage');
 const  str = require('string-to-stream');
 //reference: https://googleapis.dev/nodejs/storage/latest/
-require('dotenv').config()
+require('dotenv').config();
 
 class CloudStorage{
     constructor(){

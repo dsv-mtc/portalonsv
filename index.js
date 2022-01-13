@@ -13,6 +13,8 @@ const logger= require("./controllers/logger");
 const {genKeyPair}=require("./utils/criptoUtils");
 const helmet=require("helmet");
 
+const firestore=new(require('./api/gcp/FireStore'));
+
 
 dotenv.config();
 //check if keys exist
@@ -20,6 +22,7 @@ genKeyPair();
 
 if(process.env.STRATEGY_MODE==='GCP'){
     logger.debug("Trabajando en modo GCP");
+    require("./api/passport");
 
 }
 
@@ -48,11 +51,18 @@ app.use(morgan("dev"));
 app.use(helmet());
 app.use(cookieParser(process.env.SECRET_APPLICATION))
 //Eliminar en producción
-app.use(session({
-    secret:process.env.SECRET_APPLICATION,
-    resave:false,
-    saveUninitialized:true,
-}));
+if(process.env.STRATEGY_MODE==='GCP'){
+    app.use(session({
+        secret:process.env.SECRET_APPLICATION,
+        resave:false,
+        saveUninitialized:true,
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    
+}
+
+
 if(process.env.STRATEGY_MODE==='ON_PREMISE'){
     app.use(session({
     secret:process.env.SECRET_APPLICATION,
@@ -83,5 +93,6 @@ app.use(routes);
 app.listen(process.env.PORT || 3000,async ()=>{
     //campaigns.sendingNewsLetter()
     //console.log(await campaigns._renderCampaign());
+    //await firestore.saveUser('elpadredelcordero@gmail.com','123456');
     logger.debug(`La aplicación se inició con éxito y a la escucha en el puerto ${process.env.PORT || 3000}`)
 })

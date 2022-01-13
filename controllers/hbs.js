@@ -231,7 +231,6 @@ function parseIcon(categoryValue){
     let iconToSend="";
     iconsList.forEach(icon=>{
         if(icon.value===categoryValue){
-            console.log("entre")
             iconToSend=icon.key;
         }
     })
@@ -243,6 +242,24 @@ function _createTemplate(foldername,filename){
  const basePathPartial=path.join(__dirname,'../views/partials/');
  let template = fs.readFileSync(`${basePathPartial}${foldername}/${filename}.hbs`,'utf-8')
  return template;
+}
+
+function parseUrlToDownload(url){
+    if(url){
+        return url
+    }
+    else{
+        return '#';
+    }
+}
+
+function parseClassToDownload(url){
+    if(url && url!='#'){
+        return 'display:block';
+    }else{
+        return 'display:none';
+    }
+
 }
 
 var hbs=exphbs.create({
@@ -265,7 +282,10 @@ var hbs=exphbs.create({
         parseIcon:parseIcon,
         checkHtml:checkHtml,
         createMenu:createMenu,
-        page_url_search:page_url_search
+        page_url_search:page_url_search,
+        parseUrlToDownload:parseUrlToDownload,
+        parseClassToDownload:parseClassToDownload
+
     }
 });
 
@@ -285,7 +305,9 @@ hbs2.registerHelper({
     parseIcon:parseIcon,
     checkHtml:checkHtml,
     createMenu:createMenu,
-    page_url_search:page_url_search
+    page_url_search:page_url_search,
+    parseUrlToDownload:parseUrlToDownload,
+    parseClassToDownload:parseClassToDownload
 })
 
 

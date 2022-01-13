@@ -70,6 +70,12 @@ class DataBase{
             return {success:false,message:"Cannot get user"}
         }
     }
+    /**
+     * @description: Guarda un usuario dentro de las tablas que es de tipo admin
+     * @param {string} email: cuenta de correo para el registro 
+     * @param {string} password clave asignada a la cuenta de correo
+     * @returns 
+     */
     saveUser=async (email,password)=>{
         try {
             const passwordEncrypted=crypto.AES.encrypt(password,process.env.CRYPTO_SECRET_KEY);
@@ -82,6 +88,12 @@ class DataBase{
         }
 
     }
+    /**
+     * @description: Compara el password ingresado con el password guardado en tabla
+     * @param {string} passIn: Password ingresado 
+     * @param {string} passSaved: Password guardado en tabla
+     * @returns 
+     */
     comparePassword=(passIn,passSaved)=>{
         const passwordDecrypted=crypto.AES.decrypt(passSaved,process.env.CRYPTO_SECRET_KEY).toString(crypto.enc.Utf8);
         if(passIn == passwordDecrypted){

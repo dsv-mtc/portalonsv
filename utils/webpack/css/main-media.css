@@ -131,6 +131,7 @@
     .no-4{
         height: 230px;
     }
+    
 }
 
 @media screen and (max-width: 767px) {
@@ -262,5 +263,8 @@
 @media screen and (max-width: 425px) {
     .no-4{
         height: 250px;
+    }
+    .logo-img-open-data{
+        width: 140px;
     }
 }

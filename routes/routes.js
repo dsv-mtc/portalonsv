@@ -5,7 +5,9 @@ const passport=require("passport");
 const uploader=require("../controllers/multer");
 const seo=require("../controllers/seo");
 const feedController=new (require("../controllers/feed"));
+const gcpUploaderController=require("../controllers/uploader.gcp");
 const youtubeApi = new (require("../api/gcp/Youtube"));
+require('dotenv').config();
 
 routes.use(async(req,res,next)=>{
    res.locals.settings= await apiGhost.getSettings();
@@ -172,8 +174,15 @@ routes.get("/webinars",async(req,res)=>{
    res.locals.enabledFooter=false;
    res.locals.enabledNavigation=false;
    const {categories}=utils.constants;
-   const documentsList= await utils.getDocuments();
-    res.render("pages/datos-abiertos",{categories,documentsList})
+   let documentsList=[];
+   if(process.env.STRATEGY_MODE==='ON_PREMISE'){
+      documentsList= await utils.getDocuments();
+   }
+   if(process.env.STRATEGY_MODE==='GCP'){
+      documentsList=await gcpUploaderController.getDocumentsList();
+   }
+
+    res.render("pages/datos-abiertos",{categories,documentsList});
  })
 
  routes.post("/datosabiertos",(req,res)=>{
@@ -201,7 +210,7 @@ routes.post("/datosabiertos-login",passport.authenticate('local-login',{
 }))
 
 routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
-   console.log(req.session); // TODO eliminar el comentario cuando se lance a producción
+   //console.log(req.session); // TODO eliminar el comentario cuando se lance a producción
    res.locals.enabledFooter=false;
    res.locals.enabledNavigation=false;
    const {categories, types}=utils.constants;
@@ -210,7 +219,14 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
  })
  routes.post("/datosabiertos-admin",uploader,async (req,res)=>{
    
-   const response=await utils.saveDocument(req);
+   let response=null;
+   if(process.env.STRATEGY_MODE==='GCP'){
+      response=await gcpUploaderController.uploadFileAndRegisterMetadata(req)
+   }
+   if(process.env.STRATEGY_MODE==='ON_PREMISE'){
+      response=await utils.saveDocument(req);
+   }
+   
    if (response.success){
       req.flash("document",{style:"alert alert-success alert-dismissible fade show",message:response.message})
   }else{

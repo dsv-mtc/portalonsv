@@ -13710,6 +13710,9 @@ footer {
 .logo-img{
     width: 421px;
 }
+.logo-img-open-data{
+    width: 221px;
+}
 
 .mapouter { position:relative;text-align:right;height:500px;width:100%;}
 .gmap_canvas {overflow:hidden;background:none!important;height:500px;width:100%;}
@@ -13873,6 +13876,7 @@ border: 1px solid #a2a2a2;
     .no-4{
         height: 230px;
     }
+    
 }
 
 @media screen and (max-width: 767px) {
@@ -14004,5 +14008,8 @@ border: 1px solid #a2a2a2;
 @media screen and (max-width: 425px) {
     .no-4{
         height: 250px;
+    }
+    .logo-img-open-data{
+        width: 170px;
     }
 }
