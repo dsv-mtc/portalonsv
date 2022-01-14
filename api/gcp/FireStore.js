@@ -2,6 +2,7 @@ const { Firestore} = require('@google-cloud/firestore');
 require('dotenv').config();
 const crypto=require("crypto-js");
 const logger= require("../../controllers/logger");
+const moment=require('moment');
 
 class CloudFirestore{ 
     constructor(){
@@ -88,12 +89,44 @@ class CloudFirestore{
         metadata.id=id;
         metadata.excel=excelFile?`${basicUrlPath}/${excelFile}`:null;
         metadata.pdf=pdfFile?`${basicUrlPath}/${pdfFile}`:null;
-        metadata.csv=csvFile?`${basicUrlPath}/${csvFile}`:null;   
+        metadata.csv=csvFile?`${basicUrlPath}/${csvFile}`:null;
+        metadata.date=moment().format('DD/MM/YYYY');   
         doc.set(metadata);
 
     }
     getMetadata=async()=>{
         return (await this.collectionMetadata.get()).docs.map(e=>e.data());
+    }
+
+    /**
+     * 
+     * @param {{category:string,order_by:string,ask:string}} searchValues 
+     */
+    getMetadataByQuery=async(searchValues)=>{
+        let order_by='date';
+        let order_desc='desc';
+            if(searchValues.order_by=='2'){
+                order_by='title'
+            }
+    
+        if(searchValues.ask=='2'){
+            order_desc='asc'
+        }
+        const categories=['category1','category2','category3'];
+        let snapshot=[];
+        let i=0;
+        do {
+            snapshot=await this.collectionMetadata.where(categories[i],'==',searchValues.category).orderBy(order_by).get();
+            i++;           
+        } while (snapshot.docs.length===0 && i<3);
+        if(snapshot.docs.length>0){
+            return snapshot.docs.map(e=>e.data());
+        }else{
+            return [];
+        }
+
+
+        
     }
 
     

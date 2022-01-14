@@ -7,6 +7,7 @@ const seo=require("../controllers/seo");
 const feedController=new (require("../controllers/feed"));
 const gcpUploaderController=require("../controllers/uploader.gcp");
 const youtubeApi = new (require("../api/gcp/Youtube"));
+const openDataController=new(require("../controllers/opendatasearch"));
 require('dotenv').config();
 
 routes.use(async(req,res,next)=>{
@@ -185,9 +186,16 @@ routes.get("/webinars",async(req,res)=>{
     res.render("pages/datos-abiertos",{categories,documentsList});
  })
 
- routes.post("/datosabiertos",(req,res)=>{
+ routes.post("/datosabiertos",async (req,res)=>{
     const form = req.body;
     console.log(form);
+   if(process.env.STRATEGY_MODE==='GCP'){
+      let result=await openDataController.searchMetadaByGcp(form);
+      console.log('result',result);
+   }
+   if(process.env.STRATEGY_MODE==='ON_PREMISE'){
+
+   }
     res.send("ok");
  })
 
