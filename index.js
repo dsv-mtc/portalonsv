@@ -48,7 +48,7 @@ app.set("view engine","hbs");
 
 //Usos
 app.use(morgan("dev"));
-app.use(helmet());
+//app.use(helmet());
 app.use(cookieParser(process.env.SECRET_APPLICATION))
 //Eliminar en producción
 if(process.env.STRATEGY_MODE==='GCP'){
