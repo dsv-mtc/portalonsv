@@ -1,0 +1,138 @@
+routes:
+
+collections:
+  /:
+    permalink: /{slug}/
+    template: index
+    filter: 'tag:-hash-es'
+  /noticias-eventos/:
+    permalink: /noticias-eventos/{slug}/
+    template: noticias-eventos
+    filter: tag:[noticias-eventos]
+  /regiones/:
+    permalink: /regiones/{slug}/
+    template: regiones
+  /analitica/:
+    permalink: /analitica/{slug}/
+    template: analitica
+  /srat/:
+    permalink: /srat/{slug}/
+    template: srat
+  /publicaciones/:
+    permalink: /publicaciones/{slug}/
+    template: publicaciones
+    filter: tag:[publicaciones]
+  /normas-legales/:
+    permalink: /normas-legales/{slug}/
+    template: normas-legales
+    filter: tag:[normas-legales]
+  /contacto/:
+    permalink: /contacto/{slug}/
+    template: contacto
+    filter: 'tag:hash-es'
+
+  /en/:
+    permalink: /en/{slug}/
+    template: index-en
+    filter: 'tag:hash-en'
+  /en/noticias-eventos/:
+    permalink: /noticias-eventos/{slug}/
+    template: noticias-eventos-en
+    filter: tag:[noticias-eventos]
+  /en/regiones/:
+    permalink: /regiones/{slug}/
+    template: regiones-en
+  /en/analitica/:
+    permalink: /analitica/{slug}/
+    template: analitica-en
+  /en/srat/:
+    permalink: /srat/{slug}/
+    template: srat-en
+  /en/publicaciones/:
+    permalink: /publicaciones/{slug}/
+    template: publicaciones-en
+    filter: tag:[publicaciones]
+  /en/normas-legales/:
+    permalink: /normas-legales/{slug}/
+    template: normas-legales-en
+    filter: tag:[normas-legales]
+  /en/contacto/:
+    permalink: /contacto/{slug}/
+    template: contacto-en
+    filter: 'tag:hash-en'
+
+  /qu/:
+    permalink: /qu/{slug}/
+    template: index-qu
+    filter: 'tag:hash-qu' 
+  /qu/noticias-eventos/:
+    permalink: /noticias-eventos/{slug}/
+    template: noticias-eventos-qu
+    filter: tag:[noticias-eventos]
+  /qu/regiones/:
+    permalink: /regiones/{slug}/
+    template: regiones-qu
+  /qu/publicaciones/:
+    permalink: /publicaciones/{slug}/
+    template: publicaciones-qu
+    filter: tag:[publicaciones]
+  /qu/normas-legales/:
+    permalink: /normas-legales/{slug}/
+    template: normas-legales-qu
+    filter: tag:[normas-legales]
+  /qu/contacto/:
+    permalink: /contacto/{slug}/
+    template: contacto-qu
+    filter: 'tag:hash-qu'
+
+  /ay/:
+    permalink: /ay/{slug}/
+    template: index-ay
+    filter: 'tag:hash-ay'
+  /ay/noticias-eventos/:
+    permalink: /noticias-eventos/{slug}/
+    template: noticias-eventos-ay
+    filter: tag:[noticias-eventos]
+  /ay/regiones/:
+    permalink: /regiones/{slug}/
+    template: regiones-ay
+  /ay/publicaciones/:
+    permalink: /publicaciones/{slug}/
+    template: publicaciones-ay
+    filter: tag:[publicaciones]
+  /ay/normas-legales/:
+    permalink: /normas-legales/{slug}/
+    template: normas-legales-ay
+    filter: tag:[normas-legales]
+  /ay/contacto/:
+    permalink: /contacto/{slug}/
+    template: contacto-ay
+    filter: 'tag:hash-ay'
+
+  /agr/:
+    permalink: /agr/{slug}/
+    template: index-agr
+    filter: 'tag:hash-agr' 
+  /agr/noticias-eventos/:
+    permalink: /noticias-eventos/{slug}/
+    template: noticias-eventos-agr
+    filter: tag:[noticias-eventos]
+  /agr/regiones/:
+    permalink: /regiones/{slug}/
+    template: regiones-agr
+  /agr/publicaciones/:
+    permalink: /publicaciones/{slug}/
+    template: publicaciones-agr
+    filter: tag:[publicaciones]
+  /agr/normas-legales/:
+    permalink: /normas-legales/{slug}/
+    template: normas-legales-agr
+    filter: tag:[normas-legales]
+  /agr/contacto/:
+    permalink: /contacto/{slug}/
+    template: contacto-agr
+    filter: 'tag:hash-agr'
+
+taxonomies:
+  tag: /tag/{slug}/
+  author: /author/{slug}/
