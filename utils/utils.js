@@ -7,7 +7,7 @@ const apiMailChimp=new (require("../api/mail-chimp"));
 const CryptoJs= require("crypto-js")
 const  DataBase=require("../api/mysql");
 const mysqlClient=new DataBase();
-
+const os = require("os");
 
 mysqlClient.setQuery()
 
@@ -280,6 +280,12 @@ const getImagesFiles=async(prefixName)=>{
     return imagesRequest;
 }
 
+
+const getHost=()=>{
+    console.log(os.networkInterfaces());
+}
+
+
 const constants={
     categories:[
         {key:"Economía y Finanzas",value:"economia"},
@@ -321,5 +327,6 @@ module.exports ={
     renderSearchTemplate:renderSearchTemplate,
     renderTagTemplate:renderTagTemplate,
     renderNoticiasEventosTemplate:renderNoticiasEventosTemplate,
-    getImagesFiles:getImagesFiles
+    getImagesFiles:getImagesFiles,
+    getHost:getHost
 }

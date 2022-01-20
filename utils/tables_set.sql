@@ -1,4 +1,6 @@
-USE ons;
+CREATE SCHEMA `onsv` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+#luego de crear la base de datos ejecutar el siguiente script
+USE onsv;
 create table if not exists files (
 id int auto_increment not null, 
 title varchar(500) not null, 

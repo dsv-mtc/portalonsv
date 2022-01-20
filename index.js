@@ -12,13 +12,18 @@ const cookieParser = require("cookie-parser");
 const logger= require("./controllers/logger");
 const {genKeyPair}=require("./utils/criptoUtils");
 const helmet=require("helmet");
-
+const utils = require('./utils/utils');
+const mysqlClient = new (require("./api/mysql"));
 const firestore=new(require('./api/gcp/FireStore'));
+
 
 
 dotenv.config();
 //check if keys exist
 genKeyPair();
+
+
+utils.getHost();
 
 if(process.env.STRATEGY_MODE==='GCP'){
     logger.debug("Trabajando en modo GCP");
@@ -29,7 +34,6 @@ if(process.env.STRATEGY_MODE==='GCP'){
 if(process.env.STRATEGY_MODE==='ON_PREMISE'){
    logger.debug("Trabajando en modeo On Premise");
     //calling database
-    const mysqlClient = new (require("./api/mysql"))
     mysqlClient.getConnection();
     //calling passport
     require("./api/passport");
