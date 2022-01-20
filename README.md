@@ -34,6 +34,9 @@ Si alguno de los componentes de la lista no se encuentra presente, reportar a lo
 -   Ejecutamos <code> pm2 start index.js</code>; la aplicación se se ejecutará por defecto en el puerto 3000 o en un puerto asignado por el servidor.
 -   **Observación1**: Se puede ver la lista de aplicaciones con <code>pm2 list</code> 
 -   **Observación2**: Se pueden visualizar los logs con <code>pm2 logs 'name'</code> ; siendo name el nombre de la aplicación; el name se obtiene del campo name al ejecutar la observación 1.
+-   **Observación3**: En ocasiones se requiere realizar cambios en el código fuente con lo cual debemos de actualizarlo; para ello cuando realicemos nuestros cambios debemos de reiniciar la aplicación con <code>pm2 restart 'name'</code>. Siendo name un campo que se obtiene al ejecutar la obsr. 1.
+Si la aplicación no muestra nuestros cambios debemos de revisar los logs; existe la posibilidad que nginx haya tomado el puerto y nuestra aplicación esté en bucle sin ejecutar los cambios para ello debemos de hacer kill del proceso:  
+Obtenemos el **PID** del proceso con <code> sudo lsof -i:3000</code> y lo finalizamos con: <code>sudo kill -9 'PID'</code> siendo PID el valor del proceso.
 
 
 ## NGINX
