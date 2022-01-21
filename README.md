@@ -159,7 +159,9 @@ primary key (id)
  primary key (id)
  );
 ```
-Dependiendo de la versión de mysql (8.0.22) y de las configuraciones el script podría no ser aplicable o presentar algún tipo de error; finalmente se debe obtener las tablas.
+Dependiendo de la versión de mysql (8.0.22) y de las configuraciones el script podría no ser aplicable o presentar algún tipo de error; finalmente se debe obtener las tablas con las especificaciones requeridas.
+
+
 
 # SITEMAP
 -   La generación del sitemap tiene dos mecanismos de creación; v1 y v2, haciendo uso de v1 se debe emplear sitemap.XMLToWeb(res)
