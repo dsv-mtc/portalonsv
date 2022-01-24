@@ -7,6 +7,11 @@ La aplicación responde a una actualización de servicios de la plataforma onsv 
 
 Si alguno de los componentes de la lista no se encuentra presente, reportar a los encargados correspondientes.
 
+#   **CREDENCIALES GENERALES**
+-   Administrador de la subida de datos abiertos: user:elpadredelcordero@gmail.com pass: 123456
+-   Usuario de mysql: user: onsv pass:user_onsv2021#HMR
+-   Usuario Ubuntu multipass user:onsv  pass: observatorionacional
+-   Usuario gitlab, user:onsvdev@gmail.com pass: onsvdeveloper
 
 #   **PROCESO DE INSTALACIÓN**
 
@@ -119,6 +124,19 @@ http{
 }
 ```
 Guardamos y  verificamos que el archivo esté correcto con: <code> sudo nginx -t</code>; si obtenemos un mensaje exitoso procedemos a reiniciar nginx con: <code> sudo nginx -s reload</code>
+
+### COMANDOS BÁSICOS DE NGINX
+Puede usarse el **systemctl** o **service**:
+
+```
+sudo systemctl start nginx 
+sudo systemctl stop nginx 
+sudo systemctl restart nginx
+
+sudo service nginx start
+sudo service nginx stop
+sudo service nginx restart
+```
 
 ## MYSQL
 -   Accedemos a mysql con usuario root (solicitar las credenciales).

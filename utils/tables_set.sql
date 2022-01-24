@@ -21,3 +21,7 @@ primary key (id)
  password varchar(500) not null, 
  primary key (id)
  );
+
+ #Luego de crear las tablas agregamos usuario admin
+USE onsv;
+insert into users (user,password) values ("elpadredelcordero@gmail.com","U2FsdGVkX180Biadt3qMf9WszpoieO332FiCoBdtlQQ=");
