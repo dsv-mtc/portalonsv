@@ -2,3 +2,5 @@
 [31m[2021-08-16T19:22:51.556Z] error Cannot read property 'on' of undefined[39m
 [31m[2021-08-16T20:37:54.697Z] error You have ended the stream before anything was written. streamToPromise MUST be called before ending the stream.[39m
 [31m[2021-08-16T20:49:56.137Z] error You have ended the stream before anything was written. streamToPromise MUST be called before ending the stream.[39m
+[31m[2022-01-31T10:11:17.551Z] error ER_ACCESS_DENIED_ERROR: Access denied for user 'onsv'@'localhost' (using password: YES)[39m
+[31m[2022-01-31T11:00:26.493Z] error ER_ACCESS_DENIED_ERROR: Access denied for user 'onsv'@'localhost' (using password: YES)[39m

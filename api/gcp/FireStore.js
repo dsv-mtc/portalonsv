@@ -87,9 +87,9 @@ class CloudFirestore{
         const doc=this.collectionMetadata.doc();
         const id=doc.id;
         metadata.id=id;
-        metadata.excel=excelFile?`${basicUrlPath}/${excelFile}`:null;
-        metadata.pdf=pdfFile?`${basicUrlPath}/${pdfFile}`:null;
-        metadata.csv=csvFile?`${basicUrlPath}/${csvFile}`:null;
+        metadata.excelfile=excelFile?`${basicUrlPath}/${excelFile}`:null;
+        metadata.pdffile=pdfFile?`${basicUrlPath}/${pdfFile}`:null;
+        metadata.csvfile=csvFile?`${basicUrlPath}/${csvFile}`:null;
         metadata.date=moment().format('DD/MM/YYYY');   
         doc.set(metadata);
 

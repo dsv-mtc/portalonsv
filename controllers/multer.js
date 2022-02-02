@@ -10,7 +10,8 @@ if(process.env.STRATEGY_MODE==='ON_PREMISE'){
         destination: function(req,file,cb){
             let filePath="";
             const folder=file.fieldname.split("-")[0]
-            filePath=`../../docs_uploaded/${folder}`
+            //filePath=`../../docs_uploaded/${folder}` //ruta original
+            filePath =`../docs/${folder}`;
             cb(null,path.join(__dirname,filePath));
         },
         filename:function(req,file,cb){

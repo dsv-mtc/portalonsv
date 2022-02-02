@@ -179,10 +179,28 @@ primary key (id)
 ```
 Dependiendo de la versión de mysql (8.0.22) y de las configuraciones el script podría no ser aplicable o presentar algún tipo de error; finalmente se debe obtener las tablas con las especificaciones requeridas.
 
+### MYSQL Observaciones
+Si no se tiene instalado Mysql ([instalación][mysql-installation] ):
+- user: **root** ; password: **H3nryM3d1na@uni.pe** 
 
-
+Si se desconoce el usuario root hacer (aplicable a la versión 8.0.22):
+### En Windows
+-   ([referencia][mysql-start]) Apagar el servicio de mysql <code>net stop MySQL80</code>.
+-   ([referencia][mysql-reset]) En el "Escritorio" crear el archivo **"reset.txt"**.
+-   El contenido del archivo es el siguiente:
+```
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'user_onsv2021#HMR';
+```
+-   Abrir la consola en modo administrador y buscar la carpeta MySQL80 (ubicada por lo general en la carpeta "Program Files").
+-   ([referencia][mysql-data-folder]) Dentro de la carpeta a la altura de la carpeta bint crear la carpeta **data** si no existe.
+-   Entrar a la carpeta **bin**.
+-   Ejecutar:  
+<code>mysqld --init=file=C:\Usuarios\Intel\Escritorio\reset.txt</code> 
+-   La ruta anterior es un ejemplo de la ubicación del archivo.
+-   Reiniciamos el servicio con <code> net start MySQL80</code>.
 # SITEMAP
--   La generación del sitemap tiene dos mecanismos de creación; v1 y v2, haciendo uso de v1 se debe emplear sitemap.XMLToWeb(res)
+-   La generación del sitemap tiene dos mecanismos de creación; v1 y v2, haciendo uso de v1 se debe emplear sitemap.XMLToWeb(res).
+
 
 #   MAILCHIMP
 -   Se logró la conexión y ya se almacena usuarios por tag en la plataforma
@@ -220,3 +238,7 @@ Dependiendo de la versión de mysql (8.0.22) y de las configuraciones el script 
 [pm2]:"https://github.com/Unitech/pm2"
 [nginx]:"https://www.nginx.com/resources/wiki/"
 [conexion-remota]:"https://medium.com/code-kings/mysql-how-to-connect-to-your-ubuntu-vm-remotely-using-mysql-workbench-from-oracle-e280602d7ff9"
+[mysql-start]:"https://stackoverflow.com/questions/10885038/stop-mysql-service-windows"
+[mysql-reset]:"https://dev.mysql.com/doc/mysql-windows-excerpt/5.7/en/resetting-permissions-windows.html"
+[mysql-data-folder]:"https://stackoverflow.com/questions/41504580/cant-create-test-file-lower-test-start-server-mysql"
+[mysql-installation]:"https://www.youtube.com/watch?v=hUZKNsnHe_A"

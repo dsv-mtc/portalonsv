@@ -245,7 +245,7 @@ function _createTemplate(foldername,filename){
 }
 
 function parseUrlToDownload(url){
-    if(url){
+    if(url && url!=null && url!='null'){
         return url
     }
     else{
@@ -254,7 +254,8 @@ function parseUrlToDownload(url){
 }
 
 function parseClassToDownload(url){
-    if(url && url!='#'){
+    console.log(url)
+    if(url && url!='#' && url!=null && url!='null'){
         return 'display:block';
     }else{
         return 'display:none';

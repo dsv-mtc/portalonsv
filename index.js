@@ -31,6 +31,7 @@ if(process.env.STRATEGY_MODE==='ON_PREMISE'){
    logger.debug("Trabajando en modeo On Premise");
     //calling database
     mysqlClient.getConnection();
+    
     //calling passport
     require("./api/passport");
 }
@@ -94,5 +95,8 @@ app.listen(process.env.PORT || 3000,async ()=>{
     //campaigns.sendingNewsLetter()
     //console.log(await campaigns._renderCampaign());
     //await firestore.saveUser('elpadredelcordero@gmail.com','123456');
+    /*Correr el script una única vez para generar el usuario admin en On-Premise */
+    // mysqlClient.setQuery();
+    // await mysqlClient.saveUser('elpadredelcordero@gmail.com','123456');
     logger.debug(`La aplicación se inició con éxito y a la escucha en el puerto ${process.env.PORT || 3000}`)
 })

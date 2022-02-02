@@ -239,12 +239,16 @@ const unSubscribeUser=async()=>{
 const saveDocument=async(request)=>{
     const files_name=['excel-file','csv-file','pdf-file'];
     let data = {...request.body}
+    // console.log(data);
     files_name.forEach(name=>{
         const folder=name.split("-")[0];
         if(name in request.files){
-            const filePath=`../../docs_uploaded/${folder}/${request.files[name][0].originalname}`
+            //const filePath=`../../docs_uploaded/${folder}/${request.files[name][0].originalname}`
+            const localFilePath=`../docs_uploaded/${folder}/${request.files[name][0].originalname}`;
+            const filePath=path.join(__dirname,localFilePath).replace(/\\/g,"/");
+            console.log(filePath);
             Object.defineProperty(data,`${folder}file`,{
-                value:path.join(__dirname,filePath),
+                value:filePath,
                 writable:true,
                 enumerable:true,
                 configurable:true
@@ -265,6 +269,7 @@ const saveDocument=async(request)=>{
 
 const getDocuments=async()=>{
     const response = await mysqlClient.getDocuments();
+    console.log(response)
     if(response.success){
         return response.data;
     }else{
