@@ -6,6 +6,7 @@ const path=require("path")
 let storage=null;
 
 if(process.env.STRATEGY_MODE==='ON_PREMISE'){
+    console.log("multer")
     storage=multer.diskStorage({
         destination: function(req,file,cb){
             let filePath="";

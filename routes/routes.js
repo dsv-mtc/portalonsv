@@ -236,7 +236,7 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
    res.render("pages/datos-abiertos-admin",{categories,types,info_document})
  })
  routes.post("/datosabiertos-admin",uploader,async (req,res)=>{
-   
+   console.log("llamando")
    let response=null;
    if(process.env.STRATEGY_MODE==='GCP'){
       response=await gcpUploaderController.uploadFileAndRegisterMetadata(req)
