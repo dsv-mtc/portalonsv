@@ -115,6 +115,8 @@ function search(){
         })
     } 
 }
+
+
 /**
  * @description: Función encargada de procesar la búsqueda en noticias-eventos
  * @param {*} keyword : Palabra buscada
@@ -193,7 +195,6 @@ function getMapFromForm(){
                 document.getElementById('nombre').value=response.regionData.NOMBRE;
                 document.getElementById('telefono').value=response.regionData.TELEFONO;
                 document.getElementById('email').value=response.regionData['E-MAIL'];
-                console.log(response.regionData.REGION)
                 setImage(response.regionData.REGION);
                 document.getElementById('noti').innerHTML=response.template;
                 $("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
@@ -227,7 +228,6 @@ function getMap(){
         fetch('/services-map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region:e.target.id,lang})})
         .then(results=>results.json())
         .then(response=>{
-            console.log(response);
             document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
             document.getElementById(e.target.id).classList.replace('map','map-selected');
             document.getElementById('nombre').value=response.regionData.NOMBRE;

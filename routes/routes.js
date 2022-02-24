@@ -190,15 +190,23 @@ routes.get("/webinars",async(req,res)=>{
 
  routes.post("/datosabiertos",async (req,res)=>{
     const form = req.body;
-    console.log(form);
+    console.log("datos",req.body)
+    const lang = req.body['lang'];
    if(process.env.STRATEGY_MODE==='GCP'){
       let result=await openDataController.searchMetadaByGcp(form);
-      console.log('result',result);
+     res.send(result);
    }
    if(process.env.STRATEGY_MODE==='ON_PREMISE'){
-
-   }
-    res.send("ok");
+      let result=await openDataController.searchMetadataByMysql(form);
+      if(result.success){
+         const searchRendered = utils.renderSearchOpenDataTemplate({documentsList:result.posts, lang:lang})
+         // console.log(searchRendered);
+         res.send({success:true, posts:searchRendered});
+      }else {
+         res.send({success:false});
+      }
+      
+   }  
  })
 
  routes.get("/datosabiertos-login",isNotAuthenticated,(req,res)=>{
@@ -245,6 +253,7 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
    res.redirect("/datosabiertos-admin")
  })
 
+
  function isAuthenticated(req,res,next){
     if(req.isAuthenticated()){
        return next();
@@ -286,8 +295,7 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
 //SusCripción
  routes.post("/subscribe",async(req,res)=>{
     const form=req.body;
-    const response=await utils.subscribeUser(form)
-    console.log(response);
+    const response=await utils.subscribeUser(form);
     res.send(response);
  })
 

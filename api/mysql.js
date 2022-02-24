@@ -115,8 +115,21 @@ class DataBase{
 
     }
     getDocument=()=>{
-
+        //
     }
+
+    getDocumentsByTitle=async (title)=>{
+        const queryString=`SELECT * FROM ${process.env.DOCUMENTS_TABLE} WHERE  category1='${title}' OR category2='${title}' OR category3='${title}' `;
+        try {
+            const results=await this.query(queryString);
+            return {success:true,data:results}            
+        } catch (error) {
+            console.error(error);
+            return {success:false,message:"No se pudo recuperar los datos, recargue la página"}
+        }
+    }
+
+
     saveDocument=async (data)=>{
         try {
             const {title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile} = data;

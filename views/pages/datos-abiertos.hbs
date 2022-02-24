@@ -24,7 +24,7 @@
                         {{/each}}
                  </select>
             </div>
-            <div class="form-group col-12 col-md-2">
+            {{!-- <div class="form-group col-12 col-md-2">
                 <label for="order-data">Ordenar por</label>
                 <select class="form-control" name="order-data" id="order-data">
                     <option value="1">Fecha Cambiada</option>
@@ -37,7 +37,7 @@
                     <option value="1">Descendente</option>
                     <option value="2">Ascendente</option>
                 </select>
-            </div>
+            </div> --}}
              
         </div>
         <div class="form-row d-flex flex-row-reverse">
@@ -58,6 +58,12 @@
     </div>
 </section>
 <!-- main section-->
-<main class="container">
-    {{>datos-abiertos/datos-abiertos-card-body documentsList=documentsList}}
+<main class="container" >
+    <section id="default">
+        {{>datos-abiertos/datos-abiertos-card-body documentsList=documentsList}}
+    </section>
+    <section id="results-template">
+
+    </section>
+
 </main>

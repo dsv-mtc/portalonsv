@@ -26,7 +26,6 @@ function createMenu(menuList,secondary_navigation){
     let htmlMenu="";
     menuList.forEach(menuObj=>{
         const target=setTarget(menuObj.label);
-        console.log(menuObj.label);
         if(menuObj.label=='analítica' || menuObj.label=='analytics'){
             const tablero=secondary_navigation?'Applications':'Aplicaciones'
             const srat = menuList.find(menu=>{if(menu.label=='srat') return menu});
@@ -58,7 +57,7 @@ function createMenu(menuList,secondary_navigation){
             title:'Vial Education',
             urls:{
                 url1:"/en/webinars",
-                url2:"/en/aulavirtual",
+                url2:"https://aulavirtual.mtc.gob.pe/seguridadvial/",
                
             },
             labels:{
@@ -78,7 +77,7 @@ function createMenu(menuList,secondary_navigation){
             title:'Educación Vial',
             urls:{
                 url1:"/webinars",
-                url2:"/aulavirtual",
+                url2:"https://aulavirtual.mtc.gob.pe/seguridadvial/",
           
             },
             labels:{
@@ -167,8 +166,6 @@ function endpointRebase2(url){
 }
 
 function checkTagsVisible(url){
-    console.log("url",url)
-    
     if(url.includes('404')){
         return 'display:none';
     }else{
@@ -266,7 +263,6 @@ function parseUrlToDownload(url){
 }
 
 function parseClassToDownload(url){
-    console.log(url)
     if(url && url!='#' && url!=null && url!='null'){
         return 'display:block';
     }else{

@@ -9,7 +9,7 @@ const  DataBase=require("../api/mysql");
 const mysqlClient=new DataBase();
 const os = require("os");
 
-mysqlClient.setQuery()
+mysqlClient.setQuery();
 
 const transformHttps=(element)=>{
     const patttern = /^http:/ 
@@ -146,6 +146,12 @@ const renderSearchTemplate=(data)=>{
     let compiled=hbs2.compile(template);
     return compiled(data);
 }
+
+const renderSearchOpenDataTemplate=(data)=>{
+    let template = fs.readFileSync(path.join(__dirname,'../views/partials/open-data-results.hbs'),'utf-8');
+    let compiled = hbs2.compile(template);
+    return compiled(data);
+}
 const renderTagTemplate=(data)=>{
     let template = fs.readFileSync(path.join(__dirname,"../views/partials/sidebar-widgets/tags.hbs"),'utf-8');
     let compiled=hbs2.compile(template);
@@ -271,7 +277,6 @@ const saveDocument=async(request)=>{
 
 const getDocuments=async()=>{
     const response = await mysqlClient.getDocuments();
-    console.log(response)
     if(response.success){
         return response.data;
     }else{
@@ -334,6 +339,7 @@ module.exports ={
     renderSearchTemplate:renderSearchTemplate,
     renderTagTemplate:renderTagTemplate,
     renderNoticiasEventosTemplate:renderNoticiasEventosTemplate,
+    renderSearchOpenDataTemplate:renderSearchOpenDataTemplate,
     getImagesFiles:getImagesFiles,
     getHost:getHost
 }
