@@ -26,6 +26,7 @@ function createMenu(menuList,secondary_navigation){
     let htmlMenu="";
     menuList.forEach(menuObj=>{
         const target=setTarget(menuObj.label);
+        console.log(menuObj.label);
         if(menuObj.label=='analítica' || menuObj.label=='analytics'){
             const tablero=secondary_navigation?'Applications':'Aplicaciones'
             const srat = menuList.find(menu=>{if(menu.label=='srat') return menu});
@@ -177,7 +178,7 @@ function checkTagsVisible(url){
 }
 
 function setTarget(label){
-    if(label=="srat"){
+    if(label=="srat" || label=="analítica"){
         return "_blank"
     }
     return "_self"
