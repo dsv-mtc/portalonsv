@@ -71,7 +71,9 @@ routes.get("/",async (req,res)=>{
 
  routes.post("/services-map",async (req,res)=>{
    //TODO es posible que en algunas regiones no existan noticias  y los posts sean vacío
-   const regionRequest= req.body['region'];
+   let regionRequest= req.body['region'];
+   if(regionRequest==='San Martín') regionRequest='san-martin';
+   if(regionRequest === 'La Libertad') regionRequest = 'la-libertad';
    const lang=req.body['lang']
    const filter=`tags:[${regionRequest}]`;
    const post = await apiGhost.getPosts(8,"tags,authors",filter, "published_at DESC");

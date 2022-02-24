@@ -79,6 +79,10 @@ li>.dropdown-menu{
     border-radius: 25px;
 
 }
+
+.tags-class-none{
+    display: none;
+}
 .disclaimer{
     display: flex;
     align-items: center;

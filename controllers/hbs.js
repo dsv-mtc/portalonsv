@@ -161,8 +161,19 @@ function endpointRebase(url){
  * @returns  Un url parseado con la url origen de la web
  */
 function endpointRebase2(url){
-    const pattern=process.env.URL_PATH_API2
+    const pattern=process.env.URL_PATH_API2;
     return url.replace(pattern,`${process.env.URL_PATH}`)
+}
+
+function checkTagsVisible(url){
+    console.log("url",url)
+    
+    if(url.includes('404')){
+        return 'display:none';
+    }else{
+        return '';
+    }
+
 }
 
 function setTarget(label){
@@ -285,7 +296,8 @@ var hbs=exphbs.create({
         createMenu:createMenu,
         page_url_search:page_url_search,
         parseUrlToDownload:parseUrlToDownload,
-        parseClassToDownload:parseClassToDownload
+        parseClassToDownload:parseClassToDownload,
+        checkTagsVisible:checkTagsVisible
 
     }
 });
@@ -308,7 +320,8 @@ hbs2.registerHelper({
     createMenu:createMenu,
     page_url_search:page_url_search,
     parseUrlToDownload:parseUrlToDownload,
-    parseClassToDownload:parseClassToDownload
+    parseClassToDownload:parseClassToDownload,
+    checkTagsVisible: checkTagsVisible
 })
 
 

@@ -41,7 +41,7 @@ import r18 from '../img/regions/moquegua.png';
 import r19 from '../img/regions/pasco.png';
 import r20 from '../img/regions/piura.png';
 import r21 from '../img/regions/puno.png';
-import r22 from '../img/regions/san martín.png';
+import r22 from '../img/regions/san martin.png';
 import r23 from '../img/regions/tacna.png';
 import r24 from '../img/regions/tumbes.png';
 import r25 from '../img/regions/ucayali.png';

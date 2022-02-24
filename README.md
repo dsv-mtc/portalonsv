@@ -12,6 +12,7 @@ Si alguno de los componentes de la lista no se encuentra presente, reportar a lo
 -   Usuario de mysql: user: onsv pass:user_onsv2021#HMR
 -   Usuario Ubuntu multipass user:onsv  pass: observatorionacional
 -   Usuario gitlab, user:onsvdev@gmail.com pass: onsvdeveloper
+-   Usuario mailchimp, email: onsvdev@gmail.com user:onsvdev , pass : Obs3rv4t0r10#
 
 #   **PROCESO DE INSTALACIÓN**
 

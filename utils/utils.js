@@ -121,6 +121,9 @@ const deleteDiacritics= (text)=>{
 
 const serviceMap=(region,dataGhost)=>{
     let data={regionData:{},template:''}
+    let condicion = region;
+    if(condicion ==='san-martin') region='SAN MARTIN';
+    if(condicion ==='la-libertad') region='LA LIBERTAD';
     region=deleteDiacritics(region).toUpperCase();
     //console.log(region)
     regions.REGIONES.forEach(x=>{

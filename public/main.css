@@ -12732,6 +12732,10 @@ li>.dropdown-menu{
     border-radius: 25px;
 
 }
+
+.tags-class-none{
+    display: none;
+}
 .disclaimer{
     display: flex;
     align-items: center;
@@ -14010,6 +14014,6 @@ border: 1px solid #a2a2a2;
         height: 250px;
     }
     .logo-img-open-data{
-        width: 170px;
+        width: 140px;
     }
 }
