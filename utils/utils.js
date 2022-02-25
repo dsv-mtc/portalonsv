@@ -252,7 +252,7 @@ const saveDocument=async(request)=>{
     files_name.forEach(name=>{
         const folder=name.split("-")[0];
         if(name in request.files){
-            const localFilePath=`../../docs_uploaded/${folder}/${request.files[name][0].originalname}`
+            const localFilePath=`../../docs_uploaded/public/${folder}/${request.files[name][0].originalname}`
             //const filePath=path.join(__dirname,localFilePath).replace(/\\/g,"/");
             const filePath=localFilePath;
             Object.defineProperty(data,`${folder}file`,{
