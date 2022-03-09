@@ -68,6 +68,13 @@ class GhostApi {
                 order:"published_at DESC"
             });
     }
+
+    getModalPosts=async()=>{
+        const publish=await this.getPosts(1,'tags,authors','tags:[publicaciones]',"published_at DESC");
+        const legal=await this.getPosts(1,'tags,authors','tags:[normas-legales]',"published_at DESC");
+        return publish.concat(legal);
+
+    }
     getSearchPosts=async(filter,slug)=>{
         let posts=[];
         let miniSearch = new MiniSearch({
