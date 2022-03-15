@@ -10,8 +10,9 @@ if(process.env.STRATEGY_MODE==='ON_PREMISE'){
     storage=multer.diskStorage({
         destination: function(req,file,cb){
             let filePath="";
-            const folder=file.fieldname.split("-")[0]
-            filePath=`../../docs_uploaded/public/${folder}` //ruta original
+            const folder=file.fieldname.split("-")[0];
+            // filePath=`../../docs_uploaded/public/${folder}`; //ruta original
+            filePath=`../../estaticos/public/${folder}`;
             //filePath =`../docs/${folder}`;
             cb(null,path.join(__dirname,filePath));
         },

@@ -3,7 +3,9 @@ const path=require("path");
 const fs=require("fs");
 const moment =require("moment");
 const handlebars=require("handlebars");
+const dotenv = require('dotenv');
 
+dotenv.config();
 
 moment.defineLocale('es',{
     months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
@@ -255,7 +257,7 @@ function _createTemplate(foldername,filename){
 
 function parseUrlToDownload(url){
     if(url && url!=null && url!='null'){
-        return url
+        return `${process.env.URL_PATH_FILES}/${url}`;
     }
     else{
         return '#';

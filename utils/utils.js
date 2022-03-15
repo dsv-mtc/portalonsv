@@ -8,6 +8,10 @@ const CryptoJs= require("crypto-js")
 const  DataBase=require("../api/mysql");
 const mysqlClient=new DataBase();
 const os = require("os");
+const dotenv = require('dotenv');
+
+
+dotenv.config();
 
 mysqlClient.setQuery();
 
@@ -252,7 +256,8 @@ const saveDocument=async(request)=>{
     files_name.forEach(name=>{
         const folder=name.split("-")[0];
         if(name in request.files){
-            const localFilePath=`../../docs_uploaded/public/${folder}/${request.files[name][0].originalname}`
+            //const localFilePath=`../../docs_uploaded/public/${folder}/${request.files[name][0].originalname}`;
+            const localFilePath=`files/${folder}/${request.files[name][0].originalname}`
             //const filePath=path.join(__dirname,localFilePath).replace(/\\/g,"/");
             const filePath=localFilePath;
             Object.defineProperty(data,`${folder}file`,{
