@@ -14,19 +14,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                {{!-- <a href="https://drive.google.com/file/d/1tCb4__24ByDoJK4BTWcyXci2STIODCzq/view" target="_blank">
-                    <img src="/assets/aficheindex.png" class="img-fluid" alt="campaña">
-                </a> --}}
                 {{#each post}}
                     <div class="row">
-                        <div class="col-md-5">
-                            <div class="rsp-nye-img publicaciones-img" style="height:50%">
+                        <div class="col-md-12">
+                            <div class="rsp-nye-img publicaciones-img" style="width:100%">
                                 <a href="{{endpointPostParse (parseHttp url) ../lang }}"><img class="publicaciones-img" src="{{parseHttp feature_image}}" alt="nye"></a>
                             </div>
                         </div>
-                        <div class="col-md-7">
-                            <div class="rsp-res-blk rsp-nye-desc">
-                                <a href="{{endpointPostParse (parseHttp url) ../lang }}"><h6 class="ft-bold publicaciones-tit">{{ title }}</h6></a>
+                        <div class="col-md-12">
+                            <div style="margin-top: -40px; margin-bottom:40px">
+                                {{!-- <a href="{{endpointPostParse (parseHttp url) ../lang }}"><h6 class="ft-bold publicaciones-tit">{{ title }}</h6></a>
                                 <div class="rsp-pro-det">
                                     <div class="pd-desc">
                                         <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
@@ -34,7 +31,7 @@
                                 </div>
                                 <p class="publicaciones-det text-justify">
                                     {{excerpt}}
-                                </p>
+                                </p> --}}
                                 <div class="nye-link-blk">
                                 <div class="ny-btn">
                                     <a href="{{endpointPostParse (parseHttp url) 'es'}}" class="btn btn-rsp ft-bold" style="width: 200px !important;">

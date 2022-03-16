@@ -35,7 +35,7 @@ routes.use(async(req,res,next)=>{
 routes.get("/",async (req,res)=>{
     const accidents=await utils.getAccidents();
     const post2=await apiGhost.getPosts(4,"tags","tags: [noticias-eventos]");
-    const post3=await apiGhost.getPosts(3);
+    const post3=await apiGhost.getPosts(3,"tags,authors","tags:[publicaciones]","published_at DESC");
     const banners=await utils.getImagesFiles('banner');
     const modalinfo= await apiGhost.getModalPosts();
     res.render("index",{post3,post2,accidents,banners,modalinfo});
