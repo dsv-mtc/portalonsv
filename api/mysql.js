@@ -132,10 +132,14 @@ class DataBase{
 
     saveDocument=async (data)=>{
         try {
-            const {title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile} = data;
+            //const {title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile} = data;
+            const {title,author,description,category1,type,excelfile,pdffile,csvfile} = data;
+            // const queryString=`INSERT INTO ${process.env.DOCUMENTS_TABLE} 
+            //     (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile) 
+            //     VALUES ("${title}","${author}","${description}","${category1}","${category2}","${category3}","${type}","${excelfile}","${pdffile}","${csvfile}")`
             const queryString=`INSERT INTO ${process.env.DOCUMENTS_TABLE} 
                 (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile) 
-                VALUES ("${title}","${author}","${description}","${category1}","${category2}","${category3}","${type}","${excelfile}","${pdffile}","${csvfile}")`
+                VALUES ("${title}","${author}","${description}","${category1}","0","0","${type}","${excelfile}","${pdffile}","${csvfile}")`
             await this.query(queryString);
             return {success:true,message:"El documento ha sido guardado"}
         } catch (error) {
