@@ -98,7 +98,6 @@ const sendEmail= async (form)=>{
             return {success:false, message:message}
         }
     } catch (error) {
-        console.error(error);
         if(form.lang=='en'){
             message="something went wrong, try again"
         }else{
@@ -181,10 +180,8 @@ const _createPagination=(itemsPerPage,totalItems,page,step)=>{
 }
 
 const _resizeLengthPosts=(size,posts,page,step)=>{
-    console.log('pagina',page,step)
     const minIndex=page?(step=='next'?page*size:(page-2)*size):0;
     const maxIndex=page?(step=='next'?(page+1)*size:(page-1)*size):size;
-    console.log(minIndex,maxIndex)
     if(posts.length>size){
         let postsFiltereds= posts.filter((element,index)=>{
             if(minIndex<=index && index<maxIndex){
@@ -200,7 +197,6 @@ const _resizeLengthPosts=(size,posts,page,step)=>{
 }
 
 const renderNoticiasEventosTemplate=(data)=>{
-    console.log(data.prev,data.page,data.next)
     let template = fs.readFileSync(path.join(__dirname,"../views/partials/noticias-eventos/search-noticias-eventos.hbs"),'utf-8');
     data.pagination=_createPagination(7,data.post,data.page,data.step);
     data.post=_resizeLengthPosts(7,data.post,data.page,data.step);

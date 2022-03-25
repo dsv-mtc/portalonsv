@@ -137,6 +137,7 @@ function page_url_search(url_page,index,lang,keyword){
 
 function endpointPostParse(url,lang){
     url=parseHttp(url);
+    console.log(url)
     const pattern=process.env.URL_PATH_API
     if(lang=='es'){
         return url.replace(pattern,`${process.env.URL_PATH}/post`);
