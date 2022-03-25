@@ -130,6 +130,7 @@ Guardamos y  verificamos que el archivo esté correcto con: <code> sudo nginx -t
 Puede usarse el **systemctl** o **service**:
 
 ```
+sudo systemctl status nginx
 sudo systemctl start nginx 
 sudo systemctl stop nginx 
 sudo systemctl restart nginx
@@ -137,6 +138,8 @@ sudo systemctl restart nginx
 sudo service nginx start
 sudo service nginx stop
 sudo service nginx restart
+
+sudo nginx -t
 ```
 
 ## MYSQL

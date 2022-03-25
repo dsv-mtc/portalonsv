@@ -305,19 +305,12 @@ const getHost=()=>{
 
 const constants={
     categories:[
-        {key:"Economía y Finanzas",value:"economia"},
-        {key:"Gobernabilidad", value:"gobernabilidad"},
-        {key:"Transporte", value:"transporte"},
-        {key:"Desarrollo Social", value:"desarrollo-social"},
-        {key:"Desarrollo Urbano", value:"desarrollo-urbano"},
-        {key:"Educación", value:"educacion"},
-        {key:"Medio Ambiente", value:"medio-ambiente"},
-        {key:"Salud", value:"salud"},
-        {key:"COVID-19", value:"covid"},
-        {key:"Energía", value:"energia"},
-        {key:"Agua y Saneamiento", value:"agua-saneamiento"},
-        {key:"Alimentación y Nutrición", value:"alimentacion-nutricion"},
-        
+        {key:"Gestión de Velocidades",value:"gestion-velocidades"},
+        {key:"Vehículos Seguros", value:"vehiculos-seguros"},
+        {key:"Infraestructura Segura", value:"infraestructura-segura"},
+        {key:"Usuarios vulnerables", value:"usuarios-vulnerables"},
+        {key:"Conductores Seguros", value:"conductores-seguros"},
+        {key:"Respuesta a Siniestros", value:"respuesta-siniestros"},        
     ],
     types:[
         {key:"Recurso",value:"recurso"},

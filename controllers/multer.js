@@ -19,6 +19,9 @@ if(process.env.STRATEGY_MODE==='ON_PREMISE'){
         filename:function(req,file,cb){
             //file.fieldname+path.extname(file.originalname)
             cb(null,file.originalname)
+        },
+        fileFilter:function(_req,file,cb){
+            checkFileType(file,cb)
         }
     
     })
@@ -29,6 +32,16 @@ if(process.env.STRATEGY_MODE==='GCP'){
 }
 
 
+function checkFileType(file,cb){
+    const fileTypes = /pdf|xlxs|csv/;
+    const extname =fileTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimeType = fileTypes.test(file.mimeType);
+    if(mimeType && extname){
+        return cb(null,true);
+    }else{
+        cb('Formato no aceptado');
+    }
+}
 
 let uploader=multer({storage:storage,limits:{
     fileSize:5 * 1024 * 1024 //archivos no mayores que 5mb

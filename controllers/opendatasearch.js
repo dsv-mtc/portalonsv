@@ -29,7 +29,9 @@ class OpenData {
      */
     searchMetadataByMysql=async(valueSearch)=>{
         let documents = {success:false, data:[]};
+        console.log(valueSearch)
         if(valueSearch.category!='0' || valueSearch.category!=0){
+            console.log("entramos")
             documents = await mysqlClient.getDocumentsByTitle(valueSearch.category);
         }else{
             documents = await mysqlClient.getDocuments();
@@ -54,7 +56,10 @@ class OpenData {
             }else{
                 return {success:true, posts:searchResults}
             }
-        }else {
+        }else if(documents.success && valueSearch.search==''){
+            return {success:true,posts:documents.data}
+        }
+        else {
             
             return {success:false,posts:[]}
         }

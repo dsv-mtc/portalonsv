@@ -198,6 +198,7 @@ routes.get("/webinars",async(req,res)=>{
      res.send(result);
    }
    if(process.env.STRATEGY_MODE==='ON_PREMISE'){
+     
       let result=await openDataController.searchMetadataByMysql(form);
       if(result.success){
          const searchRendered = utils.renderSearchOpenDataTemplate({documentsList:result.posts, lang:lang})
@@ -229,7 +230,6 @@ routes.post("/datosabiertos-login",passport.authenticate('local-login',{
 }))
 
 routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
-   //console.log(req.session); // TODO eliminar el comentario cuando se lance a producción
    res.locals.enabledFooter=false;
    res.locals.enabledNavigation=false;
    const {categories, types}=utils.constants;
@@ -237,7 +237,6 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
    res.render("pages/datos-abiertos-admin",{categories,types,info_document})
  })
  routes.post("/datosabiertos-admin",uploader,async (req,res)=>{
-   console.log("llamando")
    let response=null;
    if(process.env.STRATEGY_MODE==='GCP'){
       response=await gcpUploaderController.uploadFileAndRegisterMetadata(req)

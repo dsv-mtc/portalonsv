@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded',()=>{
     console.log("datos  abiertos - iniciado");
    searchOpenData();
-    //sendFile();
-    reloadPage();  
+    reloadPage(); 
+    checkInputFile(); 
 })
 function searchOpenData() {
     const opendataDiv=document.querySelector('#open-data-form-search');
@@ -91,4 +91,44 @@ function reloadPosts(response){
         document.getElementById('results-template').innerHTML='';
         //document.getElementById('search-alert').classList.replace('hide','show');
     }
+ }
+
+ function checkInputFile(){
+     console.log('Check input file')
+    const formSendFile = document.querySelector('#datosabiertos-form');
+    if(formSendFile!=null){
+        formSendFile.addEventListener('submit',(e)=>{
+            //e.preventDefault();
+                    
+            const excel=document.querySelector('#excel-file').files[0].name;
+            const pdf=document.querySelector('#pdf-file').files[0].name;
+            const csv=document.querySelector("#csv-file").files[0].name;
+
+            const allowedExcelExtensions=/\.xlsx/;
+            const allowedPdfExtensions=/\.pdf/;
+            const allowedCsvExtensions=/\.csv/;
+
+            //Excel
+            if(!allowedExcelExtensions.exec(excel)){
+                e.preventDefault();
+                alert('Archivo EXCEL inválido')
+                window.location.reload();
+            }
+            //CSV
+            if(!allowedPdfExtensions.exec(pdf)){
+                e.preventDefault();
+                alert('Archivo PDF inválido')
+                window.location.reload();
+            }
+
+            //PDF
+            if(!allowedCsvExtensions.exec(csv)){
+                e.preventDefault();
+                alert('Archivo CSV inválido')
+                window.location.reload();
+            }
+        });
+        
+    }
+
  }

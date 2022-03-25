@@ -266,7 +266,7 @@ function parseUrlToDownload(url){
 
 function parseClassToDownload(url){
     if(url && url!='#' && url!=null && url!='null'){
-        return 'display:block';
+        return 'display:flex';
     }else{
         return 'display:none';
     }
