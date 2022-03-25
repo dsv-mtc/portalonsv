@@ -78,9 +78,11 @@ class GhostApi {
     }
     getSearchPosts=async(filter,slug)=>{
         let posts=[];
+        let stopWords= new Set(['de','o','la','los','las'])
         let miniSearch = new MiniSearch({
             fields:['title'],
-            storeFields:['id']
+            storeFields:['id'],
+            tokenize: (string) => string.split(/\s+/).filter(word => !stopWords.has(word))
         })
         let resultsRaw= [];
         resultsRaw = await  api.posts.browse({
@@ -89,11 +91,13 @@ class GhostApi {
             include:['tags','authors']
             //fields:"id,title"
         })
+        console.log(filter,slug)
         miniSearch.addAll(resultsRaw);
         let searchResults = miniSearch.search(slug,{fuzzy:0.2});
+        console.log(searchResults)
         if(searchResults.length==0){
             let suggestions=miniSearch.autoSuggest(slug,{fuzzy:0.2});
-            //console.log("suggestions",suggestions)
+            console.log("suggestions",suggestions)
             if(suggestions.length==0){
                 return {success:false, posts:posts};
             }

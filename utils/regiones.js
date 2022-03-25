@@ -31,10 +31,10 @@ var data={
             "REGION": "AREQUIPA",
             "DIRECCION": "Av Guardia Civil Nro. 702 Paucarpata - Arequipa",
             "WEBSITE": "https://www.grtc-gra.gob.pe/",
-            "NOMBRE": "Juan Luigi Mendoza Sota",
+            "NOMBRE": "C.P.C.C. Roberto Carlos Laime Sivana",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Gerente Regional de Transportes y Comunicaciones",
-            "E-MAIL": "juanlmendozasota@gmail.com, jgonzales@regionarequipa.gob.pe ",
-            "TELEFONO": "940528220"
+            "E-MAIL": "rlaime@regionarequipa.gob.pe",
+            "TELEFONO": "(054)465001"
         },
         {
             "REGION": "AYACUCHO",
@@ -58,9 +58,9 @@ var data={
             "REGION": "CALLAO",
             "DIRECCION": "Av. Juan Pablo II N° 140 Bellavista - Callao",
             "WEBSITE": "http://transportesycomunicaciones.regioncallao.gob.pe/",
-            "NOMBRE": "Ing. Jorge Luis Gabino Uribe Romero",
+            "NOMBRE": "Jorge Luis Gabino Uribe Romero",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Gerente Regional de Transportes y Comunicaciones",
-            "E-MAIL": "jgabino@regioncallao.gob.pe",
+            "E-MAIL": "juribe@regioncallao.gob.pe",
             "TELEFONO": "970970441"
         },
         {
@@ -76,37 +76,37 @@ var data={
             "REGION": "HUANCAVELICA",
             "DIRECCION": "Jr. Francisco de Angulo Nro. 410 Cercado - Huancavelica",
             "WEBSITE": "https://www.drtchuancavelica.gob.pe/",
-            "NOMBRE": "Ing. Paul Chancasanampa Pacheco",
+            "NOMBRE": "Arq. Ivan Justo Mendoza Artica",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Director Regional de Transportes y Comunicaciones",
-            "E-MAIL": "paul_fIcuncp@hotmail.com, sonymcpa@gmail.com",
-            "TELEFONO": "994457972"
+            "E-MAIL": "direccion@drtchuancavelica.gob.pe; ivan.mendoza.artica@gmail.com",
+            "TELEFONO": "968277482"
         },
         {
             "REGION": "HUANUCO",
             "DIRECCION": "Jr. General Prado Nº 911 - Huánuco",
             "WEBSITE": "http://drtchco.gob.pe/",
-            "NOMBRE": "Luis Mario Tiburcio Miguel",
+            "NOMBRE": "Arq. Yumer Eliseo Fabián Diaz",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Director Regional de Transportes y Comunicaciones",
-            "E-MAIL": "ltiburcio@drtchco.gob.pe",
-            "TELEFONO": "920791277"
+            "E-MAIL": "yfabian@drtchco.gob.pe",
+            "TELEFONO": "975567101"
         },
         {
             "REGION": "ICA",
             "DIRECCION": "Av. Matias Manzanilla N° 282 - Ica",
             "WEBSITE": "http://drtc.regionica.gob.pe/",
-            "NOMBRE": "Jorge Luis Marquina Alcalde",
+            "NOMBRE": "Abog. Mario Carlos Uribe Flores",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Director de Circulación Vial",
-            "E-MAIL": "jorgeluismarquinaalcalde@gmail.com",
-            "TELEFONO": "925140724"
+            "E-MAIL": "Uribefloresmariocarlos@gmail.com",
+            "TELEFONO": "932 767 620"
         },
         {
             "REGION": "JUNIN",
             "DIRECCION": "Av. Arterial N° 376, Chilca - Huancayo",
             "WEBSITE": "http://www.regionjunin.gob.pe/pagina/id/direccion_regional_de_transportes_y_comunicaciones/",
-            "NOMBRE": "Eduardo Daniel Reyes Salgueran",
+            "NOMBRE": "Abg. Helen Sandra Diaz Herrera",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Director Regional de Transportes y Comunicaciones",
-            "E-MAIL": "ereyes@regionjunin.gob.pe",
-            "TELEFONO": "964637761"
+            "E-MAIL": "seguridadvial.drtc.junin@gmail.com",
+            "TELEFONO": "964787402"
         },
         {
             "REGION": "LA LIBERTAD",
@@ -121,10 +121,10 @@ var data={
             "REGION": "LAMBAYEQUE",
             "DIRECCION": "Pimentel 88 - Chiclayo",
             "WEBSITE": "https://www.regionlambayeque.gob.pe/web/?pass=MTMwMw==",
-            "NOMBRE": "Crnl.PNP (r) Sandro Adolfo Jibaja Zulueta",
-            "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Director Ejecutivo de Circulación Terrestre",
-            "E-MAIL": "sjibajaz@gmail.com",
-            "TELEFONO": "966802640"
+            "NOMBRE": "Abog. Delver Gonzales Tapia",
+            "CARGO": "Gerente Regional de Transportes y Comunicaciones",
+            "E-MAIL": "grtransportes@regionlambayeque.gob.pe",
+            "TELEFONO": "(074)208301"
         },
         {
             "REGION": "LIMA",
@@ -157,10 +157,10 @@ var data={
             "REGION": "MADRE DE DIOS",
             "DIRECCION": "Jr. Loreto 198 - Puerto Maldonado",
             "WEBSITE": "http://www.drtcmadrededios.gob.pe",
-            "NOMBRE": "Daniel Martín Valdiviezo Roque",
+            "NOMBRE": "Ing. Miguel C. Frisancho Samaniego",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Director Regional de Transportes y Comunicaciones",
-            "E-MAIL": "danielmvr@hotmail.com",
-            "TELEFONO": "982779342"
+            "E-MAIL": "drtransportes@regionmadrededios.gob.pe",
+            "TELEFONO": "082-571066"
         },
         {
             "REGION": "MOQUEGUA",
@@ -193,10 +193,10 @@ var data={
             "REGION": "PUNO",
             "DIRECCION": "Jr. Lima Nro. 944 - Puno",
             "WEBSITE": "https://portal.transportespuno.gob.pe/",
-            "NOMBRE": "Ing. Abel Maron Callo",
+            "NOMBRE": "Cristobal Mamani Sacachipana",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Director Regional de Transportes y Comunicaciones",
-            "E-MAIL": "abeming22@gmail.com",
-            "TELEFONO": "938192828"
+            "E-MAIL": "No se indica",
+            "TELEFONO": "994887958"
         },
         {
             "REGION": "SAN MARTIN",
@@ -220,10 +220,10 @@ var data={
             "REGION": "TUMBES",
             "DIRECCION": "Puente Tumbes 1071 - Tumbes",
             "WEBSITE": "https://www.transportestumbes.gob.pe/",
-            "NOMBRE": "José Fernando Aldea Jaime",
+            "NOMBRE": "Ing. Carlos David Farfán Mariñas",
             "CARGO": "Secretario Técnico del Consejo Regional de Seguridad Vial - Director Regional de Transportes y Comunicaciones",
-            "E-MAIL": "jaldea@transportestumbes.gob.pe;",
-            "TELEFONO": "949626232"
+            "E-MAIL": "fcarlos@transportestumbes.gob.pe",
+            "TELEFONO": "949482145"
         },
         {
             "REGION": "UCAYALI",

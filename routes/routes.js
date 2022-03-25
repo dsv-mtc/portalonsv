@@ -279,6 +279,7 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
     const slug = req.body["search"];
    const lang =req.body["lang"];
     const results = await apiGhost.getSearchPosts(`tags:${req.body["filter"]}`,slug);
+   // console.log(results)
     if(results.success && req.body['filter']!='noticias-eventos'){
       const searchRendered=utils.renderSearchTemplate({posts: results.posts,lang:lang});
       const tags=utils.filterTags(results.posts);
