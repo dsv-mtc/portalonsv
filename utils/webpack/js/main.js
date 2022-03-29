@@ -278,7 +278,8 @@ function modal(){
             lastname:$("#lastname-subscriber").val()
          }
          $.post("/subscribe",dataToSend).done(function(response){
-             $("#suscriber-modal-form").modal("hide");
+            alert(response); 
+            $("#suscriber-modal-form").modal("hide");
          })
        }
     });

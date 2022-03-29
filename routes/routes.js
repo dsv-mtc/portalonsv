@@ -297,7 +297,17 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
  routes.post("/subscribe",async(req,res)=>{
     const form=req.body;
     const response=await utils.subscribeUser(form);
-    res.send(response);
+//     if (response.success){
+//       req.flash("document",{style:"alert alert-success alert-dismissible fade show",message:'Usuario suscrito'})
+//   }else{
+//       req.flash('document',{style:"alert alert-danger alert-dismissible fade show",message:'No se ha podido suscribir al usuario'});
+//   }
+   if(response.success){
+      res.send('Te haz suscrito con éxito');
+   }else{
+      res.send('No te haz podido suscribir');
+   }
+
  })
 
  //SITEMAP
