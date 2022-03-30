@@ -79,14 +79,24 @@ const sendEmail= async (form)=>{
     let message="";
     try {
         if(validationForm(cuerpo)){
-            await axios.post("https://www.onsv.gob.pe/api/contact",cuerpo);
-            if(form.lang=='en'){
-                message="Thank you for contact to Observatory"
+            if(validateEmail(form.mail)){
+                await axios.post("https://www.onsv.gob.pe/api/contact",cuerpo);
+                if(form.lang=='en'){
+                    message="Thank you for contact to Observatory";
+                }else{
+                    message="¡Gracias por contactar al Observatorio!";
+                }
+                
+                return {success:true,message:message}
+    
             }else{
-                message="¡Gracias por contactar al Observatorio!"
+                if(form.lang=='en'){
+                    message="Email invalid";
+                }else{
+                    message="Tipo de correo inválido";
+                }
+                return {success:false, message:message};
             }
-            
-            return {success:true,message:message}
     
         }else{
             if(form.lang=='en'){
@@ -107,9 +117,18 @@ const sendEmail= async (form)=>{
     }
 }
 
+const validateEmail=(email)=>{
+    const emailPattern=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if(emailPattern.test(email)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 const validationForm=(form)=>{
     const emailPattern=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    if(form.nombre=='' || form.email=='' || form.subject=='' || form.text=='' ||  !emailPattern.test(form.email)){
+    if(form.nombre=='' || form.email=='' || form.subject=='' || form.text==''){
         return false;
     }
     return true;

@@ -133,7 +133,6 @@ routes.get("/webinars",async(req,res)=>{
  routes.post("/contacto",async(req,res)=>{
     const form = req.body;
       //existe validación desde el backend
-    console.log(form);
     const response= await utils.sendEmail(form);
     if (response.success){
         req.flash("info",{style:"alert alert-success alert-dismissible fade show",message:response.message})
