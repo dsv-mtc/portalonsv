@@ -21,6 +21,8 @@ dotenv.config();
 //check if keys exist
 genKeyPair();
 
+
+
 if(process.env.STRATEGY_MODE==='GCP'){
     logger.debug("Trabajando en modo GCP");
     require("./api/passport");
@@ -97,6 +99,6 @@ app.listen(process.env.PORT || 3000,async ()=>{
     //await firestore.saveUser('elpadredelcordero@gmail.com','123456');
     /*Correr el script una única vez para generar el usuario admin en On-Premise */
     // mysqlClient.setQuery();
-    // await mysqlClient.saveUser('elpadredelcordero@gmail.com','123456');
+    // mysqlClient.saveUser('onsv@mtc.gob.pe','mtclima2022*');
     logger.debug(`La aplicación se inició con éxito y a la escucha en el puerto ${process.env.PORT || 3000}`)
 })
