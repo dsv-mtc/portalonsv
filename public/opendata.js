@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded',()=>{
    searchOpenData();
     reloadPage(); 
     checkInputFile(); 
+    checklLoadFile();
 })
 function searchOpenData() {
     const opendataDiv=document.querySelector('#open-data-form-search');
@@ -83,6 +84,31 @@ function reloadPage(){
 
 }
 
+function loadFile(value){
+    console.log(value)
+    if(value=='excel'){
+        document.querySelector('#excel-file').click();
+    }
+    if(value=='pdf'){
+        document.querySelector('#pdf-file').click();
+    }
+    if(value=='csv'){
+        document.querySelector('#csv-file').click();
+    }
+
+}
+ function checklLoadFile(){
+    const opendataDiv=document.querySelector('#datosabiertos-form');
+    if(opendataDiv!=null){
+        const excelFile=document.querySelector('#excel-file');
+        excelFile.addEventListener('change',e=>{
+            console.log(e)
+             document.querySelector('#excel-f').value=excelFile.files[0].name;
+         }) 
+    }
+
+ }
+
 function reloadPosts(response){
     if(response.success){
         document.getElementById('default').style.display='none';
@@ -99,34 +125,50 @@ function reloadPosts(response){
     if(formSendFile!=null){
         formSendFile.addEventListener('submit',(e)=>{
             //e.preventDefault();
-                    
-            const excel=document.querySelector('#excel-file').files[0].name;
-            const pdf=document.querySelector('#pdf-file').files[0].name;
-            const csv=document.querySelector("#csv-file").files[0].name;
-
+            let excel='';
+            let pdf='';
+            let csv='';
             const allowedExcelExtensions=/\.xlsx/;
             const allowedPdfExtensions=/\.pdf/;
             const allowedCsvExtensions=/\.csv/;
 
-            //Excel
-            if(!allowedExcelExtensions.exec(excel)){
-                e.preventDefault();
-                alert('Archivo EXCEL inválido')
-                window.location.reload();
+            if(document.querySelector('#excel-file').files){
+                excel=document.querySelector('#excel-file').files[0].name;
+                 //Excel
+                if(!allowedExcelExtensions.exec(excel)){
+                    e.preventDefault();
+                    alert('Archivo EXCEL inválido')
+                    window.location.reload();
+                }
             }
-            //CSV
-            if(!allowedPdfExtensions.exec(pdf)){
-                e.preventDefault();
-                alert('Archivo PDF inválido')
-                window.location.reload();
+            if(document.querySelector('#pdf-file').files){
+                pdf=document.querySelector('#pdf-file').files[0].name;
+                 //PDF
+                if(!allowedPdfExtensions.exec(pdf)){
+                    e.preventDefault();
+                    alert('Archivo PDF inválido')
+                    window.location.reload();
+                }
+            }
+            if(document.querySelector("#csv-file").files){
+                csv=document.querySelector("#csv-file").files[0].name;
+               //CSV
+                if(!allowedCsvExtensions.exec(csv)){
+                    e.preventDefault();
+                    alert('Archivo CSV inválido')
+                    window.location.reload();
+                }
             }
 
-            //PDF
-            if(!allowedCsvExtensions.exec(csv)){
-                e.preventDefault();
-                alert('Archivo CSV inválido')
-                window.location.reload();
-            }
+            
+
+
+
+           
+           
+           
+
+            
         });
         
     }

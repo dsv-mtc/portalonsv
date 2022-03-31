@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="category1" class="col-12 col-md-2 col-form-label">Categoría 1:</label>
+                        <label for="category1" class="col-12 col-md-2 col-form-label">Categoría:</label>
                         <div class="col-12 col-md-10">
                             <select class="form-control" name="category1" id="category1" required>
                             {{#each categories}}
@@ -96,18 +96,32 @@
                         </div>                        
                     </div>
                     <div class="custom-file mt-3">
-                        <input type="file" name="excel-file" id="excel-file" class="custom-file-input"
+                        <div style="display: flex;">
+                            <input id="excel-f" readonly type="text" class="form-control input-color" placeholder="Agregar archivo tipo Excel" required onclick="loadFile('excel')">
+                            <button  onclick="loadFile('excel')" type="button"  onclick="" class="button-file">Cargar</button>
+                        </div>
+                        <input required type="file" name="excel-file" id="excel-file" class="file-hide"
                         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         >
-                        <label for="excel-file" class="custom-file-label shadow-none">Agregar archivo tipo EXCEL</label>
+                        {{!-- <label for="excel-file" class="custom-file-label shadow-none">Agregar archivo tipo EXCEL</label> --}}
                     </div>
                     <div class="custom-file mt-5">
-                        <input type="file" name="pdf-file" id="pdf-file" class="custom-file-input" accept="application/pdf">
-                        <label for="pdf-file" class="custom-file-label shadow-none">Agregar archivo tipo PDF</label>
+                        <div style="display: flex;">
+                            <input id="pdf-f" readonly type="text" class="form-control input-color" placeholder="Agregar archivo tipo PDF" required onclick="loadFile('pdf')">
+                            <button  onclick="loadFile('pdf')" type="button"  onclick="" class="button-file">Cargar</button>
+                        </div>
+                        <input required type="file" name="pdf-file" id="pdf-file" class="file-hide" accept="application/pdf">
+                        {{!-- <label for="pdf-file" class="custom-file-label shadow-none">Agregar archivo tipo PDF</label> --}}
                     </div>
                     <div class="custom-file mt-5">
-                        <input type="file" name="csv-file" id="csv-file" class="custom-file-input" accept=".csv">
-                        <label for="csv-file" class="custom-file-label shadow-none">Agregar archivo tipo CSV</label>
+                        {{!-- <input type="file" name="csv-file" id="csv-file" class="custom-file-input" accept=".csv">
+                        <label for="csv-file" class="custom-file-label shadow-none">Agregar archivo tipo CSV</label> --}}
+                        <div style="display: flex;">
+                            <input id="csv-f" readonly type="text" class="form-control input-color" placeholder="Agregar archivo tipo CSV" required onclick="loadFile('csv')">
+                            <button  onclick="loadFile('csv')" type="button"  onclick="" class="button-file">Cargar</button>
+                        </div>
+                        <input required type="file" name="csv-file" id="csv-file" class="file-hide" accept=".csv">
+
                     </div>
                     <div class="form-group d-flex flex-row-reverse mt-5">
                          <button type="submit" class="btn btn-rsp ft-bold">

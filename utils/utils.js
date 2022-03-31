@@ -320,12 +320,12 @@ const getHost=()=>{
 
 const constants={
     categories:[
-        {key:"Gestión de Velocidades",value:"gestion-velocidades"},
-        {key:"Vehículos Seguros", value:"vehiculos-seguros"},
-        {key:"Infraestructura Segura", value:"infraestructura-segura"},
-        {key:"Usuarios vulnerables", value:"usuarios-vulnerables"},
         {key:"Conductores Seguros", value:"conductores-seguros"},
-        {key:"Respuesta a Siniestros", value:"respuesta-siniestros"},        
+        {key:"Gestión de Velocidades",value:"gestion-velocidades"},
+        {key:"Infraestructura Segura", value:"infraestructura-segura"},
+        {key:"Respuesta a Siniestros", value:"respuesta-siniestros"},
+        {key:"Usuarios vulnerables", value:"usuarios-vulnerables"},
+        {key:"Vehículos Seguros", value:"vehiculos-seguros"},         
     ],
     types:[
         {key:"Recurso",value:"recurso"},
