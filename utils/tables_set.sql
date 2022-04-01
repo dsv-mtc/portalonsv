@@ -13,6 +13,7 @@ type varchar(100) not null,
 excelfile varchar(500),
 pdffile varchar(500),
 csvfile varchar(500),
+fecha varchar(500),
 primary key (id) 
 );
  create table users (

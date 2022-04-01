@@ -102,9 +102,16 @@ function loadFile(value){
     if(opendataDiv!=null){
         const excelFile=document.querySelector('#excel-file');
         excelFile.addEventListener('change',e=>{
-            console.log(e)
              document.querySelector('#excel-f').value=excelFile.files[0].name;
          }) 
+         const pdfFile=document.querySelector('#pdf-file');
+         pdfFile.addEventListener('change',e=>{
+            document.querySelector('#pdf-f').value=pdfFile.files[0].name;
+         })
+         const csvFile=document.querySelector('#csv-file');
+         csvFile.addEventListener('change',e=>{
+            document.querySelector('#csv-f').value=csvFile.files[0].name;
+         })
     }
 
  }
@@ -132,7 +139,7 @@ function reloadPosts(response){
             const allowedPdfExtensions=/\.pdf/;
             const allowedCsvExtensions=/\.csv/;
 
-            if(document.querySelector('#excel-file').files){
+            if(document.querySelector('#excel-file').files.length>0){
                 excel=document.querySelector('#excel-file').files[0].name;
                  //Excel
                 if(!allowedExcelExtensions.exec(excel)){
@@ -141,7 +148,7 @@ function reloadPosts(response){
                     window.location.reload();
                 }
             }
-            if(document.querySelector('#pdf-file').files){
+            if(document.querySelector('#pdf-file').files.length>0){
                 pdf=document.querySelector('#pdf-file').files[0].name;
                  //PDF
                 if(!allowedPdfExtensions.exec(pdf)){
@@ -150,7 +157,7 @@ function reloadPosts(response){
                     window.location.reload();
                 }
             }
-            if(document.querySelector("#csv-file").files){
+            if(document.querySelector("#csv-file").files.length>0){
                 csv=document.querySelector("#csv-file").files[0].name;
                //CSV
                 if(!allowedCsvExtensions.exec(csv)){

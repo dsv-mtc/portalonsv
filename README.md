@@ -142,6 +142,8 @@ sudo service nginx restart
 sudo nginx -t
 ```
 
+### Configuración de longitud de archivos
+https://www.tecmint.com/limit-file-upload-size-in-nginx/
 ## MYSQL
 -   Accedemos a mysql con usuario root (solicitar las credenciales).
 -   Creamos un nuevo usuario y damos privilegios de administrador:

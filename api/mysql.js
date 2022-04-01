@@ -1,6 +1,7 @@
 const mysql=require("mysql");
 const dotenv=require("dotenv");
 const crypto=require("crypto-js");
+const moment=require('moment');
 dotenv.config();
 const util=require("util");
 const logger=require('../controllers/logger');
@@ -132,14 +133,15 @@ class DataBase{
 
     saveDocument=async (data)=>{
         try {
+            const date = moment().format('DD/MM/YYYY');
             //const {title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile} = data;
             const {title,author,description,category1,type,excelfile,pdffile,csvfile} = data;
             // const queryString=`INSERT INTO ${process.env.DOCUMENTS_TABLE} 
             //     (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile) 
             //     VALUES ("${title}","${author}","${description}","${category1}","${category2}","${category3}","${type}","${excelfile}","${pdffile}","${csvfile}")`
             const queryString=`INSERT INTO ${process.env.DOCUMENTS_TABLE} 
-                (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile) 
-                VALUES ("${title}","${author}","${description}","${category1}","0","0","${type}","${excelfile}","${pdffile}","${csvfile}")`
+                (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile,fecha) 
+                VALUES ("${title}","${author}","${description}","${category1}","0","0","${type}","${excelfile}","${pdffile}","${csvfile}","${date}")`
             await this.query(queryString);
             return {success:true,message:"El documento ha sido guardado"}
         } catch (error) {

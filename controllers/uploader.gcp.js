@@ -5,14 +5,10 @@ const apiFireStore = new (require('../api/gcp/FireStore'));
  *  @param {Request} req; Request
  */
 const uploadFileAndRegisterMetadata=async(req)=>{
-    console.log(req.body);
-   console.log(req.files);
    if(!req.files){
-    
        return {success:false}
    }
    else{
-    
     await checkFiles(req.files)
     await apiFireStore.saveMetadata(req)
     return {success:true}
