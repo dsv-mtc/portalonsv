@@ -2,11 +2,11 @@
     <div class="d-flex justify-content-between">
         <div class="logo">
             <!--Cambiar la imagen-->
-            <a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="img/logo.svg" alt="{{ settings.title }}"></a>
+            <a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="img/logo-datos.png" alt="{{ settings.title }}"></a>
         </div>
         <div class="d-flex align-items-center mr-3">
             <div class="navbar-nav">
-                <div class="nav-item"><a href="/datosabiertos-logout" style="color: white;" class="nav-link">Salir</a></div>
+                <div class="nav-item"><a href="/datosabiertos-logout" style="color: white;" class="nav-link">Cerrar Sesión</a></div>
             </div>
         </div>
     </div>
@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-12">
             <div class="conf-blk">
-                <h3 class="rsp-title ft-bold mb-4 text-center">Subir Archivos</h3>
+                <h3 class="rsp-title ft-bold mb-4 text-center">Carga de Datos Abiertos</h3>
                 {{#if info_document}}
                     {{#each info_document}}
                         <div class="col-12">
@@ -31,14 +31,14 @@
                 {{/if}}
                 <form id="datosabiertos-form" action="/datosabiertos-admin" method="POST" class="needs-validation" enctype="multipart/form-data" novalidate>
                     <div class="form-group row">
-                        <label for="title" class="col-12 col-md-2 col-form-label">Título:</label>
+                        <label for="title" class="col-12 col-md-2 col-form-label">*Título:</label>
                         <div class="col-12 col-md-10">
                             <input type="text" id="title" name="title" class="form-control" required>
                             <small class="invalid-feedback">Debe introducir un título</small>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="description" class="col-12 col-md-2 col-form-label">Descripción:</label>
+                        <label for="description" class="col-12 col-md-2 col-form-label">*Descripción:</label>
                         <div class="col-12 col-md-10">
                             <textarea type="text" id="description" name="description" placeholder="Máximo 300 caracteres" class="form-control" maxlength="300" rows="3" required></textarea>
                            <small class="invalid-feedback">Debe introducir una descripción  </small>
@@ -46,14 +46,14 @@
 
                     </div>
                     <div class="form-group row">
-                        <label for="author" class="col-12 col-md-2 col-form-label">Autor:</label>
+                        <label for="author" class="col-12 col-md-2 col-form-label">*Autor:</label>
                         <div class="col-12 col-md-10">
                             <input type="text" id="author" name="author" class="form-control" required>
                             <small class="invalid-feedback">Debe introducir un autor</small>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="category1" class="col-12 col-md-2 col-form-label">Categoría:</label>
+                        <label for="category1" class="col-12 col-md-2 col-form-label">*Categoría:</label>
                         <div class="col-12 col-md-10">
                             <select class="form-control" name="category1" id="category1" required>
                             {{#each categories}}
@@ -86,7 +86,7 @@
                         </div>                        
                     </div> --}}
                     <div class="form-group row">
-                        <label for="type" class="col-12 col-md-2 col-form-label">Tipo de Contenido:</label>
+                        <label for="type" class="col-12 col-md-2 col-form-label">*Tipo de Contenido:</label>
                         <div class="col-12 col-md-10">
                             <select class="form-control" name="type" id="type">
                             {{#each types}}
@@ -107,7 +107,7 @@
                     </div>
                     <div class="custom-file mt-5">
                         <div style="display: flex;">
-                            <input id="pdf-f" readonly type="text" class="form-control input-color" placeholder="Agregar archivo tipo PDF" required  onclick="loadFile('pdf')">
+                            <input id="pdf-f" readonly type="text" class="form-control input-color" placeholder="*Agregar archivo tipo PDF" required  onclick="loadFile('pdf')">
                             <button  onclick="loadFile('pdf')" type="button"  onclick="" class="button-file">Cargar</button>
                         </div>
                         <input required  type="file" name="pdf-file" id="pdf-file" class="file-hide" accept="application/pdf">
@@ -122,6 +122,9 @@
                         </div>
                         <input  type="file" name="csv-file" id="csv-file" class="file-hide" accept=".csv">
 
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <p style="color: #ee1d27;">*: El * indica los campos obligatorios</p>
                     </div>
                     <div class="form-group d-flex flex-row-reverse mt-5">
                          <button type="submit" class="btn btn-rsp ft-bold">

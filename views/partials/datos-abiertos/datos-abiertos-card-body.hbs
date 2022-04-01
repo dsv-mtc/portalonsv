@@ -1,10 +1,10 @@
 {{#if documentsList}}
     {{#each documentsList}}
-        <h2 class="title-data text-justify">{{title}}</h2>
-        <div>
+        <h2 class="title-data text-justify mt-5">{{title}}</h2>
+        <div class="mt-2">
             <p class="author-data"><i class="fas fa-user"></i> Autor: {{author}}</p>
         </div>
-        <div class="row category-data">
+        <div class="row category-data mt-2">
             <div class="col-4">
                 <small>
                     <i class="{{parseIcon category1}}"></i> {{parseCategory category1}}
@@ -21,10 +21,10 @@
                 </small>
             </div>
         </div>
-        <div>
-            <p class="text-justify description-data">{{description}}</p>
+        <div class="mt-2">
+            <p class="text-justify description-data" style="text-align: justify:  !important;">{{description}}</p>
         </div>
-        <div class="row category-data">
+        <div class="row category-data mt-2">
             <div class="col-4">
                 <small>
                     Publicado el {{fecha}}

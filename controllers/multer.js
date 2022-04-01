@@ -43,7 +43,7 @@ function checkFileType(file,cb){
 }
 
 let uploader=multer({storage:storage,limits:{
-    fileSize:10 * 1024 * 1024 //archivos no mayores que 10mb
+    fileSize:30 * 1024 * 1024 //archivos no mayores que 10mb
 }}).fields([
     {name:'excel-file'},{name:'pdf-file'},{name:'csv-file'}
 ]);

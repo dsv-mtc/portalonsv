@@ -302,9 +302,9 @@ routes.get("/datosabiertos-admin",isAuthenticated,(req,res)=>{
 //       req.flash('document',{style:"alert alert-danger alert-dismissible fade show",message:'No se ha podido suscribir al usuario'});
 //   }
    if(response.success){
-      res.send('Te haz suscrito con éxito');
+      res.send('Te has suscrito con éxito');
    }else{
-      res.send('No te haz podido suscribir');
+      res.send('No te has podido suscribir');
    }
 
  })

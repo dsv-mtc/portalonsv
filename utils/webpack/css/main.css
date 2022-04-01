@@ -1097,3 +1097,16 @@ border: 1px solid #a2a2a2;
         max-width: 100% !important;
     }
 }
+.file-hide{
+    display: none;
+    
+  }
+  .input-color{
+    background-color: white !important;
+  }
+  .button-file{
+    margin-left: 10px;
+    background-color:#e9ece1 ;
+    width: 100px;
+    border: none;
+  }

@@ -328,12 +328,16 @@ const constants={
         {key:"Vehículos Seguros", value:"vehiculos-seguros"},         
     ],
     types:[
-        {key:"Recurso",value:"recurso"},
+        {key:"Data Dashboard",value:"dashboard"},
         {key:"Dataset",value:"dataset"},
         {key:"Grupo",value:"grupo"},
         {key:"Harvest Source",value:"harvest-source"},
         {key:"Página",value:"pagina"},
-        {key:"Data Dashboard",value:"dashboard"},
+        {key:"Recurso",value:"recurso"},
+        
+        
+        
+        
     ]
 }
 module.exports ={
