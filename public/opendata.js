@@ -22,8 +22,16 @@ function searchOpenData() {
             return results.json();
         })
         .then(data =>{
-           // console.log(data);
+           if(!data.success){
+               document.querySelector('#open-data-search-alert').classList.remove('hide');
+               document.querySelector('#open-data-search-alert').classList.add('show');
+               
+           }else{
+            document.querySelector('#open-data-search-alert').classList.remove('show');
+            document.querySelector('#open-data-search-alert').classList.add('hide');               
+           }
            reloadPosts(data);
+
         })
         .catch(errors=>{
             console.log(errors);
@@ -117,13 +125,19 @@ function loadFile(value){
  }
 
 function reloadPosts(response){
+    // if(response.success){
+    //     document.getElementById('default').style.display='none';
+    //     document.getElementById('results-template').innerHTML=response.posts;
+    // }else{
+    //     document.getElementById('results-template').innerHTML='';
+    // }
+    document.getElementById('default').style.display='none';
     if(response.success){
-        document.getElementById('default').style.display='none';
         document.getElementById('results-template').innerHTML=response.posts;
     }else{
         document.getElementById('results-template').innerHTML='';
-        //document.getElementById('search-alert').classList.replace('hide','show');
     }
+
  }
 
  function checkInputFile(){

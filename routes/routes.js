@@ -199,14 +199,13 @@ routes.get("/webinars",async(req,res)=>{
    if(process.env.STRATEGY_MODE==='ON_PREMISE'){
      
       let result=await openDataController.searchMetadataByMysql(form);
+      console.log(result)
       if(result.success){
          const searchRendered = utils.renderSearchOpenDataTemplate({documentsList:result.posts, lang:lang})
-         // console.log(searchRendered);
          res.send({success:true, posts:searchRendered});
       }else {
          res.send({success:false});
       }
-      
    }  
  })
 

@@ -274,6 +274,14 @@ function parseClassToDownload(url){
 
 }
 
+function parseClassToDownloadCol(url){
+    if(url && url!='#' && url!=null && url!='null'){
+        return 'display:flex';
+    }else{
+        return 'display:none';
+    }
+}
+
 var hbs=exphbs.create({
     extname:'hbs', 
     layoutsDir:path.join(__dirname,'../views/layouts'),
@@ -296,6 +304,7 @@ var hbs=exphbs.create({
         createMenu:createMenu,
         page_url_search:page_url_search,
         parseUrlToDownload:parseUrlToDownload,
+        parseClassToDownloadCol: parseClassToDownloadCol,
         parseClassToDownload:parseClassToDownload,
         checkTagsVisible:checkTagsVisible
 
@@ -320,6 +329,7 @@ hbs2.registerHelper({
     createMenu:createMenu,
     page_url_search:page_url_search,
     parseUrlToDownload:parseUrlToDownload,
+    parseClassToDownloadCol: parseClassToDownloadCol,
     parseClassToDownload:parseClassToDownload,
     checkTagsVisible: checkTagsVisible
 })
