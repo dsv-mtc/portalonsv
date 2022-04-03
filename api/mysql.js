@@ -104,7 +104,7 @@ class DataBase{
     }
 
     getDocuments=async ()=>{
-        const queryString=`SELECT * FROM ${process.env.DOCUMENTS_TABLE} `;
+        const queryString=`SELECT * FROM ${process.env.DOCUMENTS_TABLE} order by id desc `;
         try {
             const results=await this.query(queryString);
             return {success:true,data:results}            

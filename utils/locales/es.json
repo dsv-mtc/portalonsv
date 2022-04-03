@@ -33,7 +33,7 @@
     "Apellido":"Apellidos",
     "Asunto":"Asunto",
     "ingrese_nombre":"Por favor ingrese un nombre",
-    "ingrese_correo":"Por favor ingrese un correo",
+    "ingrese_correo":"Por favor ingrese un correo válido",
     "ingrese_asunto": "Por favor debe indicar un asunto",
     "ingrese_mensaje": "Por favor debe ingresar un mensaje",
     "ingrese_seleccion": "Por favor debe elegir un tema de interés",

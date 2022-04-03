@@ -55,7 +55,7 @@
     "Apellido":"Lastname",
     "ingrese_nombre":"Please enter your name",
     "Correo": "Mail",
-    "ingrese_correo":"Please enter your email",
+    "ingrese_correo":"Please enter a valid email",
     "Asunto":"Subject",
     "ingrese_asunto": "Please enter your subject",
     "Mensaje":"Message",
