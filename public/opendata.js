@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     reloadPage(); 
     checkInputFile(); 
     checklLoadFile();
+   checkValidateTextArea();
 })
 function searchOpenData() {
     const opendataDiv=document.querySelector('#open-data-form-search');
@@ -125,12 +126,6 @@ function loadFile(value){
  }
 
 function reloadPosts(response){
-    // if(response.success){
-    //     document.getElementById('default').style.display='none';
-    //     document.getElementById('results-template').innerHTML=response.posts;
-    // }else{
-    //     document.getElementById('results-template').innerHTML='';
-    // }
     document.getElementById('default').style.display='none';
     if(response.success){
         document.getElementById('results-template').innerHTML=response.posts;
@@ -180,18 +175,36 @@ function reloadPosts(response){
                     window.location.reload();
                 }
             }
-
-            
-
-
-
-           
-           
-           
-
-            
         });
         
     }
 
+ }
+
+ function  checkValidateTextArea(e){
+    const formSendFile = document.querySelector('#datosabiertos-form');
+    if(formSendFile!=null){
+        let description= document.querySelector('#description');
+        const regx=/^(?!\s)[a-zA-Z0-9_\s-]*$/;
+        formSendFile.addEventListener('submit',(x)=>{
+            if(regx.test(description.value)){
+            }else{
+                description.style.cssText+="border: solid 2px #dc3545 "
+                
+                x.preventDefault();
+                x.stopPropagation();
+                alert('La descripción no puede quedar en blanco o iniciar con espacios vacíos')
+                
+            }
+        })
+        
+        description.addEventListener('keydown',(e)=>{
+            if(regx.test(description.value) && description.value!=''){
+                console.log("enttre")
+            }else{
+                console.log("no entre")
+                description.style.cssText="border solid 2px #dc3545 "
+            }
+        })
+    }
  }

@@ -33,23 +33,50 @@
                     <div class="form-group row">
                         <label for="title" class="col-12 col-md-2 col-form-label">*Título:</label>
                         <div class="col-12 col-md-10">
-                            <input type="text" id="title" name="title" class="form-control" required>
-                            <small class="invalid-feedback">Debe introducir un título</small>
+                            <input 
+                            type="text" 
+                            id="title"  
+                            maxlength="200" 
+                            placeholder="Máximo 200 caracteres" 
+                            name="title" 
+                            class="form-control" required
+                            pattern="^(?!\s)[a-zA-Z0-9_\s-]*$"
+                           
+                            >
+                            <small class="invalid-feedback">Debe introducir un título y no puede iniciar con espacios en blanco</small>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="description" class="col-12 col-md-2 col-form-label">*Descripción:</label>
                         <div class="col-12 col-md-10">
-                            <textarea type="text" id="description" name="description" placeholder="Máximo 300 caracteres" class="form-control" maxlength="300" rows="3" required></textarea>
-                           <small class="invalid-feedback">Debe introducir una descripción  </small>
+                            <textarea 
+                            type="text" 
+                            id="description" 
+                            name="description" 
+                            placeholder="Máximo 300 caracteres" 
+                            class="form-control" 
+                            maxlength="300" 
+                            rows="3" 
+                            required
+                            ></textarea>
+                           
+                           <small class="invalid-feedback">Debe introducir una descripción y no puede iniciar con espacios en blanco  </small>
                         </div>
 
                     </div>
                     <div class="form-group row">
                         <label for="author" class="col-12 col-md-2 col-form-label">*Autor:</label>
                         <div class="col-12 col-md-10">
-                            <input type="text" id="author" name="author" class="form-control" required>
-                            <small class="invalid-feedback">Debe introducir un autor</small>
+                            <input 
+                            type="text" 
+                            maxlength="100" 
+                            placeholder="Máximo 100 caracteres" 
+                            id="author" 
+                            name="author" 
+                            class="form-control" required
+                            pattern="^(?!\s)[a-zA-Z0-9_\s-]*$"
+                            >
+                            <small class="invalid-feedback">Debe introducir un autor y no puede iniciar con espacios en blanco</small>
                         </div>
                     </div>
                     <div class="form-group row">
