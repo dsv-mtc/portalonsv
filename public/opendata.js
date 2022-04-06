@@ -185,7 +185,7 @@ function reloadPosts(response){
     const formSendFile = document.querySelector('#datosabiertos-form');
     if(formSendFile!=null){
         let description= document.querySelector('#description');
-        const regx=/^(?!\s)[a-zA-Z0-9_\s-]*$/;
+        const regx=/^(?!\s)[a-zA-ZÑñáéíóúÁÉÍÓÚ0-9_\s-]*$/;
         formSendFile.addEventListener('submit',(x)=>{
             if(regx.test(description.value)){
             }else{
