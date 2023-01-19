@@ -1,68 +1,129 @@
 <footer id="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-5 ft-mb m-ft-mar">
-                <div class="ft-menu-blk mb-3">
-                    <h4 class="ft-menu text-white ft-bold">{{t lang "Contacto"}}</h4>
-                </div>
-                <ul class="ad-list with-ic">
-                    <li class="map">
-                        {{t lang "Direccion"}}
-                    </li>
-                    <li class="ph">
-                        {{t lang "Telefono"}} :  <span> <a href="tel:+51 1 615-7800">+51 1 615-7800</a></span>
-                    </li>
-                    <li class="mail">
-                        {{t lang "Correo"}} :  <span> <a href="mailto:onsv@mtc.gob.pe">onsv@mtc.gob.pe</a></span>
-                    </li>
-                    <li class="clock">
-                        <div>{{t lang "Horario"}}  </div>
-                        <div>L - V  9:00 AM a 6:00 PM</div>
-                    </li>
-                </ul>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5 ft-mb m-ft-mar">
+        <div class="ft-menu-blk mb-3">
+          <h4 class="ft-menu text-white ft-bold">
+            {{t lang "Contacto"}}
+          </h4>
+        </div>
+        <ul class="ad-list with-ic">
+          <li class="map">
+            {{t lang "Direccion"}} 
+            <span>
+              
+            </span>
+          </li>
+          <li class="ph">
+            {{t lang "Telefono"}} :
+            <span>
+              <a href="tel:+51 1 615-7800">
+                {{footerData.telefono}}
+              </a>
+            </span>
+          </li>
+          <li class="mail">
+            {{t lang "Correo"}} :
+            <span>
+              <a href="mailto:onsv@mtc.gob.pe">
+                {{footerData.email}}
+              </a>
+            </span>
+          </li>
+          <li class="clock">
+            <div>
+              {{t lang "Horario"}}
             </div>
-            <div class="col-md-3 ft-mmb">
-                <div class="ft-menu-blk">
-                    <h4 class="ft-menu text-white ft-bold mb-3 ft-mb">{{t lang "Contactos Generales"}}</h4>
-                    <ul class="menu-list ft-mb">
-                        <li><a href="https://www.gob.pe/1013-solicitar-atencion-medida-en-caso-de-emergencia.samu" target="_blank"> SAMU </a></li>
-                        <li><a href="https://policia.gob.pe" target="_blank">PNP </a></li>
-                        <li><a href="http://www.bomberosperu.gob.pe" target="_blank"> CGBV </a></li>
-                        <li><a href="https://www.gob.pe/mpfn" target="_blank"> MP </a></li>
-                        <li><a href="https://www.atu.gob.pe" target="_blank"> ATU </a></li>
-                        <li><a href="https://www.gob.pe/sutran" target="_blank"> SUTRAN </a></li>
-                    </ul>
-                </div>
+            <div>
+              L - V  9:00 AM a 6:00 PM
             </div>
-            <div class="col-md-4 ft-mmb">
-                <div class="ft-menu-blk">
-                    <h4 class="ft-menu text-white ft-bold mb-3 ft-mb">{{t lang "Redes Sociales"}}</h4>
-                    <ul class="so-links">
-                        <li>
-                            <a href="https://www.facebook.com/onsvPE" target="_blank" ><i class="fab fa-facebook-f"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://twitter.com/onsvPE" target="_blank"><i class="fab fa-twitter"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://www.youtube.com/channel/UCdNz5eyTZClohkpJgk4oa2Q" target="_blank"><i class="fab fa-youtube"></i></a>
-                        </li>
-                        {{!-- <li>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-5 ft-mmb">
+        <div class="ft-menu-blk">
+          <h4 class="ft-menu text-white ft-bold mb-3 ft-mb">
+            {{t lang "Contactos Generales"}}
+          </h4>
+          <ul class="menu-list ft-mb logos">
+            <li>
+              <a
+                href="https://www.gob.pe/1013-solicitar-atencion-medida-en-caso-de-emergencia.samu"
+                target="_blank"
+              >
+                <img src="/img/logosamu.jpg" alt="samu" />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.gob.pe/pnp" target="_blank">
+                <img src="/img/logo-PNP.png" alt="pnp" />
+              </a>
+            </li>
+            <li>
+              <a href="http://www.bomberosperu.gob.pe" target="_blank">
+                <img src="/img/logobombero.png" alt="cgbv" />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.gob.pe/mpfn" target="_blank">
+                <img src="/img/logomp.jfif" alt="mp" />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.atu.gob.pe" target="_blank">
+                <img src="/img/logoatu.png" alt="atu" />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.gob.pe/sutran" target="_blank">
+                <img src="/img/logo-sutran.jpg" alt="sutran" />
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-2 ft-mmb">
+        <div class="ft-menu-blk">
+          <h4 class="ft-menu text-white ft-bold mb-3 ft-mb">
+            {{t lang "Redes Sociales"}}
+          </h4>
+          <ul class="so-links">
+            <li>
+              <a href="https://www.facebook.com/onsvPE" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+            </li>
+            <li>
+              <a href="https://twitter.com/onsvPE" target="_blank">
+                <i class="fab fa-twitter"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.youtube.com/channel/UCdNz5eyTZClohkpJgk4oa2Q"
+                target="_blank"
+              >
+                <i class="fab fa-youtube"></i>
+              </a>
+            </li>
+            {{! <li>
                             <a href="https://instagram.com/onsvpe/" target="_blank"><i class="fab fa-instagram"></i></a>
                         </li>
                         <li>
                             <a href="https://tiktok.com/@onsvpe" target="_blank"><i class="fab fa-tiktok"></i></a>
-                        </li> --}}
-                    </ul>
-                </div>
-            </div>
+                        </li> }}
+          </ul>
         </div>
-        <div class="row cp">
-            <div class="col-md-12">
-                <div class="cp-soc text-white text-center">
-                    <p> Copyright &copy; {{t lang "copy-right"}}</p>
-                </div>  
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="row cp">
+      <div class="col-md-12">
+        <div class="cp-soc text-white text-center">
+          <p>
+            Copyright &copy; {{t lang "copy-right"}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>

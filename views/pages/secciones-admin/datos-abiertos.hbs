@@ -1,0 +1,515 @@
+<script defer src="/admin/datos-abiertos.js"></script>
+
+{{>admin/banner secondary_navigation=secondary_navigation}}
+{{>admin/navigation secondary_navigation=secondary_navigation}}
+
+<main class="container-fluid mt-5 mb-5" id="datos-abiertos-crud">
+	<h3 class="rsp-title ft-bold mb-4 text-center">
+		Datos abiertos
+	</h3>
+	
+	{{#if info_document}}
+		{{#each info_document}}
+			<div class="col-12">
+				<div class="{{style}}" role="alert">
+					<strong>{{message}}</strong> 
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			</div>
+		{{/each}}
+	{{/if}}
+
+	<button 
+		type="button" 
+		class="btn btn-primary mb-5" 
+		data-toggle="modal"
+		data-target="#modalAgregar"
+	>
+		Agregar
+	</button>
+
+	<div class="table-responsive">
+		<table class="table" id="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Titulo</th>
+					<th scope="col">Autor</th>
+					<th scope="col">Descripcion</th>
+					<th scope="col">Categoria</th>
+					<th scope="col">Tipo de contenido</th>
+					<th scope="col">Excel</th>
+					<th scope="col">PDF</th>
+					<th scope="col">CSV</th>
+					<th scope="col">Fecha</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each datos}}
+					<tr 
+						data-id="{{id}}"
+						data-titulo="{{titulo}}"
+						data-autor="{{autor}}"
+						data-descripcion="{{descripcion}}"
+						data-categoria="{{categoria}}"
+						data-tipo="{{tipo}}"
+						data-excelfile="{{excelfile}}"
+						data-pdffile="{{pdffile}}"
+						data-csvfile="{{csvfile}}"
+						data-fecha="{{fecha}}"
+					>
+						<td style="width: 8%;overflow-wrap: break-word;word-break: break-all;">{{titulo}}</td>
+						<td style="width: 8%;overflow-wrap: break-word;word-break: break-all;">{{autor}}</td>
+						<td style="width: 300px;overflow-wrap: break-word;word-break: break-all;">
+							{{descripcion}}
+						</td>
+						<td>{{v_categoria}}</td>
+						<td>{{v_tipo}}</td>
+						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">{{excelfile}}</td>
+						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">{{pdffile}}</td>
+						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">{{csvfile}}</td>
+						<td>{{fecha}}</td>
+						<td>
+							<div class="btn-group" role="group" aria-label="Basic example">
+								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditar">📝Editar</button>
+								<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEliminar">🗑Eliminar</button>
+							</div>
+						</td>
+					</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="agregar" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+			<form class="modal-content" id="formAgregar" class="needs-validation">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalAgregarLabel">Agregar</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+
+					<div class="form-group row">
+						<label for="new_titulo" class="col-auto col-md-2 col-form-label">
+							*Titulo:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_titulo"  
+								name="new_titulo" 
+								maxlength="2000" 
+								placeholder="Ingrese el título"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_autor" class="col-auto col-md-2 col-form-label">
+							*Autor:
+						</label>
+						<div class="col-auto col-md-10">
+							<input
+								type="text"
+								id="new_autor"
+								name="new_autor"
+								maxlength="2000"
+								placeholder="Ingrese el autor" 
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_descripcion" class="col-auto col-md-2 col-form-label">
+							*Descripción:
+						</label>
+						<div class="col-auto col-md-10">
+							<input
+								type="text"
+								id="new_descripcion"
+								name="new_descripcion"
+								maxlength="2000"
+								placeholder="Ingrese la descripción" 
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_categoria" class="col-auto col-md-2 col-form-label">
+							*Categoria:
+						</label>
+						<div class="col-auto col-md-10">
+							<select class="form-control" name="new_categoria" id="new_categoria" required>
+								<option selected value="">Selecione una opción</option>
+								{{#each categories}}
+									<option value="{{value}}">{{key}}</option>
+								{{/each}}
+							</select>
+							<small class="invalid-feedback">Debe seleccionar una categoría</small>
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<label for="new_tipo" class="col-auto col-md-2 col-form-label">
+							*Tipo de contenido:
+						</label>
+						<div class="col-auto col-md-10">
+							<select class="form-control" name="new_tipo" id="new_tipo" required>
+								<option selected value="">Selecione una opción</option>
+								{{#each types}}
+									<option value="{{value}}">{{key}}</option>
+								{{/each}}
+							</select>
+							<small class="invalid-feedback">Debe seleccionar un tipo de contenido</small>
+						</div>
+					</div>
+
+					<div class="custom-file mt-3">
+						<div style="display: flex;">
+							<input 
+								id="new_excel-f" 
+								readonly 
+								type="text" 
+								class="form-control input-color" 
+								placeholder="Agregar archivo tipo Excel"
+								onclick="new_loadFile('excel')"
+							>
+							<button onclick="new_loadFile('excel')" type="button"  onclick="" class="button-file">Cargar</button>
+						</div>
+						<input 
+							type="file" 
+							name="excel-file" 
+							id="new_excel-file" 
+							class="file-hide"
+							accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+						>
+					</div>
+
+					<div class="custom-file mt-5">
+						<div style="display: flex;">
+							<input 
+								id="new_pdf-f"
+								readonly 
+								type="text" 
+								class="form-control input-color" 
+								placeholder="Agregar archivo tipo PDF"
+								onclick="new_loadFile('pdf')"
+							>
+							<button  onclick="new_loadFile('pdf')" type="button"  onclick="" class="button-file">Cargar</button>
+						</div>
+						<input 
+							type="file"
+							name="pdf-file"
+							id="new_pdf-file"
+							class="file-hide"
+							accept="application/pdf"
+						>
+					</div>
+					
+					<div class="custom-file my-5">
+						<div style="display: flex;">
+							<input 
+								id="new_csv-f" 
+								readonly 
+								type="text"
+								class="form-control input-color" 
+								placeholder="Agregar archivo tipo CSV"  
+								onclick="new_loadFile('csv')"
+							>
+							<button  onclick="new_loadFile('csv')" type="button"  onclick="" class="button-file">Cargar</button>
+						</div>
+						<input  
+							type="file" 
+							name="csv-file" 
+							id="new_csv-file" 
+							class="file-hide" 
+							accept=".csv"
+						>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_fecha" class="col-auto col-md-2 col-form-label">
+							*Fecha:
+						</label>
+						<div class="col-auto col-md-10">
+							<input
+								type="date"
+								id="new_fecha"
+								name="new_fecha"
+								maxlength="2000"
+								placeholder="Ingrese la fecha" 
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div style="margin-top: 20px;">
+						<p style="color: #ee1d27;">*: {{#if secondary_navigation}}
+								Required fields
+							{{else}}
+								Campos obligatorios
+							{{/if}}</p>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						{{#if secondary_navigation}}
+							Cancel
+						{{else}}
+							Cancelar
+						{{/if}}
+					</button>
+					<button type="submit" class="btn btn-primary" id="btnAgregar">
+						{{#if secondary_navigation}}
+							Add
+						{{else}}
+							Agregar
+						{{/if}}
+					</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+	<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="editar" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+			<form class="modal-content" id="formEditar" class="needs-validation">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalEditarLabel">Editar</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+
+					<div class="form-group row">
+						<label for="titulo" class="col-auto col-md-2 col-form-label">
+							*Titulo:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="titulo"  
+								name="titulo" 
+								maxlength="2000" 
+								placeholder="Ingrese el título"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="autor" class="col-auto col-md-2 col-form-label">
+							*Autor:
+						</label>
+						<div class="col-auto col-md-10">
+							<input
+								type="text"
+								id="autor"
+								name="autor"
+								maxlength="2000"
+								placeholder="Ingrese el autor" 
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="descripcion" class="col-auto col-md-2 col-form-label">
+							*Descripción:
+						</label>
+						<div class="col-auto col-md-10">
+							<input
+								type="text"
+								id="descripcion"
+								name="descripcion"
+								maxlength="2000"
+								placeholder="Ingrese la descripción" 
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="categoria" class="col-auto col-md-2 col-form-label">
+							*Categoria:
+						</label>
+						<div class="col-auto col-md-10">
+							<select class="form-control" name="categoria" id="categoria" required>
+								<option selected value="">Selecione una opción</option>
+								{{#each categories}}
+									<option value="{{value}}">{{key}}</option>
+								{{/each}}
+							</select>
+							<small class="invalid-feedback">Debe seleccionar una categoría</small>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="tipo" class="col-auto col-md-2 col-form-label">
+							*Tipo de contenido:
+						</label>
+						<div class="col-auto col-md-10">
+							<select class="form-control" name="tipo" id="tipo" required>
+								<option selected value="">Selecione una opción</option>
+								{{#each types}}
+									<option value="{{value}}">{{key}}</option>
+								{{/each}}
+							</select>
+							<small class="invalid-feedback">Debe seleccionar un tipo de contenido</small>
+						</div>
+					</div>
+
+					<div class="custom-file mt-3">
+						<div style="display: flex;">
+							<input 
+								id="excel-f" 
+								name="excelFileName"
+								readonly 
+								type="text" 
+								class="form-control input-color" 
+								placeholder="Agregar archivo tipo Excel"
+								onclick="loadFile('excel')"
+							>
+							<button onclick="loadFile('excel')" type="button"  onclick="" class="button-file">Cargar</button>
+						</div>
+						<input 
+							type="file" 
+							name="excel-file" 
+							id="excel-file" 
+							class="file-hide"
+							accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+						>
+					</div>
+
+					<div class="custom-file mt-5">
+						<div style="display: flex;">
+							<input 
+								id="pdf-f"
+								name="pdfFileName"
+								readonly 
+								type="text" 
+								class="form-control input-color" 
+								placeholder="Agregar archivo tipo PDF"
+								onclick="loadFile('pdf')"
+							>
+							<button  onclick="loadFile('pdf')" type="button"  onclick="" class="button-file">Cargar</button>
+						</div>
+						<input 
+							type="file"
+							name="pdf-file"
+							id="pdf-file"
+							class="file-hide"
+							accept="application/pdf"
+						>
+					</div>
+					
+					<div class="custom-file my-5">
+						<div style="display: flex;">
+							<input 
+								id="csv-f"
+								name="csvFileName" 
+								readonly 
+								type="text"
+								class="form-control input-color" 
+								placeholder="Agregar archivo tipo CSV"  
+								onclick="loadFile('csv')"
+							>
+							<button  onclick="loadFile('csv')" type="button"  onclick="" class="button-file">Cargar</button>
+						</div>
+						<input  
+							type="file" 
+							name="csv-file" 
+							id="csv-file" 
+							class="file-hide" 
+							accept=".csv"
+						>
+					</div>
+
+					<div class="form-group row">
+						<label for="fecha" class="col-auto col-md-2 col-form-label">
+							*Fecha:
+						</label>
+						<div class="col-auto col-md-10">
+								<input
+									type="date"
+									id="fecha"
+									name="fecha"
+									maxlength="2000"
+									placeholder="Ingrese la fecha" 
+									class="form-control"
+									required
+								>
+						</div>
+					</div>
+
+					<div style="margin-top: 20px;">
+						<p style="color: #ee1d27;">*: {{#if secondary_navigation}}
+								Required fields
+							{{else}}
+								Campos obligatorios
+							{{/if}}</p>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						{{#if secondary_navigation}}
+							Cancel
+						{{else}}
+							Cancelar
+						{{/if}}
+					</button>
+					<button type="submit" class="btn btn-primary" id="btnEditar">
+						{{#if secondary_navigation}}
+							Edit
+						{{else}}
+							Editar
+						{{/if}}
+					</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+	<div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="eliminarDatosAbiertos" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<form class="modal-content" id="formEliminarDatosAbiertos">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalEliminarLabel">Eliminar datos abiertos</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Se eliminará esta información, ¿Está seguro?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-danger" id="btnEliminar">Eliminar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</main>

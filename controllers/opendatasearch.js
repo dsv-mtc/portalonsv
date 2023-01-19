@@ -65,6 +65,8 @@ class OpenData {
         }
 
     }
+
+   
 }
 
 module.exports= OpenData;

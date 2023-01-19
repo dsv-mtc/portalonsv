@@ -2,12 +2,12 @@
     <div class="row">
         <div class="col-md-5">
             <div class="rsp-nye-img publicaciones-img">
-                <a href="{{endpointPostParse (parseHttp url) }}"><img class="publicaciones-img" src="{{parseHttp feature_image}}" alt="nye"></a>
+                <a href="{{endpointPostParse (parseHttp url) ../lang}}"><img class="publicaciones-img" src="{{parseHttpImage feature_image}}" alt="nye"></a>
             </div>
         </div>
         <div class="col-md-7">
             <div class="rsp-res-blk rsp-nye-desc">
-                <a href="{{endpointPostParse (parseHttp url) }}"><h6 class="ft-bold publicaciones-tit">{{ title }}</h6></a>
+                <a href="{{endpointPostParse (parseHttp url) ../lang}}"><h6 class="ft-bold publicaciones-tit">{{ title }}</h6></a>
                 <div class="rsp-pro-det">
                     <div class="pd-desc">
                         <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
@@ -18,7 +18,7 @@
                 </p>
                 <div class="nye-link-blk">
                 <div class="ny-btn">
-                    <a href="{{endpointPostParse (parseHttp url)}}" class="btn btn-rsp ft-bold">
+                    <a href="{{endpointPostParse (parseHttp url) ../lang}}" class="btn btn-rsp ft-bold">
                         {{t ../lang "leer más"}} <i class="fal fa-long-arrow-right pl-2"></i>
                     </a>
                 </div>

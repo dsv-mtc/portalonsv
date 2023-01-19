@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/features.css">
+    <link rel="stylesheet" href="/analitica.css">
+    <link rel="stylesheet" href="/openData.css">
     <script src="https://kit.fontawesome.com/06fd3ecd3e.js" crossorigin="anonymous"></script>
     <link rel="icon" type="/img/png" href="{{settings.icon}}">
     <title>{{seoMetas.title}}</title>
@@ -22,10 +25,13 @@
      {{#if enabledNavigation}}
         {{> default/suscribers-modal}}
     {{/if}}
+    <div id="fb-root"></div>
+
     <!--Facebookk-->
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v10.0&appId=432011537895587&autoLogAppEvents=1" nonce="jzJ5ofo4"></script>
+    <script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
     <script src="/main.js"></script>
     <script src="/opendata.js"></script>
-    
+    <script src="/features.js"></script>
+    <script src="/analitica.js"></script>
 </body>
 </html>

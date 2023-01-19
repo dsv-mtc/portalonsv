@@ -10,7 +10,7 @@
                 </div>
                 {{else}}
                 <div class="carousel-item">
-                    <img src="/assets/{{this}}" >
+                    <img src="/assets/{{this}}"ñ >
                 </div>
                 {{/if}}
             {{/each}}
@@ -42,7 +42,7 @@
                     <div class="rsp-hs-ic-img">
                         <img class="icon-slider" src="/assets/hs2.png" alt="hs-icon">
                     </div>
-                    <h3 class="ft-bold">74 624*</h3>
+                    <h3 class="ft-bold">{{accidentados}}*</h3>
                     <p>{{t lang "Siniestros"}}</p>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                     <div class="rsp-hs-ic-img">
                         <img class="icon-slider" src="/assets/hs3.png" alt="hs-icon">
                     </div>
-                    <h3 class="ft-bold">49 519*</h3>
+                    <h3 class="ft-bold">{{lesionados}}*</h3>
                     <p>{{t lang "Lesionados"}}</p>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                     <div class="rsp-hs-ic-img">
                         <img class="icon-slider" src="/assets/hs4.png" alt="hs-icon">
                     </div>
-                    <h3 class="ft-bold">3 032*</h3>
+                    <h3 class="ft-bold">{{fallecidos}}*</h3>
                     <p>{{t lang "Fallecidos"}}</p>
                 </div>
             </div>
@@ -74,7 +74,7 @@
 <section class="rsp-vu-sec rsp-wrap">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-7 vu-map-col">
+            <div class="col-lg-6 col-md-7 vu-map-col">
                 <h3  class="rsp-title ft-bold">{{t lang "Visor de Alerta de Siniestros"}}  <br/>
                 {{t lang "de Tránsito"}}  <a href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank" class="btn btn-rsp ft-bold">{{t lang 'ver'}}</a></h3>
                
@@ -86,13 +86,37 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-5 vu-list-col">
+            <div class="col-lg-3 col-md-5 vu-list-col">
                 <h3 class="rsp-title ft-bold text-center">{{t lang "Ultimos"}} <br/>
                     {{t lang "10 accidentes"}}</h3>
-                <div class="vu-list">
+                <div class="vu-list radius">
                         {{#each accidents}}
                             {{>index/accident lang=../lang}}
                         {{/each}}
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-5 vu-list-col">
+                <div class="social_section vu-list radius">
+                    <div class="social_section_tabs">
+                        <span id="tab_facebook" class="active">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/>
+                            </svg>
+                        </span>
+                        <span id="tab_twitter">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="iframes_content">
+                        <section id="iframe_facebook" class="show">
+                            <div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-width="360" data-height="700" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
+                        </section>
+                        <section id="iframe_twitter">
+                            <a class="twitter-timeline" href="https://twitter.com/onsvPE?ref_src=twsrc%5Etfw">Tweets by onsvPE</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        </section>
+                    </div>
                 </div>
             </div>
         </div>
@@ -133,11 +157,11 @@
 <section class="rsp-ult-sec rsp-wrap">
     <div class="container">
         <div class="row mb-2">
-            <div class="col-md-12">
+            <div class="col-md-9">
                 <h3 class="rsp-title ft-bold">{{t lang "ultimas publicaciones"}}</h3>
             </div>
         </div>
-        <div class="row">
+        <div class="row ultimas-publicaciones">
             {{#each post3}}
                {{>index/post-card lang=../lang }}
             {{/each}}
@@ -145,4 +169,25 @@
             
     </div>
 </section>
-{{>default/campaign-modal post=modalinfo lang=lang}}    
+{{>default/campaign-modal post=modalinfo pop=popup lang=lang}}    
+<script async defer> 
+    var popupStatusM = {{{popupStatus}}}
+    /* const popupTitle = document.getElementById('popup_title')
+    const popupImage = document.getElementById('popup_image')
+    popupTitle.textContent = popupData.titulo
+    popupImage.setAtributte('src', popup.imagen)
+    console.log('popup.imagen', popup.imagen) */
+
+    
+    addEventListener('DOMContentLoaded', (event) => {
+        console.log('popupStatusM', popupStatusM)
+        const campaignModal = document.getElementById('campaign-modal')
+        const modalBackdrop = document.querySelector('.modal-backdrop')
+
+        if (popupStatusM !== '1') {
+            campaignModal.classList.add('hideModal')
+            modalBackdrop.classList.add('hideModal')
+        }
+    });
+
+</script>

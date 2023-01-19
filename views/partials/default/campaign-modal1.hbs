@@ -1,0 +1,54 @@
+<div class="modal fade" 
+    id="campaign-modal" 
+    data-backdrop="static" 
+    data-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="title-modal"
+    aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{#each post}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="rsp-nye-img publicaciones-img" style="width:100%">
+                                <a href="{{endpointPostParse (parseHttp url) ../lang }}"><img class="publicaciones-img" src="{{parseHttpImage feature_image}}" alt="nye"></a>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div style="margin-top: -40px; margin-bottom:40px">
+                                <div class="nye-link-blk">
+                                <div class="ny-btn">
+                                    <a href="{{endpointPostParse (parseHttp url) 'es'}}" class="btn btn-rsp ft-bold" style="width: 200px !important;">
+                                        {{t ../lang "leer más"}}
+                                    </a>
+                                </div>
+                                <div class="ny-link">
+                                    <ul class="so-links">
+                                        <li>
+                                            <a href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="https://twitter.com/intent/tweet?text={{title}}&url={{url }}" target="_blank"><i class="fab fa-twitter"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="whatsapp://send?text={{url}}" data-action="share/whatsapp/share"  target="_blank"><i class="fas fa-share-alt"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+</div>

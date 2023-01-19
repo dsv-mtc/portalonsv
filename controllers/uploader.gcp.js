@@ -47,7 +47,7 @@ const checkFiles=async(fileObject)=>{
 
 
 module.exports={
-    uploadFileAndRegisterMetadata:uploadFileAndRegisterMetadata,
-    getDocumentsList:getDocumentsList
+    uploadFileAndRegisterMetadata,
+    getDocumentsList
 }
 

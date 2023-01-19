@@ -1,58 +1,42 @@
 <!--Banner section-->
-<section class="rsp-navbar banner">
+<section class="rsp-navbar banner navbar_open_data">
     <div class="logo">
         <!--Cambiar la imagen-->
-        <a class="navbar-brand" href="{{endpointRebase settings.url}}"><img style="margin-top: -4px;" class="logo-img-open-data" src="img/logo-datos.png" alt="{{ settings.title }}"></a>
+        <a class="navbar-brand" href="{{endpointRebase settings.url}}">
+            <img style="margin-top: -4px;" class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}">
+        </a>
     </div>
+<p>
+  Información de datos abiertos
+</p>
 </section>
 <!--search section-->
-<section class="rsp-conf-section rsp-wrap">
+<section class="open_data">
     <div class="container">
  <!--form search-->
     <form id="open-data-form-search">
-        <div class="form-row">
-            <div class="form-group col-12 col-md-6">
+
+       <h1>25 Distribución de Datos</h1>
+        <div class="search_box">
+            <div class="input_wrapper">
                 <label for="search-data">Descripción</label>
-                <input type="text" id="search-data" class="form-control" placeholder="{{t lang "buscar"}}" >
+                <input type="text" id="search-data" placeholder="{{t lang "buscar"}}" >
             </div>
-             <div class="form-group col-12 col-md-2">
+             <div class="input_wrapper">
                 <label for="category-data">Categoría</label>
-                <select class="form-control" name="category-data" id="category-data">
+                <select name="category-data" id="category-data">
                     <option value="0">Todas</option>
                         {{#each categories}}
                             <option value="{{value}}">{{key}}</option>
                         {{/each}}
                  </select>
             </div>
-            {{!-- <div class="form-group col-12 col-md-2">
-                <label for="order-data">Ordenar por</label>
-                <select class="form-control" name="order-data" id="order-data">
-                    <option value="1">Fecha Cambiada</option>
-                    <option value="2">Título</option>
-                </select>
-            </div>
-            <div class="form-group col-12 col-md-2">
-                <label for="ask-data">Pedido</label>
-                <select class="form-control" name="ask-data" id="ask-data">
-                    <option value="1">Descendente</option>
-                    <option value="2">Ascendente</option>
-                </select>
-            </div> --}}
-             
-        </div>
-        <div class="form-row d-flex flex-row-reverse">
-            <div class="form-group row col-md-3 mt-3 mr-3">
-                <div class="col-6">
-                    <button type="submit" class="btn btn-rsp ft-bold">
-                         Consultar
-                   </button>
-                </div>
-                <div class="col-6 pl-5">
-                    <button type="button" id="open-data-button-clear" class="btn btn-rsp ft-bold">
-                        Limpiar
-                    </button>
-                </div>  
-            </div>
+            <button type="submit">
+                Consultar
+            </button>
+            <button type="button" id="open-data-button-clear">
+                Limpiar
+            </button>
         </div>
     </form>
      <div id="open-data-search-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
@@ -64,6 +48,35 @@
 <main class="container" >
     <section id="default">
         {{>datos-abiertos/datos-abiertos-card-body documentsList=documentsList}}
+				<div class="col-12 d-flex justify-content-center mb-3">
+					{{#if pagination}}
+						<div class="l-wrapper">
+							<nav class="m-pagination" aria-label="{{t lang "Paginación"}}">
+								{{#if pagination.prev}}
+									<a
+										href="{{page_url pagination.url_page pagination.prev lang}}"
+										class="btn btn-rsp ft-bold"
+										aria-label="{{t lang "Pagina de datos abiertos"}}"
+									>
+										<span class="fal fa-long-arrow-left"></span>
+									</a>
+								{{/if}}
+								<span class="m-pagination__text">
+									{{t lang "Página"}} {{pagination.page}} {{t lang "de"}} {{pagination.pages}}
+								</span>
+								{{#if pagination.next}}
+									<a
+										href="{{page_url pagination.url_page pagination.next lang}}"
+										class="btn btn-rsp ft-bold"
+										aria-label="{{t lang "Pagina de datos abiertos"}}"
+									>
+										<span class="fal fa-long-arrow-right"></span>
+									</a>
+								{{/if}}
+							</nav>
+					</div>
+					{{/if}}
+				</div>  
     </section>
     <section id="results-template">
 

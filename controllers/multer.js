@@ -1,4 +1,5 @@
 const multer=require("multer");
+const os = require("os");
 require('dotenv').config();
 const path=require("path")
 //https://www.npmjs.com/package/multer multer documentation
@@ -32,7 +33,7 @@ if(process.env.STRATEGY_MODE==='GCP'){
 
 
 function checkFileType(file,cb){
-    const fileTypes = /pdf|xlxs|csv/;
+    const fileTypes = /pdf|xlxs|csv|png|jpg|jpeg/;
     const extname =fileTypes.test(path.extname(file.originalname).toLowerCase());
     const mimeType = fileTypes.test(file.mimeType);
     if(mimeType && extname){
@@ -45,7 +46,15 @@ function checkFileType(file,cb){
 let uploader=multer({storage:storage,limits:{
     fileSize:30 * 1024 * 1024 //archivos no mayores que 10mb
 }}).fields([
-    {name:'excel-file'},{name:'pdf-file'},{name:'csv-file'}
+    {
+        name:'excel-file'
+    }, {
+        name:'pdf-file'
+    }, {
+        name:'csv-file'
+    }, {
+        name:'img-file'
+    } 
 ]);
 
 module.exports=uploader

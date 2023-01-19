@@ -1,0 +1,74 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto" id="sectionHandler" >
+
+			<li class="nav-item nav-special dropdown">
+				<a 
+					class="nav-link" 
+					href="/datosabiertos-admin"
+				>
+					INICIO
+					<span class="sr-only">(current)</span>
+				</a>
+			</li>
+
+			<li class="nav-item nav-special dropdown">
+				<a 
+					class="nav-link" 
+					href="/secciones-admin/cifras"
+				>
+					{{#if secondary_navigation}}
+						Figures
+					{{else}}
+						CIFRAS
+					{{/if}}
+				</a>
+			</li>
+
+			<li class="nav-item nav-special dropdown">
+				<a 
+					class="nav-link" 														
+					href="/secciones-admin/mision-vision"
+				>
+					{{#if secondary_navigation}}
+						Mission - Vision
+					{{else}}
+						MISION - VISION
+					{{/if}}
+				</a>
+			</li>
+
+			<li class="nav-item nav-special dropdown">
+				<a 
+					class="nav-link"
+					href="/secciones-admin/analitica-submenu" 
+				>
+					ANALITICA - SUBMENU
+				</a>
+			</li>
+
+			<li class="nav-item nav-special dropdown">
+				<a 
+					class="nav-link"  
+					href="/secciones-admin/popup" 
+					id="menudrop1" 
+					role="button" 
+				>
+					POPUP
+				</a>
+			</li>
+
+			<li class="nav-item nav-special dropdown">
+				<a 
+					class="nav-link"  
+					href="/secciones-admin/datos-abiertos" 
+					id="menudrop1" 
+					role="button" 
+				>
+					DATOS ABIERTOS
+				</a>
+			</li>
+			
+		</ul>
+	</div>
+</nav>

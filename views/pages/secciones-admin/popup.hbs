@@ -1,0 +1,96 @@
+<script defer src="/admin/popup.js"></script>
+<section class="rsp-navbar banner">
+	<div class="d-flex justify-content-between">
+		
+		<div class="logo">
+			<!--Cambiar la imagen-->
+			<a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}"></a>
+		</div>
+		
+		<div class="d-flex align-items-center mr-3">
+			<div class="navbar-nav">
+				<div class="nav-item">
+					<a href="/datosabiertos-logout" style="color: white;" class="nav-link">
+						{{#if secondary_navigation}}
+							Logout
+						{{else}}
+							Cerrar sesión
+						{{/if}}
+					</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>
+
+{{>admin/navigation secondary_navigation=secondary_navigation}}
+
+<main class="container mt-5 mb-5">
+	<div class="row">
+		<div class="col-12" id="sectionContainer">
+
+			<h3 class="rsp-title ft-bold mb-4 text-center">GESTION DE POPUP</h3>
+
+			<form id="popupForm" class="needs-validation" action="/secciones-admin/popup" method="POST" class="needs-validation" enctype="multipart/form-data" novalidate >
+
+				<div class="form-group row">
+					<label for="enlace" class="col-12 col-md-2 col-form-label">*Enlace:</label>
+					<div class="col-12 col-md-10">
+							<input
+								type="text" 
+								id="enlace" 
+								name="enlace" 
+								placeholder="Máximo 300 caracteres" 
+								class="form-control" 
+								maxlength="300" 
+								rows="3"
+								value="{{enlace}}" 
+								required
+							>
+					
+							<small class="invalid-feedback">
+								Debe introducir un enlace para el popup
+							</small>
+					</div>
+				</div>
+				
+				<div class="form-check">
+					<input 
+						class="form-check-input" 
+						type="checkbox" 
+						id="estado" 
+						name="estado"
+						{{#if estado}}
+							checked
+						{{/if}}
+					>
+					<label class="form-check-label" for="estado">
+						Estado
+					</label>
+				</div>
+
+				<div class="custom-file mt-5">
+					<div style="display: flex;">
+						<input id="img-f" readonly type="text" class="form-control input-color" placeholder="*Agregar archivo tipo PNG o JPG" required onclick="loadFile('img')" value="{{imagen}}" name='imageValue'>
+						<button onclick="loadFile('img')" type="button" class="button-file">
+							Cargar
+						</button>
+					</div>
+					<input required type="file" name="img-file" id="img-file" class="file-hide" accept="application/image">
+				</div>
+
+				<div style="margin-top: 20px;">
+					<p style="color: #ee1d27;">*: Campos obligatorios</p>
+				</div>
+				<div class="form-group d-flex flex-row-reverse mt-5">
+					<button type="submit" class="btn btn-rsp ft-bold">
+							Enviar
+					</button>
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+</main>

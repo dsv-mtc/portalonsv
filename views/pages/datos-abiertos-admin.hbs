@@ -1,165 +1,23 @@
 <section class="rsp-navbar banner">
-    <div class="d-flex justify-content-between">
-        <div class="logo">
-            <!--Cambiar la imagen-->
-            <a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="img/logo-datos.png" alt="{{ settings.title }}"></a>
-        </div>
-        <div class="d-flex align-items-center mr-3">
-            <div class="navbar-nav">
-                <div class="nav-item"><a href="/datosabiertos-logout" style="color: white;" class="nav-link">Cerrar Sesión</a></div>
-            </div>
-        </div>
-    </div>
-
+	<div class="d-flex justify-content-between">
+		<div class="logo">
+			<!--Cambiar la imagen-->
+			<a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="img/logo-datos.png" alt="{{ settings.title }}"></a>
+		</div>
+		<div class="d-flex align-items-center mr-3">
+			<div class="navbar-nav">
+				<div class="nav-item"><a href="/datosabiertos-logout" style="color: white;" class="nav-link">Cerrar Sesión</a></div>
+			</div>
+		</div>
+	</div>
 </section>
-<main class="container mt-5 mb-5">
-    <div class="row">
-        <div class="col-12">
-            <div class="conf-blk">
-                <h3 class="rsp-title ft-bold mb-4 text-center">Carga de Datos Abiertos</h3>
-                {{#if info_document}}
-                    {{#each info_document}}
-                        <div class="col-12">
-                            <div class="{{style}}" role="alert">
-                                <strong>{{message}}</strong> 
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        </div>
-                    {{/each}}
-                {{/if}}
-                <form id="datosabiertos-form" action="/datosabiertos-admin" method="POST" class="needs-validation" enctype="multipart/form-data" novalidate>
-                    <div class="form-group row">
-                        <label for="title" class="col-12 col-md-2 col-form-label">*Título:</label>
-                        <div class="col-12 col-md-10">
-                            <input 
-                            type="text" 
-                            id="title"  
-                            maxlength="200" 
-                            placeholder="Máximo 200 caracteres" 
-                            name="title" 
-                            class="form-control" required
-                            pattern="^(?!\s)[a-zA-Z\.\,\;\:\‘\’\“\”\(\)\[\]\{\}\¿\?\¡\!\<\>\-\*\+\/\ü\°\%\&\=\#\@ÑñáéíóúÁÉÍÓÚ0-9_\s-]*$"
-                           
-                            >
-                            <small class="invalid-feedback">Debe introducir un título y no puede iniciar con espacios en blanco</small>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="description" class="col-12 col-md-2 col-form-label">*Descripción:</label>
-                        <div class="col-12 col-md-10">
-                            <textarea 
-                            type="text" 
-                            id="description" 
-                            name="description" 
-                            placeholder="Máximo 300 caracteres" 
-                            class="form-control" 
-                            maxlength="300" 
-                            rows="3" 
-                            required
-                            ></textarea>
-                           
-                           <small class="invalid-feedback">Debe introducir una descripción y no puede iniciar con espacios en blanco  </small>
-                        </div>
 
-                    </div>
-                    <div class="form-group row">
-                        <label for="author" class="col-12 col-md-2 col-form-label">*Autor:</label>
-                        <div class="col-12 col-md-10">
-                            <input 
-                            type="text" 
-                            maxlength="100" 
-                            placeholder="Máximo 100 caracteres" 
-                            id="author" 
-                            name="author" 
-                            class="form-control" required
-                            pattern="^(?!\s)[a-zA-Z\.\,\;\:\‘\’\“\”\(\)\[\]\{\}\¿\?\¡\!\<\>\-\*\+\/\ü\°\%\&\=\#\@ÑñáéíóúÁÉÍÓÚ0-9_\s-]*$"
-                            >
-                            <small class="invalid-feedback">Debe introducir un autor y no puede iniciar con espacios en blanco</small>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="category1" class="col-12 col-md-2 col-form-label">*Categoría:</label>
-                        <div class="col-12 col-md-10">
-                            <select class="form-control" name="category1" id="category1" required>
-                            {{#each categories}}
-                                <option value="{{value}}">{{key}}</option>
-                            {{/each}}
-                            </select>
-                            <small class="invalid-feedback">Debe Seleccionar la primera categoría</small>
-                        </div>                        
-                    </div>
-                    {{!-- <div class="form-group row">
-                        <label for="category2" class="col-12 col-md-2 col-form-label">Categoría 2:</label>
-                        <div class="col-12 col-md-10">
-                            <select class="form-control" name="category2" id="category2">
-                            <option value="0">Ninguna</option>
-                            {{#each categories}}
-                                <option value="{{value}}">{{key}}</option>
-                            {{/each}}
-                            </select>
-                        </div>                        
-                    </div>
-                    <div class="form-group row">
-                        <label for="category3" class="col-12 col-md-2 col-form-label">Categoría 3:</label>
-                        <div class="col-12 col-md-10">
-                            <select class="form-control" name="category3" id="category3">
-                            <option value="0">Ninguna</option>
-                            {{#each categories}}
-                                <option value="{{value}}">{{key}}</option>
-                            {{/each}}
-                            </select>
-                        </div>                        
-                    </div> --}}
-                    <div class="form-group row">
-                        <label for="type" class="col-12 col-md-2 col-form-label">*Tipo de Contenido:</label>
-                        <div class="col-12 col-md-10">
-                            <select class="form-control" name="type" id="type">
-                            {{#each types}}
-                                <option value="{{value}}">{{key}}</option>
-                            {{/each}}
-                            </select>
-                        </div>                        
-                    </div>
-                    <div class="custom-file mt-3">
-                        <div style="display: flex;">
-                            <input id="excel-f" readonly type="text" class="form-control input-color" placeholder="Agregar archivo tipo Excel" onclick="loadFile('excel')">
-                            <button  onclick="loadFile('excel')" type="button"  onclick="" class="button-file">Cargar</button>
-                        </div>
-                        <input type="file" name="excel-file" id="excel-file" class="file-hide"
-                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        >
-                        {{!-- <label for="excel-file" class="custom-file-label shadow-none">Agregar archivo tipo EXCEL</label> --}}
-                    </div>
-                    <div class="custom-file mt-5">
-                        <div style="display: flex;">
-                            <input id="pdf-f" readonly type="text" class="form-control input-color" placeholder="*Agregar archivo tipo PDF" required  onclick="loadFile('pdf')">
-                            <button  onclick="loadFile('pdf')" type="button"  onclick="" class="button-file">Cargar</button>
-                        </div>
-                        <input required  type="file" name="pdf-file" id="pdf-file" class="file-hide" accept="application/pdf">
-                        {{!-- <label for="pdf-file" class="custom-file-label shadow-none">Agregar archivo tipo PDF</label> --}}
-                    </div>
-                    <div class="custom-file mt-5">
-                        {{!-- <input type="file" name="csv-file" id="csv-file" class="custom-file-input" accept=".csv">
-                        <label for="csv-file" class="custom-file-label shadow-none">Agregar archivo tipo CSV</label> --}}
-                        <div style="display: flex;">
-                            <input id="csv-f" readonly type="text" class="form-control input-color" placeholder="Agregar archivo tipo CSV"  onclick="loadFile('csv')">
-                            <button  onclick="loadFile('csv')" type="button"  onclick="" class="button-file">Cargar</button>
-                        </div>
-                        <input  type="file" name="csv-file" id="csv-file" class="file-hide" accept=".csv">
+{{>admin/navigation secondary_navigation=secondary_navigation}}
 
-                    </div>
-                    <div style="margin-top: 20px;">
-                        <p style="color: #ee1d27;">*: Campos obligatorios</p>
-                    </div>
-                    <div class="form-group d-flex flex-row-reverse mt-5">
-                         <button type="submit" class="btn btn-rsp ft-bold">
-                            Enviar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<main class="container">
+	<div class="row">
+		<picture class="admin-main-picture">
+			<img class="admin-main-img" src="/estaticos/img/admin/IMAGENES PARA LA WEB DEL ONSV.png" alt="MDN" />
+		</picture>
+	</div>
 </main>

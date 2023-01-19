@@ -1,0 +1,20 @@
+<!-- nye section -->
+<section class="about_section">
+    <div class="container">
+		<div class="about_grid">
+			<div class="about_tabs">
+				{{#each contenido}}
+					<b class="tab_item" data-tab="{{@index}}">{{this.label}}</b>
+				{{/each}}
+			</div>
+			<div class="about_list">
+				{{#each contenido}}
+					<div id="about_item_{{@index}}" class="about_item">
+						<h1>{{this.label}}</h1>
+						<p>{{this.contenido}}</p>
+					</div>
+				{{/each}}
+			</div>	
+		</div>
+    </div>
+</section>

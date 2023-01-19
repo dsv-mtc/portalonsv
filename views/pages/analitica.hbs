@@ -1,5 +1,208 @@
-{{>analitica/analitica-modal}}
-<iframe 
-    id="analitica" 
-    src="https://rbiqliks.mtc.gob.pe/vp/resources/site/onsv/bi_onsv.html"
-></iframe>
+<section class="analitica_container">
+  <nav class="menu" id="nav">
+    <div class="menu_wrapper">
+      <img src="/img/logo-datos.png" alt="" />
+    </div>
+  </nav>
+  <section class="subnav hide" id="subnav">
+    <div id="back">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M3 11V3h8v8Zm0 10v-8h8v8Zm10-10V3h8v8Zm0 10v-8h8v8ZM5 9h4V5H5Zm10 0h4V5h-4Zm0 10h4v-4h-4ZM5 19h4v-4H5ZM15 9Zm0 6Zm-6 0Zm0-6Z"
+        ></path>
+      </svg>
+      ANALITICA
+    </div>
+    <p id="current"></p>
+    <b>
+      /
+    </b>
+    <ul id="submenu_list_alt">
+    </ul>
+  </section>
+  <div class="menu_container" id="menu_container">
+    <div class="menu_alt">
+      <ul id="menu_list_alt">
+      </ul>
+    </div>
+    <div class="submenu hide" id="submenu">
+      <ul id="submenu_list">
+      </ul>
+    </div>
+  </div>
+  <div class="iframe_container hide" id="iframe_container">
+    <iframe id="analitica"></iframe>
+  </div>
+  <footer class="footer_analitica">
+    <ul class="ad-list with-ic">
+      <li class="mail">
+        {{t lang "Correo"}} :
+        <span>
+          <a href="mailto:onsv@mtc.gob.pe">
+            {{footerData.email}}
+          </a>
+        </span>
+      </li>
+    </ul>
+    <p>
+      © Copyright 2020, Gob. Todos los Derechos resevados.
+    </p>
+
+    <ul class="so-links">
+      <li>
+        <a href="https://www.facebook.com/onsvPE" target="_black">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+      <li>
+        <a href="https://twitter.com/onsvPE" target="_black">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://www.youtube.com/channel/UCdNz5eyTZClohkpJgk4oa2Q"
+          target="_black"
+        >
+          <i class="fab fa-youtube"></i>
+        </a>
+      </li>
+    </ul>
+  </footer>
+</section>
+<script>
+  var result = {{{result}}}
+  let submenu = []
+    result.map(r => {
+        submenu[r.menu_id] = result.filter(i => i.menu_id === r.menu_id)
+    })
+    var filtered = submenu.filter(Boolean);
+    const menu = filtered.map(f => {
+        return { id: f[0].menu_id, menu: f[0].menu, imagen: f[0].imagen }
+    })
+    const subMenuListAlt = document.getElementById('submenu_list_alt')
+    const menuListAlt = document.getElementById('menu_list_alt')
+    const subMenuList = document.getElementById('submenu_list')
+    const subMenuContent = document.getElementById('submenu')
+    const menuContainer = document.getElementById('menu_container')
+    const iframeAnalitica = document.getElementById('analitica')
+    const iframeContainer= document.getElementById('iframe_container')
+    const nav= document.getElementById('nav')
+    const subnav= document.getElementById('subnav')
+    const current= document.getElementById('current')
+    const back= document.getElementById('back')
+    const footerAnalitica= document.getElementById('footer_analitica')
+
+    back.addEventListener('click', () => {
+        iframeAnalitica.setAttribute('src', '')
+        iframeContainer.classList.add('hide')
+        menuContainer.classList.remove('hide')
+        nav.classList.remove('hide')
+        subnav.classList.add('hide')
+        footerAnalitica.classList.remove('hide')
+    })
+
+    menu.map(m => {
+        const li2 = document.createElement('li')
+        const li = document.createElement('li')
+        const img = document.createElement('img')
+        const p = document.createElement('p')
+        img.src = m.imagen
+        li.setAttribute('id',`menu_${m.id}`)
+        p.append(m.menu)
+        li.append(img)
+        li.append(p)
+        li2.append(m.menu)
+        menuListAlt.append(li)
+        li.addEventListener('click', () => {
+            getSubmenu(m.id)
+            document.querySelectorAll('#menu_list_alt li.active').forEach((a) => {
+                a.classList.remove('active')
+            })
+            li.classList.add('active')
+            subMenuContent.classList.remove('hide')
+            current.textContent = m.menu
+        })
+    })
+
+    const getSubmenu = (menuId) => {
+        subMenuList.innerHTML = '';
+        subMenuListAlt.innerHTML = '';
+        submenu.map(m => {
+            m.map(ms => {
+                if (ms.menu_id === menuId && ms.estado) {
+                    const wrapper =document.createElement('div')
+                    const liAlt =document.createElement('li')
+                    const li = document.createElement('li')
+                    const p = document.createElement('p')
+                    const img = document.createElement('img')
+                    img.src = ms.imagen
+                    
+                    const div = document.createElement('div')
+                    const aVideo = document.createElement('a')
+                    const aPdf = document.createElement('a')
+										aVideo.setAttribute('target', '_blank')
+										aPdf.setAttribute('target', '_blank')
+                    aVideo.innerHTML = `
+                    <svg viewBox="0 0 24 24"><path d="m9.5 16.5l7-4.5l-7-4.5ZM12 22q-2.075 0-3.9-.788q-1.825-.787-3.175-2.137q-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175q1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138q1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175q-1.35 1.35-3.175 2.137Q14.075 22 12 22Z"/></svg>
+                    <small>Ver video</small>
+                    `
+                    aPdf.innerHTML = `
+                    <svg viewBox="0 0 256 256"><path d="M48 136a8 8 0 0 0 8-8V40h88v48a8 8 0 0 0 8 8h48v32a8 8 0 0 0 16 0V88a7.7 7.7 0 0 0-2.4-5.7l-55.9-56A8.1 8.1 0 0 0 152 24H56a16 16 0 0 0-16 16v88a8 8 0 0 0 8 8Zm112-84.7L188.7 80H160ZM64 160H48a8 8 0 0 0-8 8v48a8 8 0 0 0 16 0v-8h8a24 24 0 0 0 0-48Zm0 32h-8v-16h8a8 8 0 0 1 0 16Zm132-16v12h16a8 8 0 0 1 0 16h-16v12a8 8 0 0 1-16 0v-48a8 8 0 0 1 8-8h28a8 8 0 0 1 0 16Zm-68-16h-14a8 8 0 0 0-8 8v48a8 8 0 0 0 8 8h14a32 32 0 0 0 0-64Zm0 48h-6v-32h6a16 16 0 0 1 0 32Z"/></svg>
+                    <small>Ver pdf</small>
+                    `
+                    div.classList.add('options')
+                    aVideo.setAttribute('href', ms.linkvideo)
+                    aVideo.setAttribute('title', 'ver video')
+                    aVideo.setAttribute('target', '_blank')
+                    aPdf.setAttribute('href', ms.linkpdf)
+                    aPdf.setAttribute('title', 'ver pdf')
+                    aPdf.setAttribute('target', '_blank')
+                    div.append(aVideo)
+                    div.append(aPdf)
+
+                    wrapper.classList.add('submenu_wrapper')
+                    wrapper.append(p)
+                    wrapper.append(img)
+                    li.setAttribute('id',`submenu_${ms.idsubmenu}`)
+                    p.append(ms.submenu)
+                    li.append(wrapper)
+                    li.append(div)
+
+                    liAlt.setAttribute('id',`subnav_${ms.idsubmenu}`)
+                    liAlt.append(ms.submenu)
+
+                    subMenuList.append(li)
+                    subMenuListAlt.append(liAlt)
+
+                    li.addEventListener('click', () => {
+                        document.querySelectorAll('#submenu_list li.active').forEach((a) => {
+                            a.classList.remove('active')
+                        })
+                        li.classList.add('active')
+                        iframeAnalitica.setAttribute('src', ms.rutabi)
+                        iframeContainer.classList.remove('hide')
+                        subMenuContent.classList.add('hide')
+                        menuContainer.classList.add('hide')
+                        nav.classList.add('hide')
+                        subnav.classList.remove('hide')
+                        footerAnalitica.classList.add('hide')
+                        document.querySelector(`#subnav li#subnav_${ms.idsubmenu}`).classList.add('active')
+                    })
+
+                    liAlt.addEventListener('click', () => {
+                        document.querySelectorAll('#subnav li.active').forEach((a) => {
+                            a.classList.remove('active')
+                        })
+                        iframeAnalitica.setAttribute('src', ms.rutabi)
+                        liAlt.classList.add('active')
+                    })
+                }
+            })
+            
+        })
+    }
+
+    getSubmenu(menu[0].id)
+</script>

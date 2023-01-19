@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "webpack": "webpack --mode production --config ./utils/webpack/webpack.config.js"
   },
   "keywords": [
@@ -63,7 +64,6 @@
     "imagemin-svgo": "^9.0.0",
     "jquery": "^3.6.0",
     "mini-css-extract-plugin": "^2.1.0",
-    "nodemon": "^2.0.9",
     "popper.js": "^1.16.1",
     "postcss": "^8.3.6",
     "postcss-loader": "^6.1.1",

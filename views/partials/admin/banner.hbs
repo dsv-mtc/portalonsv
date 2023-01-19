@@ -1,0 +1,24 @@
+<section class="rsp-navbar banner">
+	<div class="d-flex justify-content-between">
+		
+		<div class="logo">
+			<!--Cambiar la imagen-->
+			<a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}"></a>
+		</div>
+		
+		<div class="d-flex align-items-center mr-3">
+			<div class="navbar-nav">
+				<div class="nav-item">
+					<a href="/datosabiertos-logout" style="color: white;" class="nav-link">
+						{{#if secondary_navigation}}
+							Logout
+						{{else}}
+							Cerrar sesión
+						{{/if}}
+					</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>
