@@ -1,12 +1,102 @@
 <script defer src="/admin/datos-abiertos.js"></script>
 
+<style>
+	.table thead tr th {
+		font-weight: bold; 
+		vertical-align: middle;
+		font-size: 1rem;
+	}
+	.table td {
+		vertical-align: middle;
+	}
+
+	.filters button {
+    background-color: rgb(88, 88, 86);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    height: 42px;
+    padding: 0 15px;
+	}
+
+</style>
+
 {{>admin/banner secondary_navigation=secondary_navigation}}
 {{>admin/navigation secondary_navigation=secondary_navigation}}
 
-<main class="container-fluid mt-5 mb-5" id="datos-abiertos-crud">
-	<h3 class="rsp-title ft-bold mb-4 text-center">
+<main class="container-fluid mt-3 mb-3" id="datos-abiertos-crud">
+	<h3 class="rsp-title ft-bold mb-5 text-center">
 		Datos abiertos
 	</h3>
+
+	<form class="filters d-flex justify-content-between" method="GET">
+			
+		<div class="form-group row col-12 col-md-2">
+			<label for="searchedTitulo" class="col-3 col-form-label">
+				Título:
+			</label>
+			<div class="col-9">
+				<input 
+					type="text" 
+					id="searchedTitulo"  
+					name="searchedTitulo" 
+					class="form-control"
+					value="{{searched.titulo}}"
+				>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-4">
+			<label for="searchedDescripcion" class="col-3 col-form-label">
+				Descripción:
+			</label>
+			<div class="col-9">
+				<input 
+					type="text"
+					id="searchedDescripcion"
+					name="searchedDescripcion"
+					class="form-control"
+					value="{{searched.descripcion}}"
+				>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-3">
+			<label for="searchedCategoria" class="col-3 col-form-label">
+				Categoria:
+			</label>
+			<div class="col-9">
+				<select class="form-control" name="searchedCategoria" id="searchedCategoria">
+					<option value="">Selecione una opción</option>
+					{{#each categorias}}
+						<option value="{{id}}"  {{#if selected}} selected {{/if}} >{{value}}</option>
+					{{/each}}
+				</select>
+				<small class="invalid-feedback">Debe seleccionar una categoría</small>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-2">
+			<label for="searchedFecha" class="col-3 col-form-label">
+				Fecha:
+			</label>
+			<div class="col-8">
+				<input 
+					type="date"
+					id="searchedFecha"
+					name="searchedFecha"
+					class="form-control"
+					value="{{searched.fecha}}"
+				>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-2 justify-content-around">
+			<button class="col-5" type="submit"> Consultar </button>
+			<button class="col-5" type="button" id="clearButton"> Limpiar </button>
+		</div>
+
+	</form>
 	
 	{{#if info_document}}
 		{{#each info_document}}
@@ -47,41 +137,99 @@
 				</tr>
 			</thead>
 			<tbody>
-				{{#each datos}}
-					<tr 
-						data-id="{{id}}"
-						data-titulo="{{titulo}}"
-						data-autor="{{autor}}"
-						data-descripcion="{{descripcion}}"
-						data-categoria="{{categoria}}"
-						data-tipo="{{tipo}}"
-						data-excelfile="{{excelfile}}"
-						data-pdffile="{{pdffile}}"
-						data-csvfile="{{csvfile}}"
-						data-fecha="{{fecha}}"
-					>
-						<td style="width: 8%;overflow-wrap: break-word;word-break: break-all;">{{titulo}}</td>
-						<td style="width: 8%;overflow-wrap: break-word;word-break: break-all;">{{autor}}</td>
-						<td style="width: 300px;overflow-wrap: break-word;word-break: break-all;">
-							{{descripcion}}
-						</td>
-						<td>{{v_categoria}}</td>
-						<td>{{v_tipo}}</td>
-						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">{{excelfile}}</td>
-						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">{{pdffile}}</td>
-						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">{{csvfile}}</td>
-						<td>{{fecha}}</td>
-						<td>
-							<div class="btn-group" role="group" aria-label="Basic example">
-								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditar">📝Editar</button>
-								<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEliminar">🗑Eliminar</button>
-							</div>
+				{{#if hasResults}}
+					{{#each datos}}
+						<tr 
+							data-id="{{id}}"
+							data-titulo="{{titulo}}"
+							data-autor="{{autor}}"
+							data-descripcion="{{descripcion}}"
+							data-id-categoria="{{idCategoria}}"
+							data-id-tipo="{{idTipo}}"
+							data-excelfile="{{excelfile}}"
+							data-pdffile="{{pdffile}}"
+							data-csvfile="{{csvfile}}"
+							data-fecha="{{fecha}}"
+						>
+							<td style="width: 8%;">
+								<span class="d-block" style="max-height: 50px;overflow: hidden;">
+									{{titulo}}
+								</span>
+							</td>
+							<td style="width: 6%;">
+								<span class="d-block" style="max-height: 50px;overflow: hidden;">
+									{{autor}}
+								</span>
+							</td>
+							<td style="width: 15%;">
+								<span class="d-block" style="max-height: 50px;overflow: hidden;">
+									{{descripcion}}
+								</span>
+							</td>
+							<td>
+								{{categoria}}
+							</td>
+							<td>
+								{{tipo}}
+							</td>
+							<td style="width: 400px">
+								<span class="d-block" style="max-height: 50px;overflow: hidden;">
+									{{excelfile}}
+								</span>
+							</td>
+							<td style="width: 400px">
+								<span class="d-block" style="max-height: 50px;overflow: hidden;">
+									{{pdffile}}
+								</span>
+							</td>
+							<td style="width: 400px">
+								<span class="d-block" style="max-height: 50px;overflow: hidden;">
+									{{csvfile}}
+								</span>
+							</td>
+							<td class="text-truncate">{{fecha}}</td>
+							<td>
+								<div class="btn-group" role="group" aria-label="Basic example">
+									<button 
+										type="button" 
+										class="btn btn-primary" 
+										data-toggle="modal" 
+										data-target="#modalEditar"
+										style="padding: 5.5px 15px;"
+									>
+											<i class="fas fa-edit"></i>
+									</button>
+									<button 
+										type="button" 
+										class="btn btn-danger" 
+										data-toggle="modal" 
+										data-target="#modalEliminar"
+										style="padding: 5.5px 15px;"
+									>
+										<i class="fas fa-trash-alt"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					{{/each}}
+				{{else}}
+					<tr>
+						<td colspan="10" class="text-center">
+							<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
+								No se encontraron resultados
+							</h3>
 						</td>
 					</tr>
-				{{/each}}
+				{{/if}}
 			</tbody>
 		</table>
 	</div>
+
+	{{#if pagination}}
+		<nav class="col-12 d-flex justify-content-center ">
+			{{> pagination pag=pagination}}
+		</nav>
+	{{/if}}
 
 	<div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="agregar" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
@@ -130,19 +278,19 @@
 					</div>
 
 					<div class="form-group row">
-						<label for="new_descripcion" class="col-auto col-md-2 col-form-label">
-							*Descripción:
+						<label for="new_descripcion" class="col-12 col-md-2 col-form-label">
+							*Descripcion:
 						</label>
-						<div class="col-auto col-md-10">
-							<input
-								type="text"
-								id="new_descripcion"
-								name="new_descripcion"
-								maxlength="2000"
-								placeholder="Ingrese la descripción" 
-								class="form-control"
+						<div class="col-12 col-md-10">
+							<textarea 
+								type="text" 
+								id="new_descripcion" 
+								name="new_descripcion" 
+								class="form-control" 
+								maxlength="2000" 
+								rows="6"
 								required
-							>
+							></textarea>
 						</div>
 					</div>
 
@@ -152,9 +300,9 @@
 						</label>
 						<div class="col-auto col-md-10">
 							<select class="form-control" name="new_categoria" id="new_categoria" required>
-								<option selected value="">Selecione una opción</option>
-								{{#each categories}}
-									<option value="{{value}}">{{key}}</option>
+								<option selected>Selecione una opción</option>
+								{{#each categorias}}
+									<option value="{{id}}">{{value}}</option>
 								{{/each}}
 							</select>
 							<small class="invalid-feedback">Debe seleccionar una categoría</small>
@@ -167,9 +315,9 @@
 						</label>
 						<div class="col-auto col-md-10">
 							<select class="form-control" name="new_tipo" id="new_tipo" required>
-								<option selected value="">Selecione una opción</option>
-								{{#each types}}
-									<option value="{{value}}">{{key}}</option>
+								<option selected>Selecione una opción</option>
+								{{#each tipos}}
+									<option value="{{id}}">{{value}}</option>
 								{{/each}}
 							</select>
 							<small class="invalid-feedback">Debe seleccionar un tipo de contenido</small>
@@ -333,19 +481,19 @@
 					</div>
 
 					<div class="form-group row">
-						<label for="descripcion" class="col-auto col-md-2 col-form-label">
-							*Descripción:
+						<label for="descripcion" class="col-12 col-md-2 col-form-label">
+							*Descripcion:
 						</label>
-						<div class="col-auto col-md-10">
-							<input
-								type="text"
-								id="descripcion"
-								name="descripcion"
-								maxlength="2000"
-								placeholder="Ingrese la descripción" 
-								class="form-control"
+						<div class="col-12 col-md-10">
+							<textarea 
+								type="text" 
+								id="descripcion" 
+								name="descripcion" 
+								class="form-control" 
+								maxlength="2000" 
+								rows="6"
 								required
-							>
+							></textarea>
 						</div>
 					</div>
 
@@ -355,9 +503,9 @@
 						</label>
 						<div class="col-auto col-md-10">
 							<select class="form-control" name="categoria" id="categoria" required>
-								<option selected value="">Selecione una opción</option>
-								{{#each categories}}
-									<option value="{{value}}">{{key}}</option>
+								<option selected>Selecione una opción</option>
+								{{#each categorias}}
+									<option value="{{id}}">{{value}}</option>
 								{{/each}}
 							</select>
 							<small class="invalid-feedback">Debe seleccionar una categoría</small>
@@ -370,9 +518,9 @@
 						</label>
 						<div class="col-auto col-md-10">
 							<select class="form-control" name="tipo" id="tipo" required>
-								<option selected value="">Selecione una opción</option>
-								{{#each types}}
-									<option value="{{value}}">{{key}}</option>
+								<option selected>Selecione una opción</option>
+								{{#each tipos}}
+									<option value="{{id}}">{{value}}</option>
 								{{/each}}
 							</select>
 							<small class="invalid-feedback">Debe seleccionar un tipo de contenido</small>

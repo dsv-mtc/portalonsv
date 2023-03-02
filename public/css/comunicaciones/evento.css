@@ -1,0 +1,81 @@
+.content {
+  padding: 2rem 5rem;
+}
+
+.event-section {
+  display: grid;
+  justify-content: center;
+  align-items: flex-start;
+  grid-template-columns: 500px 1fr;
+  grid-template-areas: 
+    'event-header event-info';
+  gap: 3rem;
+  min-height: 70vh;
+}
+
+@media screen and (max-width: 1024px) {
+  .events-section {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'event-header'
+      'event-info';
+  }
+}
+
+.event-section .event-header {
+  grid-area: event-header;
+  width: 100%; 
+}
+
+.event-section .event-header .event-title {
+	font-size: 2.25rem;
+  font-weight: bold;
+	margin-bottom: .5rem;
+}
+
+.event-section .event-header iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.event-section .event-header .event-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.event-section .event-info {
+  grid-area: event-info;
+  width: 100%;
+}
+
+.event-section .event-info .description .description-title {
+  margin: .35rem 0;
+  font-size: 1.75rem;
+}
+
+.event-section .event-info .description .description-detail {
+  font-size: 1.25rem;
+}
+
+.event-section .event-info .event-schedule {
+  margin-top: .75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  font-size: 1rem;
+}
+
+.event-section .event-info .event-schedule .label{
+  font-weight: bold;
+  margin-right: .5rem;
+}
+
+.event-info a {
+  color: #007bff;
+}
+
+.event-info a:hover {
+  color: #0056b3;
+}

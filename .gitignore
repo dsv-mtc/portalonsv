@@ -4,3 +4,7 @@ app.yaml
 ignore-templates
 utils/keys/pruebasfiisuni-3cd345507254.json
 docs/*
+
+status.json
+status.mjs
+public/estaticos/

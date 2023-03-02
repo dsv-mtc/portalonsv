@@ -1,10 +1,32 @@
 <script defer src="/admin/analitica-submenu.js"></script>
 
+<style>
+	.table thead tr th {
+		font-weight: bold; 
+		vertical-align: middle;
+		font-size: 1rem;
+	}
+	.table td {
+		vertical-align: middle;
+	}
+	.table td span {
+		max-height: 50px;
+		overflow: hidden;
+	}
+	.table td:has(span) {
+		overflow-wrap: break-word;
+		word-break: break-all;
+	}
+	.table td .btn {
+		padding: 5.5px 15px;
+	}
+</style>
+
 {{>admin/banner secondary_navigation=secondary_navigation}}
 {{>admin/navigation secondary_navigation=secondary_navigation}}
 
-<main class="container-fluid mt-5 mb-5" id="submenu-crud">
-	<h3 class="rsp-title ft-bold mb-4 text-center">
+<main class="container-fluid mt-3 mb-3" id="submenu-crud">
+	<h3 class="rsp-title ft-bold mb-3 text-center">
 		{{#if secondary_navigation}}
 			Analytical - Submenu
 		{{else}}
@@ -27,9 +49,10 @@
 
 	<button 
 		type="button" 
-		class="btn btn-primary mb-5" 
+		class="btn btn-primary mb-3" 
 		data-toggle="modal"
 		data-target="#modalAgregar"
+		style="padding: 5.5px 15px;"
 	>
 		Agregar
 	</button>
@@ -62,23 +85,39 @@
 					>
 						<td>{{menu}}</td>
 						<td>{{submenu}}</td>
-						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">{{rutabi}}</td>
-						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">{{linkvideo}}</td>
-						<td style="max-width: 400px;width: 400px;overflow-wrap: break-word;word-break: break-all;">
-							{{linkpdf}}
+						<td style="width: 400px;">
+							<span class="d-block">
+								{{rutabi}}
+							</span>
+						</td>
+						<td style="width: 400px;">
+							<span class="d-block">
+								{{linkvideo}}
+							</span>
+						</td>
+						<td style="width: 400px;">
+							<span class="d-block">
+								{{linkpdf}}
+							</span>
 						</td>
 						<td>{{imagen}}</td>
-						<td>
-							{{#if estado}} 
-								Activo
-							{{else}}
-								Inactivo
-							{{/if}}
+						<td style="vertical-align: middle;font-size: 1.25em; text-align:center;">
+							<span class="badge badge-{{#if estado}}primary{{else}}danger{{/if}}">
+								{{#if estado}}
+									Activo
+								{{else}}
+									Inactivo
+								{{/if}}
+							</span>
 						</td>
 						<td>
 							<div class="btn-group" role="group" aria-label="Basic example">
-								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditar">📝Editar</button>
-								<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEliminar">🗑Eliminar</button>
+								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditar">
+									<i class="fas fa-edit"></i>
+								</button>
+								<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEliminar">
+									<i class="fas fa-trash-alt"></i>
+								</button>
 							</div>
 						</td>
 					</tr>

@@ -1,104 +1,141 @@
 <!-- Sección de formulario y mapas -->
 <section class="rsp-cont-tab-section rsp-wrap">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-lg-6">
-                <div class="rsp-c-tab-blk">
-                    <div class="row">
-                        <div class="col-md-12 mb-4">
-                            <h3 class="rsp-title ft-bold">
-                                {{t lang "res_regional"}}
-                            </h3>
-                        </div>
-                    </div>
-                      <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="rsp-ct-us-img" id="img-region">
-                                            <img src="/img/usre-icon.png" alt="user">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 mt-5">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  id="nombre" placeholder=" {{t lang "Nombre"}}" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  id="telefono" placeholder=" {{t lang "Telefono"}}" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  id="email" placeholder=" {{t lang "Correo"}}" readonly>
-                                        </div>
-                                    </div>
-                                </div> 
-                            </div>
-                        </div>
-                </div>
-            </div>
-            <!--Map svg-->
-            <div class="col-12 col-lg-6 d-none d-sm-block">
-                <div class="vu-map">
-                    <div class="mapouter  ">
-                        <div class="gmap_canvas">
-                           {{>regiones/map}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--Map Form-->
-            <div class="col-12 col-lg-6 d-block d-sm-none">
-                <p class="text-center">Seleccione una región</p>
-                <select name="select-region" id="select-region" class="custom-select">
-                    <option value="Lima">Lima</option>
-                    <option value="Amazonas">Amazonas</option>
-                    <option value="Ancash">Ancash</option>
-                    <option value="Apurímac">Apurímac</option>
-                    <option value="Arequipa">Arequipa</option>
-                    <option value="Ayacucho">Ayacucho</option>
-                    <option value="Cajamarca">Cajamarca</option>
-                    <option value="Callao">Callao</option>
-                    <option value="Cusco">Cusco</option>
-                    <option value="Huancavelica">Huancavelica</option>
-                    <option value="Huanuco">Huánuco</option>
-                    <option value="Ica">Ica</option>
-                    <option value="Junin">Junín</option>
-                    <option value="La Libertad">La Libertad</option>
-                    <option value="Lambayeque">Lambayeque</option>
-                    <option value="Loreto">Loreto</option>
-                    <option value="Madre de Dios">Madre De Dios</option>
-                    <option value="Moquegua">Moquegua</option>
-                    <option value="Pasco">Pasco</option>
-                    <option value="Piura">Piura</option>
-                    <option value="San Martín">San Martín</option>
-                    <option value="Tacna">Tacna</option>
-                     <option value="Tumbes">Tumbes</option>
-                    <option value="Ucayali">Ucayali</option>
-                </select>
-            </div>
-        </div>
-    </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 col-lg-6">
+				<div class="rsp-c-tab-blk">
+					<div class="row">
+						<div class="col-md-12 mb-4">
+							<h3 class="rsp-title ft-bold" style="font-size: 32px; line-height: 48px;">
+								Consejo regional de Seguridad Vial
+								<span 
+									style="display: block; text-align: center; color: #ee1d27;"
+									id="region-name"
+								>
+								</span>
+							</h3>
+						</div>
+					</div>
+
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+							
+							<div class="row">
+
+								<div class="col-md-12">
+									<div class="rsp-ct-us-img" id="img-region">
+										<img src="/img/usre-icon.png" alt="user">
+									</div>
+								</div>
+
+								<div class="col-md-12 mt-5">
+									<div class="form-group">
+										<i class="fas fa-user"></i>
+										<span class="form-control" id="nombre">
+											{{t lang "Nombre"}}
+										</span>
+									</div>
+								</div>
+
+								<div class="col-md-12">
+									<div class="form-group">
+										<i class="fas fa-phone"></i>
+										<span class="form-control" id="telefono">
+											{{t lang "Telefono"}}
+										</span>
+									</div>
+								</div>
+								
+								<div class="col-md-12">
+									<div class="form-group">
+										<i class="fas fa-envelope"></i>
+										<span class="form-control" id="email">
+											{{t lang "Correo"}}
+										</span>
+									</div>
+								</div>
+
+								<div class="col-md-12">
+									<div class="form-group">
+										<i class="fas fa-globe"></i>
+										<a class="form-control" id="pageLink" target="_blank">
+											Sitio web
+										</a>
+									</div>
+								</div>
+
+							</div> 
+
+						</div>
+						
+					</div>
+				
+				</div>
+			</div>
+
+			<!--Map svg-->
+			<div class="col-12 col-lg-6 d-none d-sm-block">
+
+				<div class="vu-map">
+					<div class="mapouter">
+						<div class="gmap_canvas">
+							{{>regiones/map}}
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!--Map Form-->
+			<div class="col-12 col-lg-6 d-block d-sm-none">
+				<p class="text-center">Seleccione una región</p>
+				<select name="select-region" id="select-region" class="custom-select">
+					<option value="Lima">Lima</option>
+					<option value="Amazonas">Amazonas</option>
+					<option value="Ancash">Ancash</option>
+					<option value="Apurímac">Apurímac</option>
+					<option value="Arequipa">Arequipa</option>
+					<option value="Ayacucho">Ayacucho</option>
+					<option value="Cajamarca">Cajamarca</option>
+					<option value="Callao">Callao</option>
+					<option value="Cusco">Cusco</option>
+					<option value="Huancavelica">Huancavelica</option>
+					<option value="Huanuco">Huánuco</option>
+					<option value="Ica">Ica</option>
+					<option value="Junin">Junín</option>
+					<option value="La Libertad">La Libertad</option>
+					<option value="Lambayeque">Lambayeque</option>
+					<option value="Loreto">Loreto</option>
+					<option value="Madre de Dios">Madre De Dios</option>
+					<option value="Moquegua">Moquegua</option>
+					<option value="Pasco">Pasco</option>
+					<option value="Piura">Piura</option>
+					<option value="San Martín">San Martín</option>
+					<option value="Tacna">Tacna</option>
+					<option value="Tumbes">Tumbes</option>
+					<option value="Ucayali">Ucayali</option>
+				</select>
+			</div>
+		</div>
+	</div>
 </section>
+
 <!--Sección de noticias de regiones-->
 <section class="rsp-noti-sec rsp-wrap">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <h3 class="rsp-title ft-bold">
-                    {{t lang "not_reg"}}
-                </h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="owl-carousel owl-theme" id="noti">
-                    {{>regiones/carousel-regions lang=lang post=post}}
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 mb-4">
+				<h3 class="rsp-title ft-bold">
+					{{t lang "not_reg"}}
+				</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="owl-carousel owl-theme" id="noti">
+					{{>regiones/carousel-regions lang=lang post=post}}
+				</div>
+			</div>
+		</div>
+	</div>
 
 </section>

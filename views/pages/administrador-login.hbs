@@ -1,0 +1,50 @@
+<!--Banner section-->
+<section class="rsp-navbar banner">
+	<div class="logo">
+		<!--Cambiar la imagen-->
+		<a class="navbar-brand" href="{{endpointRebase settings.url}}">
+			<img class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}">
+		</a>
+	</div>
+</section>
+<!--login form-->
+<main class="container" >
+	<div class="d-flex justify-content-center mt-5 pt-md-5 mb-5">
+		<div class="card login-form-size">
+			<div class="card-body">
+				{{#if info_login}}
+					<div class="col-12">
+						<div class="alert alert-danger alert-dismissible fade show" role="alert">
+							<strong>{{info_login}}</strong> 
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					</div>
+				{{/if}}
+				<h5 class="card-title text-center">BIENVENIDO</h5>
+				<form action="/administrador/login" method="POST">
+					<div class="form-group row">
+						<label for="email" class="col-12 col-md-2 col-form-label">Usuario:</label>
+						<div class="col-12 col-md-10">
+							<input type="email" id="email" name="email" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="password" class="col-12 col-md-2 col-form-label">Clave:</label>
+						<div class="col-12 col-md-10">
+							<input type="password" id="password" name="password" class="form-control">
+						</div>
+					</div>
+					<div class="mt-5 d-flex justify-content-end ">
+						<button type="submit" class="btn btn-rsp ft-bold">
+							Ingresar
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+</main>

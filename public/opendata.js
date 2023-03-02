@@ -1,46 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
 	console.log("datos  abiertos - iniciado");
 	searchOpenData();
-	reloadPage();
+	reloadData();
 	checkInputFile();
 	checklLoadFile();
 	checkValidateTextArea();
 })
+
 function searchOpenData() {
-	const opendataDiv = document.querySelector('#open-data-form-search');
-	if (opendataDiv != null) {
-		opendataDiv.addEventListener('submit', (e) => {
-			e.preventDefault();
-			const search = document.querySelector('#search-data').value;
-			const category = document.querySelector('#category-data').value;
-			const lang = 'es'
-			fetch('/datosabiertos', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ lang, search, category })
-			})
-				.then(results => {
-					return results.json();
-				})
-				.then(data => {
-					if (!data.success) {
-						document.querySelector('#open-data-search-alert').classList.remove('hide');
-						document.querySelector('#open-data-search-alert').classList.add('show');
+	const $searchForm = document.getElementById('open-data-form-search');
+	if (!$searchForm) return;
 
-					} else {
-						document.querySelector('#open-data-search-alert').classList.remove('show');
-						document.querySelector('#open-data-search-alert').classList.add('hide');
-					}
-					reloadPosts(data);
+	$searchForm.addEventListener('submit', async evt => {
+		evt.preventDefault();
 
-				})
-				.catch(errors => {
-					console.log(errors);
-				})
+		const data = {
+			search: $searchForm.descripcion.value,
+			idCategoria: Number($searchForm.categoria.value),
+			idTipo: Number($searchForm.tipo.value),
+		}
 
+		const request = await fetch('/datosabiertos', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data)
+		})
+		const response = await request.json();
 
-		});
-	}
+		const $alert = document.getElementById('open-data-search-alert');
+
+		if (!response.success) {
+			$alert.classList.remove('d-none');
+			console.log('Error al buscar datos abiertos');
+			return;
+		}
+
+		$alert.classList.add('d-none');
+
+		reloadPosts(response);
+
+	});
 
 
 }
@@ -82,15 +81,18 @@ function sendFile() {
 	}
 }
 
-function reloadPage() {
-	const reloadButton = document.querySelector('#open-data-button-clear');
-	if (reloadButton != null) {
-		reloadButton.addEventListener('click', (e) => {
-			e.preventDefault();
-			window.location.reload();
-		})
-	}
+function reloadData() {
+	const $reloadButton = document.getElementById('clean-search');
+	if (!$reloadButton) return
+	
+	$reloadButton.addEventListener('click', e => {
+		e.preventDefault();
 
+		document.getElementById('open-data-form-search').reset();
+		document.getElementById('default').classList.remove('d-none');
+		document.getElementById('results-template').classList.add('d-none');
+
+	})
 }
 
 function loadFile(value) {
@@ -133,12 +135,30 @@ function checklLoadFile() {
 }
 
 function reloadPosts(response) {
-	document.getElementById('default').style.display = 'none';
-	if (response.success) {
-		document.getElementById('results-template').innerHTML = response.posts;
-	} else {
-		document.getElementById('results-template').innerHTML = '';
+	console.log({ response });
+	document.getElementById('default').classList.add('d-none');
+	
+	const $resultTemplate = document.getElementById('results-template')
+	$resultTemplate.classList.remove('d-none');
+	
+	if (!response.success) {
+		$resultTemplate.innerHTML = 'Ocurrió un error al buscar los datos';
+		return;
 	}
+
+	if(response.dataLength === 0)
+		$resultTemplate.innerHTML = `
+			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
+				No se encontraron resultados
+			</h3>
+		`;
+	else
+		$resultTemplate.innerHTML = `
+			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
+				Se encontraron ${response.dataLength} conjunto(s) de datos
+			</h3>
+			${response.dataRendered}
+		`;
 
 }
 

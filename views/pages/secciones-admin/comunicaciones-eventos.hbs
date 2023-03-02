@@ -1,0 +1,928 @@
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js"></script>
+<script defer src="/admin/comunicaciones-eventos.js"></script>
+
+<style>
+	.table thead tr th {
+		font-weight: bold; 
+		vertical-align: middle;
+		font-size: 1.1rem;
+	}
+	.table td {
+		font-size: .95rem;
+		vertical-align: middle;
+	}
+	.filters button {
+    background-color: rgb(88, 88, 86);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    height: 42px;
+    padding: 0 15px;
+	}
+</style>
+
+{{>admin/banner secondary_navigation=secondary_navigation}}
+{{>admin/navigation secondary_navigation=secondary_navigation}}
+
+<main class="container-fluid mt-3 mb-3" id="comunicaciones-eventos-crud">
+	<h3 class="rsp-title ft-bold mb-3 text-center">
+		Comunicaciones - Eventos
+	</h3>
+	
+	<form class="filters d-flex justify-content-between" method="GET">
+			
+		<div class="form-group row col-12 col-md-3">
+			<label for="searchedEvento" class="col-3 col-form-label">
+				Evento:
+			</label>
+			<div class="col-9">
+				<input 
+					type="text" 
+					id="searchedEvento"  
+					name="searchedEvento" 
+					class="form-control"
+					value="{{searched.evento}}"
+				>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-3">
+			<label for="searchedTipoEvento" class="col-3 col-form-label">
+				Tipo evento:
+			</label>
+			<div class="col-9">
+				<select class="form-control" name="searchedTipoEvento" id="searchedTipoEvento">
+					<option value="">Selecione una opción</option>
+					{{#each tiposEvento}}
+						<option value="{{id}}" {{#if selected}} selected {{/if}} >{{value}}</option>
+					{{/each}}
+				</select>
+				<small class="invalid-feedback">Debe seleccionar un tipo de evento</small>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-2">
+			<label for="searchedStartDate" class="col-3 col-form-label">
+				Fecha inicio:
+			</label>
+			<div class="col-8">
+				<input 
+					type="date"
+					id="searchedStartDate"
+					name="searchedStartDate"
+					class="form-control"
+					value="{{searched.startDate}}"
+				>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-2">
+			<label for="searchedEndDate" class="col-3 col-form-label">
+				Fecha fin:
+			</label>
+			<div class="col-8">
+				<input 
+					type="date"
+					id="searchedEndDate"
+					name="searchedEndDate"
+					class="form-control"
+					value="{{searched.endDate}}"
+				>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-3 justify-content-around">
+			<button class="col-5" type="submit"> Consultar </button>
+			<button class="col-5" type="button" id="clearButton"> Limpiar </button>
+		</div>
+
+	</form>
+
+	{{#if info_document}}
+		{{#each info_document}}
+			<div class="{{style}}" role="alert">
+				<strong>{{message}}</strong> 
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		{{/each}}
+	{{/if}}
+
+	<button 
+		type="button" 
+		class="btn btn-primary mb-3" 
+		data-toggle="modal"
+		data-target="#modalAgregar"
+		style="padding: 5.5px 15px;"
+	>
+		Agregar
+	</button>
+	
+	<div class="table-responsive">
+		<table class="table" id="data-table">
+			<thead>
+				<tr>
+					<th 
+						scope="col" 
+					>
+						Tipo Evento
+					</th>
+					<th 
+						scope="col" 
+					>
+						Evento
+					</th>
+					<th 
+						scope="col" 
+					>
+						Organizador
+					</th>
+					<th 
+						scope="col" 
+					>
+						Lugar
+					</th>
+					<th 
+						scope="col" 
+					>
+						Dirección
+					</th>
+					<th 
+						scope="col" 
+					>
+						Descripción
+					</th>
+					<th 
+						scope="col" 
+					>
+						Fecha inicio
+					</th>
+					<th 
+						scope="col" 
+					>
+						Fecha fin
+					</th>
+					<th 
+						scope="col" 
+						style="width: 10%;text-align:center;"
+					>
+						Estado
+					</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#if hasResults}}
+					{{#each eventos}}
+						<tr 
+							data-id="{{id}}"
+							data-id-tipo-evento="{{idTipoEvento}}"
+							data-title="{{title}}"
+							data-organized-by="{{organizedBy}}"
+							data-place="{{place}}"
+							data-short-description="{{shortDescription}}"
+							data-description="{{description}}"
+							data-start-day="{{startDayISO}}"
+							data-start-time="{{startTimeISO}}"
+							data-end-day="{{#if endTime}}{{endDayISO}}{{/if}}"
+							data-end-time="{{#if endTime}}{{endTimeISO}}{{/if}}"
+							data-price="{{price}}"
+							data-image-url="{{imageUrl}}"
+							data-direccion="{{direccion}}"
+							data-reunion-link="{{reunionLink}}"
+							data-facebook-link="{{facebookLink}}"
+							data-youtube-link="{{youtubeLink}}"
+							data-twitter-link="{{twitterLink}}"
+							data-is-active="{{isActive}}"
+						>
+							<td>
+								{{tipoEvento}}
+							</td>
+							<td>
+								{{title}}
+							</td>
+							<td>
+								{{organizedBy}}
+							</td>
+							<td>
+								{{place}}
+							</td>
+							<td>
+								<span class="d-block" style="max-height: 70px;overflow: hidden;">
+									{{direccion}}
+								</span>
+							</td>
+							<td style="width: 15%">
+								<span class="d-block" style="max-height: 70px;overflow: hidden;">
+									{{{description}}}
+								</span>
+							</td>
+							<td>
+								<span class="text-truncate">{{startTimeString}}</span>
+							</td>
+							<td style="width: 10%">
+								<span class="text-truncate">{{endTimeString}}</span>
+							</td>
+							<td style="font-size: 1.25em; text-align:center;">
+								<span class="badge badge-{{#if isActive}}primary{{else}}danger{{/if}}">
+									{{#if isActive}}
+										Activo
+									{{else}}
+										Inactivo
+									{{/if}}
+								</span>
+							</td>
+							<td>
+								<div class="text-truncate" role="group" aria-label="Basic example">
+									<button 
+										type="button" 
+										class="btn btn-primary text-truncate" 
+										data-toggle="modal" 
+										data-target="#modalEditar"
+										style="padding: 5.5px 15px;"
+									>
+										<i class="fas fa-edit"></i>
+									</button>
+									<button 
+										type="button" 
+										class="btn btn-danger text-truncate" 
+										data-toggle="modal" 
+										data-target="#modalEliminar"
+										style="padding: 5.5px 15px;"
+									>
+										<i class="fas fa-trash-alt"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					{{/each}}
+				{{else}}
+					<tr>
+						<td colspan="9" class="text-center">
+							<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
+								No se encontraron resultados
+							</h3>
+						</td>
+					</tr>
+				{{/if}}
+			</tbody>
+		</table>
+	</div>
+
+	{{#if pagination}}
+		<nav class="col-12 d-flex justify-content-center ">
+			{{> pagination pag=pagination}}
+		</nav>
+	{{/if}}
+
+	<div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="agregar" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+			<form class="modal-content" id="formAgregar" class="needs-validation">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalAgregarLabel">Registro de eventos</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+
+					<div class="form-group row">
+						<label for="new_idTipoEvento" class="col-auto col-md-2 col-form-label">
+							*Tipo de evento
+						</label>
+						<div class="col-auto col-md-10">
+							<select name="new_idTipoEvento" id="new_idTipoEvento" class="form-control" required>
+								<option value="">--Selecione una opcion--</option>
+								{{#each tiposEvento}}
+									<option value="{{id}}">{{value}}</option>
+								{{/each}}
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_title" class="col-auto col-md-2 col-form-label">
+							*Título:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_title"  
+								name="new_title" 
+								placeholder="Ingrese el título del evento"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_organizedBy" class="col-auto col-md-2 col-form-label">
+							*Organizador:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_organizedBy"  
+								name="new_organizedBy"
+								placeholder="Ingrese el organizador del evento"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_place" class="col-auto col-md-2 col-form-label">
+							Lugar:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_place"  
+								name="new_place"
+								placeholder="Ingrese el lugar del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_direccion" class="col-auto col-md-2 col-form-label">
+							Dirección:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_direccion"  
+								name="new_direccion"
+								placeholder="Ingrese la dirección del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_shortDescription" class="col-auto col-md-2 col-form-label">
+							Descripción corta:
+						</label>
+						<div class="col-auto col-md-10">
+							<textarea 
+								type="text" 
+								id="new_shortDescription" 
+								name="new_shortDescription" 
+								class="form-control" 
+								maxlength="2000"
+								rows="4"
+							></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_description" class="col-auto col-md-2 col-form-label">
+							Descripción:
+						</label>
+						<div class="col-auto col-md-10">
+							<textarea 
+								type="text" 
+								id="new_description" 
+								name="new_description" 
+								class="form-control" 
+							></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_startDay" class="col-auto col-md-2 col-form-label">
+							*Día de inicio:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="date"
+								id="new_startDay"
+								name="new_startDay"
+								placeholder="Ingrese la fecha de inicio del evento"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_startTime" class="col-auto col-md-2 col-form-label">
+							*Hora de inicio:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="time"
+								id="new_startTime"
+								name="new_startTime"
+								placeholder="Ingrese la fecha de inicio del evento"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_endDay" class="col-auto col-md-2 col-form-label">
+							Día de finalización:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="date"
+								id="new_endDay"
+								name="new_endDay"
+								placeholder="Ingrese la fecha de fin del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_endTime" class="col-auto col-md-2 col-form-label">
+							Hora de finalización:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="time"
+								id="new_endTime"
+								name="new_endTime"
+								placeholder="Ingrese la hora de fin del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_price" class="col-auto col-md-2 col-form-label">
+							Precio:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_price"
+								name="new_price"
+								placeholder="Ingrese el precio del evento"
+								class="form-control"
+								pattern="\d*(\.\d{0,2})?"
+								title="Debe introducir un precio o dejar en blanco para gratis."
+							>
+						</div>
+					</div>
+
+					<div class="custom-file mt-3 mb-5">
+						<div style="display: flex;">
+							<input 
+								id="new_img-f" 
+								name="new_existingImage"
+								readonly 
+								type="text" 
+								class="form-control input-color" 
+								placeholder="*Agregar archivo tipo IMG"
+								onclick="new_loadFile('img')"
+							>
+							<button onclick="new_loadFile('img')" type="button"  onclick="" class="button-file">
+								Cargar
+							</button>
+						</div>
+						<input 
+							type="file" 
+							name="img-file" 
+							id="new_img-file" 
+							class="file-hide"
+							accept="image/*"
+						>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_reunionLink" class="col-auto col-md-2 col-form-label">
+							Enlace reunion:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_reunionLink"
+								name="new_reunionLink" 
+								 
+								placeholder="Ingrese el enlace del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_facebookLink" class="col-auto col-md-2 col-form-label">
+							Enlace Facebook:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_facebookLink"
+								name="new_facebookLink" 
+								 
+								placeholder="Ingrese el enlace del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_youtubeLink" class="col-auto col-md-2 col-form-label">
+							Enlace Youtube:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_youtubeLink"
+								name="new_youtubeLink" 
+								 
+								placeholder="Ingrese el enlace del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="new_twitterLink" class="col-auto col-md-2 col-form-label">
+							Enlace Twitter:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="new_twitterLink"
+								name="new_twitterLink" 
+								 
+								placeholder="Ingrese el enlace del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="new_isActive" name="new_isActive" checked>
+						<label class="form-check-label" for="new_isActive">¿Está activo?</label>
+					</div>
+
+					<div style="margin-top: 20px;">
+						<p style="color: #ee1d27;">
+							*: Campos obligatorios
+					</div>
+
+				</div>
+					
+				<div class="modal-footer">
+					<button 
+						type="button" 
+						class="btn btn-secondary" 
+						data-dismiss="modal"
+					>
+						Cancelar
+					</button>
+					<button 
+						type="submit" 
+						class="btn btn-primary" 
+						id="btnAgregar"
+					>
+						Agregar
+					</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+	<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="editar" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+			<form class="modal-content" id="formEditar" class="needs-validation">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalEditarLabel">Editor de eventos</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+
+					<div class="form-group row">
+						<label for="idTipoEvento" class="col-auto col-md-2 col-form-label">
+							*Tipo de evento
+						</label>
+						<div class="col-auto col-md-10">
+							<select name="idTipoEvento" id="idTipoEvento" class="form-control" required>
+								<option value="">--Selecione una opcion--</option>
+								{{#each tiposEvento}}
+									<option value="{{id}}">{{value}}</option>
+								{{/each}}
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="title" class="col-auto col-md-2 col-form-label">
+							*Título:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="title"  
+								name="title"
+								placeholder="Ingrese el título del evento"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="organizedBy" class="col-auto col-md-2 col-form-label">
+							*Organizador:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="organizedBy"  
+								name="organizedBy"
+								placeholder="Ingrese el organizador del evento"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="place" class="col-auto col-md-2 col-form-label">
+							Lugar:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="place"  
+								name="place"
+								placeholder="Ingrese el lugar del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="direccion" class="col-auto col-md-2 col-form-label">
+							Dirección:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="direccion"  
+								name="direccion"
+								placeholder="Ingrese la dirección del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="shortDescription" class="col-auto col-md-2 col-form-label">
+							Descripción corta:
+						</label>
+						<div class="col-auto col-md-10">
+							<textarea 
+								type="text" 
+								id="shortDescription" 
+								name="shortDescription" 
+								class="form-control" 
+								maxlength="2000"
+								rows="4"
+							></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="description" class="col-auto col-md-2 col-form-label">
+							Descripción:
+						</label>
+						<div class="col-auto col-md-10">
+							<textarea 
+								type="text" 
+								id="description" 
+								name="description" 
+								class="form-control" 
+							></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="startDay" class="col-auto col-md-2 col-form-label">
+							*Día de inicio:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="date"
+								id="startDay"
+								name="startDay"
+								placeholder="Ingrese la fecha de inicio del evento"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="startTime" class="col-auto col-md-2 col-form-label">
+							*Hora de inicio:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="time"
+								id="startTime"
+								name="startTime"
+								placeholder="Ingrese la fecha de inicio del evento"
+								class="form-control"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="endDay" class="col-auto col-md-2 col-form-label">
+							Día de finalización:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="date"
+								id="endDay"
+								name="endDay"
+								placeholder="Ingrese la fecha de fin del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="endTime" class="col-auto col-md-2 col-form-label">
+							Hora de finalización:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="time"
+								id="endTime"
+								name="endTime"
+								placeholder="Ingrese la hora de fin del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="price" class="col-auto col-md-2 col-form-label">
+							Precio:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="price"
+								name="price" 
+								placeholder="Ingrese el precio del evento"
+								class="form-control"
+								pattern="\d*(\.\d{0,2})?"
+								title="Debe introducir un precio o dejar en blanco para gratis."
+							>
+						</div>
+					</div>
+
+					<div class="custom-file mt-3 mb-5">
+						<div style="display: flex;">
+							<input 
+								id="img-f" 
+								name="existingImage"
+								readonly 
+								type="text" 
+								class="form-control input-color" 
+								placeholder="*Agregar archivo tipo IMG"
+								onclick="loadFile('img')"
+								required
+							>
+							<button onclick="loadFile('img')" type="button"  onclick="" class="button-file">
+								Cargar
+							</button>
+						</div>
+						<input 
+							type="file" 
+							name="img-file" 
+							id="img-file" 
+							class="file-hide"
+							accept="image/*"
+						>
+					</div>
+
+					<div class="form-group row">
+						<label for="reunionLink" class="col-auto col-md-2 col-form-label">
+							Enlace reunión:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="reunionLink"
+								name="reunionLink" 
+								 
+								placeholder="Ingrese el enlace del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="facebookLink" class="col-auto col-md-2 col-form-label">
+							Enlace Facebook:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="facebookLink"
+								name="facebookLink" 
+								 
+								placeholder="Ingrese el enlace del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="youtubeLink" class="col-auto col-md-2 col-form-label">
+							Enlace Youtube:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="youtubeLink"
+								name="youtubeLink" 
+								 
+								placeholder="Ingrese el enlace del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="twitterLink" class="col-auto col-md-2 col-form-label">
+							Enlace Twitter:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="twitterLink"
+								name="twitterLink" 
+								 
+								placeholder="Ingrese el enlace del evento"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="isActive" name="isActive">
+						<label class="form-check-label" for="isActive">¿Está activo?</label>
+					</div>
+
+					<div style="margin-top: 20px;">
+						<p style="color: #ee1d27;">
+							*: Campos obligatorios
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						Cancelar
+					</button>
+					<button type="submit" class="btn btn-primary" id="btnEditar">
+						Editar
+					</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+	<div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="eliminar" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<form class="modal-content" id="formEliminar">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalEliminarLabel">Eliminar categoría</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Se eliminará esta información, ¿Está seguro?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-danger" id="btnEliminar">Eliminar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</main>

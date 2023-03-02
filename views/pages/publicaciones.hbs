@@ -1,49 +1,123 @@
-<section class="rsp-pub-section rsp-wrap">
-    <div class="container">
-        <!--input search-->
-        <div class="row">
-            <div class="col-md-10 mx-auto">
-                <div class="input-group mb-3">
-                    <input type="text" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" >
-                    <div class="input-group-append">
-                        <span id="search-button" class="input-group-text search-input">
-                            <i class="fal fa-search"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="search-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
-            {{t lang "no-results"}}
-        </div>
-        <div class="row mt-5">
-             <!--Listado de resultado-->
-            <div class="col-lg-8">
-                <h3 class="rsp-title ft-bold mb-4">{{t lang "resultados"}}</h3>
-                <div class="re-blk">
-                    <div id="default">
-                        {{#each post}}
-                            {{>publicaciones/publicaciones-card-body lang=../lang}}
-                        {{/each}}
-                    </div>
-                    <div id="results-template">
-                      
-                    </div>
-                </div>
-            </div>
-            <!--Sidebar-->
-            <div class="col-lg-4">
-                {{>sidebar-widgets/subscribers lang=lang}}
-                <h6 class="des ft-bold">{{t lang "destacados"}}</h6>
-                <div class="des-blk">
-                    <ul id="sidebar-default">
-                        {{> sidebar-widgets/tags}}
-                    </ul>
-                    <ul id="sidebar-template">
-                        <!--Tags cambiados-->
-                    </ul>
-                </div>
-            </div>   
-        </div>
-    </div>
+<link rel="stylesheet" href="/css/publicaciones.css">
+
+<script src="/js/publicaciones.js"></script>
+
+<section class="publicaciones-section">
+
+	<div class="filters">
+
+		<form id="searchForm" method="GET">
+
+			<div class="input-group mb-4">
+				<input 
+					type="text" 
+					id="title" 
+					name="title" 
+					class="form-control main-search" 
+					placeholder="{{t lang "buscar"}}"
+					{{#if title}}
+						value="{{title}}"
+					{{/if}}
+				>
+				<div class="input-group-append">
+					<button class="input-group-text search-input" type="submit">
+						<i class="fal fa-search"></i>
+					</button>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="categoria" class="col-3 col-form-label">
+					Categoría
+				</label>
+				<div class="col-9">
+					<select name="categoria" id="categoria" class="form-control">
+						<option {{#if categoria}} {{else}} selected {{/if}} value=''>Selecione una categoría</option>
+						{{#each allTags}}
+							<option 
+								value="{{this.slug}}"
+								{{#if this.estaSeleccionado}}
+									selected
+								{{/if}}
+							>
+								{{this.name}}
+							</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="region" class="col-3 col-form-label">
+					Región
+				</label>
+				<div class="col-9">
+					<select name="region" id="region" class="form-control">
+						<option {{#if region}} {{else}} selected {{/if}} value=''>Selecione una región</option>
+						{{#each regiones}}
+							<option 
+								value="{{this.slug}}"
+								{{#if this.estaSeleccionado}}
+									selected
+								{{/if}}
+							>
+								{{this.value}}
+							</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="year" class="col-3 col-form-label">
+					Año
+				</label>
+				<div class="col-9">
+					<select name="year" id="year" class="form-control">
+						<option {{#if year}} {{else}} selected {{/if}} value=''>Selecione un año</option>
+						{{#each years}}
+							<option 
+								value="{{this.slug}}"
+								{{#if this.estaSeleccionado}}
+									selected
+								{{/if}}
+							>
+								{{this.name}}
+							</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-center">
+				<button class="ny-btn btn btn-rsp ft-bold" id="clearButton">
+					Limpiar
+				</button>
+			</div>
+
+
+		</form>
+
+		{{>sidebar-widgets/subscribers lang=lang}}
+
+	</div>
+
+	<div class="results">
+		{{#if hasResults}}
+			{{#each posts}}
+				{{>publicaciones/publicaciones-card-body lang=../lang}}
+			{{/each}}
+
+			{{#if pagination}}
+				<nav class="col-12 d-flex justify-content-center ">
+					{{> pagination pag=pagination}}
+				</nav>
+			{{/if}}
+		{{else}}
+			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
+				No se encontraron resultados
+			</h3>
+		{{/if}}
+	</div>
+
 </section>

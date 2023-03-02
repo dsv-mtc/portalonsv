@@ -40,9 +40,9 @@
 }
 
 .open_data_card {
-    display: flex;
+    display: grid;
+    grid-template-columns: 32px 1fr;
     gap: 25px;
-    align-items: flex-start;
     border-bottom: 1px solid rgba(0, 0, 0, .1);
     padding-bottom: 15px;
     margin-bottom: 25px;
@@ -61,22 +61,20 @@
 }
 
 .open_data_card .open_data_card_wrapper .author {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    opacity: .5;
+    opacity: .75;
 }
 
-.open_data_card .open_data_card_wrapper .description {
-    display: flex;
+.open_data_card .open_data_card_wrapper :is(.description, .categoria, .author) {
+    display: grid;
+    grid-template-columns: 15px 1fr;
     align-items: center;
     gap: 10px;
     font-size: 15px;
 }
 
-.open_data_card .open_data_card_wrapper .description svg{
+.open_data_card .open_data_card_wrapper :is(svg, i){
     opacity: .5;
+    justify-self: center;
 }
 
 .open_data_card .open_data_card_wrapper .open_data_date {

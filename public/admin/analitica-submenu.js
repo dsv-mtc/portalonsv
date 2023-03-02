@@ -31,14 +31,14 @@ addChangeFileInput('#new_img-file', '#new_img-f')
 window.addEventListener('DOMContentLoaded', () => {
 	const $container = document.querySelector('#submenu-crud');
 	const $dataTable = document.querySelector('#data-table');
+	const $botonAgregar = document.querySelector('[data-target="#modalAgregar"]');
 	const $formAgregar = document.querySelector('#formAgregarSubmenu');
 	const $formEditar = document.querySelector('#formEditarSubmenu');
 	const $formEliminar = document.querySelector('#formEliminarSubmenu');
 
 	$dataTable.addEventListener('click', (e) => {
-		
 		const $target = e.target;
-		if (!$target.matches('button')) return
+		if(!$target.closest('button')) return;
 		const $row = $target.closest('tr');
 		if (!$row) return;
 		$formEditar.reset()
@@ -55,9 +55,18 @@ window.addEventListener('DOMContentLoaded', () => {
 		$formEditar.estado.checked = submenu.estado;
 	})
 
+	$botonAgregar.addEventListener('click', () => {
+		$formAgregar.reset()
+		$formAgregar.new_estado.checked = true;
+	})
+
 	$formAgregar.addEventListener('submit', async (e) => {
 		e.preventDefault();
 		const data = new FormData($formAgregar);
+
+		if (data.get('imgFileName') === '') {
+			return window.alert('Debe seleccionar una imagen')
+		}
 
 		const fetchOptions = {
 			method: 'POST',
@@ -87,6 +96,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		const id = $container.dataset.submenuId
 		const data = new FormData($formEditar);
 		data.append('id', id)
+
+		if (data.get('imgFileName') === '') {
+			return window.alert('Debe seleccionar una imagen')
+		}
+
 		const fetchOptions = {
 			method: 'PUT',
 			body: data

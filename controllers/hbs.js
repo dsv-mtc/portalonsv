@@ -96,7 +96,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 			<li 
 				class="nav-item nav-special dropdown"
 			>
-        <a 
+				<a 
 					class="nav-link dropdown-toggle" 
 					href="#" 
 					id="menudrop1" 
@@ -107,7 +107,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 				>
 					${tablero}
 				</a>
-        <div 
+				<div 
 					class="dropdown-menu" 
 					aria-labelledby="menudrop1"
 				>
@@ -118,9 +118,9 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 					>
 						${menu.labels.label1}
 					</a>
-        </div>
-      </li>`;
-			
+				</div>
+			</li>`;
+
 			return;
 		}
 		// terminos de home
@@ -132,79 +132,165 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 			const datosabiertosurl = "/datosabiertos";
 			const auxTarget = setTarget(srat.label);//SRAT
 			const auxTarget2 = setTarget(srat.label)
-			htmlMenu += `<li class="nav-item nav-special dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${tablero}</a>
-                    <div class="dropdown-menu" aria-labelledby="menudrop1">
-                        <a class="dropdown-item" href="${menuObj.url}" target="${target}">${menuObj.label}</a>
-                        <a class="dropdown-item" href="${srat.url}" target="${auxTarget}">${srat.label}</a>
-                        <a class="dropdown-item" href="${datosabiertosurl}" target="${auxTarget2}">datos abiertos</a>
-                    </div>
-                </li>`;
-		} else {
-			if (menuObj.label == 'srat' || menuObj.label == 'peru-in-world') {
-				return;
-			} else {
-				htmlMenu += `<li class="nav-item nav-special ${addColor}"><a class="nav-link" href="${menuObj.url}" target="${target}">${menuObj.label}</a></li>`;
-			}
+			htmlMenu += `
+				<li class="nav-item nav-special dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${tablero}</a>
+					<div class="dropdown-menu" aria-labelledby="menudrop1">
+						<a class="dropdown-item" href="${menuObj.url}" target="${target}">${menuObj.label}</a>
+						<a class="dropdown-item" href="${srat.url}" target="${auxTarget}">${srat.label}</a>
+						<a class="dropdown-item" href="${datosabiertosurl}" target="${auxTarget2}">datos abiertos</a>
+					</div>
+				</li>`;
+			return;
 		}
+		
+		if (menuObj.label == 'noticias y eventos' || menuObj.label == 'news and events') {
+			const tablero = secondary_navigation ? 'Comunications' : 'Comunicaciones'
+			const news = {
+				label: secondary_navigation ? 'News' : 'Noticias',
+				url: secondary_navigation ? '/en/comunicaciones/noticias' : '/comunicaciones/noticias'
+			}
+			const campaing = {
+				label: secondary_navigation ? 'Campaing' : 'Campaña',
+				url: secondary_navigation ? '/en/comunicaciones/campania' : '/comunicaciones/campanias'
+			}
+			const events = {
+				label: secondary_navigation ? 'Events' : 'Eventos',
+				url: secondary_navigation ? '/en/comunicaciones/eventos' : '/comunicaciones/eventos'
+			}
+			const pressRelease = {
+				label: secondary_navigation ? 'Press release' : 'Nota de prensa',
+				url: secondary_navigation ? '/en/comunicaciones/nota-prensa' : '/comunicaciones/nota-prensa'
+			}
+			const interview = {
+				label: secondary_navigation ? 'Interview' : 'Entrevista',
+				url: secondary_navigation ? '/en/comunicaciones/entrevistas' : '/comunicaciones/entrevistas'
+			}
+			htmlMenu += `
+				<li class="nav-item nav-special dropdown">
+					<a 
+						class="nav-link dropdown-toggle" 
+						role="button" 
+						data-toggle="dropdown" 
+						aria-haspopup="true" 
+						aria-expanded="false"
+					>
+						${tablero}
+					</a>
+					<div class="dropdown-menu" aria-labelledby="menudrop1">
+						<a class="dropdown-item" href="${news.url}">${news.label}</a>
+						<a class="dropdown-item" href="${pressRelease.url}">${pressRelease.label}</a>
+						<a class="dropdown-item" href="${campaing.url}">${campaing.label}</a>
+						<a class="dropdown-item" href="${events.url}">${events.label}</a>
+						<a class="dropdown-item" href="${interview.url}">${interview.label}</a>
+					</div>
+				</li>`;
+			return;
+		} 
+		
+		if (menuObj.label == 'srat' || menuObj.label == 'peru-in-world') {
+			return;
+		} 
 
-
+		htmlMenu += `
+			<li class="nav-item nav-special ${addColor}">
+				<a class="nav-link" href="${menuObj.url}" target="${target}">
+					${menuObj.label}
+				</a>
+			</li>
+		`;
 
 	});
 
 	if (secondary_navigation) {
 		const menu = {
 			title: 'Vial Education',
-			urls: {
-				url1: "/en/webinars",
-				url2: "https://aulavirtual.mtc.gob.pe/seguridadvial/",
-				url3: "/en/peru-in-world/",
-
-			},
-			labels: {
-				label1: "Webinars",
-				label2: "Virtual Room",
-				label3: "PERU-IN-world",
-			}
+			urls: [
+				{
+					link: "/en/webinars",
+					label: "Webinars",
+					target: "_self",
+				},
+				{
+					link: "/en/capacitaciones",
+					label: "Trainings",
+					target: "_self",
+				},
+				{
+					link: "https://aulavirtual.mtc.gob.pe/seguridadvial/",
+					label: "Virtual Room",
+					target: "_blank",
+				},
+				{
+					link: "/en/peru-in-world/",
+					label: "PERU-IN-world",
+					target: "_blank",
+				}
+			]
 		}
-		htmlMenu += `<li class="nav-item dropdown ${getMenuSelected(url_selected)}">
-                        <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
-                        <div class="dropdown-menu" aria-labelledby="menudrop1">
-                            <a class="dropdown-item" href="${menu.urls.url1}" target="_self">${menu.labels.label1}</a>
-                            <a class="dropdown-item" href="${menu.urls.url2}" target="_blank">${menu.labels.label2}</a>
-                            <a class="dropdown-item" href="${menu.urls.url3}" target="_blank">${menu.labels.label3}</a>
-                        </div>
-                    </li>`
+		htmlMenu += `
+			<li class="nav-item dropdown ${getMenuSelected(url_selected)}">
+				<a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
+				<div class="dropdown-menu" aria-labelledby="menudrop1">
+					${
+						menu.urls
+							.map(url => 
+								`<a class="dropdown-item" href="${url.link}" target="${url.target}">${url.label}</a>`
+							)
+							.join('')
+					}
+				</div>
+			</li>
+		`
 	} else {
 		const menu = {
 			title: 'Educación Vial',
-			urls: {
-				url1: "/webinars",
-				url2: "https://aulavirtual.mtc.gob.pe/seguridadvial/",
-				url3: "/peru-in-world/",
-
-			},
-			labels: {
-				label1: "Webinars",
-				label2: "Aula Virtual",
-				label3: "peru-in-world",
-
-			}
+			urls: [
+				{
+					link: "/webinars",
+					label: "Webinars",
+					target: "_self",
+				},
+				{
+					link: "/capacitaciones",
+					label: "Capacitaciones",
+					target: "_self",
+				},
+				{
+					link: "https://aulavirtual.mtc.gob.pe/seguridadvial/",
+					label: "Aula Virtual",
+					target: "_blank",
+				},
+				{
+					link: "/peru-in-world/",
+					label: "peru-in-world",
+					target: "_blank",
+				}
+			],
 		}
-		htmlMenu += `<li class="nav-item ${getMenuSelected2(url_selected)} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
-                        <div class="dropdown-menu" aria-labelledby="menudrop1">
-                            <a class="dropdown-item" href="${menu.urls.url1}" target="_self">${menu.labels.label1}</a>
-                            <a class="dropdown-item" href="${menu.urls.url2}" target="_blank">${menu.labels.label2}</a>
-                            <a class="dropdown-item" href="${menu.urls.url3}" target="_blank">${menu.labels.label3}</a>
-                        </div>
-                    </li>`
+		htmlMenu += `
+			<li class="nav-item ${getMenuSelected2(url_selected)} dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
+				<div class="dropdown-menu" aria-labelledby="menudrop1">
+					${
+						menu.urls
+							.map(url =>
+								`<a class="dropdown-item" href="${url.link}" target="${url.target}">${url.label}</a>`
+							)
+							.join('')
+					}
+				</div>
+			</li>
+		`
 	}
 	return htmlMenu;
 }
 
 function getMenuSelected2(url_selected) {
 	if (url_selected === '/webinars') {
+		return "add-color"
+	}
+	if (url_selected === '/capacitaciones') {
 		return "add-color"
 	}
 }
@@ -274,12 +360,15 @@ function endpointPostParse(url, lang) {
 	url = parseHttp(url);
 	/*console.log("url", url)*/
 	const pattern = process.env.URL_PATH_API3
-	if (lang == 'es') {
-		return url.replace(pattern, `${process.env.URL_PATH_POSTS}/post`);
 
-	} else {
-		return url.replace(pattern, `${process.env.URL_PATH_POSTS}/${lang}/post`);
+	if (lang == "es") {
+		return url.replace(pattern, `${process.env.URL_PATH_POSTS}/post`);
 	}
+
+	if (lang == "en") {
+		return url.replace(pattern, `${process.env.URL_PATH_POSTS}/en/post`);
+	}
+
 
 }
 
@@ -327,10 +416,18 @@ function setTarget(label) {
  */
 function checkHtml(htmlString) {
 	if (htmlString.search('https') == -1) {
-		return htmlString.replace('http', 'https');
-	} else {
-		return htmlString;
+		htmlString.replace('http', 'https');
 	}
+
+	if (/http:\/\/www\.onsv\.gob\.pe\/content\/images/g.test(htmlString)) {
+		htmlString = htmlString
+			.replace(
+				/http:\/\/www\.onsv\.gob\.pe\/content\/images/g, 
+				'https://www.onsv.gob.pe:5000/content/images'
+			);
+	}
+ 
+	return htmlString;
 
 
 }

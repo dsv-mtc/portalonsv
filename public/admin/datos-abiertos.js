@@ -11,8 +11,8 @@ function extractRowData($row) {
 		titulo: $row.dataset.titulo,
 		autor: $row.dataset.autor,
 		descripcion: $row.dataset.descripcion,
-		categoria: $row.dataset.categoria,
-		tipo: $row.dataset.tipo,
+		idCategoria: Number($row.dataset.idCategoria),
+		idTipo: Number($row.dataset.idTipo),
 		excelfile: $row.dataset.excelfile,
 		pdffile: $row.dataset.pdffile,
 		csvfile: $row.dataset.csvfile,
@@ -36,6 +36,14 @@ addChangeFileInput('#new_pdf-file', '#new_pdf-f')
 addChangeFileInput('#new_csv-file', '#new_csv-f')
 
 window.addEventListener('DOMContentLoaded', () => {
+	const $clearButton = document.getElementById("clearButton")
+
+	$clearButton.addEventListener("click", evt => {
+		evt.preventDefault()
+		location.href = "/secciones-admin/datos-abiertos"
+	})
+
+
 	const $container = document.querySelector('#datos-abiertos-crud');
 	const $dataTable = document.querySelector('#data-table');
 	const $formAgregar = document.querySelector('#formAgregar');
@@ -44,7 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	$dataTable.addEventListener('click', (e) => {
 		const $target = e.target;
-		if (!$target.matches('button')) return
+		if(!$target.closest('button')) return;
 		const $row = $target.closest('tr');
 		if (!$row) return;
 		const data = extractRowData($row);
@@ -53,8 +61,8 @@ window.addEventListener('DOMContentLoaded', () => {
 		$formEditar.titulo.value = data.titulo;
 		$formEditar.autor.value = data.autor;
 		$formEditar.descripcion.value = data.descripcion;
-		$formEditar.categoria.value = data.categoria;
-		$formEditar.tipo.value = data.tipo;
+		$formEditar.categoria.value = data.idCategoria;
+		$formEditar.tipo.value = data.idTipo;
 		if (data.excelfile !== 'No existe') {
 			$formEditar.excelFileName.value = data.excelfile;
 		}

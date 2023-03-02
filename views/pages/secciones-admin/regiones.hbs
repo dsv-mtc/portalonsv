@@ -1,0 +1,295 @@
+<script defer src="/admin/regiones.js"></script>
+
+<style>
+	.table-responsive {
+		overflow: visible;
+		padding-bottom: 2rem;
+	}
+	.table thead tr th {
+		font-weight: bold; 
+		vertical-align: middle;
+		font-size: 1rem;
+	}
+	.table td {
+		vertical-align: middle;
+	}
+	.table .image-container {
+		width: 70%;
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+	.table .region-img {
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+		transition: transform .5s;
+	}
+	.table .region-img:hover {
+		z-index: 2;
+		transform: scale(2.5);
+	}
+	.filters button {
+    background-color: rgb(88, 88, 86);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    height: 42px;
+    padding: 0 15px;
+	}
+</style>
+
+{{>admin/banner secondary_navigation=secondary_navigation}}
+{{>admin/navigation secondary_navigation=secondary_navigation}}
+
+<main class="container-fluid mt-3 mb-3" id="crud">
+	<h3 class="rsp-title ft-bold mb-3 text-center">
+		Regiones
+	</h3>
+
+	<form class="container filters d-flex justify-content-between" method="GET">
+
+		<div class="form-group row col-12 col-md-4">
+			<label for="searchedRegionId" class="col-4 col-form-label">
+				Región:
+			</label>
+			<div class="col-8">
+				<select class="form-control" name="searchedRegionId" id="searchedRegionId">
+					<option value="">Selecione una región</option>
+					{{#each allRegiones}}
+						<option value="{{id}}" {{#if selected}} selected {{/if}} >{{value}}</option>
+					{{/each}}
+				</select>
+				<small class="invalid-feedback">Debe seleccionar un tipo de evento</small>
+			</div>
+		</div>
+
+		<div class="form-group row col-12 col-md-3 justify-content-around">
+			<button class="col-5" type="submit"> Consultar </button>
+			<button class="col-5" type="button" id="clearButton"> Limpiar </button>
+		</div>
+
+	</form>
+
+	{{#if info_document}}
+		{{#each info_document}}
+			<div class="{{style}}" role="alert">
+				<strong>{{message}}</strong> 
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		{{/each}}
+	{{/if}}
+
+	<div class="table-responsive">
+		<table class="table" id="data-table">
+			<thead>
+				<tr>
+					<th 
+						scope="col" 
+					>
+						Region
+					</th>
+					<th scope="col" >
+						Slug
+					</th>
+					<th scope="col" >
+						Nombre encargado
+					</th>
+					<th scope="col" style="width: 15%" >
+						Celular encargado
+					</th>
+					<th scope="col" style="width: 15%" >
+						Correo encargado
+					</th>
+					<th scope="col" style="width: 8%" >
+						Imagen
+					</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#if hasResults}}
+					{{#each regiones}}
+						<tr 
+							data-id="{{id}}"
+							data-nombre-encargado="{{nombreEncargado}}"
+							data-celular-encargado="{{celularEncargado}}"
+							data-correo-encargado="{{correoEncargado}}"
+							data-image-url="{{imageUrl}}"
+							data-page-link="{{pageLink}}"
+						>
+							<td>
+								{{value}}
+							</td>
+							<td>
+								{{slug}}
+							</td>
+							<td>
+								{{nombreEncargado}}
+							</td>
+							<td>
+								{{celularEncargado}}
+							</td>
+							<td>
+								{{correoEncargado}}
+							</td>
+							<td>
+								{{#if imageUrl}}
+									<div class="image-container">
+										<img class="region-img" src="{{imageUrl}}" alt="logo-region">
+									</div>
+								{{else}}
+									No existe
+								{{/if}}							
+
+							</td>
+							<td>
+								<div class="text-truncate" role="group" aria-label="Basic example">
+									<button 
+										type="button" 
+										class="btn btn-primary text-truncate" 
+										data-toggle="modal" 
+										data-target="#modalEditar"
+										style="padding: 5.5px 15px;"
+									>
+										<i class="fas fa-edit"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					{{/each}}
+				{{/if}}
+			</tbody>
+		</table>
+	</div>
+
+	{{#if pagination}}
+		<nav class="col-12 d-flex justify-content-center ">
+			{{> pagination pag=pagination}}
+		</nav>
+	{{/if}}
+
+	<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="editar" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+			<form class="modal-content" id="formEditar" class="needs-validation">
+				<div class="modal-header">
+					<h5 class="modal-title admin-modal-title" id="modalEditarLabel">Editor de regiones</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+
+					<div class="form-group row">
+						<label for="nombreEncargado" class="col-auto col-md-2 col-form-label">
+							Nombre encargado:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="nombreEncargado"  
+								name="nombreEncargado" 
+								maxlength="2000" 
+								placeholder="Ingrese el nombre del encargado"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="celularEncargado" class="col-auto col-md-2 col-form-label">
+							Celular encargado:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="celularEncargado"  
+								name="celularEncargado" 
+								maxlength="2000" 
+								placeholder="Ingrese el celular del encargado"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="correoEncargado" class="col-auto col-md-2 col-form-label">
+							Correo encargado:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="correoEncargado"  
+								name="correoEncargado" 
+								maxlength="2000" 
+								placeholder="Ingrese el correo del encargado"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div class="custom-file mt-3 mb-5">
+						<div style="display: flex;">
+							<input 
+								id="img-f" 
+								name="existingImage"
+								readonly 
+								type="text" 
+								class="form-control input-color" 
+								placeholder="*Agregar archivo tipo IMG"
+								onclick="loadFile('img')"
+								required
+							>
+							<button onclick="loadFile('img')" type="button"  onclick="" class="button-file">
+								Cargar
+							</button>
+						</div>
+						<input 
+							type="file" 
+							name="img-file" 
+							id="img-file" 
+							class="file-hide"
+							accept="image/*"
+						>
+					</div>
+
+					<div class="form-group row">
+						<label for="pageLink" class="col-auto col-md-2 col-form-label">
+							Enlace página:
+						</label>
+						<div class="col-auto col-md-10">
+							<input 
+								type="text" 
+								id="pageLink"  
+								name="pageLink" 
+								maxlength="2000" 
+								placeholder="Ingrese el enlace de la página de la región"
+								class="form-control"
+							>
+						</div>
+					</div>
+
+					<div style="margin-top: 20px;">
+						<p style="color: #ee1d27;">
+							*: Campos obligatorios
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						Cancelar
+					</button>
+					<button type="submit" class="btn btn-primary" id="btnEditar">
+						Editar
+					</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+</main>

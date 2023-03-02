@@ -1,79 +1,72 @@
+<link rel="stylesheet" href="/css/post.css">
+<script src="/js/post.js"></script>
 
-<section class="content-imagen-principal">
-    {{#post}}
-        <img class="imagen-principal-post" src="{{parseHttpImage feature_image}}" alt="nye">
-    {{/post}}
-</section>
-<section class="rsp-vu-sec rsp-wrap">
-    <div class="container container-post">
-        <div class="row pt-5">
-            <!--Contenido del post-->
-            {{#post}}
-                <div class="col-lg-12 col-md-7 vu-map-col titulo-index">
-                    <h3 class="rsp-title ft-bold mb-4 text-center pt-4 ">
-                        {{title}}
-                    </h3>
-                    <div class="re-blk-post">
-                        <div class="row">
-                            <!--Estructura del post -->
-                            <div class="col-md-12">
-                                <div class="rsp-nye-desc">
-                                    <div class="rsp-pro-det pt-3 pb-1">
-                                        <!--medatatos del post-->
-                                        <div class="pd-desc ml-0">
-                                            <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
-                                        </div>
-                                    </div>
-                                    <!--Contenido del post -->
-                                    <main class="text-justify">
-                                        {{{checkHtml html}}}
-                                    </main>
-                                    <div class="nye-link-blk">
-                                        <div class="ny-btn">
-                                            <a id="back" href="#" class="btn btn-rsp ft-bold">
-                                                <i class="fal fa-long-arrow-left"></i>
-                                            </a>
-                                        </div>
-                                        <div class="ny-link">
-                                        <ul class="so-links">
-                                            <li>
-                                                <a href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                                            </li>
-                                            <li>
-                                                <a href="https://twitter.com/intent/tweet?text={{title}}&url={{url}}" target="_blank"><i class="fab fa-twitter"></i></a>
-                                            </li>
-                                            <li>
-                                                <a href="whatsapp://send?text={{url}}" data-action="share/whatsapp/share"  target="_blank"><i class="fas fa-share-alt"></i></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {{/post}}
-            <!--Contenido del sidebar-->
-            <section class="rsp-noti-sec rsp-wrap">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 mb-4">
-                            <h3 class="rsp-title ft-bold">
-                                {{t lang "relacionado"}}
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="owl-carousel owl-theme" id="noti">
-                                {{>posts/post-card-carousel lang=lang post=postsRelatives}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<section class="post-section">
 
-            </section>
-        </div>
-    </div>
+	<div class="content">
+
+		<div class="return-buton ny-btn">
+			<a href="/" class="btn btn-rsp ft-bold" data-back-button>
+				Regresar 
+				<i class="fal fa-long-arrow-right pl-2"></i>
+			</a>
+		</div>
+
+		{{#post}}
+			<article class="card post">
+				<section class="card-body">
+					
+					<a href="{{endpointPostParse (parseHttp url) lang }}">
+						<h6 class="card-title ft-bold mt-3 mb-4">{{ title }}</h6>
+					</a>
+
+					<div class="created-at pd-desc">
+						<div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
+					</div>
+
+					<main class="text-justify">
+						{{{checkHtml html}}}
+					</main>
+
+				</section>
+			</article>
+
+			<div class="nav-links nye-link-blk">
+				<div class="ny-btn">
+					<a href="/" data-back-button class="btn btn-rsp ft-bold">
+						<i class="fal fa-long-arrow-left"></i>
+					</a>
+				</div>
+				<div class="ny-link">
+					<ul class="so-links">
+						<li>
+							<a href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+						</li>
+						<li>
+							<a href="https://twitter.com/intent/tweet?text={{title}}&url={{url}}" target="_blank"><i class="fab fa-twitter"></i></a>
+						</li>
+						<li>
+							<a href="whatsapp://send?text={{url}}" data-action="share/whatsapp/share"  target="_blank"><i class="fas fa-share-alt"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+		{{/post}}
+
+		<section class="related-posts rsp-noti-sec rsp-wrap">
+			<h3 class="col-12 mb-4 rsp-title ft-bold">
+				{{t lang "relacionado"}}
+			</h3>
+			<div class="d-flex justify-content-center">
+				<div class="owl-carousel owl-theme" id="noti" style="width: 85%">
+					{{#each postsRelatives}}
+						{{>publicaciones/publicaciones-card-body lang=../lang disableShareLinks=true}}
+					{{/each}}
+				</div>
+			</div>
+		</section>
+
+	</div>
+
 </section>

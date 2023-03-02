@@ -12,16 +12,29 @@ class Webinars {
 	/**
 	 * @description:Retorna todos los playlists del canal que sean públicos
 	 */
-	getPlayLists = async () => {
+	async getPlayLists () {
 		const res = await youtube.playlists.list({
-			channelId: process.env.ID_CHANNEL_YOUTUBE_DEV,
+			channelId: process.env.ID_CHANNEL_YOUTUBE_PROD,
 			part: 'snippet',
 			maxResults: 50
 		})
-		//El id es e plylistID en getItemsFromPlayList
-		console.log(res.data.items)
+		return res.data.items;
 	}
-	getItemsFromPlayList = async () => {
+
+	async getItemsFromPlayList (playlistId) {
+		//https://developers.google.com/youtube/v3/docs/playlistItems?hl=es#resource
+		const res = await youtube.playlistItems.list({
+			part: 'snippet',
+			playlistId,
+			maxResults: 50
+		})
+		const videoIdsList = res.data.items.map(item => {
+			return { video: item.snippet.resourceId.videoId, description: item.snippet.description, title: item.snippet.title };
+		})
+		return videoIdsList;
+	}
+
+	async getItemsFromWebinarsPlayList () {
 		//https://developers.google.com/youtube/v3/docs/playlistItems?hl=es#resource
 		const res = await youtube.playlistItems.list({
 			part: 'snippet',

@@ -1,0 +1,42 @@
+<!-- nye section -->
+<section class="rsp-nye-section rsp-wrap">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				<h3 class="rsp-title ft-bold">
+					Notas de Prensa
+				</h3>
+			</div>
+			<div class="col-md-8 mx-auto">
+				<div class="input-group">
+					<input type="text" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" >
+					<div class="input-group-append">
+						<span id="search-button" class="input-group-text search-input">
+							<i class="fal fa-search"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="search-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
+			{{t lang "no-results"}}
+		</div>
+		<div class="row" id="default">
+			{{#each post}}
+				{{#if @first}}
+					{{> noticias-eventos/noticias-eventos-card-head lang=../lang}}
+					{{else}}
+						{{> noticias-eventos/noticias-eventos-card-body lang=../lang}}
+				{{/if}}
+			{{/each}}
+			<div class="col-12 d-flex justify-content-center ">
+				{{#if pagination}}
+					{{> pagination pag=pagination}}
+				{{/if}}
+			</div>  
+		</div>
+		<div class="row" id="results-template">
+			
+		</div>                 
+	</div>
+</section>

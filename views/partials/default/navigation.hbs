@@ -1,133 +1,146 @@
+<style>
+	.rsp-navbar:has(#mainNav) {
+		position: sticky;
+		/*top: calc(123.037px + 20px);*/
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 10;
+	}
+</style>
+
 <section class="disclaimer">
-  <div
-    id="disclaimer"
-    class="carousel slide"
-    data-ride="carousel"
-    data-interval="5000"
-  >
-    <div class="carousel-inner">
-      {{#if secondary_navigation}}
-        {{#each titlesPosts}}
-          {{#if @last}}
-            <div class="carousel-item active">
-              <a
-                class="disclaimer-text"
-                href="{{endpointPostParse (parseHttp url) "en"}}"
-              >
-                {{title}}
-              </a>
-            </div>
-          {{else}}
-            <div class="carousel-item">
-              <a
-                class="disclaimer-text"
-                href="{{endpointPostParse (parseHttp url) "en"}}"
-              >
-                {{title}}
-              </a>
-            </div>
-          {{/if}}
-        {{/each}}
-      {{else}}
-        {{#each titlesPosts}}
-          {{#if @last}}
-            <div class="carousel-item active">
-              <a
-                class="disclaimer-text"
-                href="{{endpointPostParse (parseHttp url) "es"}}"
-              >
-                {{title}}
-              </a>
-            </div>
-          {{else}}
-            <div class="carousel-item">
-              <a
-                class="disclaimer-text"
-                href="{{endpointPostParse (parseHttp url) "es"}}"
-              >
-                {{title}}
-              </a>
-            </div>
-          {{/if}}
-        {{/each}}
-      {{/if}}
-    </div>
-  </div>
+	<div
+		id="disclaimer"
+		class="carousel slide"
+		data-ride="carousel"
+		data-interval="5000"
+	>
+		<div class="carousel-inner">
+			{{#if secondary_navigation}}
+				{{#each titlesPosts}}
+					{{#if @last}}
+						<div class="carousel-item active">
+							<a
+								class="disclaimer-text"
+								href="{{endpointPostParse (parseHttp url) "en"}}"
+							>
+								{{title}}
+							</a>
+						</div>
+					{{else}}
+						<div class="carousel-item">
+							<a
+								class="disclaimer-text"
+								href="{{endpointPostParse (parseHttp url) "en"}}"
+							>
+								{{title}}
+							</a>
+						</div>
+					{{/if}}
+				{{/each}}
+			{{else}}
+				{{#each titlesPosts}}
+					{{#if @last}}
+						<div class="carousel-item active">
+							<a
+								class="disclaimer-text"
+								href="{{endpointPostParse (parseHttp url) "es"}}"
+							>
+								{{title}}
+							</a>
+						</div>
+					{{else}}
+						<div class="carousel-item">
+							<a
+								class="disclaimer-text"
+								href="{{endpointPostParse (parseHttp url) "es"}}"
+							>
+								{{title}}
+							</a>
+						</div>
+					{{/if}}
+				{{/each}}
+			{{/if}}
+		</div>
+	</div>
 </section>
 <!--================ Start header Top Area =================-->
 <section class="rsp-navbar">
-  <div class="container logo-container">
-    <div class="row">
-      <div class="col-md-6 col-8">
-        <div class="logo">
-          <!--Cambiar la imagen-->
-          <a class="navbar-brand" href="{{endpointRebase settings.url}}">
-            <img
-              class="logo-img"
-              src="{{parseHttpImage settings.logo}}"
-              alt="{{settings.title}}"
-            />
-          </a>
-        </div>
-      </div>
-      <div class="col-md-6 col-4">
-        <div class="logo-sm">
-          <img src="/img/logo-sm.png" alt="{{settings.title}}" />
-        </div>
-      </div>
-    </div>
-    <div class="d-flex flex-row-reverse bd-highlight mt-md-n5 mt-n4">
-      <nav class="navbar navbar-expand navbar-light">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/en/">
-              EN
-            </a>
-          </li>
-          <li class="nav-item">
-            <p class="nav-link">
-              |
-            </p>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/">
-              ES
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-  <nav class="navbar navbar-expand-lg" id="mainNav">
-    <div class="container-fluid">
-      <button
-        class="navbar-toggler mx-auto"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarResponsive"
-        aria-controls="navbarResponsive"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="ham-icon">
-          <i class="fal fa-bars"></i>
-        </span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav nav-rsp">
-          {{#if secondary_navigation}}
-            {{{createMenu
-              settings.secondary_navigation
-              secondary_navigation
-              url_selected
-            }}}
-          {{else}}
-            {{{createMenu settings.navigation secondary_navigation url_selected
-            }}}
-          {{/if}}
-        </ul>
-      </div>
-    </div>
-  </nav>
+	<div class="container logo-container">
+		<div class="row">
+			<div class="col-md-6 col-8">
+				<div class="logo">
+					<!--Cambiar la imagen-->
+					<a class="navbar-brand" href="{{endpointRebase settings.url}}">
+						<img
+							class="logo-img"
+							src="{{parseHttpImage settings.logo}}"
+							alt="{{settings.title}}"
+						/>
+					</a>
+				</div>
+			</div>
+			<div class="col-md-6 col-4">
+				<div class="logo-sm">
+					<img src="/img/logo-sm.png" alt="{{settings.title}}" />
+				</div>
+			</div>
+		</div>
+		<div class="d-flex flex-row-reverse bd-highlight mt-md-n5 mt-n4">
+			<nav class="navbar navbar-expand navbar-light">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/en/">
+							EN
+						</a>
+					</li>
+					<li class="nav-item">
+						<p class="nav-link">
+							|
+						</p>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/">
+							ES
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</section>
+<section class="rsp-navbar">
+	<nav class="navbar navbar-expand-lg" id="mainNav">
+		<div class="container-fluid">
+			<button
+				class="navbar-toggler mx-auto"
+				type="button"
+				data-toggle="collapse"
+				data-target="#navbarResponsive"
+				aria-controls="navbarResponsive"
+				aria-expanded="false"
+				aria-label="Toggle navigation"
+			>
+				<span class="ham-icon">
+					<i class="fal fa-bars"></i>
+				</span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav nav-rsp">
+					{{#if secondary_navigation}}
+						{{{createMenu
+							settings.secondary_navigation
+							secondary_navigation
+							url_selected
+						}}}
+					{{else}}
+						{{{createMenu settings.navigation secondary_navigation url_selected
+						}}}
+					{{/if}}
+				</ul>
+			</div>
+		</div>
+	</nav>
 </section>
 <!--================ End header top Area =================-->

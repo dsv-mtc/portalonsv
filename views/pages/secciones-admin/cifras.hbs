@@ -9,7 +9,7 @@
 		<div class="d-flex align-items-center mr-3">
 			<div class="navbar-nav">
 				<div class="nav-item">
-					<a href="/datosabiertos-logout" style="color: white;" class="nav-link">
+					<a href="/administrador/logout" style="color: white;" class="nav-link">
 						{{#if secondary_navigation}}
 							Logout
 						{{else}}
@@ -48,7 +48,7 @@
 				{{/each}}
 		{{/if}}
 
-			<form id="datosabiertos-form" action="/datosabiertos-admin/cifras" method="POST" class="needs-validation" novalidate >
+			<form id="datosabiertos-form" action="/secciones-admin/cifras" method="POST" class="needs-validation" novalidate >
 				
 				<div class="form-group row">
 					<label for="lesionados" class="col-12 col-md-2 col-form-label">
@@ -111,11 +111,7 @@
 
 				<div class="form-group row">
 					<label for="fallecidos" class="col-12 col-md-2 col-form-label">
-						*{{#if secondary_navigation}}
-							Deceased
-						{{else}}
-							Fallecidos
-						{{/if}}:
+						*Fallecidos:
 					</label>
 					<div class="col-12 col-md-10">
 							<input 
@@ -140,62 +136,38 @@
 				</div>
 
 				<div class="form-group row">
-					<label for="telefono" class="col-12 col-md-2 col-form-label">
-						*{{#if secondary_navigation}}
-							Phone number
-						{{else}}
-							Número de teléfono
-						{{/if}}:
+					<label for="mensaje1" class="col-12 col-md-2 col-form-label">
+						*1° Mensaje:
 					</label>
 					<div class="col-12 col-md-10">
-							<input 
-								type="text" 
-								id="telefono"  
-								name="telefono" 
-								maxlength="200"
-								placeholder="Ingrese el número de télefono"
-								class="form-control" 
-								required
-								pattern="[0-9\+\-\ ]*"
-								value="{{telefono}}"
-							>
-							<small class="invalid-feedback">
-								{{#if secondary_navigation}} 
-									You must enter a valid phone number (9 digits).
-								{{else}}
-									Debe introducir un número de teléfono válido (9 dígitos).
-								{{/if}}
-							</small>
+						<input 
+							type="text" 
+							id="mensaje1"  
+							name="mensaje1" 
+							maxlength="200"
+							placeholder="Ingresa el primer mensaje"
+							class="form-control" 
+							required
+							value="{{mensaje1}}"
+						>
 					</div>
 				</div>
 
 				<div class="form-group row">
-					<label for="email" class="col-12 col-md-2 col-form-label">
-						*{{#if secondary_navigation}}
-							E-mail
-						{{else}}
-							Correo
-						{{/if}}:
+					<label for="mensaje2" class="col-12 col-md-2 col-form-label">
+						*2° Mensaje:
 					</label>
 					<div class="col-12 col-md-10">
 							<input 
 								type="text" 
-								id="email"
-								name="email"
+								id="mensaje2"  
+								name="mensaje2" 
 								maxlength="200"
-								placeholder="Ingrese el email"
+								placeholder="Ingresa el segundo mensaje"
 								class="form-control" 
 								required
-								pattern="^([da-z_.-]+)@([da-z.-]+).([a-z.]{2,6})$"
-								value="{{email}}"
+								value="{{mensaje2}}"
 							>
-							<small class="invalid-feedback">
-								{{#if secondary_navigation}} 
-									You must enter a valid email.
-								{{else}}
-									Debe introducir un correo válido.
-								{{/if}}
-							</small>
 					</div>
 				</div>
 

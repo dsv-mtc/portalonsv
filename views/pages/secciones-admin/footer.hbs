@@ -1,0 +1,154 @@
+<section class="rsp-navbar banner">
+	<div class="d-flex justify-content-between">
+		
+		<div class="logo">
+			<!--Cambiar la imagen-->
+			<a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}"></a>
+		</div>
+		
+		<div class="d-flex align-items-center mr-3">
+			<div class="navbar-nav">
+				<div class="nav-item">
+					<a href="/administrador/logout" style="color: white;" class="nav-link">
+						{{#if secondary_navigation}}
+							Logout
+						{{else}}
+							Cerrar sesión
+						{{/if}}
+					</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>
+
+{{>admin/navigation secondary_navigation=secondary_navigation}}
+
+<main class="container mt-5 mb-5">
+	<div class="row">
+		<div class="col-12" id="sectionContainer">
+		<h3 class="rsp-title ft-bold mb-4 text-center">
+			Actualizar pie de página
+		</h3>
+		{{#if info_document}}
+			{{#each info_document}}
+				<div class="col-12">
+					<div class="{{style}}" role="alert">
+							<strong>{{message}}</strong> 
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					</div>
+				{{/each}}
+		{{/if}}
+
+			<form id="datosabiertos-form" action="/secciones-admin/footer" method="POST" class="needs-validation" novalidate >
+				
+				<div class="form-group row">
+					<label for="telefono" class="col-12 col-md-2 col-form-label">
+						*Número de teléfono:
+					</label>
+					<div class="col-12 col-md-10">
+							<input 
+								type="text" 
+								id="telefono"  
+								name="telefono" 
+								maxlength="200"
+								placeholder="Ingrese el número de télefono"
+								class="form-control" 
+								required
+								pattern="[0-9\+\-\ ]*"
+								value="{{telefono}}"
+							>
+							<small class="invalid-feedback">
+								{{#if secondary_navigation}} 
+									You must enter a valid phone number (9 digits).
+								{{else}}
+									Debe introducir un número de teléfono válido (9 dígitos).
+								{{/if}}
+							</small>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="direccion" class="col-12 col-md-2 col-form-label">
+						*Dirección:
+					</label>
+					<div class="col-12 col-md-10">
+							<input 
+								type="text" 
+								id="direccion"  
+								name="direccion" 
+								maxlength="200"
+								placeholder="Ingresa la direccion"
+								class="form-control" 
+								required
+								value="{{direccion}}"
+							>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="email" class="col-12 col-md-2 col-form-label">
+						*Correo:
+					</label>
+					<div class="col-12 col-md-10">
+							<input 
+								type="text" 
+								id="email"
+								name="email"
+								maxlength="200"
+								placeholder="Ingrese el email"
+								class="form-control" 
+								required
+								pattern="^([da-z_.-]+)@([da-z.-]+).([a-z.]{2,6})$"
+								value="{{email}}"
+							>
+							<small class="invalid-feedback">
+								Debe introducir un correo válido.
+							</small>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="piePagina" class="col-12 col-md-2 col-form-label">
+						*Pie pagina:
+					</label>
+					<div class="col-12 col-md-10">
+							<input 
+								type="text" 
+								id="piePagina"
+								name="piePagina"
+								maxlength="200"
+								placeholder="Ingrese el pie de página"
+								class="form-control" 
+								required
+								value="{{piePagina}}"
+							>
+					</div>
+				</div>
+
+				<div style="margin-top: 20px;">
+					<p style="color: #ee1d27;">*: {{#if secondary_navigation}}
+							Required fields
+						{{else}}
+							Campos obligatorios
+						{{/if}}</p>
+				</div>
+				
+				<div class="form-group d-flex flex-row-reverse mt-5">
+					<button type="submit" class="btn btn-rsp ft-bold">
+						{{#if secondary_navigation}}
+							Send
+						{{else}}
+							Enviar
+						{{/if}}
+					</button>
+				</div>
+			</form>
+			
+		</div>
+	</div>
+</main>

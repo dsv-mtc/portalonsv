@@ -1,0 +1,43 @@
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.1/index.global.min.js"></script>
+
+<link rel="stylesheet" href="/css/comunicaciones/eventos.css">
+
+<script src="/js/comunicaciones/eventos.js"></script>
+
+<section class="events-section">
+	
+	<div class="events-filter">
+		<div class="filter-buttons" data-all-eventos="{{all}}" data-all-near-eventos="{{allNear}}">
+			<button class="ny-btn btn btn-rsp ft-bold" data-filter="todos">
+				Todas
+			</button>
+			<button class="ny-btn btn btn-rsp ft-bold campaign-button" data-filter="campanias">
+				Campañas
+			</button>
+			<button class="ny-btn btn btn-rsp ft-bold event-button" data-filter="eventos">
+				Eventos
+			</button>
+			<button class="ny-btn btn btn-rsp ft-bold interview-button" data-filter="entrevistas">
+				Entrevistas
+			</button>
+		</div>
+	</div>
+	
+	<div class="calendar" id="calendar" data-filtered-eventos="{{eventos}}"></div>
+
+	<div class="events">
+		<h3 class="rsp-title ft-bold text-center">
+			Próximos eventos
+		</h3>
+		
+		<div class="results">
+			
+			{{#each eventosProximos}}
+				{{> comunicaciones/evento-card}}
+			{{/each}}
+
+		</div>
+
+	</div>
+
+</section>

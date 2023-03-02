@@ -171,10 +171,19 @@ const renderSearchTemplate = (data) => {
 }
 
 const renderSearchOpenDataTemplate = (data) => {
-	let template = fs.readFileSync(path.join(__dirname, '../views/partials/open-data-results.hbs'), 'utf-8');
-	let compiled = hbs2.compile(template);
-	return compiled(data);
+	const filePath = path.join(__dirname, '../views/partials/datos-abiertos/datos-abiertos-card-body.hbs');
+	const file = fs.readFileSync(filePath, 'utf-8');
+	const template = hbs2.compile(file);
+	return template(data);
 }
+
+const renderSearchPublicacionesTemplate = (data) => {
+	const filePath = path.join(__dirname, '../views/partials/publicaciones/publicaciones-searched.hbs');
+	const file = fs.readFileSync(filePath, 'utf-8');
+	const template = hbs2.compile(file);
+	return template(data);
+}
+
 const renderTagTemplate = (data) => {
 	let template = fs.readFileSync(path.join(__dirname, "../views/partials/sidebar-widgets/tags.hbs"), 'utf-8');
 	let compiled = hbs2.compile(template);
@@ -296,15 +305,6 @@ const saveDocument = async (request) => {
 	return mysqlClient.saveDocument(data);
 }
 
-const getDocuments = async ({ page, pageLength }) => {
-	const response = await mysqlClient.getDocuments({ page, pageLength });
-	if (response.success) {
-		return response.data;
-	} else {
-		return null;
-	}
-}
-
 const getImagesFiles = async (prefixName) => {
 	const imageFilesName = await fs.promises.readdir(path.join(__dirname, `../public/assets/`));
 	const imagesRequest = imageFilesName.filter(filename => {
@@ -335,12 +335,13 @@ const constants = {
 		{ key: "Harvest Source", value: "harvest-source" },
 		{ key: "Página", value: "pagina" },
 		{ key: "Recurso", value: "recurso" },
-
-
-
-
 	]
 }
+
+function capitalizeNameRecursive(string) {
+	return `${string.replace('-', ' ')}`.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
+}
+
 module.exports = {
 	transformHttps: transformHttps,
 	getAccidents: getAccidents,
@@ -350,14 +351,15 @@ module.exports = {
 	renderCarouselRegions: renderCarouselRegions,
 	subscribeUser: subscribeUser,
 	unSubscribeUser: unSubscribeUser,
-	constants: constants,
+	constants,
+	capitalizeNameRecursive,
 	saveDocument: saveDocument,
-	getDocuments: getDocuments,
 	filterTags: filterTags,
 	renderSearchTemplate: renderSearchTemplate,
 	renderTagTemplate: renderTagTemplate,
 	renderNoticiasEventosTemplate: renderNoticiasEventosTemplate,
-	renderSearchOpenDataTemplate: renderSearchOpenDataTemplate,
+	renderSearchOpenDataTemplate,
+	renderSearchPublicacionesTemplate,
 	getImagesFiles: getImagesFiles,
 	getHost: getHost
 }

@@ -1,0 +1,23 @@
+<div class="results">
+	{{#each posts}}
+		<article class="rsp-res-blk">
+			<div class="rsp-res-img">
+				<a href="{{endpointPostParse (parseHttp url) lang  }}" class="m-gap">
+					<img class="pu-3-extend" src="{{parseHttpImage feature_image }}" alt="h-map">
+				</a>
+			</div>
+			<a class="dt-blk" href="{{endpointPostParse (parseHttp url)  lang }}" >
+				<span>
+					<i class="fal fa-calendar-alt"></i> 
+					{{parseDate published_at }}
+				</span>
+				<span>
+					<i class="fal fa-clock pl-2"></i>  {{parseHour published_at "hh:mm" }}
+				</span>
+			</a>
+			<p class="p-hide">
+				{{excerpt }}
+			</p>
+		</article>
+	{{/each}}
+</div>

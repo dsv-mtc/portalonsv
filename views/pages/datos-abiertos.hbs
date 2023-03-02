@@ -1,85 +1,109 @@
 <!--Banner section-->
 <section class="rsp-navbar banner navbar_open_data">
-    <div class="logo">
-        <!--Cambiar la imagen-->
-        <a class="navbar-brand" href="{{endpointRebase settings.url}}">
-            <img style="margin-top: -4px;" class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}">
-        </a>
-    </div>
-<p>
-  Información de datos abiertos
-</p>
+	<div class="logo">
+		<!--Cambiar la imagen-->
+		<a class="navbar-brand" href="{{endpointRebase settings.url}}">
+			<img style="margin-top: -4px;" class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}">
+		</a>
+	</div>
+	<p>
+		Información de datos abiertos
+	</p>
 </section>
+
 <!--search section-->
 <section class="open_data">
-    <div class="container">
- <!--form search-->
-    <form id="open-data-form-search">
+  <div class="container">
+		
+		<!--form search-->
+		<form id="open-data-form-search">
+			<div class="search_box">
+				
+				<div class="input_wrapper">
+					<label for="descripcion">Descripción</label>
+					<input type="text" id="descripcion" name="descripcion" placeholder="{{t lang "buscar"}}" >
+				</div>
 
-       <h1>25 Distribución de Datos</h1>
-        <div class="search_box">
-            <div class="input_wrapper">
-                <label for="search-data">Descripción</label>
-                <input type="text" id="search-data" placeholder="{{t lang "buscar"}}" >
-            </div>
-             <div class="input_wrapper">
-                <label for="category-data">Categoría</label>
-                <select name="category-data" id="category-data">
-                    <option value="0">Todas</option>
-                        {{#each categories}}
-                            <option value="{{value}}">{{key}}</option>
-                        {{/each}}
-                 </select>
-            </div>
-            <button type="submit">
-                Consultar
-            </button>
-            <button type="button" id="open-data-button-clear">
-                Limpiar
-            </button>
-        </div>
-    </form>
-     <div id="open-data-search-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
-           No se encontraron resultados
+				<div class="input_wrapper">
+					<label for="categoria">Categoría</label>
+					<select name="categoria" id="categoria">
+						<option selected>Todas</option>
+						{{#each categorias}}
+							<option value="{{id}}">{{value}}</option>
+						{{/each}}
+					</select>
+				</div>
+
+				<div class="input_wrapper">
+					<label for="tipo">Tipo</label>
+					<select name="tipo" id="tipo">
+						<option selected>Todos</option>
+						{{#each tipos}}
+							<option value="{{id}}">{{value}}</option>
+						{{/each}}
+					</select>
+				</div>
+
+				<button type="submit"> Consultar </button>
+				<button type="button" id="clean-search"> Limpiar </button>
+
+			</div>
+		</form>
+    
+		<div 
+			id="open-data-search-alert" 
+			class="alert alert-danger alert-dismissible fade d-none" 
+			role="alert"
+		>
+			No se encontraron resultados
     </div>
-    </div>
+		
+	</div>
 </section>
+
 <!-- main section-->
 <main class="container" >
-    <section id="default">
-        {{>datos-abiertos/datos-abiertos-card-body documentsList=documentsList}}
-				<div class="col-12 d-flex justify-content-center mb-3">
-					{{#if pagination}}
-						<div class="l-wrapper">
-							<nav class="m-pagination" aria-label="{{t lang "Paginación"}}">
-								{{#if pagination.prev}}
-									<a
-										href="{{page_url pagination.url_page pagination.prev lang}}"
-										class="btn btn-rsp ft-bold"
-										aria-label="{{t lang "Pagina de datos abiertos"}}"
-									>
-										<span class="fal fa-long-arrow-left"></span>
-									</a>
-								{{/if}}
-								<span class="m-pagination__text">
-									{{t lang "Página"}} {{pagination.page}} {{t lang "de"}} {{pagination.pages}}
-								</span>
-								{{#if pagination.next}}
-									<a
-										href="{{page_url pagination.url_page pagination.next lang}}"
-										class="btn btn-rsp ft-bold"
-										aria-label="{{t lang "Pagina de datos abiertos"}}"
-									>
-										<span class="fal fa-long-arrow-right"></span>
-									</a>
-								{{/if}}
-							</nav>
-					</div>
-					{{/if}}
-				</div>  
-    </section>
-    <section id="results-template">
 
-    </section>
+	<section id="default">
+		
+		<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
+			{{message}}
+		</h3>
+		{{>datos-abiertos/datos-abiertos-card-body datosAbiertos=datosAbiertos}}
+		
+		{{#if pagination}}
+			<div class="col-12 d-flex justify-content-center mb-3">
+				<div class="l-wrapper">
+					<nav class="m-pagination" aria-label="{{t lang "Paginación"}}">
+						{{#if pagination.prev}}
+							<a
+								href="{{page_url pagination.url_page pagination.prev lang}}"
+								class="btn btn-rsp ft-bold"
+								aria-label="{{t lang "Pagina de datos abiertos"}}"
+							>
+								<span class="fal fa-long-arrow-left"></span>
+							</a>
+						{{/if}}
+						<span class="m-pagination__text">
+							{{t lang "Página"}} {{pagination.page}} {{t lang "de"}} {{pagination.pages}}
+						</span>
+						{{#if pagination.next}}
+							<a
+								href="{{page_url pagination.url_page pagination.next lang}}"
+								class="btn btn-rsp ft-bold"
+								aria-label="{{t lang "Pagina de datos abiertos"}}"
+							>
+								<span class="fal fa-long-arrow-right"></span>
+							</a>
+						{{/if}}
+					</nav>
+				</div>
+			{{/if}}
+		</div>  
+	</section>
+
+	<section id="results-template">
+
+	</section>
 
 </main>

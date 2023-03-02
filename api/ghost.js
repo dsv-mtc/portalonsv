@@ -82,7 +82,7 @@ class GhostApi {
 		return publish;
 
 	}
-	getSearchPosts = async (filter, slug) => {
+	getSearchPosts = async (filter, slug, limit, page) => {
 		let posts = [];
 		let stopWords = new Set(['de', 'o', 'la', 'los', 'las'])
 		let miniSearch = new MiniSearch({
@@ -92,8 +92,9 @@ class GhostApi {
 		})
 		let resultsRaw = [];
 		resultsRaw = await api.posts.browse({
-			limit: "all",
-			filter: filter,
+			limit: limit ?? "all",
+			page,
+			filter,
 			include: ['tags', 'authors']
 			//fields:"id,title"
 		})
@@ -116,7 +117,7 @@ class GhostApi {
 			})
 			posts.push(aux)
 		})
-		return { success: true, posts: posts };
+		return { success: true, posts };
 	}
 	getTitleAndExcerptBySlug = async (slug) => {
 		return await api.posts.read({ slug: slug }, { fields: 'title,custom_excerpt,excerpt' });
@@ -124,6 +125,10 @@ class GhostApi {
 
 	getTitleAndExcerptByTag = async (slug) => {
 		return await api.tags.read({ slug: slug })
+	}
+
+	get() {
+		return api;
 	}
 
 }
