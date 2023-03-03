@@ -1,19 +1,19 @@
-const dotenv=require("dotenv");
-const express=require("express");
-const path=require("path");
-const routes=require("./routes/routes");
-const {hbs}=require("./controllers/hbs");
-const morgan=require("morgan");
-const flash= require("connect-flash");
-const session=require("express-session");
-const campaigns=require("./controllers/campaigns");
-const passport=require("passport");
+const dotenv = require("dotenv");
+const express = require("express");
+const path = require("path");
+const routes = require("./routes/routes");
+const { hbs } = require("./controllers/hbs");
+const morgan = require("morgan");
+const flash = require("connect-flash");
+const session = require("express-session");
+const campaigns = require("./controllers/campaigns");
+const passport = require("passport");
 const cookieParser = require("cookie-parser");
-const logger= require("./controllers/logger");
-const {genKeyPair}=require("./utils/criptoUtils");
-const helmet=require("helmet");
+const logger = require("./controllers/logger");
+const { genKeyPair } = require("./utils/criptoUtils");
+const helmet = require("helmet");
 const mysqlClient = new (require("./api/mysql"));
-const firestore=new(require('./api/gcp/FireStore'));
+const firestore = new (require('./api/gcp/FireStore'));
 
 
 
@@ -23,17 +23,17 @@ genKeyPair();
 
 
 
-if(process.env.STRATEGY_MODE==='GCP'){
+if (process.env.STRATEGY_MODE === 'GCP') {
     logger.debug("Trabajando en modo GCP");
     require("./api/passport");
 
 }
 
-if(process.env.STRATEGY_MODE==='ON_PREMISE'){
-   logger.debug("Trabajando en modeo On Premise");
+if (process.env.STRATEGY_MODE === 'ON_PREMISE') {
+    logger.debug("Trabajando en modeo On Premise");
     //calling database
     mysqlClient.getConnection();
-    
+
     //calling passport
     require("./api/passport");
 }
@@ -41,12 +41,12 @@ if(process.env.STRATEGY_MODE==='ON_PREMISE'){
 
 
 
-const app=express();
+const app = express();
 //Settings
 
-app.engine("hbs",hbs.engine);
-app.set("views",path.join(__dirname,"views"));
-app.set("view engine","hbs");
+app.engine("hbs", hbs.engine);
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "hbs");
 
 
 //Usos
@@ -54,25 +54,25 @@ app.use(morgan("dev"));
 //app.use(helmet());
 app.use(cookieParser(process.env.SECRET_APPLICATION))
 //Eliminar en producción
-if(process.env.STRATEGY_MODE==='GCP'){
+if (process.env.STRATEGY_MODE === 'GCP') {
     app.use(session({
-        secret:process.env.SECRET_APPLICATION,
-        resave:false,
-        saveUninitialized:true,
+        secret: process.env.SECRET_APPLICATION,
+        resave: false,
+        saveUninitialized: true,
     }));
     app.use(passport.initialize());
     app.use(passport.session());
-    
+
 }
 
 
-if(process.env.STRATEGY_MODE==='ON_PREMISE'){
+if (process.env.STRATEGY_MODE === 'ON_PREMISE') {
     app.use(session({
-    secret:process.env.SECRET_APPLICATION,
-    resave:false,
-    saveUninitialized:true,
-    store:mysqlClient.sessionStore(session),
-    cookie:{maxAge:1000*60*60*24} //Es igual a 1 día
+        secret: process.env.SECRET_APPLICATION,
+        resave: false,
+        saveUninitialized: true,
+        store: mysqlClient.sessionStore(session),
+        cookie: { maxAge: 1000 * 60 * 60 * 24 } //Es igual a 1 día
     }));
     app.use(passport.initialize());
     app.use(passport.session());
@@ -80,20 +80,20 @@ if(process.env.STRATEGY_MODE==='ON_PREMISE'){
 
 app.use(flash());
 //reference:https://expressjs.com/es/4x/api.html#express.static
-app.use(express.static(path.join(__dirname,"/public"),{
-    etag:true,
-    maxAge:'30 days',
-    redirect:true,
+app.use(express.static(path.join(__dirname, "/public"), {
+    etag: true,
+    maxAge: '30 days',
+    redirect: true,
 }));
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(routes);
 
 
 //cronjob
 
-app.listen(process.env.PORT || 3000,async ()=>{
+app.listen(process.env.PORT || 3000, async () => {
     //campaigns.sendingNewsLetter()
     //console.log(await campaigns._renderCampaign());
     //await firestore.saveUser('elpadredelcordero@gmail.com','123456');
