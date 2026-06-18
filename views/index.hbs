@@ -333,23 +333,25 @@
 {{>default/campaign-modal post=modalinfo pop=popup lang=lang}}    
 
 <script async defer> 
-	var popupStatusM = {{{popupStatus}}}
-	/* const popupTitle = document.getElementById('popup_title')
-	const popupImage = document.getElementById('popup_image')
-	popupTitle.textContent = popupData.titulo
-	popupImage.setAtributte('src', popup.imagen)
-	console.log('popup.imagen', popup.imagen) */
+  var popupStatusM = {{{popupStatus}}}
+  /* const popupTitle = document.getElementById('popup_title')
+  const popupImage = document.getElementById('popup_image')
+  popupTitle.textContent = popupData.titulo
+  popupImage.setAtributte('src', popup.imagen)
+  console.log('popup.imagen', popup.imagen) */
 
-	
-	addEventListener('DOMContentLoaded', (event) => {
-		console.log('popupStatusM', popupStatusM)
-		const campaignModal = document.getElementById('campaign-modal')
-		const modalBackdrop = document.querySelector('.modal-backdrop')
-
-		if (popupStatusM !== '1') {
-			campaignModal.classList.add('hideModal')
-			modalBackdrop.classList.add('hideModal')
-		}
-	});
-
+  addEventListener('DOMContentLoaded', (event) => {
+    console.log('popupStatusM', popupStatusM)
+    
+    if (popupStatusM !== '1') {
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      
+      const campaignModal = document.getElementById('campaign-modal');
+      const modalBackdrop = document.querySelector('.modal-backdrop');
+      if (campaignModal) campaignModal.classList.add('hideModal');
+      if (modalBackdrop) modalBackdrop.classList.add('hideModal');
+    }
+  });
 </script>
