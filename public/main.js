@@ -108,28 +108,62 @@
 							t.preventDefault(), window.history.back()
 						});
 
-				/(noticias-eventos|publicaciones|normas-legales)/.test(location.href)
+
+				const $searchInput = document.getElementById("search-input");
+				$searchInput?.addEventListener('keyup', (evt) => {
+					if (evt.key === 'Enter') {
+						document.getElementById("search-button").click();
+					}
+				});
+
+				/(publicaciones|normas-legales|noticias|nota-prensa)/.test(location.href)
 					&& !location.href.includes("/tag/")
 					&& document.getElementById("search-button").addEventListener("click", function (t) {
 						t.preventDefault();
-						var e = location.href.match(/(noticias-eventos|publicaciones|normas-legales)/)[0],
-							n = location.href.includes("/en/") ? "en" : "es",
-							searchWord = document.getElementById("search-input").value;
-						"" != searchWord
-							? (
-								document.getElementById("search-alert")?.classList.replace("show", "hide"),
-								fetch("/search", {
-									method: "POST",
-									headers: { "Content-Type": "application/json" },
-									body: JSON.stringify({ filter: e, lang: n, search: searchWord })
+						const isNoticiaOrNotaPrensa = /(noticias|nota-prensa)/.test(location.href)
+						if (!isNoticiaOrNotaPrensa) {
+							document.getElementById("search-alert")?.classList.replace("show", "hide")
+							return
+						}
+
+						const lang = location.href.includes("/en/") ? "en" : "es";
+						const filter = location.href.includes("noticia") ? "noticias-eventos" : "notas-prensa";
+						const search = $searchInput.value.trim();
+						
+						if (search === "") {
+							console.log("search vacio")
+							document.getElementById('default').style.display='flex';
+							document.getElementById('results-template').innerHTML = '';
+							document.querySelectorAll(".pagination-wrapper").forEach(p => {
+								p.classList.replace("d-none", "d-flex")
+							})
+							return
+						}
+
+						document.getElementById('search-alert').classList.replace('show','hide');
+						fetch('/search',{
+							method:'POST',
+							headers:{'Content-Type':'application/json'},
+							body:JSON.stringify({filter ,lang, search})
+						})
+						.then(results=>{
+							return results.json()
+						})
+						.then(response => {
+							if(response.success){
+								document.getElementById('default').style.display='none';
+								document.getElementById('results-template').innerHTML=response.posts;
+								document.querySelectorAll(".pagination-wrapper").forEach(p => {
+									p.classList.replace("d-flex", "d-none")
 								})
-									.then(function (t) { return t.json() })
-									.then(function (t) {
-										var n; "noticias-eventos" != e ? (o(t), (n = t).success ? (document.getElementById("sidebar-default").style.display = "none", document.getElementById("sidebar-template").innerHTML = n.tags) : (document.getElementById("sidebar-template").innerHTML = "", document.getElementById("sidebar-default").style.display = "block")) : o(t)
-									})
-									.catch(console.error)
-							)
-							: document.getElementById("search-alert")?.classList.replace("show", "hide")
+							}else{
+								document.getElementById('results-template').innerHTML='';
+								document.getElementById('search-alert').classList.replace('hide','show');
+							}
+						})
+						.catch(errors=>{
+							console.error(errors);
+						});
 					});
 
 				if (location.href.includes("regiones")) {
@@ -138,7 +172,7 @@
 						const initialRegion = 'Lima'
 
 						const response = await fetch(`/region/${initialRegion}`)
-						const { ok, region } = await response.json()
+						const { ok, region, dataRendered } = await response.json()
 
 						if (!ok) return console.error('Error al obtener la region')
 
@@ -150,6 +184,7 @@
 						document.getElementById("telefono").textContent = region.celularEncargado ?? "No asignado"
 						document.getElementById("email").textContent = region.correoEncargado ?? "No asignado"
 						document.getElementById("pageLink").textContent = region.pageLink ?? "No asignado"
+						document.getElementById("planesRegionalesContainer").innerHTML = dataRendered
 						if (region.pageLink) {
 							document.getElementById("pageLink").setAttribute("href", region.pageLink)
 						}
@@ -181,7 +216,7 @@
 							])
 							const [
 								{ template },
-								{ region }
+								{ region, dataRendered }
 							] = await Promise.all([
 								mapResponse.json(),
 								regionResponse.json()
@@ -197,6 +232,7 @@
 							document.getElementById("email").textContent = region.correoEncargado ?? "No asignado"
 
 							document.getElementById("pageLink").textContent = region.pageLink ?? "No asignado"
+							document.getElementById("planesRegionalesContainer").innerHTML = dataRendered
 							if (region.pageLink) {
 								document.getElementById("pageLink").setAttribute("href", region.pageLink)
 							}

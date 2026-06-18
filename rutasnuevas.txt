@@ -1,0 +1,53 @@
+En la carpeta /public
+	En la carpeta /admin
+		* Copiar el archivo analitica-menu.js
+		* Copiar el archivo comunicaciones-eventos.js
+		* Copiar el archivo datos-abiertos-categorias.js
+		* Copiar el archivo datos-abiertos-tipos.js
+		* Copiar el archivo regiones.js
+	En la carpeta /css
+		* Copiar el archivo normas-legales.css
+		* Copiar el archivo post.css
+		* Copiar el archivo publicaciones.css
+		En la carpeta /comunicaciones
+			* Copiar el archivo evento.css
+			* Copiar el archivo eventos.css
+	En la carpeta /img
+		* Copiar el archivo bomberos.jpg
+		* Copiar el archivo minjus.jpg
+		* Copiar el archivo minsa.png
+		* Copiar el archivo PCM-Interior.png
+		En la carpeta /secciones
+			* Copiar el archivo aula-virtual.png
+			* Copiar el archivo datos-abiertos.png
+			* Copiar el archivo suscripciones.png
+	En la carpeta /js
+		* Copiar el archivo analitica.js
+		* Copiar el archivo normas-legales.js
+		* Copiar el archivo post.js
+		* Copiar el archivo publicaciones.js
+		En la carpeta /comunicaciones
+			* Copiar el archivo eventos.js
+
+En la carpeta /views
+	En la carpeta /pages
+		* Copiar el archivo administrador-login.hbs
+		En la carpeta /comunicaciones
+			* Copiar el archivo evento.hbs
+			* Copiar el archivo notas-prensa.hbs
+			* Copiar el archivo noticias.hbs
+			* Copiar el archivo todos.hbs
+		En la carpeta /secciones-admin
+			* Copiar el archivo analitica-menu.hbs
+			* Copiar el archivo comunicaciones-eventos.hbs
+			* Copiar el archivo datos-abiertos-categorias.hbs
+			* Copiar el archivo datos-abiertos-tipos.hbs
+			* Copiar el archivo footer.hbs
+			* Copiar el archivo regiones.hbs
+	En la carpeta /partials
+		En la carpeta /comunicaciones
+			* Copiar el archivo evento-card.hbs
+		En la carpeta /noticias-eventos
+			* Copiar el archivo eventos-card.hbs
+		En la carpeta /publicaciones
+			* Copiar el archivo publicaciones-searched.hbs

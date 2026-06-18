@@ -1,4 +1,4 @@
-const API_URL = "/secciones-admin/datos-abiertos-tipos"
+const API_URL = "/administrador/datos-abiertos-tipos"
 
 function extractRowData($row) {
 	return {

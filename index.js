@@ -100,5 +100,6 @@ app.listen(process.env.PORT || 3000, async () => {
     /*Correr el script una única vez para generar el usuario admin en On-Premise */
     // mysqlClient.setQuery();
     // mysqlClient.saveUser('onsv@mtc.gob.pe','mtclima2022*');
+    // mysqlClient.saveUser('consejero-regional@mtc.gob.pe','test2023,', 2);
     logger.debug(`La aplicación se inició con éxito y a la escucha en el puerto ${process.env.PORT || 3000}`)
 })

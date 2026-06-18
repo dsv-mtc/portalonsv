@@ -1,4 +1,4 @@
-const API_URL = "/secciones-admin/regiones"
+const API_URL = "/administrador/regiones"
 
 function extractRowRegion($row) {
 	return {

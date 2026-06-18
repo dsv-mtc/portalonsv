@@ -6,6 +6,7 @@
 }
 .open_data .search_box {
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
     align-items: flex-end;
     width: 100%;

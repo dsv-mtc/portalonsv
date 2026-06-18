@@ -1,4 +1,4 @@
-const API_URL = '/secciones-admin/popup'
+const API_URL = '/administrador/popup'
 const $popupForm = document.getElementById('popupForm')
 
 function checkFile(selector, allowed) {

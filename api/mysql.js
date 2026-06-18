@@ -36,7 +36,274 @@ class DataBase {
 	setQuery() {
 		//Habilitamos el uso de asyn await
 		this.query = util.promisify(client.query).bind(client);
+		this.beginTransaction = util.promisify(client.beginTransaction).bind(client);
 	}
+
+	async getRoles() {
+		const queryString = `
+			SELECT
+				ur.id,
+				ur.value
+			FROM user_role ur
+		`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results,
+				message: "Se obtuvieron los roles"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo recuperar los datos, recargue la página"
+			}
+		}
+	}
+
+	async getPermisos() {
+		const queryString = `
+			SELECT
+				p.id,
+				p.value
+			FROM permission p
+		`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results,
+				message: "Se obtuvieron los permisos"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo recuperar los datos, recargue la página"
+			}
+		}
+	}
+
+	async getRolesWithPermissions() {
+		let query = `
+			SELECT
+				ur.id roleId,
+				ur.value role,
+				p.id permissionId,
+				p.value permission
+			FROM user_role ur
+			JOIN rel_user_role_permission rurp ON ur.id = rurp.roleId
+			JOIN permission p ON p.id = rurp.permissionId
+		 `
+
+		query = query.replace(/\s+/g, ' ').trim()
+
+		try {
+			const results = await this.query(query);
+
+			const roles = results
+				.reduce((acc, r) => {
+					if (!acc[r.roleId]) {
+						acc[r.roleId] = {
+							id: r.roleId,
+							value: r.role,
+							permissions: []
+						}
+					}
+					acc[r.roleId].permissions.push({
+						id: r.permissionId,
+						value: r.permission
+					})
+					return acc
+				}, [])
+				.filter(Boolean)
+
+			return {
+				success: true,
+				data: roles
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudieron obtener los planes regionales"
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param {{
+	 * 	conditions: {
+	 * 		id?: number,
+	 * 		userId?: number,
+	 *  }
+	 * }} data
+	 * @returns 
+	 */
+	async getUsersWithPermissions({
+		conditions
+	}) {
+		let whereConditions = ''
+		if (conditions) {
+			const unionCondition = ' AND '
+			let isFirstCondition = true
+			if (conditions.id) {
+				const prefix = isFirstCondition ? '' : unionCondition
+				whereConditions += `${prefix} rurp.id = ${conditions.id} `
+				isFirstCondition = false
+			}
+			if (conditions.userId) {
+				const prefix = isFirstCondition ? '' : unionCondition
+				whereConditions += `${prefix} u.id = ${conditions.userId}`
+				isFirstCondition = false
+			}
+		}
+
+		let query = `
+			SELECT
+				rurp.id,
+				rurp.permissionId,
+				p.value permission,
+				rurp.roleId,
+				ur.value role,
+				u.id userId,
+				u.user user
+			FROM rel_user_role_permission rurp
+			JOIN permission p ON p.id = rurp.permissionId
+			JOIN user_role ur ON ur.id = rurp.roleId
+			JOIN users u ON u.idUserRole = ur.id
+			${whereConditions
+				? `WHERE ${whereConditions}`
+				: ''
+			}
+		 `
+
+		query = query.replace(/\s+/g, ' ').trim()
+
+		try {
+			const results = await this.query(query);
+
+			const users = results
+				.reduce((acc, r) => {
+					if (!acc[r.userId]) {
+						acc[r.userId] = {
+							id: r.userId,
+							user: r.user,
+							roleId: r.roleId,
+							role: r.role,
+							permissions: []
+						}
+					}
+					acc[r.userId].permissions.push({
+						id: r.permissionId,
+						value: r.permission
+					})
+					return acc
+				}, [])
+				.filter(Boolean)
+
+			return {
+				success: true,
+				data: users
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudieron obtener los planes regionales"
+			}
+		}
+	}
+
+	async createRole({
+		value,
+		permissionIds
+	}) {
+		const roleQuery = `
+			INSERT INTO user_role (value)
+			VALUES ('${value}');
+		`
+		try {
+			const {insertId} = await this.query(roleQuery);
+
+			const permissionsQuery = `
+				INSERT INTO rel_user_role_permission (permissionId, roleId)
+				VALUES ${permissionIds.map(p => `(${p}, ${insertId})`).join(',')}
+			`;
+			
+			await this.query(permissionsQuery);
+			return {
+				success: true,
+				message: "Se creó el rol"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo crear el rol"
+			}
+		}
+
+	}
+
+	async updateRole({
+		id,
+		value,
+		permissionIds
+	}) {
+		const removeRolPermissionsQuery = `
+			DELETE FROM rel_user_role_permission WHERE roleId=${id}
+		`
+
+		const createRolPermissionQuery = `
+			INSERT INTO rel_user_role_permission (permissionId, roleId)
+			VALUES ${permissionIds.map(p => `(${p}, ${id})`).join(',')}
+		`
+
+		const updateRoleQuery = `
+			UPDATE user_role SET value='${value}' WHERE id=${id}
+		`
+
+		try {
+			await this.query(removeRolPermissionsQuery)
+			await Promise.all([
+				this.query(createRolPermissionQuery),
+				this.query(updateRoleQuery),
+			]);
+
+			return {
+				success: true,
+				message: "Se actualizó el rol"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo actualizar el rol"
+			}
+		}
+	}
+
+	async deleteRole(id) {
+		const queryString = `DELETE FROM user_role WHERE id=${id}`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: result,
+				message: "Se eliminó el usuario"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo eliminar el usuario"
+			}
+		}
+	}
+
 	async getUserByEmail(user) {
 		try {
 			const queryString = `SELECT * FROM ${process.env.USER_TABLE} WHERE user="${user}" `;
@@ -57,7 +324,17 @@ class DataBase {
 
 	async getUserById(id) {
 		try {
-			const queryString = `SELECT * FROM ${process.env.USER_TABLE} WHERE id="${id}" `;
+			const queryString = `
+				SELECT 
+					u.id,
+					u.user,
+					u.password,
+					u.idUserRole,
+					ur.value role
+				FROM ${process.env.USER_TABLE} u
+				JOIN user_role ur ON ur.id = u.idUserRole
+				WHERE u.id=${id}
+			`;
 			let result = await this.query(queryString)
 			if (result.length > 0) {
 				return { success: true, data: result[0] }
@@ -70,24 +347,115 @@ class DataBase {
 			return { success: false, message: "Cannot get user" }
 		}
 	}
-	/**
-	 * @description: Guarda un usuario dentro de las tablas que es de tipo admin
-	 * @param {string} email: cuenta de correo para el registro 
-	 * @param {string} password clave asignada a la cuenta de correo
-	 * @returns 
-	 */
-	saveUser = async (email, password) => {
+
+	async getUsers() {
+		const queryString = `
+			SELECT 
+				u.id,
+				u.user,
+				u.idUserRole,
+				ur.value role
+			FROM ${process.env.USER_TABLE} u
+			JOIN user_role ur ON ur.id = u.idUserRole
+		`;
 		try {
-			const passwordEncrypted = crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY);
-			const queryString = `INSERT INTO ${process.env.USER_TABLE} (user,password) VALUES ("${email}","${passwordEncrypted}")`
-			const result = await this.query(queryString)
-			return { success: true, data: result };
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results,
+				message: "Se obtuvieron los usuarios"
+			}
 		} catch (error) {
 			console.error(error);
-			return { success: false, message: "Cannot save user" }
+			return {
+				success: false,
+				message: "No se pudo recuperar los datos, recargue la página"
+			}
 		}
 
 	}
+
+	async createUser({
+		email,
+		password,
+		roleId
+	}) {
+		try {
+			const passwordEncrypted = crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY);
+			const queryString = `
+				INSERT INTO ${process.env.USER_TABLE} 
+					(user, password, idUserRole) 
+				VALUES 
+					("${email}","${passwordEncrypted}", ${roleId})
+			`
+			const result = await this.query(queryString)
+			return {
+				success: true,
+				data: result,
+				message: "Se creó el usuario"
+			};
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo crear el usuario"
+			}
+		}
+
+	}
+
+	async updateUser({
+		id,
+		email,
+		password,
+		roleId
+	}) {
+		const passwordEncrypted = password
+			? crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY)
+			: undefined;
+		const queryString = `
+			UPDATE ${process.env.USER_TABLE} 
+				SET
+					user='${email}',
+					${password ? `password='${passwordEncrypted}',` : ''}
+					idUserRole=${roleId}
+				WHERE id=${id}
+		`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: result,
+				message: "Se actualizó el usuario"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo actualizar el usuario"
+			}
+		}
+
+	}
+
+	async deleteUser(id) {
+		const queryString = `DELETE FROM ${process.env.USER_TABLE} WHERE id=${id}`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: result,
+				message: "Se eliminó el usuario"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo eliminar el usuario"
+			}
+		}
+	}
+
 	/**
 	 * @description: Compara el password ingresado con el password guardado en tabla
 	 * @param {string} passIn: Password ingresado 
@@ -135,7 +503,7 @@ class DataBase {
 	//MANEJO DE SESIONES
 	//doc: https://www.cleverclouds.im/es/blog/2018/06/guardar-la-sesi%C3%B3n-en-mysql-para-el-framework-express-en-node
 
-	sessionStore = (session) => {
+	sessionStore(session) {
 		MySQLStore(session);
 		let sessionStoreVar = new MySQLStore(dataConnection);
 		return sessionStoreVar;
@@ -218,10 +586,10 @@ class DataBase {
 		}
 	}
 
-	async updateCifras({ 
-		lesionados, 
-		accidentados, 
-		fallecidos, 
+	async updateCifras({
+		lesionados,
+		accidentados,
+		fallecidos,
 		mensaje1,
 		mensaje2
 	}) {
@@ -279,7 +647,7 @@ class DataBase {
 		}
 	}
 
-	async updateFooterData ({
+	async updateFooterData({
 		telefono,
 		email,
 		direccion,
@@ -299,7 +667,7 @@ class DataBase {
 				success: true,
 				data: result,
 				message: "Se actualizaron los datos"
-				
+
 			}
 		} catch (error) {
 			console.error(error);
@@ -456,7 +824,7 @@ class DataBase {
 		}
 	}
 
-	async createMenu({ 
+	async createMenu({
 		descripcion,
 		urlImagen,
 		observacion,
@@ -496,7 +864,7 @@ class DataBase {
 		}
 	}
 
-	async updateMenu({ 
+	async updateMenu({
 		id,
 		descripcion,
 		urlImagen,
@@ -508,7 +876,7 @@ class DataBase {
 				SET 
 					descripcion='${descripcion}',
 					urlImagen=${urlImagen?.trim() === '' ? null : `'${urlImagen.trim()}'`},
-					observacion=${observacion ? `'${observacion.trim()}'` : null },
+					observacion=${observacion ? `'${observacion.trim()}'` : null},
 					estaActivo=${estaActivo ? 1 : 0},
 					update_time=CURRENT_TIMESTAMP
 				WHERE id=${id}`;
@@ -568,11 +936,11 @@ class DataBase {
 			const results = await this.query(queryString);
 			return {
 				success: true,
-				data: results.map(s => ({ 
+				data: results.map(s => ({
 					...s,
 					menuEstaActivo: s.menuEstaActivo === 1,
-					imagen: s.imagen || 'No existe', 
-					estado: s.estado === 1 
+					imagen: s.imagen || 'No existe',
+					estado: s.estado === 1
 				}))
 			}
 		} catch (error) {
@@ -607,11 +975,11 @@ class DataBase {
 			const results = await this.query(queryString);
 			return {
 				success: true,
-				data: results.map(s => ({ 
+				data: results.map(s => ({
 					...s,
 					menuEstaActivo: s.menuEstaActivo === 1,
-					imagen: s.imagen || 'No existe', 
-					estado: s.estado === 1 
+					imagen: s.imagen || 'No existe',
+					estado: s.estado === 1
 				}))
 			}
 		} catch (error) {
@@ -623,14 +991,14 @@ class DataBase {
 		}
 	}
 
-	async createSubmenu({ 
-		descripcion, 
-		menu_id, 
-		rutabi, 
-		linkvideo, 
-		linkpdf, 
-		imagenpath, 
-		estado 
+	async createSubmenu({
+		descripcion,
+		menu_id,
+		rutabi,
+		linkvideo,
+		linkpdf,
+		imagenpath,
+		estado
 	}) {
 		const queryString = `
 			INSERT INTO
@@ -673,15 +1041,15 @@ class DataBase {
 		}
 	}
 
-	async updateSubmenu({ 
-		id, 
-		descripcion, 
-		menu_id, 
-		rutabi, 
-		linkvideo, 
-		linkpdf, 
+	async updateSubmenu({
+		id,
+		descripcion,
+		menu_id,
+		rutabi,
+		linkvideo,
+		linkpdf,
 		imagenpath,
-		estado 
+		estado
 	}) {
 		const queryString = `
 			UPDATE submenu
@@ -778,7 +1146,7 @@ class DataBase {
 		}
 	}
 
-	async getDatosAbiertosPages ({ pageLength, conditions }) {
+	async getDatosAbiertosPages({ pageLength, conditions }) {
 		let whereConditions = ''
 		if (conditions) {
 			const unionCondition = ' AND '
@@ -815,9 +1183,8 @@ class DataBase {
 			FROM files f
 			LEFT JOIN categoria c ON c.id = f.idCategoria
 			LEFT JOIN tipo t ON t.id = f.idTipo
-			${
-				whereConditions 
-				? `WHERE ${whereConditions}` 
+			${whereConditions
+				? `WHERE ${whereConditions}`
 				: ''
 			}
 		`;
@@ -826,8 +1193,8 @@ class DataBase {
 		console.log(query)
 		try {
 			const results = await this.query(query);
-			return { 
-				success: true, 
+			return {
+				success: true,
 				dataLength: results[0].pages,
 				data: Math.ceil(Number(results[0].pages) / pageLength)
 			}
@@ -838,14 +1205,14 @@ class DataBase {
 	}
 
 	async getDatosAbiertos({
-		paginate, 
-		page, 
+		paginate,
+		page,
 		pageLength,
 		conditions
 	} = {
-		page: 1,
-		pageLength: 5
-	}) {
+			page: 1,
+			pageLength: 5
+		}) {
 		let whereConditions = ''
 		if (conditions) {
 			const unionCondition = ' AND '
@@ -894,17 +1261,16 @@ class DataBase {
 			FROM files f
 			LEFT JOIN categoria c ON c.id = f.idCategoria
 			LEFT JOIN tipo t ON t.id = f.idTipo
-			${
-				whereConditions 
-				? `WHERE ${whereConditions}` 
+			${whereConditions
+				? `WHERE ${whereConditions}`
 				: ''
 			}
 			ORDER BY f.id DESC
 		`
 
-		page = page < 0 ? 1 : page 
-		const offsetData = (page - 1) * pageLength 
-		
+		page = page < 0 ? 1 : page
+		const offsetData = (page - 1) * pageLength
+
 		if (paginate) {
 			query += `LIMIT ${pageLength} OFFSET ${offsetData}`
 		}
@@ -921,9 +1287,9 @@ class DataBase {
 					tipo: res.tipo ?? 'No existe',
 					excelfile: res.excelfile === 'null' ? 'No existe' : res.excelfile,
 					hasExcel: res.excelfile === 'null' ? false : true,
-					pdffile: res.pdffile === 'null' ? 'No existe': res.pdffile,
+					pdffile: res.pdffile === 'null' ? 'No existe' : res.pdffile,
 					hasPdf: res.pdffile === 'null' ? false : true,
-					csvfile: res.csvfile === 'null'? 'No existe' : res.csvfile,
+					csvfile: res.csvfile === 'null' ? 'No existe' : res.csvfile,
 					hasCsv: res.csvfile === 'null' ? false : true,
 					fecha: res.fecha.split('/').reverse().join('-')
 				}))
@@ -1225,9 +1591,8 @@ class DataBase {
 			SELECT
 				count(r.id) amount
 			FROM regiones r
-			${
-				whereConditions 
-				? `WHERE ${whereConditions}` 
+			${whereConditions
+				? `WHERE ${whereConditions}`
 				: ''
 			}
 		`;
@@ -1236,8 +1601,8 @@ class DataBase {
 
 		try {
 			const results = await this.query(query);
-			return { 
-				success: true, 
+			return {
+				success: true,
 				amount: results[0].amount,
 				pages: Math.ceil(Number(results[0].amount) / pageSize)
 			}
@@ -1248,14 +1613,14 @@ class DataBase {
 	}
 
 	async getRegiones({
-		paginate, 
-		page, 
+		paginate,
+		page,
 		pageSize,
 		conditions
 	} = {
-		page: 1,
-		pageSize: 5
-	}) {
+			page: 1,
+			pageSize: 5
+		}) {
 		let whereConditions = ''
 		if (conditions) {
 			const unionCondition = ' AND '
@@ -1277,17 +1642,16 @@ class DataBase {
 				r.imageUrl,
 				r.pageLink
 			FROM regiones r
-			${
-				whereConditions 
-				? `WHERE ${whereConditions}` 
+			${whereConditions
+				? `WHERE ${whereConditions}`
 				: ''
 			}
 			ORDER BY r.slug ASC
 		`
 
-		page = page < 0 ? 1 : page 
-		const offsetData = (page - 1) * pageSize 
-		
+		page = page < 0 ? 1 : page
+		const offsetData = (page - 1) * pageSize
+
 		if (paginate) {
 			query += `LIMIT ${pageSize} OFFSET ${offsetData}`
 		}
@@ -1497,7 +1861,7 @@ class DataBase {
 				success: true,
 				data: results.map(evento => ({
 					...evento,
-					hasSocialLinks: evento.facebookLink || evento.youtubeLink || evento.twitterLink ,
+					hasSocialLinks: evento.facebookLink || evento.youtubeLink || evento.twitterLink,
 					fullYoutubeLink: evento.youtubeLink ? evento.youtubeLink.replace('embed/', 'watch?v=') : null,
 					reunionIsInGoogleMeet: evento.reunionLink?.includes("google"),
 					reunionIsInZoom: evento.reunionLink?.includes("zoom"),
@@ -1538,7 +1902,7 @@ class DataBase {
 				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= '${conditions.endDate}'`
 				isFirstCondition = false
 			}
-			if(conditions.nearest) {
+			if (conditions.nearest) {
 				whereConditions += `${isFirstCondition ? '' : unionCondition} e.startTime >= CURDATE()`
 				isFirstCondition = false
 			}
@@ -1552,9 +1916,8 @@ class DataBase {
 			SELECT
 				count(e.id) amount
 			FROM evento e
-			${
-				whereConditions 
-				? `WHERE ${whereConditions}` 
+			${whereConditions
+				? `WHERE ${whereConditions}`
 				: ''
 			}
 		`;
@@ -1563,8 +1926,8 @@ class DataBase {
 
 		try {
 			const results = await this.query(query);
-			return { 
-				success: true, 
+			return {
+				success: true,
 				amount: results[0].amount,
 				pages: Math.ceil(Number(results[0].amount) / pageSize)
 			}
@@ -1573,16 +1936,16 @@ class DataBase {
 			return { success: false, message: "No se pudo recuperar los datos, recargue la página" }
 		}
 	}
-	
+
 	async getComunications({
-		paginate, 
-		page, 
+		paginate,
+		page,
 		pageSize,
 		conditions
 	} = {
-		page: 1,
-		pageSize: 5
-	}) {
+			page: 1,
+			pageSize: 5
+		}) {
 		let whereConditions = ''
 		if (conditions) {
 			const unionCondition = ' AND '
@@ -1603,7 +1966,7 @@ class DataBase {
 				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= '${conditions.endDate}'`
 				isFirstCondition = false
 			}
-			if(conditions.nearest) {
+			if (conditions.nearest) {
 				whereConditions += `${isFirstCondition ? '' : unionCondition} e.startTime >= CURDATE()`
 				isFirstCondition = false
 			}
@@ -1636,17 +1999,16 @@ class DataBase {
 				e.isActive
 			FROM evento e
 			LEFT JOIN tipo_evento te ON te.id = e.idTipoEvento
-			${
-				whereConditions 
-				? `WHERE ${whereConditions}` 
+			${whereConditions
+				? `WHERE ${whereConditions}`
 				: ''
 			}
 			ORDER BY e.id DESC
 		`
 
-		page = page < 0 ? 1 : page 
-		const offsetData = (page - 1) * pageSize 
-		
+		page = page < 0 ? 1 : page
+		const offsetData = (page - 1) * pageSize
+
 		if (paginate) {
 			query += `LIMIT ${pageSize} OFFSET ${offsetData}`
 		}
@@ -1847,9 +2209,9 @@ class DataBase {
 			const results = await this.query(queryString);
 			return {
 				success: true,
-				data: results.map(te => ({ 
+				data: results.map(te => ({
 					...te,
-					isActive: te.isActive === 1 
+					isActive: te.isActive === 1
 				}))
 			}
 		} catch (error) {
@@ -1874,9 +2236,9 @@ class DataBase {
 			const results = await this.query(queryString);
 			return {
 				success: true,
-				data: results.map(te => ({ 
+				data: results.map(te => ({
 					...te,
-					isActive: te.isActive === 1 
+					isActive: te.isActive === 1
 				}))
 			}
 		} catch (error) {
@@ -1888,7 +2250,7 @@ class DataBase {
 		}
 	}
 
-	async createTipoEvento({ 
+	async createTipoEvento({
 		value,
 		isActive
 	}) {
@@ -1919,7 +2281,7 @@ class DataBase {
 		}
 	}
 
-	async updateTipoEvento({ 
+	async updateTipoEvento({
 		id,
 		value,
 		isActive
@@ -1960,6 +2322,201 @@ class DataBase {
 			return {
 				success: false,
 				message: "No se pudo eliminar el tipo de evento"
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param {{
+	 * 	conditions: {
+	 * 		id?: number,
+	 * 		idAutor?: number,
+	 * 		idRegion?: number
+	 *  }
+	 * }} data
+	 * @returns 
+	 */
+	async getPlanesRegionales({
+		conditions
+	}) {
+		let whereConditions = ''
+		if (conditions) {
+			const unionCondition = ' AND '
+			let isFirstCondition = true
+			if (conditions.id) {
+				const prefix = isFirstCondition ? '' : unionCondition
+				whereConditions += `${prefix} pr.id = ${conditions.id} `
+				isFirstCondition = false
+			}
+			if (conditions.idAutor) {
+				const prefix = isFirstCondition ? '' : unionCondition
+				whereConditions += `${prefix} pr.authorId = ${conditions.idAutor}`
+				isFirstCondition = false
+			}
+			if (conditions.idRegion) {
+				const prefix = isFirstCondition ? '' : unionCondition
+				whereConditions += `${prefix} pr.regionId = ${conditions.idRegion}`
+				isFirstCondition = false
+			}
+		}
+
+		let query = `
+			SELECT
+				pr.id,
+				pr.title titulo,
+				pr.description descripcion,
+				pr.regionId idRegion,
+				r.value region,
+				pr.authorId idAuthor,
+				u.user usuario,
+				pr.pdfFileUrl,
+				pr.excelFileUrl,
+				pr.csvFileUrl,
+				pr.creationDate fechaCreacion,
+				pr.isActive estaActivo
+			FROM plan_regional pr
+			JOIN regiones r ON r.id = pr.regionId
+			JOIN users u ON u.id = pr.authorId
+			${whereConditions
+				? `WHERE ${whereConditions}`
+				: ''
+			}
+			ORDER BY pr.id DESC
+		`
+
+		query = query.replace(/\s+/g, ' ').trim()
+
+		try {
+			const results = await this.query(query);
+			return {
+				success: true,
+				data: results.map(pr => ({
+					...pr,
+					fechaCreacionISOString: moment(pr.fechaCreacion).format('YYYY-MM-DD'),
+					fechaCreacionString: moment(pr.fechaCreacion).format('DD/MM/YYYY'),
+					hasExcelFile: pr.excelFileUrl !== null,
+					hasPdfFile: pr.pdfFileUrl !== null,
+					hasCsvFile: pr.csvFileUrl !== null,
+					estaActivo: pr.estaActivo === 1
+				}))
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudieron obtener los planes regionales"
+			}
+		}
+	}
+
+	async createPlanRegional({
+		titulo,
+		idRegion,
+		idAutor,
+		descripcion,
+		excelFileUrl,
+		pdfFileUrl,
+		csvFileUrl,
+		fechaCreacion,
+		estaActivo,
+	}) {
+		const queryString = `
+			INSERT INTO plan_regional (
+				title,
+				description,
+				regionId,
+				authorId,
+				pdfFileUrl,
+				excelFileUrl,
+				csvFileUrl,
+				creationDate,
+				isActive
+			)
+			VALUES (
+				'${titulo.trim()}',
+				'${descripcion.trim()}',
+				${idRegion},
+				${idAutor},
+				${pdfFileUrl ? `'${pdfFileUrl}'`.trim() : 'null'},
+				${excelFileUrl ? `'${excelFileUrl}'`.trim() : 'null'},
+				${csvFileUrl ? `'${csvFileUrl}'`.trim() : 'null'},
+				'${fechaCreacion}',
+				${estaActivo ? 1 : 0}
+			)
+		`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: result,
+				message: "Se creó el plan regional"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo crear el plan regional"
+			}
+		}
+	}
+
+	async updatePlanRegional({
+		id,
+		titulo,
+		idRegion,
+		idAutor,
+		descripcion,
+		excelFileUrl,
+		pdfFileUrl,
+		csvFileUrl,
+		fechaCreacion,
+		estaActivo,
+	}) {
+		const queryString = `
+			UPDATE plan_regional 
+				SET
+					title='${titulo.trim()}',
+					description='${descripcion.trim()}',
+					regionId=${idRegion},
+					authorId=${idAutor},
+					pdfFileUrl=${pdfFileUrl ? `'${pdfFileUrl}'`.trim() : 'null'},
+					excelFileUrl=${excelFileUrl ? `'${excelFileUrl}'`.trim() : 'null'},
+					csvFileUrl=${csvFileUrl ? `'${csvFileUrl}'`.trim() : 'null'},
+					creationDate='${fechaCreacion}',
+					isActive=${estaActivo ? 1 : 0}
+				WHERE id=${id}
+		`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: result,
+				message: "Se actualizó el plan regional"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo actualizar el plan regional"
+			}
+		}
+	}
+
+	async deletePlanRegional(id) {
+		const queryString = `DELETE FROM plan_regional WHERE id=${id}`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: result,
+				message: "Se eliminó el plan regional"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo eliminar el plan regional"
 			}
 		}
 	}

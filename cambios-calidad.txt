@@ -1,0 +1,9 @@
+/views/index.hbs
+/views/pages/publicaciones.hbs
+/views/pages/normas-legales.hbs
+/views/pages/comunicaciones/notas-prensa.hbs
+/views/pages/comunicaciones/noticias.hbs
+/views/partials/noticias-eventos/search-noticias-eventos.hbs
+/public/main.js
+/routes/routes.js
+/api/ghost.js
