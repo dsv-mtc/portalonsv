@@ -18291,3 +18291,11 @@ a:hover {
 .ck [contenteditable="true"] {
 	min-height: 6rem;
 }
+
+.dataTables_wrapper .form-control {
+	padding: 0;
+}
+
+.dataTables_wrapper .custom-select.custom-select-sm.form-control.form-control-sm {
+	min-width: 3rem;
+}

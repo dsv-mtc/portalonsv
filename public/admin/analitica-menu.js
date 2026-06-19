@@ -1,4 +1,4 @@
-const API_URL = "/secciones-admin/analitica-menu"
+const API_URL = "/administrador/analitica-menu"
 
 function new_loadFile(value) {
 	document.querySelector(`#new_${value}-file`).click();
@@ -41,7 +41,6 @@ window.addEventListener('DOMContentLoaded', () => {
 		const menu = extractRowMenu($row);
 		$container.dataset.submenuId = menu.id;
 		$formEditar.descripcion.value = menu.descripcion;
-		$formEditar.observacion.value = menu.observacion;
 		if (menu.urlImagen !== '') {
 			$formEditar.existingImage.value = menu.urlImagen;
 		}

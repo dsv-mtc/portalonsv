@@ -1,4 +1,4 @@
-const API_URL = "/secciones-admin/datos-abiertos"
+const API_URL = "/administrador/datos-abiertos"
 
 function new_loadFile(value) {
 	document.querySelector(`#new_${value}-file`).click();

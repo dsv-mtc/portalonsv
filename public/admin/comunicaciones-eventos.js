@@ -1,4 +1,4 @@
-const API_URL = "/secciones-admin/comunicaciones-eventos"
+const API_URL = "/administrador/comunicaciones-eventos"
 
 function new_loadFile(value) {
 	document.querySelector(`#new_${value}-file`).click();

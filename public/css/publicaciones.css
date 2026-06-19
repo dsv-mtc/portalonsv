@@ -47,7 +47,7 @@
 	}
 
 	.publicaciones-section .results article {
-		grid-column: 1;
+		grid-column: 1 / 4;
 		min-width: fit-content;
 	}
 
@@ -55,7 +55,7 @@
 
 @media screen and (max-width: 576px) {
 	.publicaciones-section {
-		padding: 2.5rem 1rem;
+		padding: 1rem;
 		grid-column: 1;
 	}
 }

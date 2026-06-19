@@ -82,7 +82,7 @@ class GhostApi {
 		return publish;
 
 	}
-	getSearchPosts = async (filter, slug, limit, page) => {
+	getSearchPosts = async (filter, slug) => {
 		let posts = [];
 		let stopWords = new Set(['de', 'o', 'la', 'los', 'las'])
 		let miniSearch = new MiniSearch({
@@ -92,8 +92,7 @@ class GhostApi {
 		})
 		let resultsRaw = [];
 		resultsRaw = await api.posts.browse({
-			limit: limit ?? "all",
-			page,
+			limit: "all",
 			filter,
 			include: ['tags', 'authors']
 			//fields:"id,title"

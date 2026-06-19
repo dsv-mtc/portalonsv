@@ -1,4 +1,4 @@
-const API_URL = "/secciones-admin/analitica-submenu"
+const API_URL = "/administrador/analitica-submenu"
 
 function new_loadFile(value) {
 	document.querySelector(`#new_${value}-file`).click();

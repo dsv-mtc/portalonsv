@@ -177,6 +177,13 @@ const renderSearchOpenDataTemplate = (data) => {
 	return template(data);
 }
 
+const renderTemplate = (pathName, data) => {
+	const filePath = path.join(__dirname, `../views/${pathName}.hbs`);
+	const file = fs.readFileSync(filePath, 'utf-8');
+	const template = hbs2.compile(file);
+	return template(data);
+}
+
 const renderSearchPublicacionesTemplate = (data) => {
 	const filePath = path.join(__dirname, '../views/partials/publicaciones/publicaciones-searched.hbs');
 	const file = fs.readFileSync(filePath, 'utf-8');
@@ -355,6 +362,7 @@ module.exports = {
 	capitalizeNameRecursive,
 	saveDocument: saveDocument,
 	filterTags: filterTags,
+	renderTemplate,
 	renderSearchTemplate: renderSearchTemplate,
 	renderTagTemplate: renderTagTemplate,
 	renderNoticiasEventosTemplate: renderNoticiasEventosTemplate,

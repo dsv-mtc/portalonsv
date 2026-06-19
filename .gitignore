@@ -8,3 +8,5 @@ docs/*
 status.json
 status.mjs
 public/estaticos/
+
+.env
