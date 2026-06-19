@@ -7,12 +7,6 @@ La aplicación responde a una actualización de servicios de la plataforma onsv 
 
 Si alguno de los componentes de la lista no se encuentra presente, reportar a los encargados correspondientes.
 
-#   **CREDENCIALES GENERALES**
--   Administrador de la subida de datos abiertos: user:elpadredelcordero@gmail.com pass: 123456
--   Usuario de mysql: user: onsv pass:user_onsv2021#HMR
--   Usuario Ubuntu multipass user:onsv  pass: observatorionacional
--   Usuario gitlab, user:onsvdev@gmail.com pass: onsvdeveloper
--   Usuario mailchimp, email: onsvdev@gmail.com user:onsvdev , pass : Obs3rv4t0r10#
 
 #   **PROCESO DE INSTALACIÓN**
 
