@@ -114,11 +114,55 @@
 				{{>normas-legales/normas-legales-card-body lang=../lang}}
 			{{/each}}
 
-			<nav class="col-12 d-flex justify-content-center ">
-				{{#if pagination}}
-					{{> pagination pag=pagination}}
-				{{/if}}
-			</div>
+			{{#if pagination}}
+        <style>
+          .custom-pag-wrapper {
+            gap: 8px;
+          }
+          .custom-pag-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 17px;
+            border: none;
+            background: transparent;
+            color: #4b5563;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            cursor: pointer;
+          }
+          .custom-pag-btn:hover {
+            background-color: #f3f4f6;
+            color: #1d3557;
+          }
+          .custom-pag-btn.active {
+            background-color: #1d3557;
+            color: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          }
+          .custom-pag-btn i {
+            font-size: 20px;
+          }
+        </style>
+
+        <nav class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
+          <a href="#" class="custom-pag-btn active" aria-label="Página 1">1</a>
+          <a href="#" class="custom-pag-btn" aria-label="Página 2">2</a>
+          <a href="#" class="custom-pag-btn" aria-label="Página 3">3</a>
+          <a href="#" class="custom-pag-btn" aria-label="Página 4">4</a>
+
+          <a href="#" class="custom-pag-btn" aria-label="Siguiente página">
+            <i class="fal fa-chevron-right"></i>
+          </a>
+          <a href="#" class="custom-pag-btn" aria-label="Última página">
+            <i class="fal fa-chevron-double-right"></i>
+          </a>
+        </nav>
+        {{/if}}
 		{{else}}
 			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
 				No se encontraron resultados

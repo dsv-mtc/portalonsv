@@ -708,7 +708,7 @@ footer {
 }
 .so-links li a {
     display: inline-block;
-    color: #ee1d27;
+    color: #1d3557;
     border: 1px solid #fff;
     width: 40px;
     height: 40px;
@@ -718,9 +718,9 @@ footer {
     font-size: 16px;
 }
 .so-links li a:hover, .so-links li a:focus {
-    background: #ee1d27;
+    background: #1d3557;
     color: #fff;
-    border: 1px solid #ee1d27;
+    border: 1px solid #1d3557;
     text-decoration: none;
 }
 .rsp-cont-tab-section {

@@ -1,7 +1,4 @@
-/*!
- * Font Awesome Pro 5.0.13 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license (Commercial License)
- */
+
 .fa, .fab, .fal, .far, .fas {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
@@ -102,26 +99,20 @@ to {
     transform: rotate(1turn);
 }
 }.fa-rotate-90 {
-    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
     transform: rotate(90deg);
 }
 .fa-rotate-180 {
-    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
     transform: rotate(180deg);
 }
 .fa-rotate-270 {
-    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
     transform: rotate(270deg);
 }
 .fa-flip-horizontal {
-    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0,  mirror=1)";
     transform: scaleX(-1);
 }
 .fa-flip-vertical {
     transform: scaleY(-1);
 }
-.fa-flip-horizontal.fa-flip-vertical, .fa-flip-vertical {
-    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2,  mirror=1)"}
 .fa-flip-horizontal.fa-flip-vertical {
     transform: scale(-1);
 }

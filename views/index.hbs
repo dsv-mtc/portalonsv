@@ -1,338 +1,282 @@
 <!-- banner section -->
 <section class="rsp-banner">
-	<div class="carousel slide" data-ride="carousel" data-interval="3000">
-	<!-- The slideshow -->
-		<div class="carousel-inner">
-			{{#each banners}}
-				{{#if @first}}
-				<div class="carousel-item active img-banner">
-					<img src="/assets/{{this}}" >
-				</div>
-				{{else}}
-				<div class="carousel-item">
-					<img src="/assets/{{this}}"ñ >
-				</div>
-				{{/if}}
-			{{/each}}
-		</div>
-	</div>
-	<div class="rsp-ban-desc">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-9 col-md-8 mx-auto d-md-none d-lg-none d-xl-none">
-					<h1 class="ft-bold">
-						Bienvenido al Observatorio Nacional 
-						de Seguridad Vial
-					</h1>
-					<p class="text-justify">
-						El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre riesgos, causas y consecuencias de los siniestros viales utilizando las buenas prácticas en la gestión de datos. Tiene como finalidad servir de insumo a las entidades competentes para mejorar las políticas entorno a la prevención, fiscalización y respuesta frente a la ocurrencia de hechos de tránsito de manera y así garantizar el cuidado de la vida y la salud de todos los usuarios y usuarias de las vías del Perú.
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="carousel slide" data-ride="carousel" data-interval="3000">
+  <!-- The slideshow -->
+    <div class="carousel-inner">
+      {{#each banners}}
+        {{#if @first}}
+        <div class="carousel-item active img-banner">
+          <img src="/assets/{{this}}">
+        </div>
+        {{else}}
+        <div class="carousel-item">
+          <img src="/assets/{{this}}">
+        </div>
+        {{/if}}
+      {{/each}}
+    </div>
+  </div>
+  <div class="rsp-ban-desc">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 mx-auto d-md-none d-lg-none d-xl-none">
+          <h1 class="ft-bold">
+            Bienvenido al Observatorio Nacional
+            de Seguridad Vial
+          </h1>
+          <p class="text-justify">
+            El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre riesgos, causas y consecuencias de los siniestros viales utilizando las buenas prácticas en la gestión de datos. Tiene como finalidad servir de insumo a las entidades competentes para mejorar las políticas entorno a la prevención, fiscalización y respuesta frente a la ocurrencia de hechos de tránsito de manera y así garantizar el cuidado de la vida y la salud de todos los usuarios y usuarias de las vías del Perú.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 <!-- End banner section -->
 
 <section class="rsp-hs-ic-sec rsp-wrap">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4">
-				<div class="rsp-hs-ic-blk">
-					<div class="rsp-hs-ic-img">
-						<img class="icon-slider" src="/assets/hs2.png" alt="hs-icon">
-					</div>
-					<h3 class="ft-bold">{{accidentados}}*</h3>
-					<p>{{t lang "Siniestros"}}</p>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="rsp-hs-ic-blk">
-					<div class="rsp-hs-ic-img">
-						<img class="icon-slider" src="/assets/hs3.png" alt="hs-icon">
-					</div>
-					<h3 class="ft-bold">{{lesionados}}*</h3>
-					<p>{{t lang "Lesionados"}}</p>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="rsp-hs-ic-blk">
-					<div class="rsp-hs-ic-img">
-						<img class="icon-slider" src="/assets/hs4.png" alt="hs-icon">
-					</div>
-					<h3 class="ft-bold">{{fallecidos}}*</h3>
-					<p>{{t lang "Fallecidos"}}</p>
-				</div>
-			</div>
-		</div>
-		<p class="mt-2">
-			<span class="cita">{{mensaje1}}</span>
-		</p>
-		<p>
-			<span class="cita">{{mensaje2}}</span>
-		</p>
-	</div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="rsp-hs-ic-blk">
+          <div class="rsp-hs-ic-img">
+            <img class="icon-slider" src="/assets/hs2.png" alt="hs-icon">
+          </div>
+          <h3 class="ft-bold">{{accidentados}}*</h3>
+          <p>{{t lang "Siniestros"}}</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="rsp-hs-ic-blk">
+          <div class="rsp-hs-ic-img">
+            <img class="icon-slider" src="/assets/hs3.png" alt="hs-icon">
+          </div>
+          <h3 class="ft-bold">{{lesionados}}*</h3>
+          <p>{{t lang "Lesionados"}}</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="rsp-hs-ic-blk">
+          <div class="rsp-hs-ic-img">
+            <img class="icon-slider" src="/assets/hs4.png" alt="hs-icon">
+          </div>
+          <h3 class="ft-bold">{{fallecidos}}*</h3>
+          <p>{{t lang "Fallecidos"}}</p>
+        </div>
+      </div>
+    </div>
+    <p class="mt-2">
+      <span class="cita">{{mensaje1}}</span>
+    </p>
+    <p>
+      <span class="cita">{{mensaje2}}</span>
+    </p>
+  </div>
 </section>
 
 <!-- vu section -->
 <section class="rsp-vu-sec rsp-wrap">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-6 col-md-7 vu-map-col">
-				<h3  class="rsp-title ft-bold">{{t lang "Visor de Alerta de Siniestros"}}  <br/>
-				{{t lang "de Tránsito"}}  <a href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank" class="btn btn-rsp ft-bold">{{t lang 'ver'}}</a></h3>
-			
-				<div class="vu-map">
-					<div class="mapouter">
-						<div class="gmap_canvas">
-							<iframe width="100%" height="550" id="gmap_canvas" src="https://sratma.mtc.gob.pe/SRATMA/mapa/" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-5 vu-list-col">
-				<h3 class="rsp-title ft-bold text-center">{{t lang "Ultimos"}} <br/>
-					{{t lang "10 accidentes"}}</h3>
-				<div class="vu-list radius">
-						{{#each accidents}}
-							{{>index/accident lang=../lang}}
-						{{/each}}
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-5 vu-list-col">
-				<div class="social_section vu-list radius">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-7 vu-map-col">
+        <h3 class="rsp-title ft-bold">{{t lang "Visor de Alerta de Siniestros"}} <br/>
+        {{t lang "de Tránsito"}} <a href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank" class="btn btn-rsp ft-bold">{{t lang 'ver'}}</a></h3>
+        <div class="vu-map">
+          <div class="mapouter">
+            <div class="gmap_canvas">
+              <iframe width="100%" height="550" id="gmap_canvas" src="https://sratma.mtc.gob.pe/SRATMA/mapa/" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-5 vu-list-col">
+        <h3 class="rsp-title ft-bold text-center">{{t lang "Ultimos"}} <br/>
+          {{t lang "10 accidentes"}}</h3>
+        <div class="vu-list radius">
+            {{#each accidents}}
+              {{>index/accident lang=../lang}}
+            {{/each}}
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-5 vu-list-col" style="overflow: visible;">
+  			<div class="social_section vu-list radius" style="width: calc(100% + 80px); max-width: 280px; padding-left: 0;">
+					<div style="transform: translateX(10px);"></div>
 					<div class="social_section_tabs">
-						<span id="tab_facebook" class="active">
-							<svg width="24" height="24" viewBox="0 0 24 24">
-								<path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/>
-							</svg>
-						</span>
-						<span id="tab_twitter">
-							<svg width="24" height="24" viewBox="0 0 24 24">
-								<path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/>
-							</svg>
-						</span>
-					</div>
-					<div class="iframes_content">
-						<section id="iframe_facebook" class="show">
-							<div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-width="360" data-height="700" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
-						</section>
-						<section id="iframe_twitter">
-							<a class="twitter-timeline" href="https://twitter.com/onsvPE?ref_src=twsrc%5Etfw">Tweets by onsvPE</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-						</section>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <span id="tab_facebook" class="active">
+              <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/>
+              </svg>
+            </span>
+            <span id="tab_twitter">
+              <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/>
+              </svg>
+            </span>
+          </div>
+          <div class="iframes_content">
+            <section id="iframe_facebook" class="show">
+              <div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-width="360" data-height="700" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
+            </section>
+            <section id="iframe_twitter">
+              <a class="twitter-timeline" href="https://twitter.com/onsvPE?ref_src=twsrc%5Etfw">Tweets by onsvPE</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!--<section class="rsp-wrap mt-n4">
-	<div class="container">
-		<div class="jumbotron newsletter">
-			<div class="icon-newsletter">
-				<i class="fas fa-envelope-open-text fa-5x"></i>
-			</div>
-			<div class="texto-newsletter ml-5">
-				<p class="titulo-newsletter pb-4 text-center text-md-left">{{t lang 'news-text'}}</p>
-				<button 
-					class="btn btn-rsp btn-block ft-bold boton-newsletter"
-					id="suscriber-button"
-					class="btn"
-					data-toggle="modal"
-					data-target="#suscriber-modal-form">{{t lang 'news-button'}}
-				</button>
-			</div>
-		</div>
-	</div>
-</section>-->
+<!--
+<section class="rsp-wrap mt-n4">
+  <div class="container">
+    <div class="jumbotron newsletter">
+      <div class="icon-newsletter">
+        <i class="fas fa-envelope-open-text fa-5x"></i>
+      </div>
+      <div class="texto-newsletter ml-5">
+        <p class="titulo-newsletter pb-4 text-center text-md-left">{{t lang 'news-text'}}</p>
+        <button
+          class="btn btn-rsp btn-block ft-bold boton-newsletter"
+          id="suscriber-button"
+          class="btn"
+          data-toggle="modal"
+          data-target="#suscriber-modal-form">{{t lang 'news-button'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+-->
 
 <section class="rsp-vu-sec rsp-wrap">
-	<div class="container">
-		<div 
-			class="row justify-content-around" 
-			style="padding: 3rem;border: 2px solid #c00e0e;border-radius: 0.3rem;"
-		>
-			
-			<div class="col-lg-3" style="padding: 0;">
-				<div class="rsp-res-blk">
-					<div class="rsp-res-img">
-						<img
-							style="object-fit: cover;"
-							class="no-4" 
-							src="/img/secciones/suscripciones.png" 
-							alt="Boletín informativo ONSV"
-						>
-					</div>
-					<h6 class="card-title ft-bold publicaciones-tit text-center mb-3">
-						Boletín informativo ONSV
-					</h6>
-					<div class="px-2 mb-2">
-						<button 
-							class="btn btn-rsp btn-block ft-bold boton-newsletter" 
-							style="padding: 0.4rem;"
-							class="btn"
-							type="button"
-							data-toggle="modal"
-							data-target="#suscriber-modal-form"
-						>
-							Suscribirse
-						</button>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-lg-3" style="padding: 0;">
-				<div class="rsp-res-blk">
-					<a class="rsp-res-img" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">
-						<img 
-							style="object-fit: cover;"
-							class="no-4" 
-							src="/img/secciones/aula-virtual.png" 
-							alt="Aula virtual ONSV"
-						>
-					</a>
-					<h6 class="card-title ft-bold publicaciones-tit text-center">
-						Aula Virtual ONSV
-					</h6>
-					<div class="px-2 mb-2">
-						<a 
-							class="btn btn-rsp btn-block ft-bold boton-newsletter" 
-							style="padding: 0.4rem;"
-							class="btn"
-							type="button"
-							href="https://aulavirtual.mtc.gob.pe/seguridadvial/"
-							target="_blank"
-						>
-							Ingresar
-						</a>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-lg-3" style="padding: 0;">
-				<div class="rsp-res-blk">
-					<a class="rsp-res-img" href="/datosabiertos" target="_blank">
-						<img 
-							style="object-fit: cover;"
-							class="no-4" 
-							src="/img/secciones/datos-abiertos.png" 
-							alt="Datos abiertos ONSV"
-						>
-					</a>
-					<h6 class="card-title ft-bold publicaciones-tit text-center">
-						Datos Abiertos ONSV
-					</h6>
-					<div class="px-2 mb-2">
-						<a 
-							class="btn btn-rsp btn-block ft-bold boton-newsletter" 
-							style="padding: 0.4rem;"
-							class="btn"
-							type="button"
-							href="/datosabiertos" target="_blank"
-						>
-							Ingresar
-						</a>
-					</div>
-				</div>
-			</div>
-
-		</div>
-	</div>
+  <div class="container">
+    <div class="row justify-content-around" style="padding: 3rem;border: 2px solid #c00e0e;border-radius: 0.3rem;">
+      <div class="col-lg-3" style="padding: 0;">
+        <div class="rsp-res-blk">
+          <div class="rsp-res-img">
+            <img style="object-fit: cover;" class="no-4" src="/img/secciones/suscripciones.png" alt="Boletín informativo ONSV">
+          </div>
+          <h6 class="card-title ft-bold publicaciones-tit text-center mb-3">
+            Boletín informativo ONSV
+          </h6>
+          <div class="px-2 mb-2">
+            <button class="btn btn-rsp btn-block ft-bold boton-newsletter" style="padding: 0.4rem;" class="btn" type="button" data-toggle="modal" data-target="#suscriber-modal-form">
+              Suscribirse
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3" style="padding: 0;">
+        <div class="rsp-res-blk">
+          <a class="rsp-res-img" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">
+            <img style="object-fit: cover;" class="no-4" src="/img/secciones/aula-virtual.png" alt="Aula virtual ONSV">
+          </a>
+          <h6 class="card-title ft-bold publicaciones-tit text-center">
+            Aula Virtual ONSV
+          </h6>
+          <div class="px-2 mb-2">
+            <a class="btn btn-rsp btn-block ft-bold boton-newsletter" style="padding: 0.4rem;" class="btn" type="button" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">
+              Ingresar
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3" style="padding: 0;">
+        <div class="rsp-res-blk">
+          <a class="rsp-res-img" href="/datosabiertos" target="_blank">
+            <img style="object-fit: cover;" class="no-4" src="/img/secciones/datos-abiertos.png" alt="Datos abiertos ONSV">
+          </a>
+          <h6 class="card-title ft-bold publicaciones-tit text-center">
+            Datos Abiertos ONSV
+          </h6>
+          <div class="px-2 mb-2">
+            <a class="btn btn-rsp btn-block ft-bold boton-newsletter" style="padding: 0.4rem;" class="btn" type="button" href="/datosabiertos" target="_blank">
+              Ingresar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
-
 <!-- End vu section -->
+
 <section class="rsp-res-sec rsp-wrap">
-	<div class="container">
-		<div class="row mb-2">
-			<div class="col-md-9 res-tit">
-				<h3 class="rsp-title ft-bold">Resumen de Noticias</h3>
-			</div>
-			<div class="col-md-3 res-btn">
-				<a href="/comunicaciones/noticias/" class="btn btn-rsp-outline ft-bold">{{t lang "Ver mas"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
-			</div>
-		</div> 
-		<div class="row">
-			{{#each post2}}
-				{{>index/noticias-eventos-card lang=../lang }}
-			{{/each}}
-		</div>
-	</div>
+  <div class="container">
+    <div class="row mb-2">
+      <div class="col-md-9 res-tit">
+        <h3 class="rsp-title ft-bold">Resumen de Noticias</h3>
+      </div>
+      <div class="col-md-3 res-btn">
+        <a href="/comunicaciones/noticias/" class="btn btn-rsp-outline ft-bold">{{t lang "Ver mas"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
+      </div>
+    </div>
+    <div class="row">
+      {{#each post2}}
+        {{>index/noticias-eventos-card lang=../lang }}
+      {{/each}}
+    </div>
+  </div>
 </section>
 
 <section class="rsp-ult-sec rsp-wrap">
-	<div class="container">
-		<div class="row mb-2">
-			<div class="col-md-9">
-				<h3 class="rsp-title ft-bold">{{t lang "ultimas publicaciones"}}</h3>
-			</div>
-		</div>
-		<div class="row ultimas-publicaciones">
-			{{#each post3}}
-				{{>index/post-card lang=../lang }}
-			{{/each}}
-		</div>
-			
-	</div>
+  <div class="container">
+    <div class="row mb-2">
+      <div class="col-md-9">
+        <h3 class="rsp-title ft-bold">{{t lang "ultimas publicaciones"}}</h3>
+      </div>
+    </div>
+    <div class="row ultimas-publicaciones">
+      {{#each post3}}
+        {{>index/post-card lang=../lang }}
+      {{/each}}
+    </div>
+  </div>
 </section>
 
 <div class="container">
-	<section class="logos-container rsp-noti-sec rsp-wrap" style="padding: 0">
-		<h3 class="col-12 mb-4 rsp-title ft-bold">
-			Instituciones Aliadas
-		</h3>
-		<div class="d-flex justify-content-center">
-			<div class="logos owl-carousel owl-theme" id="others">
-				
-				<a
-					class="logo"
-					href="https://www.gob.pe/1013-solicitar-atencion-medida-en-caso-de-emergencia.samu"
-					target="_blank"
-				>
-					<img src="/img/logosamu.jpg" alt="samu" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/pnp" target="_blank">
-					<img src="/img/logo-PNP.png" alt="pnp" />
-				</a>
-
-				<a class="logo" href="http://www.bomberosperu.gob.pe" target="_blank">
-					<img src="/img/bomberos.jpg" alt="cgbv" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/mpfn" target="_blank">
-					<img src="/img/logomp.jfif" alt="mp" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/atu" target="_blank">
-					<img src="/img/logoatu.png" alt="atu" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/sutran" target="_blank">
-					<img src="/img/logo-sutran.jpg" alt="sutran" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/minjus" target="_blank">
-					<img src="/img/minjus.jpg" alt="Ministerio de justicia" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/mininter" target="_blank">
-					<img src="/img/PCM-Interior.png" alt="Ministerio del interior" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/minsa" target="_blank">
-					<img src="/img/minsa.png" alt="Ministerio de salud" />
-				</a>
-
-			</div>
-		</div>
-	</section>
+  <section class="logos-container rsp-noti-sec rsp-wrap" style="padding: 0">
+    <h3 class="col-12 mb-4 rsp-title ft-bold">
+      Instituciones Aliadas
+    </h3>
+    <div class="d-flex justify-content-center">
+      <div class="logos owl-carousel owl-theme" id="others">
+        <a class="logo" href="https://www.gob.pe/1013-solicitar-atencion-medida-en-caso-de-emergencia.samu" target="_blank">
+          <img src="/img/logosamu.jpg" alt="samu" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/pnp" target="_blank">
+          <img src="/img/logo-PNP.png" alt="pnp" />
+        </a>
+        <a class="logo" href="http://www.bomberosperu.gob.pe" target="_blank">
+          <img src="/img/bomberos.jpg" alt="cgbv" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/mpfn" target="_blank">
+          <img src="/img/logomp.jfif" alt="mp" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/atu" target="_blank">
+          <img src="/img/logoatu.png" alt="atu" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/sutran" target="_blank">
+          <img src="/img/logo-sutran.jpg" alt="sutran" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/minjus" target="_blank">
+          <img src="/img/minjus.jpg" alt="Ministerio de justicia" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/mininter" target="_blank">
+          <img src="/img/PCM-Interior.png" alt="Ministerio del interior" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/minsa" target="_blank">
+          <img src="/img/minsa.png" alt="Ministerio de salud" />
+        </a>
+      </div>
+    </div>
+  </section>
 </div>
 
+{{>default/campaign-modal post=modalinfo pop=popup lang=lang}}
 
-{{>default/campaign-modal post=modalinfo pop=popup lang=lang}}    
-
-<script async defer> 
+<script async defer>
   var popupStatusM = {{{popupStatus}}}
   /* const popupTitle = document.getElementById('popup_title')
   const popupImage = document.getElementById('popup_image')
@@ -342,12 +286,12 @@
 
   addEventListener('DOMContentLoaded', (event) => {
     console.log('popupStatusM', popupStatusM)
-    
+
     if (popupStatusM !== '1') {
       document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
-      
+
       const campaignModal = document.getElementById('campaign-modal');
       const modalBackdrop = document.querySelector('.modal-backdrop');
       if (campaignModal) campaignModal.classList.add('hideModal');
