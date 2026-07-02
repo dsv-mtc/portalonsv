@@ -66,6 +66,21 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 		return menuList.find(function (m) { return m.label === label; });
 	}
 
+	function findGhostCI(label) {
+		return menuList.find(function (m) { return m.label.toLowerCase() === label.toLowerCase(); });
+	}
+
+	function renderGhostItem(menuObj) {
+		var target = setTarget(menuObj.label);
+		var addColor = getMenuSelected(url_selected, menuObj.label);
+		return '<li class="nav-item nav-special ' + addColor + '"><a class="nav-link" href="' + menuObj.url + '" target="' + target + '">' + menuObj.label + '</a></li>';
+	}
+
+	function renderDropdownItem(i) {
+		var cls = 'dropdown-item' + (i.wrap ? ' dropdown-item-wrap' : '');
+		return '<a class="' + cls + '" href="' + i.url + '">' + i.label + '</a>';
+	}
+
 	// 1. Home icon (always first, sin dropdown)
 	var homeActive = url_selected === '/' || url_selected === '/en/' ? 'add-color' : '';
 	htmlMenu += `
@@ -77,29 +92,29 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 			</a>
 		</li>`;
 
-	// 2. Quiénes somos (hardcoded dropdown, todos #)
+	// 2. Quiénes somos (hardcoded dropdown)
 	var qsLabel = secondary_navigation ? 'Who we are' : 'Quiénes somos';
 	var qsItems = secondary_navigation
 		? [
 			{ label: 'Who we are?', url: '#' },
 			{ label: 'Mission', url: '#' },
 			{ label: 'Vision', url: '#' },
-			{ label: 'Values and Tech Components', url: '#' }
+			{ label: 'Values and Tech Components', url: '#', wrap: true }
 		]
 		: [
 			{ label: '¿Quienes somos?', url: '#' },
 			{ label: 'Misión', url: '#' },
 			{ label: 'Visión', url: '#' },
 			{ label: 'Valores', url: '#' },
-			{ label: 'Componentes Tecnológicos', url: '#' }
+			{ label: 'Componentes Tecnológicos', url: '#', wrap: true }
 		];
 	htmlMenu += `
 		<li class="nav-item nav-special dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${qsLabel}</a>
-			<div class="dropdown-menu">${qsItems.map(function (i) { return '<a class="dropdown-item" href="' + i.url + '">' + i.label + '</a>'; }).join('')}</div>
+			<div class="dropdown-menu">${qsItems.map(renderDropdownItem).join('')}</div>
 		</li>`;
 
-	// 3. Comunicaciones (hardcoded dropdown, sub-items con URLs existentes)
+	// 3. Comunicaciones (hardcoded dropdown)
 	var commLabel = secondary_navigation ? 'Communications' : 'Comunicaciones';
 	var commItems = secondary_navigation
 		? [
@@ -115,17 +130,13 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 	htmlMenu += `
 		<li class="nav-item nav-special dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${commLabel}</a>
-			<div class="dropdown-menu">${commItems.map(function (i) { return '<a class="dropdown-item" href="' + i.url + '">' + i.label + '</a>'; }).join('')}</div>
+			<div class="dropdown-menu">${commItems.map(renderDropdownItem).join('')}</div>
 		</li>`;
 
-	// 4. Items genéricos desde Ghost navigation (Publicaciones, Normas legales, Regiones, etc.)
-	menuList.forEach(function (menuObj) {
-		var skip = ['inicio', 'home', 'analítica', 'analytics', 'noticias y eventos', 'news and events', 'srat', 'peru-in-world'];
-		if (skip.indexOf(menuObj.label) !== -1) return;
-		var target = setTarget(menuObj.label);
-		var addColor = getMenuSelected(url_selected, menuObj.label);
-		htmlMenu += '<li class="nav-item nav-special ' + addColor + '"><a class="nav-link" href="' + menuObj.url + '" target="' + target + '">' + menuObj.label + '</a></li>';
-	});
+	// 4. Publicaciones (Ghost)
+	var pubGhost = findGhostCI('Publicaciones') || findGhostCI('publicaciones');
+	if (secondary_navigation && !pubGhost) pubGhost = findGhostCI('Publications') || findGhostCI('publications');
+	if (pubGhost) htmlMenu += renderGhostItem(pubGhost);
 
 	// 5. Aplicaciones (hardcoded dropdown)
 	var appGhost = findGhost('analítica') || findGhost('analytics');
@@ -145,11 +156,21 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 			</div>
 		</li>`;
 
-	// 6. Orientación a víctimas (hardcoded simple link con #)
+	// 6. Normas legales (Ghost)
+	var normasGhost = findGhostCI('Normas legales') || findGhostCI('normas legales');
+	if (secondary_navigation && !normasGhost) normasGhost = findGhostCI('Legal Standards') || findGhostCI('legal standards');
+	if (normasGhost) htmlMenu += renderGhostItem(normasGhost);
+
+	// 7. Regiones (Ghost)
+	var regionGhost = findGhostCI('Regiones') || findGhostCI('regiones');
+	if (secondary_navigation && !regionGhost) regionGhost = findGhostCI('Regions') || findGhostCI('regions');
+	if (regionGhost) htmlMenu += renderGhostItem(regionGhost);
+
+	// 8. Orientación a víctimas (hardcoded link)
 	var victimLabel = secondary_navigation ? 'Victim Support' : 'Orientación a víctimas';
 	htmlMenu += '<li class="nav-item nav-special"><a class="nav-link" href="#">' + victimLabel + '</a></li>';
 
-	// 7. Programas (hardcoded dropdown con #)
+	// 9. Programas (hardcoded dropdown)
 	var progLabel = secondary_navigation ? 'Programs' : 'Programas';
 	var progItemLabel = secondary_navigation ? 'Road Environments' : 'Entornos viales';
 	htmlMenu += `
@@ -158,7 +179,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 			<div class="dropdown-menu"><a class="dropdown-item" href="#">${progItemLabel}</a></div>
 		</li>`;
 
-	// 8. Educación Vial (dropdown, sin peru-in-world)
+	// 10. Educación Vial (dropdown)
 	if (secondary_navigation) {
 		htmlMenu += `
 			<li class="nav-item dropdown">
@@ -182,6 +203,15 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 				</div>
 			</li>`;
 	}
+
+	// Resto de items Ghost no incluidos arriba
+	var skip = ['inicio', 'home', 'analítica', 'analytics', 'noticias y eventos', 'news and events', 'srat', 'peru-in-world', 'contacto', 'contact', 'Publicaciones', 'publicaciones', 'Publications', 'publications', 'Normas legales', 'normas legales', 'Legal Standards', 'legal standards', 'Regiones', 'regiones', 'Regions', 'regions'];
+	menuList.forEach(function (menuObj) {
+		if (skip.indexOf(menuObj.label) !== -1) return;
+		var target = setTarget(menuObj.label);
+		var addColor = getMenuSelected(url_selected, menuObj.label);
+		htmlMenu += '<li class="nav-item nav-special ' + addColor + '"><a class="nav-link" href="' + menuObj.url + '" target="' + target + '">' + menuObj.label + '</a></li>';
+	});
 
 	return htmlMenu;
 }

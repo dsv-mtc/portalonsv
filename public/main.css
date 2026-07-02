@@ -12631,7 +12631,7 @@ h1.title{
     font-weight: bold;
 }
 li>.dropdown-menu{
-    background-color: #585856;
+    background-color: #3C4250;
     max-width: 180px !important;
     padding-left: 0px !important;
     border: 0px !important;
@@ -12651,10 +12651,12 @@ li>.dropdown-menu{
     padding-top: 16px;
     padding-bottom: 16px;
 }
-
+.dropdown-item-wrap {
+    white-space: normal;
+}
 
 .dropdown .dropdown-menu a:hover{
-    background-color: #ee1d27;
+    background-color: #C8102E;
     color: white;
     width: 180px;
 }
@@ -13065,7 +13067,7 @@ button:focus {
 /***************** End Helper Class *******************/
 /* Custom styles */
 #mainNav {
-    background-color: rgb(88, 88, 86);
+    background-color: #3C4250;
     padding: 0;
 }
 .logo-sm {
@@ -13084,8 +13086,8 @@ button:focus {
 .rsp-navbar .nav-rsp .nav-link {
     color: #fff;
     font-size: 15px;
-    font-weight: 700;
-    padding: 16px 20px;
+    font-weight: 500;
+    padding: 16px 10px;
     text-transform: uppercase;
     background-color: transparent;
     white-space: nowrap;
@@ -13093,7 +13095,13 @@ button:focus {
 
 
 .rsp-navbar .nav-rsp .nav-link:hover, .rsp-navbar .nav-rsp .nav-link:focus, .rsp-navbar .nav-rsp .nav-link.active, .rsp-navbar .nav-rsp  .nav-link.nav-current { 
-    background-color: #ee1d27;
+    background-color: #C8102E;
+}
+.rsp-navbar .nav-rsp .nav-item:first-child .nav-link {
+    background-color: #C8102E;
+}
+.rsp-navbar .nav-rsp .nav-item:first-child .nav-link:hover {
+    background-color: #A80D26;
 }
 
 .fixed-header .logo-container {
