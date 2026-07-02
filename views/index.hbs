@@ -26,9 +26,15 @@
   .btn-ghost { border-color: rgba(255,255,255,.5); color: #fff; } .btn-ghost:hover { background: #fff; color: var(--navy); text-decoration: none; }
   @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
   
-  .hero .arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 4; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.4); color: #fff; cursor: pointer; font-size: 20px; display: grid; place-items: center; transition: .2s; text-decoration: none; }
-  .hero .arrow:hover { background: var(--red); border-color: var(--red); color:#fff; text-decoration: none;}
-  .hero .prev { left: 16px; } .hero .next { right: 16px; }
+  .hero-capsules { list-style: none; margin: 0; padding: 0; position: absolute; z-index: 5; left: 50%; transform: translateX(-50%); bottom: 26px; display: flex; gap: 8px; }
+  .hero-capsules .hero-capsule { box-sizing: border-box; width: 44px; height: 5px; margin: 0; padding: 0; border: none; border-radius: 999px; background: rgba(255,255,255,.32); overflow: hidden; cursor: pointer; position: relative; opacity: 1; text-indent: -9999px; transition: background .2s; }
+  .hero-capsules .hero-capsule:hover { background: rgba(255,255,255,.5); }
+  .hero-capsules .hero-capsule.active { background: rgba(255,255,255,.32); }
+  .hero-capsules .hero-capsule .capsule-fill { position: absolute; top: 0; left: 0; bottom: 0; width: 100%; background: var(--red); border-radius: 999px; transform: scaleX(0); transform-origin: left center; will-change: transform; }
+
+  .hero-capsules .hero-capsule.active .capsule-fill { animation: capsuleFill 5s linear forwards; }
+  @keyframes capsuleFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @media(max-width: 760px) { .hero-capsules { bottom: 16px; } .hero-capsules .hero-capsule { width: 30px; } }
 
   .kpis { background: var(--mist); padding: 46px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .kpis .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: #fff; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
@@ -42,7 +48,7 @@
   @media(max-width: 760px) { .kpis .kpi-grid { grid-template-columns: 1fr; } .hero .veil { background: linear-gradient(180deg, rgba(13,21,40,.5), rgba(13,21,40,.78)); } .hero-in { justify-content: flex-start; } .hero-card { max-width: none; } }
 </style>
 
-<section id="heroCarousel" class="carousel slide carousel-fade hero" data-ride="carousel" data-interval="5000">
+<section id="heroCarousel" class="carousel slide carousel-fade hero">
   <div class="carousel-inner slides">
     {{#each banners}}
       <div class="carousel-item slide {{#if @first}}active{{/if}}">
@@ -63,14 +69,51 @@
     {{/each}}
   </div>
 
-  <a class="arrow prev" href="#heroCarousel" role="button" data-slide="prev">
-    <span aria-hidden="true">‹</span>
-  </a>
-  <a class="arrow next" href="#heroCarousel" role="button" data-slide="next">
-    <span aria-hidden="true">›</span>
-  </a>
+  <ol class="hero-capsules" id="heroCapsules">
+    {{#each banners}}
+      <li class="hero-capsule {{#if @first}}active{{/if}}">
+        <span class="capsule-fill"></span>
+      </li>
+    {{/each}}
+  </ol>
 </section>
 <!-- End banner section -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var el = document.getElementById("heroCarousel");
+    var capsules = document.querySelectorAll(".hero-capsule");
+    var slides = el.querySelectorAll(".carousel-item");
+    var current = 0;
+    var timer;
+
+    function goTo(index) {
+      slides[current].classList.remove("active");
+      capsules[current].classList.remove("active");
+      current = index;
+      slides[current].classList.add("active");
+      capsules[current].classList.add("active");
+      restartFill();
+    }
+
+    function next() { goTo((current + 1) % slides.length); }
+
+    function restartFill() {
+      var fill = capsules[current].querySelector(".capsule-fill");
+      if (fill) {
+        fill.style.animation = "none";
+        void fill.offsetWidth;
+        fill.style.animation = "";
+      }
+    }
+
+    capsules.forEach(function (cap, i) {
+      cap.addEventListener("click", function () { goTo(i); });
+    });
+
+    timer = setInterval(next, 5000);
+  });
+</script>
 
 <style>
   .stats-variation { font-size: 11px; color: #777; font-family: "Barlow", sans-serif; font-weight: 600; margin-top: 6px; }
@@ -658,6 +701,7 @@
   .sc-footer .btn-yt { background: #FF0000; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; text-transform: uppercase; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; }
   .sc-footer .btn-yt:hover { background: #cc0000; }
 
+  /* --- Tarjeta estática de X: vista previa fija del perfil real (@onsvPE) --- */
   .x-profile-card { display: flex; flex-direction: column; height: 100%; min-height: 400px; background: #fff; }
   .x-profile-banner { position: relative; height: 90px; background: linear-gradient(120deg, #14213D 0%, #14213D 55%, #C8102E 100%); flex-shrink: 0; overflow: hidden; }
   .x-profile-banner::after { content: ""; position: absolute; right: -20px; top: -30px; width: 140px; height: 140px; border: 14px solid rgba(255,255,255,.14); border-radius: 50%; }
@@ -675,9 +719,6 @@
   .x-profile-stats { display: flex; gap: 18px; font-size: 13px; color: var(--navy); margin-bottom: 16px; }
   .x-profile-stats strong { font-weight: 800; }
   .x-profile-stats .stat-label { color: #64748b; font-weight: 500; }
-  .x-static-btn { background: #000; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto; width: fit-content; }
-  .x-static-btn:hover { background: #222; color: #fff; text-decoration: none; }
-  .x-static-btn svg { width: 14px; height: 14px; fill: #fff; }
 
   @media(max-width: 991px) { .yt-list { width: 100%; border-left: none; border-top: 1px solid var(--line); } }
 </style>
@@ -742,10 +783,6 @@
                     <span><strong>43</strong> <span class="stat-label">Siguiendo</span></span>
                     <span><strong>1,000</strong> <span class="stat-label">Seguidores</span></span>
                   </div>
-                  <a href="https://x.com/onsvPE" target="_blank" class="x-static-btn">
-                    <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/></svg>
-                    Ver perfil en X
-                  </a>
                 </div>
               </div>
             </div>
@@ -753,7 +790,7 @@
           
           <div class="sc-footer">
             <a href="https://www.facebook.com/onsvPE/" target="_blank" class="link" id="scFooterLink">VER MÁS PUBLICACIONES</a>
-            <button class="btn-follow" id="scFooterBtn">SEGUIR</button>
+            <a href="https://www.facebook.com/onsvPE/" target="_blank" class="btn-follow" id="scFooterBtn">VER PERFIL EN FB</a>
           </div>
         </div>
       </div>
@@ -848,7 +885,11 @@
           if (nameEl) nameEl.textContent = data.nombre;
           if (handleEl) handleEl.textContent = data.handle;
           if (footerLink) footerLink.href = data.url;
-          if (footerBtn) footerBtn.classList.toggle("x", destino === "x");
+          if (footerBtn) {
+            footerBtn.classList.toggle("x", destino === "x");
+            footerBtn.href = data.url;
+            footerBtn.textContent = destino === "x" ? "VER PERFIL EN X" : "VER PERFIL EN FB";
+          }
         }
       });
     });
