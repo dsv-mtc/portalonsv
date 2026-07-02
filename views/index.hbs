@@ -1,116 +1,361 @@
-<!-- banner section -->
-<section class="rsp-banner">
-  <div class="carousel slide" data-ride="carousel" data-interval="3000">
-  <!-- The slideshow -->
-    <div class="carousel-inner">
-      {{#each banners}}
-        {{#if @first}}
-        <div class="carousel-item active img-banner">
-          <img src="/assets/{{this}}">
-        </div>
-        {{else}}
-        <div class="carousel-item">
-          <img src="/assets/{{this}}">
-        </div>
-        {{/if}}
-      {{/each}}
-    </div>
-  </div>
-  <div class="rsp-ban-desc">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-9 col-md-8 mx-auto d-md-none d-lg-none d-xl-none">
-          <h1 class="ft-bold">
-            Bienvenido al Observatorio Nacional
-            de Seguridad Vial
-          </h1>
-          <p class="text-justify">
-            El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre riesgos, causas y consecuencias de los siniestros viales utilizando las buenas prácticas en la gestión de datos. Tiene como finalidad servir de insumo a las entidades competentes para mejorar las políticas entorno a la prevención, fiscalización y respuesta frente a la ocurrencia de hechos de tránsito de manera y así garantizar el cuidado de la vida y la salud de todos los usuarios y usuarias de las vías del Perú.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End banner section -->
+<!-- INICIO NUEVO ESTILO: HERO Y KPIs -->
+<style>
+  .eyebrow { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--red); margin-bottom: 6px; display: block; }
+  .sec-title { font-family: "Barlow Condensed", sans-serif; font-weight: 800; text-transform: uppercase; font-size: clamp(26px,3.4vw,42px); line-height: 1; color: var(--navy); letter-spacing: .005em; margin: 0; }
+  .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
+  .sec-head .more { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 13px; color: var(--blue-2); display: inline-flex; align-items: center; gap: 7px; background: none; border:none; padding: 0; cursor: pointer; transition: .2s; }
+  .sec-head .more:hover { color: var(--red); gap: 11px; text-decoration: none; }
 
-<section class="rsp-hs-ic-sec rsp-wrap">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="rsp-hs-ic-blk">
-          <div class="rsp-hs-ic-img">
-            <img class="icon-slider" src="/assets/hs2.png" alt="hs-icon">
-          </div>
-          <h3 class="ft-bold">{{accidentados}}*</h3>
-          <p>{{t lang "Siniestros"}}</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="rsp-hs-ic-blk">
-          <div class="rsp-hs-ic-img">
-            <img class="icon-slider" src="/assets/hs3.png" alt="hs-icon">
-          </div>
-          <h3 class="ft-bold">{{lesionados}}*</h3>
-          <p>{{t lang "Lesionados"}}</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="rsp-hs-ic-blk">
-          <div class="rsp-hs-ic-img">
-            <img class="icon-slider" src="/assets/hs4.png" alt="hs-icon">
-          </div>
-          <h3 class="ft-bold">{{fallecidos}}*</h3>
-          <p>{{t lang "Fallecidos"}}</p>
-        </div>
-      </div>
-    </div>
-    <p class="mt-2">
-      <span class="cita">{{mensaje1}}</span>
-    </p>
-    <p>
-      <span class="cita">{{mensaje2}}</span>
-    </p>
-  </div>
-</section>
+  /* HERO / SLIDER (Híbrido) */
+  .hero { position: relative; background: var(--navy); overflow: hidden; }
+  .slides.carousel-inner { height: clamp(420px,56vh,560px); }
+  .hero .slide.carousel-item { height: 100%; border:none; }
+  .hero .bg { position: absolute; inset: 0; background-size: cover; background-position: center; transform: scale(1.06); }
+  .hero .active .bg { animation: kb 7s ease forwards; }
+  @keyframes kb { to { transform: scale(1); } }
+  .hero .veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,21,40,0) 48%, rgba(13,21,40,.5) 58%, rgba(13,21,40,.5) 100%); }
+  
+  .hero-in { position: absolute; inset:0; z-index: 2; width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: flex-end; }
+  .hero-card { max-width: 480px; text-align: left; }
+  .hero .kick { color: var(--amber); font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .2em; font-size: 14px; margin-bottom: 14px; opacity: 0; animation: rise .7s .15s forwards; }
+  .hero h1 { color: #fff; font-family: "Barlow Condensed", sans-serif; font-size: clamp(26px,3.4vw,42px); line-height: 1.04; font-weight: 700; margin: 0; opacity: 0; animation: rise .7s .3s forwards; }
+  .hero h1 em { color: var(--red); font-style: normal; }
+  .hero p { color: #e7ecf6; font-family: "Barlow", sans-serif; font-size: clamp(15px,1.7vw,17px); max-width: 440px; margin-top: 16px; opacity: 0; animation: rise .7s .45s forwards; }
+  
+  .hero .btns { margin-top: 28px; display: flex; gap: 14px; flex-wrap: wrap; opacity: 0; animation: rise .7s .6s forwards; }
+  .hero .btn-hero { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 15px; padding: 13px 24px; border-radius: 9px; cursor: pointer; border: 2px solid transparent; transition: .2s; display: inline-flex; gap: 9px; align-items: center; text-decoration: none; }
+  .btn-white { background: #fff; color: var(--navy); } .btn-white:hover { background: var(--navy); color: #fff; text-decoration: none; }
+  .btn-ghost { border-color: rgba(255,255,255,.5); color: #fff; } .btn-ghost:hover { background: #fff; color: var(--navy); text-decoration: none; }
+  @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  
+  .hero .arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 4; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.4); color: #fff; cursor: pointer; font-size: 20px; display: grid; place-items: center; transition: .2s; text-decoration: none; }
+  .hero .arrow:hover { background: var(--red); border-color: var(--red); color:#fff; text-decoration: none;}
+  .hero .prev { left: 16px; } .hero .next { right: 16px; }
 
-<!-- vu section -->
-<section class="rsp-vu-sec rsp-wrap">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-6 col-md-7 vu-map-col">
-        <h3 class="rsp-title ft-bold">{{t lang "Visor de Alerta de Siniestros"}} <br/>
-        {{t lang "de Tránsito"}} <a href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank" class="btn btn-rsp ft-bold">{{t lang 'ver'}}</a></h3>
-        <div class="vu-map">
-          <div class="mapouter">
-            <div class="gmap_canvas">
-              <iframe width="100%" height="550" id="gmap_canvas" src="https://sratma.mtc.gob.pe/SRATMA/mapa/" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+  /* KPI / SINIESTRALIDAD */
+  .kpis { background: var(--mist); padding: 46px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .kpis .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: #fff; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
+  .kpis .kpi { display: block; background: #fff; padding: 26px 28px 24px; position: relative; border-left: 5px solid var(--c); }
+  .kpis .kpi .ic { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 13%, #fff); margin: 0 0 16px 0; flex: none; }
+  .kpis .kpi .ic svg { width: 24px; height: 24px; stroke: var(--c); }
+  .kpis .kpi .num { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: clamp(34px,4vw,54px); color: var(--navy); line-height: 1; margin:0;}
+  .kpis .kpi .lb { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-size: 13px; margin-top: 5px; }
+  .kpis .src { text-align: center; color: var(--muted); font-size: 14px; margin-top: 16px; font-family:"Barlow", sans-serif; }
+
+  @media(max-width: 760px) { .kpis .kpi-grid { grid-template-columns: 1fr; } .hero .veil { background: linear-gradient(180deg, rgba(13,21,40,.5), rgba(13,21,40,.78)); } .hero-in { justify-content: flex-start; } .hero-card { max-width: none; } }
+</style>
+
+<!-- 1 · SLYDER (HERO) -->
+<section id="heroCarousel" class="carousel slide carousel-fade hero" data-ride="carousel" data-interval="5000">
+  <div class="carousel-inner slides">
+    {{#each banners}}
+      <div class="carousel-item slide {{#if @first}}active{{/if}}">
+        <div class="bg" style="background-image: url('/assets/{{this}}');"></div>
+        <div class="veil"></div>
+        
+        <div class="hero-in">
+          <div class="hero-card">
+            <div class="kick">Decenio de Acción 2021–2030</div>
+            <h1>Datos que <em>salvan vidas</em> en las vías del Perú</h1>
+            <p>El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre los siniestros viales para fortalecer las políticas de prevención.</p>
+            <div class="btns">
+              <a class="btn-hero btn-white" href="#siniestralidad">Ver cifras →</a>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-5 vu-list-col">
-        <h3 class="rsp-title ft-bold text-center">{{t lang "Ultimos"}} <br/>
-          {{t lang "10 accidentes"}}</h3>
-        <div class="vu-list radius">
+    {{/each}}
+  </div>
+
+  <a class="arrow prev" href="#heroCarousel" role="button" data-slide="prev">
+    <span aria-hidden="true">‹</span>
+  </a>
+  <a class="arrow next" href="#heroCarousel" role="button" data-slide="next">
+    <span aria-hidden="true">›</span>
+  </a>
+</section>
+<!-- End banner section -->
+
+<!-- 2 · DATOS DE SINIESTRALIDAD (KPIs) -->
+<section class="kpis" id="siniestralidad">
+  <div class="container wrap">
+    
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Panorama nacional</div>
+        <h2 class="sec-title">Datos de siniestralidad</h2>
+      </div>
+      <a class="more" href="#">Analítica completa →</a>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi" style="--c:#C8102E">
+        <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 16.5v.5"/></svg></div>
+        <div class="num">{{accidentados}}*</div>
+        <div class="lb">{{t lang "Siniestros"}}</div>
+      </div>
+      
+      <div class="kpi" style="--c:#F2A900">
+        <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <div class="num">{{lesionados}}*</div>
+        <div class="lb">{{t lang "Lesionados"}}</div>
+      </div>
+      
+      <div class="kpi" style="--c:#14213D">
+        <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z"/><circle cx="12" cy="11" r="2.4"/></svg></div>
+        <div class="num">{{fallecidos}}*</div>
+        <div class="lb">{{t lang "Fallecidos"}}</div>
+      </div>
+    </div>
+
+    <div class="src mt-3">
+      <span class="cita d-block font-weight-bold" style="color: var(--red);">{{mensaje1}}</span>
+      <span class="cita d-block">{{mensaje2}}</span>
+    </div>
+
+  </div>
+</section>
+<!-- FIN NUEVO ESTILO: HERO Y KPIs -->
+
+<style>
+  .tech { background: linear-gradient(180deg, #394c75, #2f4267); color: #fff; padding: 46px 0; margin-bottom: 30px; }
+  .tech .sec-title { color: #fff; margin-bottom: 26px; } 
+  .tech .eyebrow { color: var(--amber); }
+  
+  .tech-carousel-wrap { position: relative; padding: 0 60px; }
+  
+    .tech-viewport {
+    overflow: hidden;
+    padding: 15px 10px 40px 10px;
+    margin: -15px -10px -40px -10px;
+  }
+  
+  .tech-track-native {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .tcard { 
+    background: linear-gradient(160deg, #41547e, #374a71); border: 1px solid #506498; border-radius: 14px; padding: 24px; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; cursor: pointer; text-decoration: none !important; display: flex; flex-direction: column; height: auto; min-height: 250px; 
+    flex: 0 0 calc(33.333% - 13.33px);
+  }
+  
+  .tcard:hover { transform: translateY(-8px); border-color: var(--red); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+  
+  .tcard .ic { width: 52px; height: 52px; border-radius: 12px; background: rgba(255,255,255,.09); display: grid; place-items: center; margin-bottom: 16px; border: 1px solid #506498; }
+  .tcard .ic svg { width: 26px; height: 26px; stroke: var(--amber); fill: none; stroke-width: 1.6; }
+  .tcard h3 { font-size: 22px; color: #fff; text-transform: uppercase; margin: 0 0 7px 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; }
+  .tcard p { color: #aeb9d2; font-size: 14px; margin: 0; font-family: "Barlow", sans-serif; flex: 1; }
+  .tcard .arrow { margin-top: 14px; color: var(--red); font-weight: 700; font-family: "Barlow Semi Condensed", sans-serif; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+  
+  .tech .arrow-ctrl { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.4); color: #fff; display: grid; place-items: center; font-size: 20px; transition: .2s; z-index: 10; text-decoration: none; cursor: pointer; }
+  .tech .arrow-ctrl:hover { background: var(--red); border-color: var(--red); text-decoration: none; }
+  .tech .prev-ctrl { left: 0; }
+  .tech .next-ctrl { right: 0; }
+  
+  @media(max-width: 991px) { .tcard { flex: 0 0 calc(50% - 10px); } }
+  @media(max-width: 767px) { .tcard { flex: 0 0 100%; } .tech-carousel-wrap { padding: 0 40px; } }
+</style>
+
+<section class="tech" id="tech">
+  <div class="container wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Aplicaciones e Información</div>
+        <h2 class="sec-title">Componentes tecnológicos</h2>
+      </div>
+    </div>
+    
+    <div class="tech-carousel-wrap">
+      
+      <div class="tech-viewport">
+        <div class="tech-track-native" id="techTrackNative">
+          
+          <a class="tcard" href="#">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <h3>Entorno Escolar</h3>
+            <p>Seguridad vial y prevención en zonas escolares.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+          <a class="tcard" href="#">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+            <h3>Tableros Analítica</h3>
+            <p>Visualización dinámica de indicadores y tendencias.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+          <a class="tcard" href="#">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <h3>Registro de Víctimas</h3>
+            <p>Sistema de seguimiento de lesionados y fallecidos.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+          <a class="tcard" href="#">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <h3>Visor de Mapas</h3>
+            <p>Mapas georreferenciados de seguridad vial.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+          <a class="tcard" href="/datosabiertos" target="_blank">
+            <div class="ic"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+            <h3>Datos Abiertos</h3>
+            <p>Datasets descargables en Excel, CSV, PDF y shapefile.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+          <a class="tcard" href="#">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
+            <h3>Tableros BI</h3>
+            <p>Inteligencia de negocio para la toma de decisiones.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+          <a class="tcard" href="#">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+            <h3>Registros Accidentes</h3>
+            <p>Reporte y consulta de siniestros de tránsito registrados.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+          <a class="tcard" href="#">
+            <div class="ic"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <h3>Analítica</h3>
+            <p>Tableros e indicadores de seguridad vial.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+          <a class="tcard" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">
+            <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <h3>SRAT</h3>
+            <p>Visor de alerta de siniestros de tránsito.</p>
+            <div class="arrow">Ingresar →</div>
+          </a>
+
+        </div>
+      </div>
+      
+      <a class="arrow-ctrl prev-ctrl" id="techPrev" href="#" role="button">
+        <span aria-hidden="true">‹</span>
+      </a>
+      <a class="arrow-ctrl next-ctrl" id="techNext" href="#" role="button">
+        <span aria-hidden="true">›</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const track = document.getElementById("techTrackNative");
+    const prevBtn = document.getElementById("techPrev");
+    const nextBtn = document.getElementById("techNext");
+    if(!track || !prevBtn || !nextBtn) return;
+
+    let isAnimating = false;
+
+    nextBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      const cardWidth = track.firstElementChild.offsetWidth + 20;
+
+      track.style.transition = "transform 0.4s ease-in-out";
+      track.style.transform = `translateX(-${cardWidth}px)`;
+
+      setTimeout(() => {
+        track.style.transition = "none";
+        track.appendChild(track.firstElementChild);
+        track.style.transform = "translateX(0)";
+        isAnimating = false;
+      }, 400);
+    });
+
+    prevBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      const cardWidth = track.firstElementChild.offsetWidth + 20;
+
+      track.style.transition = "none";
+      track.insertBefore(track.lastElementChild, track.firstElementChild);
+      track.style.transform = `translateX(-${cardWidth}px)`;
+
+      void track.offsetWidth;
+
+      track.style.transition = "transform 0.4s ease-in-out";
+      track.style.transform = "translateX(0)";
+
+      setTimeout(() => {
+        track.style.transition = "none";
+        isAnimating = false;
+      }, 400);
+    });
+  });
+</script>
+
+<!-- vu section -->
+<style>
+  /* MAPA Y ÚLTIMOS 10 */
+  .new-map-box { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); height: 100%; min-height: 430px; background: #fff; }
+  .feed { background: #fff; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); height: 100%; max-height: 550px; }
+  .feed .fh { background: var(--navy); color: #fff; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .feed .fh h3 { color: #fff; font-size: 19px; text-transform: uppercase; margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; }
+  .feed .fh .live { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; font-size: 11px; letter-spacing: .1em; display: flex; gap: 6px; align-items: center; color: #ffd9df; }
+  .feed .fh .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: blink 1.3s infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  
+  /* Ajuste para que la lista dinámica de accidentes encaje perfecto y tenga scroll */
+  .feed .vu-list { padding: 0; flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #c7cfdd transparent; }
+  .feed .vu-list::-webkit-scrollbar { width: 6px; }
+  .feed .vu-list::-webkit-scrollbar-thumb { background: #c7cfdd; border-radius: 6px; }
+
+  /* Ajuste visual moderno para tu caja de redes sociales actual */
+  .social-box-modern { border: 1px solid var(--line); border-radius: 16px !important; overflow: hidden; box-shadow: var(--shadow); background: #fff; }
+  .social_section_tabs { background: #fafbfd; border-bottom: 1px solid var(--line); display: flex; }
+  .social_section_tabs span { flex: 1; text-align: center; padding: 12px 0; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; }
+  .social_section_tabs span.active { border-bottom-color: var(--blue-2); background: #fff; }
+  .social_section_tabs span svg { fill: var(--muted); width: 22px; height: 22px; transition: 0.2s; }
+  .social_section_tabs span.active svg { fill: var(--blue-2); }
+</style>
+
+<section class="rsp-vu-sec" id="mapa" style="padding: 46px 0;">
+  <div class="container wrap">
+    
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Georreferencia</div>
+        <h2 class="sec-title">Mapa de siniestros viales</h2>
+      </div>
+      <a class="more" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">{{t lang 'ver'}} SRAT Completo →</a>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6 col-md-7 vu-map-col mb-4 mb-lg-0">
+        <div class="new-map-box">
+          <iframe width="100%" height="100%" style="min-height: 550px;" id="gmap_canvas" src="https://sratma.mtc.gob.pe/SRATMA/mapa/" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-5 vu-list-col mb-4 mb-md-0">
+        <div class="feed">
+          <div class="fh">
+            <h3>{{t lang "Ultimos"}} 10</h3>
+            <span class="live">EN VIVO</span>
+          </div>
+          <div class="vu-list bg-white">
             {{#each accidents}}
               {{>index/accident lang=../lang}}
             {{/each}}
+          </div>
         </div>
       </div>
+      
       <div class="col-lg-3 col-md-5 vu-list-col" style="overflow: visible;">
-  			<div class="social_section vu-list radius" style="width: calc(100% + 80px); max-width: 280px; padding-left: 0;">
-					<div style="transform: translateX(10px);"></div>
-					<div class="social_section_tabs">
+        <div class="social_section vu-list radius social-box-modern" style="width: calc(100% + 80px); max-width: 280px; padding-left: 0; margin-left: auto;">
+          <div class="social_section_tabs">
             <span id="tab_facebook" class="active">
-              <svg width="24" height="24" viewBox="0 0 24 24">
-                <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/>
-              </svg>
+              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/></svg>
             </span>
             <span id="tab_twitter">
-              <svg width="24" height="24" viewBox="0 0 24 24">
-                <path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/>
-              </svg>
+              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/></svg>
             </span>
           </div>
           <div class="iframes_content">
@@ -123,6 +368,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -148,59 +394,6 @@
   </div>
 </section>
 -->
-
-<section class="rsp-vu-sec rsp-wrap">
-  <div class="container">
-    <div class="row justify-content-around" style="padding: 3rem;border: 2px solid #c00e0e;border-radius: 0.3rem;">
-      <div class="col-lg-3" style="padding: 0;">
-        <div class="rsp-res-blk">
-          <div class="rsp-res-img">
-            <img style="object-fit: cover;" class="no-4" src="/img/secciones/suscripciones.png" alt="Boletín informativo ONSV">
-          </div>
-          <h6 class="card-title ft-bold publicaciones-tit text-center mb-3">
-            Boletín informativo ONSV
-          </h6>
-          <div class="px-2 mb-2">
-            <button class="btn btn-rsp btn-block ft-bold boton-newsletter" style="padding: 0.4rem;" class="btn" type="button" data-toggle="modal" data-target="#suscriber-modal-form">
-              Suscribirse
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3" style="padding: 0;">
-        <div class="rsp-res-blk">
-          <a class="rsp-res-img" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">
-            <img style="object-fit: cover;" class="no-4" src="/img/secciones/aula-virtual.png" alt="Aula virtual ONSV">
-          </a>
-          <h6 class="card-title ft-bold publicaciones-tit text-center">
-            Aula Virtual ONSV
-          </h6>
-          <div class="px-2 mb-2">
-            <a class="btn btn-rsp btn-block ft-bold boton-newsletter" style="padding: 0.4rem;" class="btn" type="button" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">
-              Ingresar
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3" style="padding: 0;">
-        <div class="rsp-res-blk">
-          <a class="rsp-res-img" href="/datosabiertos" target="_blank">
-            <img style="object-fit: cover;" class="no-4" src="/img/secciones/datos-abiertos.png" alt="Datos abiertos ONSV">
-          </a>
-          <h6 class="card-title ft-bold publicaciones-tit text-center">
-            Datos Abiertos ONSV
-          </h6>
-          <div class="px-2 mb-2">
-            <a class="btn btn-rsp btn-block ft-bold boton-newsletter" style="padding: 0.4rem;" class="btn" type="button" href="/datosabiertos" target="_blank">
-              Ingresar
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End vu section -->
 
 <section class="rsp-res-sec rsp-wrap">
   <div class="container">
