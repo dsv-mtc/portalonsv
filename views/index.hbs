@@ -72,9 +72,13 @@
 </section>
 <!-- End banner section -->
 
+<style>
+  .stats-variation { font-size: 11px; color: #777; font-family: "Barlow", sans-serif; font-weight: 600; margin-top: 6px; }
+  .red-text { color: var(--red); }
+</style>
+
 <section class="kpis" id="siniestralidad">
   <div class="container wrap">
-    
     <div class="sec-head">
       <div>
         <div class="eyebrow">Panorama nacional</div>
@@ -86,30 +90,54 @@
     <div class="kpi-grid">
       <div class="kpi" style="--c:#C8102E">
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 16.5v.5"/></svg></div>
-        <div class="num">{{accidentados}}*</div>
+        <div class="num" id="val-accidentados">{{accidentados}}</div>
         <div class="lb">{{t lang "Siniestros"}}</div>
+        <div class="stats-variation" data-baseline="86757" id="var-accidentados"></div>
       </div>
       
       <div class="kpi" style="--c:#F2A900">
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
-        <div class="num">{{lesionados}}*</div>
+        <div class="num" id="val-lesionados">{{lesionados}}</div>
         <div class="lb">{{t lang "Lesionados"}}</div>
+        <div class="stats-variation" data-baseline="56747" id="var-lesionados"></div>
       </div>
       
       <div class="kpi" style="--c:#14213D">
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z"/><circle cx="12" cy="11" r="2.4"/></svg></div>
-        <div class="num">{{fallecidos}}*</div>
+        <div class="num" id="val-fallecidos">{{fallecidos}}</div>
         <div class="lb">{{t lang "Fallecidos"}}</div>
+        <div class="stats-variation" data-baseline="3002" id="var-fallecidos"></div>
       </div>
     </div>
 
     <div class="src mt-3">
-      <span class="cita d-block font-weight-bold" style="color: var(--red);">{{mensaje1}}</span>
+      <span class="cita d-block font-weight-bold">{{mensaje1}}</span>
       <span class="cita d-block">{{mensaje2}}</span>
     </div>
-
   </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const baselines = { 
+          'var-accidentados': 86757, 
+          'var-lesionados': 56747, 
+          'var-fallecidos': 3002 
+      };
+
+      document.querySelectorAll('.stats-variation').forEach(el => {
+          const numEl = document.getElementById(el.id.replace('var-', 'val-'));
+          const currentVal = parseInt(numEl.innerText.replace(/[^0-9]/g, ''));
+          const baseVal = baselines[el.id];
+
+          if (currentVal && baseVal) {
+              const diff = ((currentVal - baseVal) / baseVal) * 100;
+              const sign = diff >= 0 ? '+' : '';
+              el.innerHTML = `2025 · Fuente PNP · <span class="red-text">${sign}${diff.toFixed(1)}% vs 2024</span>`;
+          }
+      });
+  });
+</script>
 
 <style>
   .tech { background: linear-gradient(180deg, #394c75, #2f4267); color: #fff; padding: 46px 0; margin-bottom: 30px; }
@@ -149,6 +177,36 @@
   
   @media(max-width: 991px) { .tcard { flex: 0 0 calc(50% - 10px); } }
   @media(max-width: 767px) { .tcard { flex: 0 0 100%; } .tech-carousel-wrap { padding: 0 40px; } }
+
+@keyframes pulse-animation {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+
+.badge-admin {
+  display: inline-flex;
+  align-items: center;
+  background: #f0fdf4;
+  color: #166534;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #bbf7d0;
+  float: right;
+  margin-top: -65px;
+  margin-left: 58rem;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: pulse-animation 2s infinite;
+}
 </style>
 
 <section class="tech" id="tech">
@@ -157,6 +215,9 @@
       <div>
         <div class="eyebrow">Aplicaciones e Información</div>
         <h2 class="sec-title">Componentes tecnológicos</h2>
+        <span class="badge-admin">
+        <span class="pulse-dot"></span> Administrable
+      </span>
       </div>
     </div>
     
@@ -299,6 +360,28 @@
   .feed .vu-list::-webkit-scrollbar { width: 6px; }
   .feed .vu-list::-webkit-scrollbar-thumb { background: #c7cfdd; border-radius: 6px; }
 
+  .feed .feed-footer-link {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--mist);
+    border-top: 1px solid var(--line);
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-size: 13px;
+    color: var(--blue-2);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .feed .feed-footer-link:hover {
+    color: var(--red);
+    text-decoration: none;
+  }
+
   .social-box-modern { border: 1px solid var(--line); border-radius: 16px !important; overflow: hidden; box-shadow: var(--shadow); background: #fff; }
   .social_section_tabs { background: #fafbfd; border-bottom: 1px solid var(--line); display: flex; }
   .social_section_tabs span { flex: 1; text-align: center; padding: 12px 0; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; }
@@ -319,16 +402,16 @@
     </div>
 
     <div class="row">
-      <div class="col-lg-6 col-md-7 vu-map-col mb-4 mb-lg-0">
+      <div class="col-lg-8 col-md-7 vu-map-col mb-4 mb-lg-0">
         <div class="new-map-box">
           <iframe width="100%" height="100%" style="min-height: 550px;" id="gmap_canvas" src="https://sratma.mtc.gob.pe/SRATMA/mapa/" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
         </div>
       </div>
       
-      <div class="col-lg-3 col-md-5 vu-list-col mb-4 mb-md-0">
+      <div class="col-lg-4 col-md-5 vu-list-col">
         <div class="feed">
           <div class="fh">
-            <h3>{{t lang "Ultimos"}} 10</h3>
+            <h3>{{t lang "Ultimos"}} Siniestros</h3>
             <span class="live">EN VIVO</span>
           </div>
           <div class="vu-list bg-white">
@@ -336,33 +419,441 @@
               {{>index/accident lang=../lang}}
             {{/each}}
           </div>
+          <a href="/registros-accidentes" class="feed-footer-link">
+            Ver todos los siniestros
+            <span aria-hidden="true">→</span>
+          </a>
         </div>
       </div>
-      
-      <div class="col-lg-3 col-md-5 vu-list-col" style="overflow: visible;">
-        <div class="social_section vu-list radius social-box-modern" style="width: calc(100% + 80px); max-width: 280px; padding-left: 0; margin-left: auto;">
-          <div class="social_section_tabs">
-            <span id="tab_facebook" class="active">
-              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/></svg>
-            </span>
-            <span id="tab_twitter">
-              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/></svg>
-            </span>
-          </div>
-          <div class="iframes_content">
-            <section id="iframe_facebook" class="show">
-              <div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-width="360" data-height="700" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
-            </section>
-            <section id="iframe_twitter">
-              <a class="twitter-timeline" href="https://twitter.com/onsvPE?ref_src=twsrc%5Etfw">Tweets by onsvPE</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-            </section>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var mesesCortos = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+
+    function formatearHoraCorta(texto) {
+      var partes = texto.trim().split(":");
+      if (partes.length >= 2) {
+        return partes[0] + ":" + partes[1];
+      }
+      return texto;
+    }
+
+    function formatearFechaCorta(texto) {
+      var partes = texto.trim().split(/[-\/]/);
+      if (partes.length !== 3) return texto;
+
+      var dia, mesIndex;
+      if (partes[0].length === 4) {
+        mesIndex = parseInt(partes[1], 10) - 1;
+        dia = partes[2];
+      } else {
+        dia = partes[0];
+        mesIndex = parseInt(partes[1], 10) - 1;
+      }
+
+      if (mesesCortos[mesIndex]) {
+        return dia.padStart(2, "0") + " " + mesesCortos[mesIndex];
+      }
+      return texto;
+    }
+
+    document.querySelectorAll(".accident-row").forEach(function (fila) {
+      var horaEl = fila.querySelector(".ar-time");
+      var fechaEl = fila.querySelector(".ar-day");
+      if (horaEl) horaEl.textContent = formatearHoraCorta(horaEl.textContent);
+      if (fechaEl) fechaEl.textContent = formatearFechaCorta(fechaEl.textContent);
+    });
+  });
+</script>
+
+<style>
+  .promo-sec { 
+    padding: 0 0 46px 0;
+  } 
+  .promo-card { 
+    position: relative; 
+    border-radius: 16px; 
+    overflow: hidden; 
+    min-height: 320px; 
+    background-color: #556070;
+    background-size: cover; 
+    background-position: center; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-end; 
+    padding: 35px 30px; 
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+  }
+  .promo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(20, 33, 61, 0.2);
+  }
+  .promo-overlay { 
+    position: absolute; 
+    inset: 0; 
+    background: linear-gradient(90deg, rgba(30,41,59,0.85) 0%, rgba(30,41,59,0.5) 50%, rgba(30,41,59,0.1) 100%); 
+    z-index: 1; 
+  }
+  .promo-badge { 
+    position: absolute; 
+    top: 20px; 
+    right: 20px; 
+    background: #fff; 
+    color: var(--navy); 
+    font-size: 11px; 
+    font-weight: 800; 
+    padding: 6px 12px; 
+    border-radius: 6px; 
+    z-index: 2; 
+    font-family: "Barlow Semi Condensed", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  .promo-content { 
+    position: relative; 
+    z-index: 2; 
+    max-width: 90%; 
+  }
+  .promo-content .eyebrow { 
+    color: var(--amber); 
+    font-size: 14px; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 0.1em; 
+    margin-bottom: 6px; 
+    font-family: "Barlow Semi Condensed", sans-serif; 
+  }
+  .promo-content h3 { 
+    color: #fff; 
+    font-size: clamp(24px, 2.5vw, 32px); 
+    font-family: "Barlow Condensed", sans-serif; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    margin-bottom: 12px; 
+    line-height: 1.1; 
+  }
+  .promo-content p { 
+    color: #e2e8f0; 
+    font-size: 15px; 
+    font-family: "Barlow", sans-serif; 
+    margin-bottom: 24px; 
+    line-height: 1.4; 
+  }
+  .promo-btn { 
+    background: var(--red); 
+    color: #fff; 
+    border: none; 
+    padding: 12px 24px; 
+    border-radius: 8px; 
+    font-weight: 700; 
+    font-size: 15px; 
+    font-family: "Barlow Semi Condensed", sans-serif;
+    text-transform: uppercase; 
+    cursor: pointer; 
+    transition: 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    letter-spacing: 0.05em;
+  }
+  .promo-btn:hover { 
+    background: #fff; 
+    color: var(--red); 
+    text-decoration: none; 
+  }
+</style>
+
+<section class="promo-sec" id="recursos">
+  <div class="container wrap">
+    <div class="row" style="transform: translateY(30px);">
+      
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="promo-card" style="background-image: url('/img/fondo-educacion.jpg');">
+          <div class="promo-overlay"></div>
+          <span class="promo-badge">Imagen Referencial</span>
+          
+          <div class="promo-content">
+            <div class="eyebrow">Formación</div>
+            <h3>Educación Vial</h3>
+            <p>Webinars, capacitaciones y aula virtual para fortalecer la cultura de seguridad vial en todo el país.</p>
+            <a href="#" class="promo-btn">Ir al aula virtual</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="promo-card" style="background-image: url('/img/fondo-revista.jpg');">
+          <div class="promo-overlay"></div>
+          <span class="promo-badge">Imagen Referencial</span>
+          
+          <div class="promo-content">
+            <div class="eyebrow">Publicación</div>
+            <h3>Revista Institucional</h3>
+            <p>Análisis, investigación y buenas prácticas de seguridad vial en una edición periódica del Observatorio.</p>
+            <a href="#" class="promo-btn">Ver ediciones</a>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<style>
+  .social-sec { padding: 50px 0; background: #fff; }
+
+  .social-sec .sec-head { align-items: flex-end; }
+  .social-sec .sec-head .sponsor { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+
+  .sc-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; height: 100%; box-shadow: var(--shadow); overflow: hidden; }
+
+  .sc-header { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--line); }
+  .sc-info h4 { margin: 0; font-size: 18px; font-family: "Barlow Condensed", sans-serif; font-weight: 800; color: var(--navy); text-transform: uppercase; line-height: 1; }
+  .sc-info span { font-size: 13px; color: #64748b; font-weight: 500; }
+
+  .sc-tabs { display: flex; gap: 10px; }
+  .sc-tab { width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; background: #f1f5f9; }
+  .sc-tab.active.fb { background: #0866FF; }
+  .sc-tab.active.fb svg { fill: #fff; }
+  .sc-tab.active.x { background: #000; }
+  .sc-tab.active.x svg { fill: #fff; }
+  .sc-tab svg { width: 22px; height: 22px; fill: #94a3b8; }
+
+  .sc-body { flex: 1; position: relative; min-height: 400px; padding: 10px; overflow-y: auto; }
+
+  .yt-icon { width: 42px; height: 42px; background: #FF0000; border-radius: 10px; display: grid; place-items: center; }
+  .yt-icon svg { width: 24px; height: 24px; fill: #fff; }
+  .yt-body { display: flex; flex: 1; flex-wrap: wrap; }
+
+  .yt-main { flex: 1; min-width: 300px; background: #162645; position: relative; display: flex; align-items: center; justify-content: center; min-height: 380px; overflow: hidden; }
+  .yt-main::before { content:''; position:absolute; bottom:0; width:100px; height:150px; border-left: 2px dashed rgba(255,255,255,0.2); border-right: 2px dashed rgba(255,255,255,0.2); transform: perspective(200px) rotateX(40deg); opacity: 0.5; }
+
+  .play-btn { width: 68px; height: 48px; background: #FF0000; border-radius: 12px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; z-index: 2; }
+  .play-btn:hover { transform: scale(1.05); }
+  .play-btn svg { width: 20px; height: 20px; fill: #fff; }
+  .yt-title { position: absolute; bottom: 20px; width: 100%; text-align: center; color: #fff; font-weight: 700; font-size: 14px; z-index: 2; font-family: "Barlow", sans-serif; }
+
+  .yt-list { width: 320px; border-left: 1px solid var(--line); background: #fff; display: flex; flex-direction: column; }
+  .yt-item { padding: 18px 20px; display: flex; gap: 14px; border-bottom: 1px solid var(--line); cursor: pointer; transition: 0.2s; }
+  .yt-item:hover { background: #f8fafc; }
+  .yt-item .thumb { width: 64px; height: 44px; background: #162645; border-radius: 6px; display: grid; place-items: center; flex-shrink: 0; }
+  .yt-item .thumb svg { width: 16px; height: 16px; fill: #fff; }
+  .yt-item.active .title { color: var(--red); }
+  .yt-item .info { display: flex; flex-direction: column; justify-content: center; }
+  .yt-item .title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; line-height: 1.2; font-family: "Barlow", sans-serif; }
+  .yt-item .desc { font-size: 12px; color: #64748b; }
+
+  .sc-footer { padding: 16px 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .sc-footer .link { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; }
+  .sc-footer .btn-follow { background: #0866FF; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; }
+  .sc-footer .btn-follow:hover { background: #0756d6; }
+  .sc-footer .btn-follow.x { background: #000; }
+  .sc-footer .btn-follow.x:hover { background: #222; }
+  .sc-footer p { margin: 0; font-size: 14px; color: #475569; font-weight: 500; }
+  .sc-footer .btn-yt { background: #FF0000; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; text-transform: uppercase; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; }
+  .sc-footer .btn-yt:hover { background: #cc0000; }
+
+  .x-profile-card { display: flex; flex-direction: column; height: 100%; min-height: 400px; background: #fff; }
+  .x-profile-banner { position: relative; height: 90px; background: linear-gradient(120deg, #14213D 0%, #14213D 55%, #C8102E 100%); flex-shrink: 0; overflow: hidden; }
+  .x-profile-banner::after { content: ""; position: absolute; right: -20px; top: -30px; width: 140px; height: 140px; border: 14px solid rgba(255,255,255,.14); border-radius: 50%; }
+  .x-profile-avatar-wrap { width: 68px; height: 68px; border-radius: 50%; background: #000; border: 3px solid #fff; display: grid; place-items: center; margin: -34px 0 0 20px; position: relative; z-index: 2; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .x-profile-avatar-wrap svg { width: 30px; height: 30px; fill: #fff; }
+  .x-profile-body { padding: 10px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+  .x-profile-body h5 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 19px; color: var(--navy); text-transform: uppercase; margin: 0 0 1px 0; line-height: 1.15; }
+  .x-profile-body .handle { font-size: 13px; color: #64748b; font-weight: 500; margin-bottom: 10px; }
+  .x-profile-body .bio { font-size: 13.5px; color: #334155; line-height: 1.45; margin: 0 0 12px 0; }
+  .x-profile-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: #64748b; margin-bottom: 12px; }
+  .x-profile-meta span { display: inline-flex; align-items: center; gap: 5px; }
+  .x-profile-meta svg { width: 14px; height: 14px; fill: #64748b; flex-shrink: 0; }
+  .x-profile-meta a { color: var(--blue-2); text-decoration: none; font-weight: 600; }
+  .x-profile-meta a:hover { text-decoration: underline; }
+  .x-profile-stats { display: flex; gap: 18px; font-size: 13px; color: var(--navy); margin-bottom: 16px; }
+  .x-profile-stats strong { font-weight: 800; }
+  .x-profile-stats .stat-label { color: #64748b; font-weight: 500; }
+  .x-static-btn { background: #000; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto; width: fit-content; }
+  .x-static-btn:hover { background: #222; color: #fff; text-decoration: none; }
+  .x-static-btn svg { width: 14px; height: 14px; fill: #fff; }
+
+  @media(max-width: 991px) { .yt-list { width: 100%; border-left: none; border-top: 1px solid var(--line); } }
+</style>
+
+<section class="social-sec" id="comunidad">
+  <div class="container wrap">
+    
+    <div class="sec-head d-flex justify-content-between">
+      <div>
+        <div class="eyebrow">Comunidad</div>
+        <h2 class="sec-title">Síguenos en redes sociales</h2>
+      </div>
+      <div class="sponsor d-none d-md-block">
+        Observatorio Nacional de Seguridad Vial
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <div class="sc-card">
+          
+          <div class="sc-header">
+            <div class="sc-tabs">
+              <div class="sc-tab active fb" data-panel="fb">
+                <svg viewBox="0 0 24 24"><path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/></svg>
+              </div>
+              <div class="sc-tab x" data-panel="x">
+                <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/></svg>
+              </div>
+            </div>
+            <div class="sc-info">
+              <h4 id="scNetworkName">FACEBOOK</h4>
+              <span id="scNetworkHandle">@ObservatorioNSV</span>
+            </div>
+          </div>
+          
+          <div class="sc-body">
+            <div class="sc-panel active" data-panel="fb">
+              <div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-width="360" data-height="400" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
+            </div>
+            <div class="sc-panel" data-panel="x" style="display:none;">
+              <div class="x-profile-card">
+                <div class="x-profile-banner"></div>
+                <div class="x-profile-avatar-wrap">
+                  <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm-2 5.2a2.2 2.2 0 1 1 4.4 0 2.2 2.2 0 0 1-4.4 0zM4 21c0-4.4 3.6-7 8-7s8 2.6 8 7v.5H4V21z"/></svg>
+                </div>
+                <div class="x-profile-body">
+                  <h5>Observatorio Nacional de Seguridad Vial</h5>
+                  <div class="handle">@onsvPE</div>
+                  <p class="bio">Observatorio Nacional de Seguridad Vial entidad del Ministerio de Transportes y Comunicaciones. #CompartamosElCamino #ONSV</p>
+                  <div class="x-profile-meta">
+                    <span>
+                      <svg viewBox="0 0 24 24"><path d="M3.9 12a4.1 4.1 0 0 1 4.1-4.1h4v1.6H8a2.5 2.5 0 0 0 0 5h4V16H8A4.1 4.1 0 0 1 3.9 12zm6.1.8v-1.6h4v1.6h-4zM16 7.9h-4v1.6h4a2.5 2.5 0 0 1 0 5h-4V16h4a4.1 4.1 0 0 0 0-8.1z"/></svg>
+                      <a href="https://www.onsv.gob.pe/" target="_blank">onsv.gob.pe</a>
+                    </span>
+                    <span>
+                      <svg viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8v10H5V10h14z"/></svg>
+                      Se unió en enero de 2021
+                    </span>
+                  </div>
+                  <div class="x-profile-stats">
+                    <span><strong>43</strong> <span class="stat-label">Siguiendo</span></span>
+                    <span><strong>1,000</strong> <span class="stat-label">Seguidores</span></span>
+                  </div>
+                  <a href="https://x.com/onsvPE" target="_blank" class="x-static-btn">
+                    <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/></svg>
+                    Ver perfil en X
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="sc-footer">
+            <a href="https://www.facebook.com/onsvPE/" target="_blank" class="link" id="scFooterLink">VER MÁS PUBLICACIONES</a>
+            <button class="btn-follow" id="scFooterBtn">SEGUIR</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-8">
+        <div class="sc-card">
+          
+          <div class="sc-header">
+            <div class="yt-icon">
+              <svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M9.996,15.5l0-7l6.5,3.5L9.996,15.5z"/></svg>
+            </div>
+            <div class="sc-info">
+              <h4>YOUTUBE</h4>
+              <span>ONSV · MTC</span>
+            </div>
+          </div>
+          
+          <div class="yt-body">
+            <div class="yt-main">
+              <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+              <div class="yt-title">Campaña: Si tomas, no manejes</div>
+            </div>
+            
+            <div class="yt-list">
+              <div class="yt-item active">
+                <div class="thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                <div class="info">
+                  <div class="title">Campaña: Si tomas, no manejes</div>
+                  <div class="desc">Educación vial · Spot</div>
+                </div>
+              </div>
+              <div class="yt-item">
+                <div class="thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                <div class="info">
+                  <div class="title">El MTC y la Seguridad Vial</div>
+                  <div class="desc">Institucional · Video</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="sc-footer">
+            <p>Selecciona y reproduce los videos del Observatorio.</p>
+            <a href="#" target="_blank" class="btn-yt">VER EN YOUTUBE</a>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var scCard = document.querySelector(".social-sec .sc-card");
+    if (!scCard) return;
+
+    var tabs = scCard.querySelectorAll(".sc-tab");
+    var panels = scCard.querySelectorAll(".sc-panel");
+    var nameEl = document.getElementById("scNetworkName");
+    var handleEl = document.getElementById("scNetworkHandle");
+    var footerLink = document.getElementById("scFooterLink");
+    var footerBtn = document.getElementById("scFooterBtn");
+
+    var redes = {
+      fb: {
+        nombre: "FACEBOOK",
+        handle: "@ObservatorioNSV",
+        url: "https://www.facebook.com/onsvPE/"
+      },
+      x: {
+        nombre: "X (TWITTER)",
+        handle: "@onsvPE",
+        url: "https://x.com/onsvPE"
+      }
+    };
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var destino = tab.getAttribute("data-panel");
+
+        tabs.forEach(function (t) { t.classList.remove("active"); });
+        tab.classList.add("active");
+
+        panels.forEach(function (panel) {
+          panel.style.display = panel.getAttribute("data-panel") === destino ? "" : "none";
+        });
+
+        var data = redes[destino];
+        if (data) {
+          if (nameEl) nameEl.textContent = data.nombre;
+          if (handleEl) handleEl.textContent = data.handle;
+          if (footerLink) footerLink.href = data.url;
+          if (footerBtn) footerBtn.classList.toggle("x", destino === "x");
+        }
+      });
+    });
+  });
+</script>
 
 <!--
 <section class="rsp-wrap mt-n4">
@@ -388,7 +879,7 @@
 
 <style>
   .news-sec { background: var(--mist); padding: 56px 0; }
-  .pubs-sec { background: #fff; padding: 56px 0; border-top: 1px solid var(--line); }
+  .pubs-sec { background: #fff; padding: 56px 0; }
   
   .news-sec .sec-head, .pubs-sec .sec-head { margin-bottom: 30px; }
 
@@ -463,7 +954,6 @@
   </div>
 </section>
 
-<!-- INICIO: BOLETÍN INFORMATIVO (Actualizado) -->
 <style>
   .newsletter-cta { background: var(--red); border-radius: 16px; padding: 40px; margin: 60px 0; position: relative; top: -30px; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 40px; color: #fff; }
   

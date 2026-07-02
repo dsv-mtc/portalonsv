@@ -1,21 +1,71 @@
-<ul>
-    <li>
-        <div class="dt-blk">
-           <span>
-               <i class="fal fa-calendar-alt"></i>
-               {{fecha_registro}}
-           </span>
-           <span>
-               <i class="fal fa-calendar-alt"></i>
-               {{hora_registro}}
-           </span>
-           <p class="mt-2">
-               {{t lang "clase"}}: {{descripcion}}<br>
-               {{t lang "lugar"}}: {{departamento}} / {{provincia}} / {{distrito}}<br>
-               {{t lang "coord"}}: {{latitud}} {{longitud}}<br>
-               {{t lang "vehiculos"}}: {{vehiculos-lista}}<br>
-               {{t lang "consecuencias"}}: {{descripcion-lista}}
-           </p>
-        </div>
-    </li>
-</ul>
+<style>
+  .accident-row {
+    display: flex;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    transition: background-color 0.2s ease;
+  }
+  .accident-row:hover { background-color: var(--mist); }
+  .accident-row:last-child { border-bottom: none; }
+
+  .accident-row .ar-date {
+    flex: 0 0 54px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .accident-row .ar-time {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--red);
+    line-height: 1.2;
+  }
+  .accident-row .ar-day {
+    font-family: "Barlow", sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.2;
+  }
+
+  .accident-row .ar-content { flex: 1; min-width: 0; }
+  .accident-row .ar-title {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--navy);
+    margin: 0 0 3px 0;
+    text-transform: capitalize;
+  }
+  .accident-row .ar-location {
+    font-family: "Barlow", sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.35;
+  }
+  .accident-row .ar-vehicles {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--blue-2);
+    margin: 4px 0 0 0;
+  }
+</style>
+
+{{#if descripcion}}
+<div class="accident-row">
+  <div class="ar-date">
+    <span class="ar-time">{{hora_registro}}</span>
+    <span class="ar-day">{{fecha_registro}}</span>
+  </div>
+  <div class="ar-content">
+    <h4 class="ar-title">{{descripcion}}</h4>
+    <p class="ar-location">{{departamento}} / {{provincia}} / {{distrito}}</p>
+    {{#if vehiculos-lista}}
+      <p class="ar-vehicles">{{vehiculos-lista}}</p>
+    {{/if}}
+  </div>
+</div>
+{{/if}}
