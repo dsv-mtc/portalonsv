@@ -1,89 +1,114 @@
-<footer id="footer">
-	<div class="container">
-		<div class="row">
+<style>
+  .site-footer { background: var(--navy); color: #aeb9d2; padding: 60px 0 20px; font-family: "Barlow", sans-serif; }
+  
+  .site-footer .ft-title { color: #fff; font-family: "Barlow Condensed", sans-serif; font-size: 20px; text-transform: uppercase; font-weight: 700; margin-bottom: 22px; letter-spacing: .02em; }
+  
+  .site-footer .brand-col .b-bold { font-weight: 700; font-family: "Barlow Condensed", sans-serif; font-size: 22px; color: #fff; text-transform: uppercase; line-height: 1.1; margin-bottom: 16px; }
+  .site-footer .brand-col .b-light { font-size: 15px; line-height: 1.5; color: #aeb9d2; margin: 0; }
+  
+  .site-footer .link-list { list-style: none; padding: 0; margin: 0; }
+  .site-footer .link-list li { margin-bottom: 14px; }
+  .site-footer .link-list a { color: #fff; text-decoration: none; transition: .2s; font-size: 15px; display: inline-block; }
+  .site-footer .link-list a:hover { color: var(--red); transform: translateX(5px); }
+  
+  .site-footer .ft-list { list-style: none; padding: 0; margin: 0; }
+  .site-footer .ft-list li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; font-size: 14px; line-height: 1.4; }
+  .site-footer .ft-list li i { color: var(--red); font-size: 16px; margin-top: 2px; width: 16px; text-align: center; }
+  .site-footer .ft-list li span { display: block; color: #fff; font-weight: 500; font-size: 15px; }
+  .site-footer .ft-list a { color: #fff; text-decoration: none; transition: 0.2s; }
+  .site-footer .ft-list a:hover { color: var(--red); }
+  
+  .site-footer .cp-area { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 24px; font-size: 14px; color: #8a96b3; font-family: "Barlow", sans-serif; }
+  .site-footer .cp-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  
+  .site-footer .legal-links { display: flex; gap: 20px; flex-wrap: wrap; }
+  .site-footer .legal-links a { color: #8a96b3; text-decoration: none; transition: 0.2s; display: flex; align-items: center; }
+  .site-footer .legal-links a:hover { color: #fff; }
+  .site-footer .badge-new { background: var(--amber); color: var(--navy); font-size: 10px; font-family: "Barlow Semi Condensed", sans-serif; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; margin-left: 8px; letter-spacing: 0.05em; }
 
-			<div class="col-12 col-md-5 ft-mb m-ft-mar">
-				<div class="ft-menu-blk mb-3">
-					<h4 class="ft-menu text-white ft-bold">
-						{{t lang "Contacto"}}
-					</h4>
-				</div>
-				<ul class="ad-list with-ic">
-					<li class="map">
-						{{t lang "Direccion"}} :
-						<span>
-							{{footerData.direccion}}
-						</span>
-					</li>
-					<li class="ph">
-						{{t lang "Telefono"}} :
-						<span>
-							<a href="tel:{{footerData.telefono}}">
-								{{footerData.telefono}}
-							</a>
-						</span>
-					</li>
-				</ul>
-			</div>
+  @media (min-width: 992px) {
+    .espacio-inst { padding-left: 50px; }
+    .espacio-secc { padding-left: 50px; }
+    .espacio-cont { padding-left: 30px; }
+  }
+</style>
 
-			<div class="col-12 col-md-5 ft-mb m-ft-mar">
-				<ul class="ad-list with-ic mt-2">
-					<li class="mail">
-						{{t lang "Correo"}} :
-						<span>
-							<a href="mailto:{{footerData.email}}">
-								{{footerData.email}}
-							</a>
-						</span>
-					</li>
-					<li class="clock">
-						<div>
-							{{t lang "Horario"}}
-						</div>
-						<div>
-							L - V  9:00 AM a 6:00 PM
-						</div>
-					</li>
-				</ul>
-			</div>
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="row">
+      
+      <div class="col-lg-3 col-md-6 mb-5 mb-lg-0 brand-col">
+        <h4 class="b-bold">Observatorio Nacional<br>de Seguridad Vial</h4>
+        <p class="b-light">Sistematiza, analiza y difunde información sobre los siniestros viales para servir de insumo a la prevención, fiscalización y respuesta.</p>
+      </div>
 
-			<div class="col-12 col-md-2 ft-mmb">
-				<div class="ft-menu-blk">
-					<h4 class="ft-menu text-white ft-bold mb-3 ft-mb">
-						{{t lang "Redes Sociales"}}
-					</h4>
-					<ul class="so-links">
-						<li>
-							<a href="https://www.facebook.com/onsvPE" target="_blank">
-								<i class="fab fa-facebook-f"></i>
-							</a>
-						</li>
-						<li>
-							<a href="https://twitter.com/onsvPE" target="_blank">
-								<i class="fab fa-twitter"></i>
-							</a>
-						</li>
-						<li>
-							<a
-								href="https://www.youtube.com/channel/UCdNz5eyTZClohkpJgk4oa2Q"
-								target="_blank"
-							>
-								<i class="fab fa-youtube"></i>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
+      <div class="col-lg-3 col-md-6 mb-5 mb-lg-0 espacio-inst">
+        <h4 class="ft-title">Institución</h4>
+        <ul class="link-list">
+          <li><a href="/nosotros">Quiénes somos</a></li>
+          <li><a href="/nosotros#mision">Misión y visión</a></li>
+          <li><a href="#tech">Componentes tecnológicos</a></li>
+        </ul>
+      </div>
 
-		</div>
-		<div class="row cp">
-			<div class="col-md-12">
-				<div class="cp-soc text-white text-center">
-					<p>
-						Copyright &copy; {{footerData.year}} {{footerData.piePagina}}
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
+      <div class="col-lg-3 col-md-6 mb-5 mb-lg-0 espacio-secc">
+        <h4 class="ft-title">Secciones</h4>
+        <ul class="link-list">
+          <li><a href="/publicaciones">Publicaciones</a></li>
+          <li><a href="/datosabiertos">Datos abiertos</a></li>
+          <li><a href="/normas">Normas legales</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-5 mb-lg-0 espacio-cont">
+        <h4 class="ft-title">Contacto</h4>
+        <ul class="ft-list">
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <span>{{footerData.direccion}}</span>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <div>
+              <span><a href="tel:{{footerData.telefono}}">{{footerData.telefono}}</a></span>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-envelope"></i>
+            <div>
+              <span><a href="mailto:{{footerData.email}}">{{footerData.email}}</a></span>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-clock"></i>
+            <div>
+              <span>L–V · 9:00 a 18:00</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+    
+    <div class="row">
+      <div class="col-12">
+        <div class="cp-area">
+          <div class="cp-flex">
+            <div>
+              © {{footerData.year}} Gobierno del Perú · MTC · Todos los derechos reservados.
+            </div>
+            
+            <div class="legal-links">
+              <a href="#">Política de Privacidad <span class="badge-new">Nuevo</span></a>
+              <a href="#">Términos y Condiciones <span class="badge-new">Nuevo</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
 </footer>

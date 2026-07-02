@@ -1,12 +1,35 @@
-<div class="col-lg-4 col-md-6">
-	<div class="rsp-res-blk">
-		<a href="{{endpointPostParse (parseHttp url) lang }}">
-			<div class="rsp-res-img">
-				<img class="no-6" src="{{parseHttpImage feature_image}}" alt="{{title}}">
-			</div>
-			<p class="p-hide">
-				{{ excerpt }}
-			</p>
-		</a>
-	</div>
+<style>
+  .new-card { position: relative; display: flex; flex-direction: column; height: 100%; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: #fff; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  
+  .new-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(20,33,61,.18); }
+  
+  .new-card .card-badge { position: absolute; top: 16px; left: 16px; background: #ffffff; color: var(--blue-2); font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; padding: 5px 12px; border-radius: 6px; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  
+  .new-card .card-img { width: 100%; height: 210px; object-fit: cover; border-bottom: 1px solid var(--line); }
+  .new-card .card-content { padding: 22px; display: flex; flex-direction: column; flex: 1; }
+  .new-card .card-meta { font-family: "Barlow", sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 12px; display: flex; gap: 12px; align-items: center; }
+  .new-card .p-hide { margin-bottom: 20px; flex: 1; color: var(--muted); font-family: "Barlow", sans-serif; font-size: 15px; line-height: 1.5; }
+  .new-card .card-link { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--red); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; transition: 0.2s; margin-top: auto; }
+  .new-card .card-link:hover { color: var(--navy); gap: 10px; text-decoration: none; }
+</style>
+
+<div class="col-lg-4 col-md-6 mb-4">
+  <div class="rsp-res-blk new-card">
+    
+    <div class="card-badge">{{#if primary_tag.name}}{{primary_tag.name}}{{else}}Regional{{/if}}</div>
+    
+    <a href="{{endpointPostParse (parseHttp url) lang }}">
+      <img class="no-6 card-img" src="{{parseHttpImage feature_image}}" alt="{{title}}">
+    </a>
+    
+    <div class="card-content">
+      <p class="p-hide">
+        {{ excerpt }}
+      </p>
+      <a href="{{endpointPostParse (parseHttp url) lang }}" class="card-link">
+        Leer noticia &rarr;
+      </a>
+    </div>
+
+  </div>
 </div>

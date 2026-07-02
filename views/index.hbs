@@ -1,4 +1,3 @@
-<!-- INICIO NUEVO ESTILO: HERO Y KPIs -->
 <style>
   .eyebrow { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--red); margin-bottom: 6px; display: block; }
   .sec-title { font-family: "Barlow Condensed", sans-serif; font-weight: 800; text-transform: uppercase; font-size: clamp(26px,3.4vw,42px); line-height: 1; color: var(--navy); letter-spacing: .005em; margin: 0; }
@@ -6,7 +5,6 @@
   .sec-head .more { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 13px; color: var(--blue-2); display: inline-flex; align-items: center; gap: 7px; background: none; border:none; padding: 0; cursor: pointer; transition: .2s; }
   .sec-head .more:hover { color: var(--red); gap: 11px; text-decoration: none; }
 
-  /* HERO / SLIDER (Híbrido) */
   .hero { position: relative; background: var(--navy); overflow: hidden; }
   .slides.carousel-inner { height: clamp(420px,56vh,560px); }
   .hero .slide.carousel-item { height: 100%; border:none; }
@@ -32,7 +30,6 @@
   .hero .arrow:hover { background: var(--red); border-color: var(--red); color:#fff; text-decoration: none;}
   .hero .prev { left: 16px; } .hero .next { right: 16px; }
 
-  /* KPI / SINIESTRALIDAD */
   .kpis { background: var(--mist); padding: 46px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .kpis .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: #fff; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
   .kpis .kpi { display: block; background: #fff; padding: 26px 28px 24px; position: relative; border-left: 5px solid var(--c); }
@@ -45,7 +42,6 @@
   @media(max-width: 760px) { .kpis .kpi-grid { grid-template-columns: 1fr; } .hero .veil { background: linear-gradient(180deg, rgba(13,21,40,.5), rgba(13,21,40,.78)); } .hero-in { justify-content: flex-start; } .hero-card { max-width: none; } }
 </style>
 
-<!-- 1 · SLYDER (HERO) -->
 <section id="heroCarousel" class="carousel slide carousel-fade hero" data-ride="carousel" data-interval="5000">
   <div class="carousel-inner slides">
     {{#each banners}}
@@ -76,7 +72,6 @@
 </section>
 <!-- End banner section -->
 
-<!-- 2 · DATOS DE SINIESTRALIDAD (KPIs) -->
 <section class="kpis" id="siniestralidad">
   <div class="container wrap">
     
@@ -115,7 +110,6 @@
 
   </div>
 </section>
-<!-- FIN NUEVO ESTILO: HERO Y KPIs -->
 
 <style>
   .tech { background: linear-gradient(180deg, #394c75, #2f4267); color: #fff; padding: 46px 0; margin-bottom: 30px; }
@@ -293,7 +287,6 @@
 
 <!-- vu section -->
 <style>
-  /* MAPA Y ÚLTIMOS 10 */
   .new-map-box { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); height: 100%; min-height: 430px; background: #fff; }
   .feed { background: #fff; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); height: 100%; max-height: 550px; }
   .feed .fh { background: var(--navy); color: #fff; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
@@ -302,12 +295,10 @@
   .feed .fh .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: blink 1.3s infinite; }
   @keyframes blink { 50% { opacity: .25; } }
   
-  /* Ajuste para que la lista dinámica de accidentes encaje perfecto y tenga scroll */
   .feed .vu-list { padding: 0; flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #c7cfdd transparent; }
   .feed .vu-list::-webkit-scrollbar { width: 6px; }
   .feed .vu-list::-webkit-scrollbar-thumb { background: #c7cfdd; border-radius: 6px; }
 
-  /* Ajuste visual moderno para tu caja de redes sociales actual */
   .social-box-modern { border: 1px solid var(--line); border-radius: 16px !important; overflow: hidden; box-shadow: var(--shadow); background: #fff; }
   .social_section_tabs { background: #fafbfd; border-bottom: 1px solid var(--line); display: flex; }
   .social_section_tabs span { flex: 1; text-align: center; padding: 12px 0; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; }
@@ -395,44 +386,139 @@
 </section>
 -->
 
-<section class="rsp-res-sec rsp-wrap">
-  <div class="container">
-    <div class="row mb-2">
-      <div class="col-md-9 res-tit">
-        <h3 class="rsp-title ft-bold">Resumen de Noticias</h3>
+<style>
+  .news-sec { background: var(--mist); padding: 56px 0; }
+  .pubs-sec { background: #fff; padding: 56px 0; border-top: 1px solid var(--line); }
+  
+  .news-sec .sec-head, .pubs-sec .sec-head { margin-bottom: 30px; }
+
+  .news-sec .row > div, .pubs-sec .row > div { 
+    margin-bottom: 24px; 
+  }
+  .news-sec .card, .pubs-sec .card, 
+  .news-sec .rsp-post-blk, .pubs-sec .rsp-post-blk,
+  .news-sec .rsp-noti-blk, .pubs-sec .rsp-noti-blk { 
+    border: 1px solid var(--line) !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    background: #fff !important;
+    height: 100% !important;
+    display: flex;
+    flex-direction: column;
+  }
+  .news-sec .card:hover, .pubs-sec .card:hover,
+  .news-sec .rsp-post-blk:hover, .pubs-sec .rsp-post-blk:hover,
+  .news-sec .rsp-noti-blk:hover, .pubs-sec .rsp-noti-blk:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 40px rgba(20,33,61,.18) !important;
+    border-color: var(--line) !important;
+  }
+  
+  .news-sec img, .pubs-sec img {
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    object-fit: cover;
+  }
+</style>
+
+<section class="news-sec" id="noticias">
+  <div class="container wrap">
+    
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Comunicacion</div>
+        <h2 class="sec-title">Resumen de Noticias</h2>
       </div>
-      <div class="col-md-3 res-btn">
-        <a href="/comunicaciones/noticias/" class="btn btn-rsp-outline ft-bold">{{t lang "Ver mas"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
-      </div>
+      <a class="more" href="/comunicaciones/noticias/">Todas las noticias →</a>
     </div>
+
     <div class="row">
       {{#each post2}}
         {{>index/noticias-eventos-card lang=../lang }}
       {{/each}}
     </div>
+
   </div>
 </section>
 
-<section class="rsp-ult-sec rsp-wrap">
-  <div class="container">
-    <div class="row mb-2">
-      <div class="col-md-9">
-        <h3 class="rsp-title ft-bold">{{t lang "ultimas publicaciones"}}</h3>
+<section class="pubs-sec" id="publicaciones">
+  <div class="container wrap">
+    
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Conocimiento</div>
+        <h2 class="sec-title">{{t lang "ultimas publicaciones"}}</h2>
       </div>
+      <a class="more" href="/publicaciones/">Todas las publicaciones →</a>
     </div>
+
     <div class="row ultimas-publicaciones">
       {{#each post3}}
         {{>index/post-card lang=../lang }}
       {{/each}}
     </div>
+
+  </div>
+</section>
+
+<!-- INICIO: BOLETÍN INFORMATIVO (Actualizado) -->
+<style>
+  .newsletter-cta { background: var(--red); border-radius: 16px; padding: 40px; margin: 60px 0; position: relative; top: -30px; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 40px; color: #fff; }
+  
+  .newsletter-cta::after { 
+    content: ''; 
+    position: absolute; 
+    right: -40px; 
+    top: -20px; 
+    width: 280px; 
+    height: 280px; 
+    border: 30px solid rgba(165, 165, 165, 0.26);
+    background: transparent;
+    border-radius: 50%; 
+    z-index: 0; 
+    pointer-events: none;
+  }
+  
+  .news-text, .news-form { position: relative; z-index: 1; }
+  
+  .news-text { flex: 1; }
+  .news-text .eyebrow { color: #ffbfbf; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .news-text h2 { color: #fff; font-size: 32px; font-family: "Barlow Condensed", sans-serif; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+  .news-text p { color: #f2f2f2; margin: 0; font-size: 16px; opacity: 0.9; }
+  
+  .news-form { background: #fff; padding: 6px; border-radius: 12px; display: flex; align-items: center; width: 100%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  .news-form input { border: none; padding: 12px 20px; font-size: 14px; color: #333; width: 100%; outline: none; border-radius: 8px; background: transparent; }
+  .news-form button { background: var(--navy); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+  .news-form button:hover { background: #334d74; }
+  
+  @media(max-width: 767px) { .newsletter-cta { flex-direction: column; text-align: center; padding: 30px; } }
+</style>
+
+<section class="container">
+  <div class="newsletter-cta">
+    <div class="news-text">
+      <div class="eyebrow">Boletín informativo ONSV</div>
+      <h2>Recibe los datos antes que nadie</h2>
+      <p>Suscríbete y recibe boletines, informes y alertas de seguridad vial directamente en tu correo.</p>
+    </div>
+    
+    <form class="news-form" action="/subscribe" method="POST">
+      <input type="email" name="email" placeholder="tucorreo@ejemplo.com" required>
+      <button type="submit">Suscribirse</button>
+    </form>
   </div>
 </section>
 
 <div class="container">
   <section class="logos-container rsp-noti-sec rsp-wrap" style="padding: 0">
-    <h3 class="col-12 mb-4 rsp-title ft-bold">
-      Instituciones Aliadas
-    </h3>
+    <div class="sec-head col-12 mt-4 mb-5" style="padding: 0;">
+      <div>
+        <div class="eyebrow">Trabajo articulado</div>
+        <h2 class="sec-title">Instituciones aliadas</h2>
+      </div>
+    </div>
     <div class="d-flex justify-content-center">
       <div class="logos owl-carousel owl-theme" id="others">
         <a class="logo" href="https://www.gob.pe/1013-solicitar-atencion-medida-en-caso-de-emergencia.samu" target="_blank">
