@@ -13088,6 +13088,7 @@ button:focus {
     padding: 16px 20px;
     text-transform: uppercase;
     background-color: transparent;
+    white-space: nowrap;
 }
 
 
@@ -13618,7 +13619,7 @@ footer {
 }
 .dropdown-menu{
     min-width: 5rem !important;
-    padding: 3px 35% !important;
+    padding: 3px 16px !important;
     margin: 0% !important;
     border-radius: 5px !important;
 }
