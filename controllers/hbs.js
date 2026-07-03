@@ -206,7 +206,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 			</li>`;
 	} else {
 		htmlMenu += `
-			<li class="nav-item ${getMenuSelected2(url_selected)} dropdown">
+			<li class="nav-item nav-special ${getMenuSelected2(url_selected)} dropdown">
 				<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Educación Vial</a>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" href="/webinars" target="_self">Webinars</a>

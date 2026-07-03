@@ -50,9 +50,8 @@
 
 <section id="heroCarousel" class="carousel slide carousel-fade hero">
   <div class="carousel-inner slides">
-    {{#each banners}}
-      <div class="carousel-item slide {{#if @first}}active{{/if}}">
-        <div class="bg" style="background-image: url('/assets/{{this}}');"></div>
+      <div class="carousel-item slide active">
+        <div class="bg" style="background-image: url('/assets/{{banners.[0]}}');"></div>
         <div class="veil"></div>
         
         <div class="hero-in">
@@ -62,12 +61,43 @@
             <p>El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre los siniestros viales para fortalecer las políticas de prevención.</p>
             <div class="btns">
               <a class="btn-hero btn-white" href="#siniestralidad">Ver cifras 2025 →</a>
-              <a class="btn-hero btn-ghost" href="#mapa">Mapa de Siniestros</a>
+              <a class="btn-hero btn-ghost" href="#mapa">Mapa de Siniestros →</a>
             </div>
           </div>
         </div>
       </div>
-    {{/each}}
+
+      <div class="carousel-item slide">
+        <div class="bg" style="background-image: url('/assets/{{banners.[1]}}');"></div>
+        <div class="veil"></div>
+        
+        <div class="hero-in">
+          <div class="hero-card">
+            <div class="kick">Campaña vigente</div>
+            <h1>Entornos viales <em>seguros</em></h1>
+            <p>Conoce las acciones para reducir la contaminación y el riesgo en corredores de alto tránsito.</p>
+            <div class="btns">
+              <a class="btn-hero btn-white" href="#publicaciones">Ver más →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-item slide">
+        <div class="bg" style="background-image: url('/assets/{{banners.[2]}}');"></div>
+        <div class="veil"></div>
+        
+        <div class="hero-in">
+          <div class="hero-card">
+            <div class="kick">Aplicativo</div>
+            <h1>SRAT · Visor de alerta de <em>siniestros</em></h1>
+            <p>Monitoreo georreferenciado de los hechos de tránsito a nivel nacional, en tiempo cercano al real.</p>
+            <div class="btns">
+              <a class="btn-hero btn-white" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">Abrir visor →</a>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
 
   <ol class="hero-capsules" id="heroCapsules">
