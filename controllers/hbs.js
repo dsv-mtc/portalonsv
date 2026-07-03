@@ -97,18 +97,18 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 	var qsActive = url_selected === '/quienes-somos' || url_selected === '/en/quienes-somos' ? 'add-color' : '';
 	var qsItems = secondary_navigation
 		? [
-			{ label: 'Who we are?', url: '/en/quienes-somos' },
-			{ label: 'Mission', url: '/en/quienes-somos' },
-			{ label: 'Vision', url: '/en/quienes-somos' },
-			{ label: 'Values', url: '/en/quienes-somos' },
-			{ label: 'Tech Components', url: '/en/quienes-somos', wrap: true }
+			{ label: 'Who we are?', url: '/en/quienes-somos#quienes-somos' },
+			{ label: 'Mission', url: '/en/quienes-somos#mision' },
+			{ label: 'Vision', url: '/en/quienes-somos#vision' },
+			{ label: 'Values', url: '/en/quienes-somos#valores' },
+			{ label: 'Tech Components', url: '/en/quienes-somos#componentes', wrap: true }
 		]
 		: [
-			{ label: '¿Quienes somos?', url: '/quienes-somos' },
-			{ label: 'Misión', url: '/quienes-somos' },
-			{ label: 'Visión', url: '/quienes-somos' },
-			{ label: 'Valores', url: '/quienes-somos' },
-			{ label: 'Componentes Tecnológicos', url: '/quienes-somos', wrap: true }
+			{ label: '¿Quienes somos?', url: '/quienes-somos#quienes-somos' },
+			{ label: 'Misión', url: '/quienes-somos#mision' },
+			{ label: 'Visión', url: '/quienes-somos#vision' },
+			{ label: 'Valores', url: '/quienes-somos#valores' },
+			{ label: 'Componentes Tecnológicos', url: '/quienes-somos#componentes', wrap: true }
 		];
 	htmlMenu += `
 		<li class="nav-item nav-special ${qsActive} dropdown">

@@ -218,13 +218,11 @@
 
       <div class="col-lg-3 col-md-4 mb-4">
         <div class="sidebar-menu">
-          {{#each contenido}}
-            {{#unless @last}}
-              <b class="sidebar-link {{#if @first}}active{{/if}}" data-tab="{{@index}}">{{this.label}}</b>
-            {{/unless}}
-          {{/each}}
-          <b class="sidebar-link" data-tab="valores">Valores</b>
-          <b class="sidebar-link" data-tab="componentes-tecnologicos" data-hide-banner="true">Componentes Tecnológicos</b>
+          <b class="sidebar-link active" data-tab="quienes-somos" data-content="about_item_quienes-somos">¿QUIÉNES SOMOS?</b>
+          <b class="sidebar-link" data-tab="mision" data-content="about_item_mision">MISIÓN</b>
+          <b class="sidebar-link" data-tab="vision" data-content="about_item_vision">VISIÓN</b>
+          <b class="sidebar-link" data-tab="valores" data-content="about_item_valores">VALORES</b>
+          <b class="sidebar-link" data-tab="componentes" data-content="about_item_componentes" data-hide-banner="true">COMPONENTES TECNOLÓGICOS</b>
         </div>
       </div>
 
@@ -251,13 +249,9 @@
         </div>
 
         <div class="qs-content">
-          {{#each contenido}}
-            {{#unless @last}}
-              <div id="about_item_{{@index}}" class="qs-content-item {{#if @first}}active{{/if}}">
-                {{{this.contenido}}}
-              </div>
-            {{/unless}}
-          {{/each}}
+          <div id="about_item_quienes-somos" class="qs-content-item active">{{{contenido.[0].contenido}}}</div>
+          <div id="about_item_mision" class="qs-content-item">{{{contenido.[1].contenido}}}</div>
+          <div id="about_item_vision" class="qs-content-item">{{{contenido.[2].contenido}}}</div>
 
           <div id="about_item_valores" class="qs-content-item">
           <p>Contenido de prueba para sección 4</p>
@@ -291,7 +285,7 @@
         </div>
 
 
-          <div id="about_item_componentes-tecnologicos" class="qs-content-item">
+          <div id="about_item_componentes" class="qs-content-item">
             <h1 class="tech-title">COMPONENTES TECNOLÓGICOS</h1>
             <div class="tech-grid">
               <div class="tech-card" style="border-left-color:#dc2626;">
@@ -355,9 +349,9 @@
     const DEFAULT_BG = "#0355a3";
 
     const icons = {
-      0: '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
-      1: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2" fill="#c8102e" stroke="none"></circle></svg>',
-      2: '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path><circle cx="12" cy="12" r="3" fill="#ffffff" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="#0f172a" stroke="none"></circle></svg>',
+      "quienes-somos": '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+      "mision": '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2" fill="#c8102e" stroke="none"></circle></svg>',
+      "vision": '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path><circle cx="12" cy="12" r="3" fill="#ffffff" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="#0f172a" stroke="none"></circle></svg>',
       "valores": '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="8.5 12 11 14.5 15.5 9" fill="none" stroke="#ffffff"></polyline></svg>'
     };
 
@@ -375,6 +369,7 @@
         this.classList.add('active');
 
         const tabIndex = this.getAttribute('data-tab');
+        const contentId = this.getAttribute('data-content');
         const hideBanner = this.hasAttribute('data-hide-banner');
 
         if (hideBanner) {
@@ -396,9 +391,19 @@
         }
 
         items.forEach(item => item.classList.remove('active'));
-        const targetItem = document.getElementById(`about_item_${tabIndex}`);
-        if (targetItem) targetItem.classList.add('active');
+        if (contentId) {
+          const targetItem = document.getElementById(contentId);
+          if (targetItem) targetItem.classList.add('active');
+        }
       });
     });
+
+    // Auto-seleccionar tab según hash de URL al cargar
+    (function () {
+      const hash = window.location.hash.replace('#', '');
+      if (!hash) return;
+      const target = document.querySelector(`.sidebar-link[data-tab="${hash}"]`);
+      if (target) target.click();
+    })();
   });
 </script>
