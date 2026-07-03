@@ -213,6 +213,42 @@
   });
 </script>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const nums = document.querySelectorAll(".kpi .num");
+
+    function animateCount(el) {
+      const raw = el.innerText.replace(/[^0-9]/g, "");
+      if (!raw) return;
+      const target = parseInt(raw);
+      if (el.dataset.counted === "true") return;
+      el.dataset.counted = "true";
+
+      const duration = 2000;
+      const start = performance.now();
+
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        el.innerText = Math.round(target * eased).toLocaleString();
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCount(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    nums.forEach(num => observer.observe(num));
+  });
+</script>
+
 <style>
   .tech { background: linear-gradient(180deg, #394c75, #2f4267); color: #fff; padding: 46px 0; margin-bottom: 30px; }
   .tech .sec-title { color: #fff; margin-bottom: 26px; } 
@@ -647,7 +683,7 @@
     <div class="row" style="transform: translateY(30px);">
       
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <div class="promo-card" style="background-image: url('/img/fondo-educacion.jpg');">
+        <div class="promo-card" style="background-image: url('/img/fondo-educacion.png');">
           <div class="promo-overlay"></div>
           <span class="promo-badge">Imagen Referencial</span>
           
@@ -661,7 +697,7 @@
       </div>
       
       <div class="col-lg-6">
-        <div class="promo-card" style="background-image: url('/img/fondo-revista.jpg');">
+        <div class="promo-card" style="background-image: url('/img/fondo-revista.png');">
           <div class="promo-overlay"></div>
           <span class="promo-badge">Imagen Referencial</span>
           
@@ -718,6 +754,7 @@
   .yt-item .thumb { width: 64px; height: 44px; background: #162645; border-radius: 6px; display: grid; place-items: center; flex-shrink: 0; }
   .yt-item .thumb svg { width: 16px; height: 16px; fill: #fff; }
   .yt-item.active .title { color: var(--red); }
+  .yt-item.active .thumb { outline: 2px solid var(--red); outline-offset: 2px; border-radius: 6px; }
   .yt-item .info { display: flex; flex-direction: column; justify-content: center; }
   .yt-item .title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; line-height: 1.2; font-family: "Barlow", sans-serif; }
   .yt-item .desc { font-size: 12px; color: #64748b; }
@@ -921,6 +958,20 @@
             footerBtn.href = data.url;
             footerBtn.textContent = destino === "x" ? "VER PERFIL EN X" : "VER PERFIL EN FB";
           }
+        }
+      });
+    });
+
+    var ytCard = document.querySelector(".social-sec .col-lg-8 .sc-card");
+    var ytItems = ytCard.querySelectorAll(".yt-item");
+    var ytTitle = ytCard.querySelector(".yt-title");
+    ytItems.forEach(function (item) {
+      item.addEventListener("click", function () {
+        ytItems.forEach(function (i) { i.classList.remove("active"); });
+        this.classList.add("active");
+        var titleEl = this.querySelector(".title");
+        if (titleEl && ytTitle) {
+          ytTitle.textContent = titleEl.textContent;
         }
       });
     });
