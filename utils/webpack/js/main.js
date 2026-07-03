@@ -48,7 +48,19 @@ function validationForm(){
  * eventos se administran a través de eventos jquery 
  */
 function carousel(){
-	$('#others').owlCarousel({});
+	$('#others').owlCarousel({
+		loop: true,
+		margin: 24,
+		nav: true,
+		dots: false,
+		autoplay: true,
+		autoplayTimeout: 3000,
+		responsive: {
+			0: { items: 1 },
+			600: { items: 2 },
+			1000: { items: 4 }
+		}
+	});
 	$('#noti').owlCarousel({
 		loop:true,
 		margin: 6,
