@@ -34,7 +34,8 @@
 
   .hero-capsules .hero-capsule.active .capsule-fill { animation: capsuleFill 5s linear forwards; }
   @keyframes capsuleFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-  @media(max-width: 760px) { .hero-capsules { bottom: 16px; } .hero-capsules .hero-capsule { width: 30px; } }
+  @media(max-width: 760px) { .hero-capsules { bottom: 16px; } .hero-capsules .hero-capsule { width: 30px; } .hero-card { margin-right: 0; } }
+  @media(max-width: 400px) { .hero h1 { font-size: 22px !important; } .hero p { font-size: 14px !important; } }
 
   .kpis { background: var(--mist); padding: 46px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .kpis .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: #fff; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
@@ -61,6 +62,7 @@
     line-height: 1.4;
   }
   @media(max-width: 760px) { .kpis .kpi-grid { grid-template-columns: 1fr; } .hero .veil { background: linear-gradient(180deg, rgba(13,21,40,.5), rgba(13,21,40,.78)); } .hero-in { justify-content: flex-start; } .hero-card { max-width: none; } }
+  @media(max-width: 400px) { .kpis .kpi .num { font-size: 28px !important; } .kpis .kpi { padding: 18px 16px; } }
 </style>
 
 <section id="heroCarousel" class="carousel slide carousel-fade hero">
@@ -513,6 +515,9 @@
   .social_section_tabs span.active { border-bottom-color: var(--blue-2); background: #fff; }
   .social_section_tabs span svg { fill: var(--muted); width: 22px; height: 22px; transition: 0.2s; }
   .social_section_tabs span.active svg { fill: var(--blue-2); }
+
+  @media(max-width: 991px) { .new-map-box iframe { min-height: 350px !important; } }
+  @media(max-width: 767px) { .new-map-box iframe { min-height: 280px !important; } .feed { max-height: 400px; } }
 </style>
 
 <section class="rsp-vu-sec" id="mapa" style="padding: 46px 0; scroll-margin-top: 20px;">
@@ -691,6 +696,8 @@
     color: var(--red); 
     text-decoration: none; 
   }
+  @media(max-width: 991px) { .promo-card { min-height: 260px; padding: 28px 24px; } }
+  @media(max-width: 767px) { .promo-card { min-height: 220px; padding: 24px 20px; } .promo-overlay { background: linear-gradient(180deg, rgba(30,41,59,0.85) 0%, transparent 100%); } .promo-content h3 { font-size: 22px; } .promo-content { max-width: 100%; } .promo-sec .row { transform: translateY(0) !important; } }
 </style>
 
 <section class="promo-sec" id="recursos">
@@ -804,6 +811,7 @@
   .x-profile-stats .stat-label { color: #64748b; font-weight: 500; }
 
   @media(max-width: 991px) { .yt-list { width: 100%; border-left: none; border-top: 1px solid var(--line); } }
+  @media(max-width: 767px) { .sc-body { min-height: auto; } .x-profile-card { min-height: auto; } .yt-main { min-height: 220px; min-width: auto; } .sc-tabs { gap: 6px; } .sc-tab { width: 36px; height: 36px; } }
 </style>
 
 <section class="social-sec" id="comunidad">
@@ -1050,6 +1058,7 @@
     border-top-right-radius: 16px !important;
     object-fit: cover;
   }
+  @media(max-width: 767px) { .news-sec img, .pubs-sec img { height: 180px !important; } .news-sec .card-title, .pubs-sec .card-title { font-size: 15px !important; } .news-sec { padding: 36px 0; } .pubs-sec { padding: 36px 0; } }
 </style>
 
 <section class="news-sec" id="noticias">
@@ -1122,6 +1131,7 @@
   .news-form button:hover { background: #334d74; }
   
   @media(max-width: 767px) { .newsletter-cta { flex-direction: column; text-align: center; padding: 30px; } }
+  @media(max-width: 480px) { .newsletter-cta { padding: 24px 16px; } .news-text h2 { font-size: 24px; } }
 </style>
 
 <section class="container">
