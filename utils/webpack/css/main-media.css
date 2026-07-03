@@ -78,7 +78,35 @@
         width: 120px;
         position: relative;
         top: 8px;
-    }   
+    }
+    .logo-sm {
+        margin-left: 200px;
+        margin-top: -20px;
+    }
+    .navbar-brand-text {
+        transform: translateX(20px) translateY(8px);
+    }
+    .logo-icon-img {
+        height: 42px;
+    }
+    .logo-text-title {
+        font-size: 18px;
+    }
+    .logo-text-subtitle {
+        font-size: 10px;
+    }
+    .logo-container .col-md-6:first-child {
+        margin-left: -40px;
+    }
+    .logo-container .col-md-6:last-child {
+        margin-left: 30px;
+    }
+    .logo-container .logo-sm {
+        transform: translateX(30px);
+    }
+    .logo-container .d-flex.flex-row-reverse {
+        transform: translateX(30px);
+    }
     i.fal.fa-bars {
         color: #fff;
     }
@@ -141,7 +169,55 @@
     .logo-sm img {
         width: 80px;
         top: 10px;
-    }   
+    }
+    .logo-sm {
+        margin-left: 0;
+        margin-top: 0;
+    }
+    .navbar-brand-text {
+        transform: translateX(-20px) translateY(15px);
+    }
+    .logo-icon-img {
+        height: 36px;
+        margin-left: 8px;
+    }
+    .logo-text-title {
+        font-size: 16px;
+    }
+    .logo-text-subtitle {
+        font-size: 9px;
+    }
+    .logo-text {
+        margin-left: 8px;
+    }
+    .logo-container .row .col-8 {
+        flex: 0 0 65%;
+        max-width: 65%;
+    }
+    .logo-container .row .col-4 {
+        flex: 0 0 35%;
+        max-width: 35%;
+    }
+    .logo-container .row .col-md-6:first-child {
+        margin-left: 0;
+        padding-left: 25px;
+    }
+    .logo-container .row .col-md-6:last-child {
+        margin-left: 0;
+        padding-right: 25px;
+        padding-left: 0;
+    }
+    .logo-container .row .col-4 .logo-sm {
+        transform: translateX(0);
+    }
+    body .logo-container .d-flex.flex-row-reverse {
+        transform: translateX(115px);
+        position: static;
+        justify-content: center;
+        padding-right: 0;
+        padding-top: 5px;
+        top: 0;
+    }
     .rsp-ban-desc {
         top: 0;
         position: inherit;

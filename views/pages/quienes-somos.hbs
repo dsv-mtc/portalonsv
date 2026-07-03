@@ -1,8 +1,6 @@
 <style>
-  /* --- Estilos de la página Quiénes Somos --- */
   .qs-section { padding: 60px 0; background: #fff; }
 
-  /* Menú lateral (Sidebar) */
   .sidebar-menu { 
     border-radius: 12px; 
     overflow: hidden; 
@@ -25,9 +23,8 @@
   .sidebar-link:hover { background: #475569; color: #fff; }
   .sidebar-link.active { background: #c8102e; color: #fff; }
 
-  /* Banner Azul Principal (La tarjeta bonita) */
   .qs-banner { 
-    background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%); 
+    background: linear-gradient(135deg, #0355a3 0%, #14213D 100%); 
     border-radius: 16px; 
     padding: 40px 50px; 
     display: flex; 
@@ -59,6 +56,8 @@
     font-size: 42px; 
     font-weight: 800; 
     margin: 0 0 5px 0; 
+    position: relative;
+    top: -10px;
     text-transform: uppercase; 
     letter-spacing: 0.02em;
   }
@@ -69,7 +68,6 @@
     margin: 0; 
   }
 
-  /* Barra de Metadatos (Fecha) */
   .qs-meta { 
     background: #f0f9ff; 
     border: 1px solid #bae6fd; 
@@ -88,7 +86,6 @@
   }
   .qs-meta svg { width: 14px; height: 14px; fill: currentColor; }
 
-  /* Contenido de texto */
   .qs-content-item { display: none; }
   .qs-content-item.active { display: block; }
   .qs-content-item p, .qs-content-item span, .qs-content-item div { 
@@ -102,22 +99,137 @@
   @media(max-width: 767px) {
     .qs-banner { flex-direction: column; text-align: center; padding: 30px 20px; }
   }
+
+  .tech-title {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    color: #0f172a;
+    text-transform: uppercase;
+    margin: 0 0 24px 0;
+  }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .tech-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-left-width: 4px;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .valores-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+.valores-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-left-width: 4px;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+}
+.valores-card h3 {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #0f172a;
+  text-transform: uppercase;
+  margin: 0 0 8px 0;
+}
+.valores-card p {
+  font-family: "Barlow", sans-serif;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+@media(max-width: 767px) {
+  .valores-grid { grid-template-columns: 1fr; }
+}
+  .tech-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .tech-card h3 {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #0f172a;
+    text-transform: uppercase;
+    margin: 0 0 8px 0;
+  }
+  .tech-card p {
+    font-family: "Barlow", sans-serif;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.6;
+    margin: 0;
+  }
+  @media(max-width: 767px) {
+    .tech-grid { grid-template-columns: 1fr; }
+  }
+
+  @media(max-width: 991px) and (min-width: 768px) {
+  .tech-grid,
+  .valores-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width: 767px) {
+  .qs-text h1 {
+    font-size: 28px;
+    line-height: 1.15 !important;
+  }
+  .qs-text p {
+    font-size: 15px;
+  }
+  .qs-icon svg {
+    width: 50px;
+    height: 50px;
+  }
+  .tech-title {
+    font-size: 24px;
+    line-height: 1.15 !important;
+  }
+  .sidebar-link {
+    font-size: 14px;
+    padding: 14px 16px;
+  }
+}
 </style>
 
 <section class="qs-section">
   <div class="container wrap">
     <div class="row">
-      
+
       <div class="col-lg-3 col-md-4 mb-4">
         <div class="sidebar-menu">
           {{#each contenido}}
-            <b class="sidebar-link {{#if @first}}active{{/if}}" data-tab="{{@index}}">{{this.label}}</b>
+            {{#unless @last}}
+              <b class="sidebar-link {{#if @first}}active{{/if}}" data-tab="{{@index}}">{{this.label}}</b>
+            {{/unless}}
           {{/each}}
+          <b class="sidebar-link" data-tab="valores">Valores</b>
+          <b class="sidebar-link" data-tab="componentes-tecnologicos" data-hide-banner="true">Componentes Tecnológicos</b>
         </div>
       </div>
 
       <div class="col-lg-9 col-md-8">
-        
+
         <div class="qs-banner">
           <div class="qs-icon">
             <svg viewBox="0 0 24 24">
@@ -135,19 +247,96 @@
 
         <div class="qs-meta">
           <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
-          PUBLICADO: 15 DE ENERO DE 2021 · ACTUALIZADO: JUNIO DE 2025
+          <span id="meta-text">PUBLICADO: 15 DE ENERO DE 2021 · ACTUALIZADO: JUNIO DE 2025</span>
         </div>
 
         <div class="qs-content">
           {{#each contenido}}
-            <div id="about_item_{{@index}}" class="qs-content-item {{#if @first}}active{{/if}}">
-              {{{this.contenido}}}
-            </div>
+            {{#unless @last}}
+              <div id="about_item_{{@index}}" class="qs-content-item {{#if @first}}active{{/if}}">
+                {{{this.contenido}}}
+              </div>
+            {{/unless}}
           {{/each}}
+
+          <div id="about_item_valores" class="qs-content-item">
+          <p>Contenido de prueba para sección 4</p>
+
+          <div class="valores-grid">
+            <div class="valores-card" style="border-left-color:#dc2626;">
+              <h3>INTEGRIDAD</h3>
+              <p>Actuamos con ética, honestidad y coherencia en la gestión de la información pública.</p>
+            </div>
+            <div class="valores-card" style="border-left-color:#2563eb;">
+              <h3>TRANSPARENCIA</h3>
+              <p>Promovemos el acceso abierto a datos confiables de seguridad vial para toda la ciudadanía.</p>
+            </div>
+            <div class="valores-card" style="border-left-color:#0ea5e9;">
+              <h3>COMPROMISO</h3>
+              <p>Trabajamos por reducir la siniestralidad y proteger la vida de las personas en las vías.</p>
+            </div>
+            <div class="valores-card" style="border-left-color:#16a34a;">
+              <h3>VOCACIÓN DE SERVICIO</h3>
+              <p>Orientamos nuestro esfuerzo a las necesidades de las instituciones y de la población.</p>
+            </div>
+            <div class="valores-card" style="border-left-color:#eab308;">
+              <h3>TRABAJO ARTICULADO</h3>
+              <p>Fomentamos la coordinación intersectorial e intergubernamental basada en evidencia.</p>
+            </div>
+            <div class="valores-card" style="border-left-color:#7e22ce;">
+              <h3>INNOVACIÓN</h3>
+              <p>Incorporamos tecnología y análisis de datos para una mejor toma de decisiones.</p>
+            </div>
+          </div>
+        </div>
+
+
+          <div id="about_item_componentes-tecnologicos" class="qs-content-item">
+            <h1 class="tech-title">COMPONENTES TECNOLÓGICOS</h1>
+            <div class="tech-grid">
+              <div class="tech-card" style="border-left-color:#dc2626;">
+                <div class="tech-icon" style="background:#fde2e2;color:#dc2626;">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                  </svg>
+                </div>
+                <h3>SISTEMA DE INFORMACIÓN DE SINIESTROS</h3>
+                <p>Estandariza las variables para el recojo y registro de información ante la ocurrencia de un siniestro, sobre la base del Formato Único de Registro de Accidentes de Tránsito (RD N° 020-2019-MTC/18).</p>
+              </div>
+              <div class="tech-card" style="border-left-color:#2563eb;">
+                <div class="tech-icon" style="background:#dbeafe;color:#2563eb;">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+                <h3>VISOR GEORREFERENCIADO</h3>
+                <p>Permite visualizar al público y a las entidades de rescate el lugar exacto del siniestro de tránsito.</p>
+              </div>
+              <div class="tech-card" style="border-left-color:#0ea5e9;">
+                <div class="tech-icon" style="background:#e0f2fe;color:#0284c7;">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                </div>
+                <h3>ANALÍTICA DE DATOS</h3>
+                <p>Permite interactuar con los indicadores de seguridad vial de cada localidad mediante herramientas de business intelligence.</p>
+              </div>
+              <div class="tech-card" style="border-left-color:#16a34a;">
+                <div class="tech-icon" style="background:#d1fae5;color:#059669;font-weight:700;font-size:18px;">T</div>
+                <h3>PORTAL WEB</h3>
+                <p>Orientado a una política de datos abiertos a fin de fomentar la investigación en materia de seguridad vial.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
-      
+
     </div>
   </div>
 </section>
@@ -156,26 +345,59 @@
   document.addEventListener("DOMContentLoaded", function() {
     const links = document.querySelectorAll('.sidebar-link');
     const items = document.querySelectorAll('.qs-content-item');
-    const mainTitle = document.getElementById('banner-title'); 
+    const mainTitle = document.getElementById('banner-title');
+    const banner = document.querySelector('.qs-banner');
+    const meta = document.querySelector('.qs-meta');
+    const metaText = document.getElementById('meta-text');
+    const iconWrap = document.querySelector('.qs-icon');
+
+    const DEFAULT_META = "PUBLICADO: 15 DE ENERO DE 2021 · ACTUALIZADO: JUNIO DE 2025";
+    const DEFAULT_BG = "#0355a3";
+
+    const icons = {
+      0: '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+      1: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2" fill="#c8102e" stroke="none"></circle></svg>',
+      2: '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path><circle cx="12" cy="12" r="3" fill="#ffffff" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="#0f172a" stroke="none"></circle></svg>',
+      "valores": '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="8.5 12 11 14.5 15.5 9" fill="none" stroke="#ffffff"></polyline></svg>'
+    };
+
+    const backgrounds = {
+      "valores": "linear-gradient(135deg, #7a1a3a 0%, #1e1b4b 100%)"
+    };
+
+    const metaTexts = {
+      "valores": "PUBLICADO: 20 DE MARZO DE 2021 · ACTUALIZADO: JUNIO DE 2025"
+    };
 
     links.forEach(link => {
       link.addEventListener('click', function() {
-        // Quitar activo de todos los enlaces
         links.forEach(l => l.classList.remove('active'));
-        // Agregar activo al seleccionado
         this.classList.add('active');
 
-        // Cambiar el título del banner azul
-        if(mainTitle) {
-          mainTitle.innerText = this.innerText.toUpperCase();
+        const tabIndex = this.getAttribute('data-tab');
+        const hideBanner = this.hasAttribute('data-hide-banner');
+
+        if (hideBanner) {
+          banner.classList.add('d-none');
+          if (meta) meta.classList.add('d-none');
+        } else {
+          banner.classList.remove('d-none');
+          if (meta) meta.classList.remove('d-none');
+          if (mainTitle) {
+            mainTitle.innerText = this.innerText.toUpperCase();
+          }
+          if (iconWrap && icons[tabIndex]) {
+            iconWrap.innerHTML = icons[tabIndex];
+          }
+          banner.style.background = backgrounds[tabIndex] || DEFAULT_BG;
+          if (metaText) {
+            metaText.textContent = metaTexts[tabIndex] || DEFAULT_META;
+          }
         }
 
-        // Ocultar todos los bloques de contenido
         items.forEach(item => item.classList.remove('active'));
-        // Mostrar el bloque correspondiente
-        const tabIndex = this.getAttribute('data-tab');
         const targetItem = document.getElementById(`about_item_${tabIndex}`);
-        if(targetItem) targetItem.classList.add('active');
+        if (targetItem) targetItem.classList.add('active');
       });
     });
   });
