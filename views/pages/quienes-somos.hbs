@@ -1,20 +1,182 @@
-<!-- nye section -->
-<section class="about_section">
-    <div class="container">
-		<div class="about_grid">
-			<div class="about_tabs">
-				{{#each contenido}}
-					<b class="tab_item" data-tab="{{@index}}">{{this.label}}</b>
-				{{/each}}
-			</div>
-			<div class="about_list">
-				{{#each contenido}}
-					<div id="about_item_{{@index}}" class="about_item">
-						<h1>{{this.label}}</h1>
-						<p>{{this.contenido}}</p>
-					</div>
-				{{/each}}
-			</div>	
-		</div>
+<style>
+  /* --- Estilos de la página Quiénes Somos --- */
+  .qs-section { padding: 60px 0; background: #fff; }
+
+  /* Menú lateral (Sidebar) */
+  .sidebar-menu { 
+    border-radius: 12px; 
+    overflow: hidden; 
+    background: #333e50;
+    box-shadow: var(--shadow);
+  }
+  .sidebar-link { 
+    display: block; 
+    padding: 16px 20px; 
+    color: #ffffff; 
+    text-decoration: none !important; 
+    font-family: "Barlow", sans-serif; 
+    font-weight: 700; 
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.08); 
+    transition: 0.2s ease; 
+    cursor: pointer;
+  }
+  .sidebar-link:last-child { border-bottom: none; }
+  .sidebar-link:hover { background: #475569; color: #fff; }
+  .sidebar-link.active { background: #c8102e; color: #fff; }
+
+  /* Banner Azul Principal (La tarjeta bonita) */
+  .qs-banner { 
+    background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%); 
+    border-radius: 16px; 
+    padding: 40px 50px; 
+    display: flex; 
+    align-items: center; 
+    gap: 30px; 
+    position: relative; 
+    overflow: hidden; 
+    margin-bottom: 20px; 
+    box-shadow: var(--shadow);
+  }
+  .qs-banner::before {
+    content: ''; position: absolute; bottom: -20px; left: 0; right: 0; height: 60px;
+    border-top: 2px solid rgba(255,255,255,0.1);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+  .qs-banner::after {
+    content: ''; position: absolute; bottom: 0px; left: -10%; right: -10%; height: 40px;
+    border-top: 2px solid rgba(255,255,255,0.05);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+  
+  .qs-icon { position: relative; z-index: 2; }
+  .qs-icon svg { width: 70px; height: 70px; stroke: #fcd34d; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  
+  .qs-text { position: relative; z-index: 2; }
+  .qs-text h1 { 
+    color: #ffffff; 
+    font-family: "Barlow Condensed", sans-serif; 
+    font-size: 42px; 
+    font-weight: 800; 
+    margin: 0 0 5px 0; 
+    text-transform: uppercase; 
+    letter-spacing: 0.02em;
+  }
+  .qs-text p { 
+    color: #e0e7ff; 
+    font-family: "Barlow", sans-serif; 
+    font-size: 18px; 
+    margin: 0; 
+  }
+
+  /* Barra de Metadatos (Fecha) */
+  .qs-meta { 
+    background: #f0f9ff; 
+    border: 1px solid #bae6fd; 
+    color: #0284c7; 
+    padding: 10px 16px; 
+    border-radius: 8px; 
+    font-family: "Barlow Semi Condensed", sans-serif; 
+    font-size: 13px; 
+    font-weight: 700; 
+    letter-spacing: 0.05em; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 8px; 
+    margin-bottom: 24px; 
+    text-transform: uppercase; 
+  }
+  .qs-meta svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* Contenido de texto */
+  .qs-content-item { display: none; }
+  .qs-content-item.active { display: block; }
+  .qs-content-item p, .qs-content-item span, .qs-content-item div { 
+    font-family: "Barlow", sans-serif; 
+    font-size: 16px; 
+    color: #334155; 
+    line-height: 1.7; 
+    margin-bottom: 16px; 
+  }
+
+  @media(max-width: 767px) {
+    .qs-banner { flex-direction: column; text-align: center; padding: 30px 20px; }
+  }
+</style>
+
+<section class="qs-section">
+  <div class="container wrap">
+    <div class="row">
+      
+      <div class="col-lg-3 col-md-4 mb-4">
+        <div class="sidebar-menu">
+          {{#each contenido}}
+            <b class="sidebar-link {{#if @first}}active{{/if}}" data-tab="{{@index}}">{{this.label}}</b>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="col-lg-9 col-md-8">
+        
+        <div class="qs-banner">
+          <div class="qs-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="qs-text">
+            <h1 id="banner-title">¿QUIÉNES SOMOS?</h1>
+            <p>Observatorio Nacional de Seguridad Vial</p>
+          </div>
+        </div>
+
+        <div class="qs-meta">
+          <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
+          PUBLICADO: 15 DE ENERO DE 2021 · ACTUALIZADO: JUNIO DE 2025
+        </div>
+
+        <div class="qs-content">
+          {{#each contenido}}
+            <div id="about_item_{{@index}}" class="qs-content-item {{#if @first}}active{{/if}}">
+              {{{this.contenido}}}
+            </div>
+          {{/each}}
+        </div>
+
+      </div>
+      
     </div>
+  </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const links = document.querySelectorAll('.sidebar-link');
+    const items = document.querySelectorAll('.qs-content-item');
+    const mainTitle = document.getElementById('banner-title'); 
+
+    links.forEach(link => {
+      link.addEventListener('click', function() {
+        // Quitar activo de todos los enlaces
+        links.forEach(l => l.classList.remove('active'));
+        // Agregar activo al seleccionado
+        this.classList.add('active');
+
+        // Cambiar el título del banner azul
+        if(mainTitle) {
+          mainTitle.innerText = this.innerText.toUpperCase();
+        }
+
+        // Ocultar todos los bloques de contenido
+        items.forEach(item => item.classList.remove('active'));
+        // Mostrar el bloque correspondiente
+        const tabIndex = this.getAttribute('data-tab');
+        const targetItem = document.getElementById(`about_item_${tabIndex}`);
+        if(targetItem) targetItem.classList.add('active');
+      });
+    });
+  });
+</script>

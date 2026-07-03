@@ -23,8 +23,8 @@
   .hero .btns { margin-top: 28px; display: flex; gap: 14px; flex-wrap: wrap; opacity: 0; animation: rise .7s .6s forwards; }
   .hero .btn-hero { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 15px; padding: 13px 24px; border-radius: 9px; cursor: pointer; border: 2px solid transparent; transition: .2s; display: inline-flex; gap: 9px; align-items: center; text-decoration: none; }
   .btn-white { background: #fff; color: var(--navy); } .btn-white:hover { background: var(--navy); color: #fff; text-decoration: none; }
-  .btn-ghost { border-color: rgba(255,255,255,.5); color: #fff; } .btn-ghost:hover { background: #fff; color: var(--navy); text-decoration: none; }
-  @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  .hero .btn-ghost { border: 2px solid rgba(255,255,255,.5); color: #fff; }
+  .hero .btn-ghost:hover { background: #fff; color: var(--navy); border-color: #fff; text-decoration: none; }  @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
   
   .hero-capsules { list-style: none; margin: 0; padding: 0; position: absolute; z-index: 5; left: 50%; transform: translateX(-50%); bottom: 26px; display: flex; gap: 8px; }
   .hero-capsules .hero-capsule { box-sizing: border-box; width: 44px; height: 5px; margin: 0; padding: 0; border: none; border-radius: 999px; background: rgba(255,255,255,.32); overflow: hidden; cursor: pointer; position: relative; opacity: 1; text-indent: -9999px; transition: background .2s; }
@@ -61,7 +61,8 @@
             <h1>Datos que <em>salvan vidas</em> en las vías del Perú</h1>
             <p>El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre los siniestros viales para fortalecer las políticas de prevención.</p>
             <div class="btns">
-              <a class="btn-hero btn-white" href="#siniestralidad">Ver cifras →</a>
+              <a class="btn-hero btn-white" href="#siniestralidad">Ver cifras 2025 →</a>
+              <a class="btn-hero btn-ghost" href="#mapa">Mapa de Siniestros</a>
             </div>
           </div>
         </div>

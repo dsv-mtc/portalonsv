@@ -94,28 +94,31 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 
 	// 2. Quiénes somos (hardcoded dropdown)
 	var qsLabel = secondary_navigation ? 'Who we are' : 'Quiénes somos';
+	var qsActive = url_selected === '/quienes-somos' || url_selected === '/en/quienes-somos' ? 'add-color' : '';
 	var qsItems = secondary_navigation
 		? [
-			{ label: 'Who we are?', url: '#' },
-			{ label: 'Mission', url: '#' },
-			{ label: 'Vision', url: '#' },
-			{ label: 'Values and Tech Components', url: '#', wrap: true }
+			{ label: 'Who we are?', url: '/en/quienes-somos' },
+			{ label: 'Mission', url: '/en/quienes-somos' },
+			{ label: 'Vision', url: '/en/quienes-somos' },
+			{ label: 'Values', url: '/en/quienes-somos' },
+			{ label: 'Tech Components', url: '/en/quienes-somos', wrap: true }
 		]
 		: [
-			{ label: '¿Quienes somos?', url: '#' },
-			{ label: 'Misión', url: '#' },
-			{ label: 'Visión', url: '#' },
-			{ label: 'Valores', url: '#' },
-			{ label: 'Componentes Tecnológicos', url: '#', wrap: true }
+			{ label: '¿Quienes somos?', url: '/quienes-somos' },
+			{ label: 'Misión', url: '/quienes-somos' },
+			{ label: 'Visión', url: '/quienes-somos' },
+			{ label: 'Valores', url: '/quienes-somos' },
+			{ label: 'Componentes Tecnológicos', url: '/quienes-somos', wrap: true }
 		];
 	htmlMenu += `
-		<li class="nav-item nav-special dropdown">
+		<li class="nav-item nav-special ${qsActive} dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${qsLabel}</a>
 			<div class="dropdown-menu">${qsItems.map(renderDropdownItem).join('')}</div>
 		</li>`;
 
 	// 3. Comunicaciones (hardcoded dropdown)
 	var commLabel = secondary_navigation ? 'Communications' : 'Comunicaciones';
+	var commActive = url_selected.startsWith('/comunicaciones/') || url_selected.startsWith('/en/comunicaciones/') ? 'add-color' : '';
 	var commItems = secondary_navigation
 		? [
 			{ label: 'News', url: '/en/comunicaciones/noticias' },
@@ -128,14 +131,15 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 			{ label: 'Eventos', url: '/comunicaciones/eventos' }
 		];
 	htmlMenu += `
-		<li class="nav-item nav-special dropdown">
+		<li class="nav-item nav-special ${commActive} dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${commLabel}</a>
 			<div class="dropdown-menu">${commItems.map(renderDropdownItem).join('')}</div>
 		</li>`;
 
 	// 4. Publicaciones (Ghost)
-	var pubGhost = findGhostCI('Publicaciones') || findGhostCI('publicaciones');
-	if (secondary_navigation && !pubGhost) pubGhost = findGhostCI('Publications') || findGhostCI('publications');
+	var pubGhost = secondary_navigation
+		? findGhostCI('publications') || findGhostCI('Publications') || findGhostCI('Publicaciones') || findGhostCI('publicaciones')
+		: findGhostCI('Publicaciones') || findGhostCI('publicaciones') || findGhostCI('publications') || findGhostCI('Publications');
 	if (pubGhost) htmlMenu += renderGhostItem(pubGhost);
 
 	// 5. Aplicaciones (hardcoded dropdown)
@@ -146,24 +150,33 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 	var sratLabelItem = sratGhost ? sratGhost.label : 'SRAT';
 	var sratUrl = sratGhost ? sratGhost.url : '#';
 	var sratTarget = setTarget(sratGhost ? sratGhost.label : 'srat');
+	var appActive = (url_selected === '/analitica' || url_selected === '/analitica/' ||
+		url_selected === '/srat' || url_selected === '/srat/' ||
+		url_selected === '/datosabiertos' || url_selected.startsWith('/datosabiertos/') ||
+		url_selected === '/en/analitica' || url_selected === '/en/analitica/' ||
+		url_selected === '/en/srat' || url_selected === '/en/srat/' ||
+		url_selected === '/en/datosabiertos' || url_selected.startsWith('/en/datosabiertos/'))
+		? 'add-color' : '';
 	htmlMenu += `
-		<li class="nav-item nav-special dropdown">
+		<li class="nav-item nav-special ${appActive} dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${appLabel}</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${appGhost ? appGhost.url : '#'}" target="${appGhost ? setTarget(appGhost.label) : '_self'}">${appLabelItem}</a>
 				<a class="dropdown-item" href="${sratUrl}" target="${sratTarget}">${sratLabelItem}</a>
-				<a class="dropdown-item" href="/datosabiertos" target="_self">Datos abiertos</a>
+				<a class="dropdown-item" href="/datosabiertos" target="_self">${secondary_navigation ? 'Open Data' : 'Datos abiertos'}</a>
 			</div>
 		</li>`;
 
 	// 6. Normas legales (Ghost)
-	var normasGhost = findGhostCI('Normas legales') || findGhostCI('normas legales');
-	if (secondary_navigation && !normasGhost) normasGhost = findGhostCI('Legal Standards') || findGhostCI('legal standards');
+	var normasGhost = secondary_navigation
+		? findGhostCI('laws') || findGhostCI('Normas legales') || findGhostCI('normas legales')
+		: findGhostCI('Normas legales') || findGhostCI('normas legales') || findGhostCI('laws');
 	if (normasGhost) htmlMenu += renderGhostItem(normasGhost);
 
 	// 7. Regiones (Ghost)
-	var regionGhost = findGhostCI('Regiones') || findGhostCI('regiones');
-	if (secondary_navigation && !regionGhost) regionGhost = findGhostCI('Regions') || findGhostCI('regions');
+	var regionGhost = secondary_navigation
+		? findGhostCI('regions') || findGhostCI('Regions') || findGhostCI('Regiones') || findGhostCI('regiones')
+		: findGhostCI('Regiones') || findGhostCI('regiones') || findGhostCI('regions') || findGhostCI('Regions');
 	if (regionGhost) htmlMenu += renderGhostItem(regionGhost);
 
 	// 8. Orientación a víctimas (hardcoded link)
@@ -182,8 +195,8 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 	// 10. Educación Vial (dropdown)
 	if (secondary_navigation) {
 		htmlMenu += `
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Vial Education</a>
+			<li class="nav-item nav-special ${getMenuSelected2(url_selected)} dropdown">
+				<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Road Education</a>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" href="/en/webinars" target="_self">Webinars</a>
 					<a class="dropdown-item" href="/en/capacitaciones" target="_self">Trainings</a>
@@ -205,7 +218,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 	}
 
 	// Resto de items Ghost no incluidos arriba
-	var skip = ['inicio', 'home', 'analítica', 'analytics', 'noticias y eventos', 'news and events', 'srat', 'peru-in-world', 'contacto', 'contact', 'Publicaciones', 'publicaciones', 'Publications', 'publications', 'Normas legales', 'normas legales', 'Legal Standards', 'legal standards', 'Regiones', 'regiones', 'Regions', 'regions'];
+	var skip = ['inicio', 'home', 'analítica', 'analytics', 'noticias y eventos', 'news and events', 'srat', 'peru-in-world', 'PERU-IN-world', 'contacto', 'contact', 'Publicaciones', 'publicaciones', 'Publications', 'publications', 'Normas legales', 'normas legales', 'Legal Standards', 'legal standards', 'laws', 'Regiones', 'regiones', 'Regions', 'regions'];
 	menuList.forEach(function (menuObj) {
 		if (skip.indexOf(menuObj.label) !== -1) return;
 		var target = setTarget(menuObj.label);
@@ -217,10 +230,13 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 }
 
 function getMenuSelected2(url_selected) {
-	if (url_selected === '/webinars') {
+	if (url_selected === '/webinars' || url_selected === '/en/webinars') {
 		return "add-color"
 	}
-	if (url_selected === '/capacitaciones') {
+	if (url_selected === '/capacitaciones' || url_selected === '/en/capacitaciones') {
+		return "add-color"
+	}
+	if (url_selected.startsWith('/peru-in-world') || url_selected.startsWith('/en/peru-in-world')) {
 		return "add-color"
 	}
 }

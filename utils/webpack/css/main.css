@@ -459,9 +459,9 @@ button:focus {
     text-align: right;
 }
 .logo-sm img {
-    width: 170px;
+    width: 120px;
     position: relative;
-    top: 22px;
+    top: 15px;
 }
 .nav-rsp {
     width: 100%;
@@ -1066,6 +1066,44 @@ footer {
 }
 .logo-img-open-data{
     width: 221px;
+}
+
+.navbar-brand-text {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand-text {
+    display: flex;
+    align-items: center;
+    transform: translateX(40px) translateY(8px);
+}
+
+.logo-icon-img {
+    width: auto;
+    height: 54px;
+    margin-left: 20px;
+}
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 12px;
+    line-height: 1.1;
+}
+.logo-text-title {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: #14213D;
+    text-transform: uppercase;
+}
+.logo-text-subtitle {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: #ee1d27;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
 .mapouter { position:relative;text-align:right;height:500px;width:100%;}
