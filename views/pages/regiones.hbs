@@ -57,7 +57,7 @@
 							Consejo Regional de Seguridad Vial
 						</h3>
 						<span
-							style="display: block; text-align: center; color: #ee1d27;"
+							style="display: block; text-align: left; color: white; margin-left: 24px; font-weight: bold;"
 							id="region-name"
 							class="crsv-region"
 						></span>
@@ -105,9 +105,51 @@
 				</div>
 			</div>
 
-		</div>
+</div>
 	</div>
 </section>
+
+<script>
+function updateRegionName(regionId){
+    const regionNameElement = document.getElementById('region-name');
+    if(regionNameElement){
+        regionNameElement.textContent = regionId;
+    }
+    
+    const breadcrumbElement = document.querySelector('.crumb');
+    if(breadcrumbElement){
+        breadcrumbElement.innerHTML = 'Perú <span class="sep">›</span> ' + regionId;
+    }
+}
+
+// Listener para el select de departamentos
+const selectRegion = document.getElementById('select-region');
+if(selectRegion){
+    selectRegion.addEventListener('change', function(e){
+        setTimeout(()=>{
+            updateRegionName(e.target.value);
+        }, 50);
+    });
+}
+
+// Usar delegación de eventos en el contenedor del mapa
+document.querySelector('.gmap_canvas').addEventListener('click', function(e){
+    if(e.target.tagName === 'path' && e.target.id){
+        setTimeout(()=>{
+            updateRegionName(e.target.id);
+        }, 50);
+    }
+});
+
+// Inicializar con Lima al cargar
+window.addEventListener('load', function(){
+    if(location.href.includes('regiones')){
+        setTimeout(()=>{
+            updateRegionName('Lima');
+        }, 300);
+    }
+});
+</script>
 
 <!--Sección de noticias de regiones-->
 <section class="rsp-noti-sec rsp-wrap">

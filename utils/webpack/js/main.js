@@ -215,6 +215,8 @@ function getMapFromForm(){
 				document.getElementById('telefono').value=response.regionData.TELEFONO;
 				document.getElementById('email').value=response.regionData['E-MAIL'];
 				setImage(response.regionData.REGION);
+				showRegionLabel(response.regionData.REGION);
+				updateRegionName(response.regionData.REGION);
 				document.getElementById('noti').innerHTML=response.template;
 				$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
 				carousel();
@@ -239,6 +241,7 @@ function getMap(){
 		document.getElementById('email').value='jpretel@regionlima.gob.pe';
 		setImage('Lima');
 		showRegionLabel('Lima');
+		updateRegionName('Lima');
 	}
 	
 	//For click event
@@ -259,6 +262,7 @@ function getMap(){
 			$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
 			carousel();
 			showRegionLabel(e.target.id);
+			updateRegionName(e.target.id);
 		})
 		.catch(error=>console.error(error))
 	})); 
@@ -284,6 +288,22 @@ function showRegionLabel(regionId){
 		label.style.display = 'block';
 		label.style.left = (pathRect.left - svgRect.left + pathRect.width / 2) + 'px';
 		label.style.top = (pathRect.top - svgRect.top) + 'px';
+	}
+}
+
+/**
+ * @description: Actualiza el nombre del departamento seleccionado en la sección de info
+ * @param {String} regionId: ID del departamento seleccionado
+ */
+function updateRegionName(regionId){
+	const regionNameElement = document.getElementById('region-name');
+	if(regionNameElement){
+		regionNameElement.textContent = regionId;
+	}
+	
+	const breadcrumbElement = document.querySelector('.crumb');
+	if(breadcrumbElement){
+		breadcrumbElement.innerHTML = `Perú <span class="sep">›</span> ${regionId}`;
 	}
 }
 /**
