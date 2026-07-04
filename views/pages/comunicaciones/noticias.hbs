@@ -28,7 +28,7 @@
             {{> noticias-eventos/noticias-eventos-card-body lang=../lang}}
         {{/if}}
       {{/each}}
-      <style>
+<style>
         .custom-pag-wrapper {
           gap: 8px;
         }
@@ -41,7 +41,7 @@
           justify-content: center;
           font-weight: bold;
           font-size: 17px;
-          border: none;
+          border: 1px solid transparent;
           background: transparent;
           color: #1d3557;
           transition: all 0.3s ease;
@@ -49,13 +49,19 @@
           cursor: pointer;
         }
         .custom-pag-btn:hover {
-          background-color: #f3f4f6;
-          color: #1d3557;
+          background-color: transparent;
+          color: #C8102E;
+          border: 1px solid #C8102E;
         }
         .custom-pag-btn.active {
           background-color: #C8102E;
           color: white;
           box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .custom-pag-btn.active:hover {
+          background-color: #C8102E;
+          color: white;
+          border: 1px solid transparent;
         }
         .custom-pag-btn i {
           font-size: 20px;
