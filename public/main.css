@@ -14195,3 +14195,10 @@ border: 1px solid #a2a2a2;
 .rfield .v{font-size:14.5px;color:#1a1a1a;display:block;border:none !important;background:none !important;height:auto !important;padding:0 !important}
 .rfield a.v{color:#1d3557;text-decoration:none}
 .rfield a.v:hover{text-decoration:underline}
+
+.crsv-card{
+    height: 100%;
+}
+.crsv-map-card svg#svg2985{
+    width: 100% !important;
+}
