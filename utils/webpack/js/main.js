@@ -205,6 +205,12 @@ function getMapFromForm(){
 				return results.json();
 			})
 			.then(response=>{
+				document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
+				var opt=e.target.options[e.target.selectedIndex];
+				var mapId=opt.getAttribute('data-map')||opt.value;
+				if(document.getElementById(mapId)){
+					document.getElementById(mapId).classList.replace('map','map-selected');
+				}
 				document.getElementById('nombre').value=response.regionData.NOMBRE;
 				document.getElementById('telefono').value=response.regionData.TELEFONO;
 				document.getElementById('email').value=response.regionData['E-MAIL'];
