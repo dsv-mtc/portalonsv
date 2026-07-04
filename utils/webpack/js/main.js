@@ -238,6 +238,7 @@ function getMap(){
 		document.getElementById('telefono').value='943990699';
 		document.getElementById('email').value='jpretel@regionlima.gob.pe';
 		setImage('Lima');
+		showRegionLabel('Lima');
 	}
 	
 	//For click event
@@ -257,9 +258,33 @@ function getMap(){
 			document.getElementById('noti').innerHTML=response.template;
 			$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
 			carousel();
+			showRegionLabel(e.target.id);
 		})
 		.catch(error=>console.error(error))
 	})); 
+}
+
+/**
+ * @description: Muestra una etiqueta con el nombre del departamento seleccionado sobre el mapa
+ * @param {String} regionId: ID del departamento seleccionado
+ */
+function showRegionLabel(regionId){
+	const label = document.getElementById('region-label');
+	const pathElement = document.getElementById(regionId);
+	
+	if(label && pathElement){
+		const bbox = pathElement.getBBox();
+		const svgRect = pathElement.ownerSVGElement.getBoundingClientRect();
+		const pathRect = pathElement.getBoundingClientRect();
+		
+		const centerX = (bbox.x + bbox.width / 2) * (svgRect.width / pathElement.ownerSVGElement.viewBox.baseVal.width);
+		const centerY = (bbox.y + bbox.height / 2) * (svgRect.height / pathElement.ownerSVGElement.viewBox.baseVal.height);
+		
+		label.textContent = regionId;
+		label.style.display = 'block';
+		label.style.left = (pathRect.left - svgRect.left + pathRect.width / 2) + 'px';
+		label.style.top = (pathRect.top - svgRect.top) + 'px';
+	}
 }
 /**
  * @description: Función encargada de validar si la imagen de la región seleccionada existe; si existe la despliega, y sino invoca 

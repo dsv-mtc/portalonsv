@@ -164,9 +164,23 @@ svg g g path.map {
     fill-opacity:1
 }
 svg g g path.map-selected{
-    fill:blue !important;
-    stroke:blue;
+    fill:#C8102E !important;
+    stroke:#C8102E;
     /*transition: all ease 0.3s;*/
+}
+
+.region-label{
+    position: absolute;
+    background: #0053bd;
+    color: white;
+    border-radius: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    pointer-events: none;
+    transform: translate(-50%, -100%);
+    z-index: 1000;
+    white-space: nowrap;
 }
 
 #svg2985{
