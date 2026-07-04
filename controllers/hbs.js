@@ -428,6 +428,29 @@ function parseIcon(categoryValue) {
 	return iconToSend;
 }
 
+function normalizeText(str) {
+	return (str || "")
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toUpperCase()
+		.trim();
+}
+
+function parseRegion(tags) {
+	var regionesList = require('../utils/regiones').REGIONES;
+	if (!tags || !Array.isArray(tags)) return 'Regional';
+	var match = null;
+	tags.forEach(function (tag) {
+		if (match) return;
+		var tagNormalized = normalizeText(tag.name);
+		var found = regionesList.find(function (r) {
+			return normalizeText(r.REGION) === tagNormalized;
+		});
+		if (found) match = tag.name; // se devuelve el nombre TAL CUAL viene de Ghost (ya con su tilde/mayúscula correcta), no el de regiones.js
+	});
+	return match || 'Regional';
+}
+
 function _createTemplate(foldername, filename) {
 	const basePathPartial = path.join(__dirname, '../views/partials/');
 	let template = fs.readFileSync(`${basePathPartial}${foldername}/${filename}.hbs`, 'utf-8')
@@ -486,7 +509,10 @@ var hbs = exphbs.create({
 		parseClassToDownloadCol: parseClassToDownloadCol,
 		parseClassToDownload: parseClassToDownload,
 		checkTagsVisible: checkTagsVisible,
-		ifCond: ifCond
+		ifCond: ifCond,
+		parseCategory: parseCategory,
+		parseIcon: parseIcon,
+		parseRegion: parseRegion,
 	}
 });
 
@@ -511,7 +537,10 @@ hbs2.registerHelper({
 	parseUrlToDownload: parseUrlToDownload,
 	parseClassToDownloadCol: parseClassToDownloadCol,
 	parseClassToDownload: parseClassToDownload,
-	checkTagsVisible: checkTagsVisible
+	checkTagsVisible: checkTagsVisible,
+	parseCategory: parseCategory,
+	parseIcon: parseIcon,
+	parseRegion: parseRegion,
 })
 
 

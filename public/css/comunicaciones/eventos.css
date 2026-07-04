@@ -79,7 +79,7 @@
 }
 
 .events-section .calendar .fc-col-header-cell div {
-  background-color: #ee1d27;
+  background-color: #C8102E;
   font-weight: bold;
   text-transform: capitalize;
 }
@@ -176,7 +176,7 @@
 }
 
 .events-section .events .results .card .card-body .date {
-  color: #ee1d27;
+  color: #C8102E;
   font-weight: bold;
   display: flex;
   flex-direction: column;
