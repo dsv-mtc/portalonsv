@@ -122,13 +122,34 @@ function updateRegionName(regionId){
     }
 }
 
+function showRegionLabel(regionId){
+    const label = document.getElementById('region-label');
+    const pathElement = document.getElementById(regionId);
+    
+    if(label && pathElement){
+        const svgContainer = document.querySelector('.gmap_canvas');
+        const svgRect = svgContainer.getBoundingClientRect();
+        const pathRect = pathElement.getBoundingClientRect();
+        
+        label.textContent = regionId;
+        label.style.display = 'block';
+        label.style.left = (pathRect.left - svgRect.left + pathRect.width / 2) + 'px';
+        label.style.top = (pathRect.top - svgRect.top + pathRect.height / 2) + 'px';
+    }
+}
+
 // Listener para el select de departamentos
 const selectRegion = document.getElementById('select-region');
 if(selectRegion){
     selectRegion.addEventListener('change', function(e){
-        setTimeout(()=>{
-            updateRegionName(e.target.value);
-        }, 50);
+        const regionName = e.target.value;
+        const pathElement = document.getElementById(regionName);
+        if(pathElement){
+            setTimeout(()=>{
+                updateRegionName(regionName);
+                showRegionLabel(regionName);
+            }, 50);
+        }
     });
 }
 
@@ -137,6 +158,7 @@ document.querySelector('.gmap_canvas').addEventListener('click', function(e){
     if(e.target.tagName === 'path' && e.target.id){
         setTimeout(()=>{
             updateRegionName(e.target.id);
+            showRegionLabel(e.target.id);
         }, 50);
     }
 });
@@ -146,6 +168,10 @@ window.addEventListener('load', function(){
     if(location.href.includes('regiones')){
         setTimeout(()=>{
             updateRegionName('Lima');
+            const limaPath = document.getElementById('Lima');
+            if(limaPath){
+                showRegionLabel('Lima');
+            }
         }, 300);
     }
 });
