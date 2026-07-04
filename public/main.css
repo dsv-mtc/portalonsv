@@ -12765,8 +12765,8 @@ li>.dropdown-menu{
 }
 svg g g path.map:hover{
     cursor: pointer;
-    fill:blue;
-    stroke:blue;
+    fill:#C8102E;
+    stroke:#C8102E;
     transition: all ease 0.3s;
 }
 
