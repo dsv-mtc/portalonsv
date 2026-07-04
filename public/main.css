@@ -14177,3 +14177,21 @@ border: 1px solid #a2a2a2;
 .new-card { position: relative; display: flex; flex-direction: column; height: 100%; border-radius: 16px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .new-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(20,33,61,.18); }
 .card-badge { position: absolute; top: 16px; left: 16px; background: #ffffff; color: #1d3557; font-family: "Roboto Condensed", sans-serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; padding: 5px 12px; border-radius: 6px; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+
+.crsv-card{background:#fff;border:1px solid #dee2e6;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08);display:flex;flex-direction:column}
+.crsv-head{background:linear-gradient(120deg,#C8102E,#9E0C24);color:#fff;padding:22px 26px}
+.crsv-head .crumb{font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:12.5px;color:#ffd9df;display:flex;align-items:center;gap:8px}
+.crsv-head .crumb .sep{opacity:.7}
+.crsv-title{font-size:22px !important;line-height:1.15 !important;color:#fff !important;text-transform:uppercase;margin-top:8px !important;margin-bottom:0 !important}
+.crsv-region{font-size:26px;color:#fff;text-transform:uppercase;line-height:1;margin-top:4px;font-weight:800}
+.crsv-body{padding:22px 26px}
+.crsv-logo{display:flex;justify-content:center;padding:2px 0 18px}
+.crsv-logo img{width:80px !important}
+.rfield{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #dee2e6}
+.rfield:last-child{border-bottom:none}
+.rfield .ic{width:38px;height:38px;border-radius:10px;background:#fdeef0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rfield .ic i{color:#C8102E;font-size:15px}
+.rfield .k{display:block;font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.rfield .v{font-size:14.5px;color:#1a1a1a;display:block;border:none !important;background:none !important;height:auto !important;padding:0 !important}
+.rfield a.v{color:#1d3557;text-decoration:none}
+.rfield a.v:hover{text-decoration:underline}
