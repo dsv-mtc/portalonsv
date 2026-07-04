@@ -12783,8 +12783,8 @@ svg g g path.map {
     fill-opacity:1
 }
 svg g g path.map-selected{
-    fill:blue !important;
-    stroke:blue;
+    fill:#C8102E !important;
+    stroke:#C8102E;
     /*transition: all ease 0.3s;*/
 }
 
