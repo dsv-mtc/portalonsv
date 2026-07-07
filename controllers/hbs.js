@@ -181,13 +181,15 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 
 	// 8. Orientación a víctimas (hardcoded link)
 	var victimLabel = secondary_navigation ? 'Victim Support' : 'Orientación a víctimas';
-	htmlMenu += '<li class="nav-item nav-special"><a class="nav-link" href="/orientacion-victimas">' + victimLabel + '</a></li>';
+	var victimActive = url_selected === '/orientacion-victimas' || url_selected === '/en/orientacion-victimas' ? 'add-color' : '';
+	htmlMenu += '<li class="nav-item nav-special ' + victimActive + '"><a class="nav-link" href="/orientacion-victimas">' + victimLabel + '</a></li>';
 
 	// 9. Programas (hardcoded dropdown)
 	var progLabel = secondary_navigation ? 'Programs' : 'Programas';
 	var progItemLabel = secondary_navigation ? 'Road Environments' : 'Entornos viales';
+	var progActive = url_selected.includes('entornos-viales') || url_selected.includes('road-environments') ? 'add-color' : '';
 	htmlMenu += `
-		<li class="nav-item nav-special dropdown">
+		<li class="nav-item nav-special ${progActive} dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${progLabel}</a>
 			<div class="dropdown-menu"><a class="dropdown-item" href="#">${progItemLabel}</a></div>
 		</li>`;

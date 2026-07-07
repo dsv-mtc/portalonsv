@@ -675,12 +675,9 @@ routes.get("/datosabiertos/:page?", async (req, res) => {
 		next: (page + 1) > pages ? null : (page + 1),
 		prev: (page - 1) < 1 ? null : (page - 1),
 		url_page: 'datosabiertos'
-	}
+    }
 
-	res.locals.enabledFooter = false;
-	res.locals.enabledNavigation = false;
-
-	const { data: datosAbiertos, success } = await mysql.getDatosAbiertos({
+    const { data: datosAbiertos, success } = await mysql.getDatosAbiertos({
 		paginate: true,
 		page,
 		pageLength,
