@@ -629,22 +629,6 @@
     background: linear-gradient(90deg, rgba(30,41,59,0.85) 0%, rgba(30,41,59,0.5) 50%, rgba(30,41,59,0.1) 100%); 
     z-index: 1; 
   }
-  .promo-badge { 
-    position: absolute; 
-    top: 20px; 
-    right: 20px; 
-    background: #fff; 
-    color: var(--navy); 
-    font-size: 11px; 
-    font-weight: 800; 
-    padding: 6px 12px; 
-    border-radius: 6px; 
-    z-index: 2; 
-    font-family: "Barlow Semi Condensed", sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
   .promo-content { 
     position: relative; 
     z-index: 2; 
@@ -707,7 +691,6 @@
       <div class="col-lg-6 mb-4 mb-lg-0">
         <div class="promo-card" style="background-image: url('/img/fondo-educacion.png');">
           <div class="promo-overlay"></div>
-          <span class="promo-badge">Imagen Referencial</span>
           
           <div class="promo-content">
             <div class="eyebrow">Formación</div>
@@ -721,7 +704,6 @@
       <div class="col-lg-6">
         <div class="promo-card" style="background-image: url('/img/fondo-revista.png');">
           <div class="promo-overlay"></div>
-          <span class="promo-badge">Imagen Referencial</span>
           
           <div class="promo-content">
             <div class="eyebrow">Publicación</div>
@@ -791,7 +773,6 @@
   .sc-footer .btn-yt { background: #FF0000; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; text-transform: uppercase; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; }
   .sc-footer .btn-yt:hover { background: #cc0000; }
 
-  /* --- Tarjeta estática de X: vista previa fija del perfil real (@onsvPE) --- */
   .x-profile-card { display: flex; flex-direction: column; height: 100%; min-height: 400px; background: #fff; }
   .x-profile-banner { position: relative; height: 90px; background: linear-gradient(120deg, #14213D 0%, #14213D 55%, #C8102E 100%); flex-shrink: 0; overflow: hidden; }
   .x-profile-banner::after { content: ""; position: absolute; right: -20px; top: -30px; width: 140px; height: 140px; border: 14px solid rgba(255,255,255,.14); border-radius: 50%; }
