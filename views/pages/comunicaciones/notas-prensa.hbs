@@ -7,7 +7,7 @@
 					Notas de Prensa
 				</h3>
 			</div>
-			<div class="col-md-8 mx-auto">
+			<div class="col-md-5 ml-auto">
 				<div class="input-group">
 					<input type="text" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" >
 					<div class="input-group-append">
@@ -23,11 +23,7 @@
 		</div>
 		<div class="row" id="default">
 			{{#each post}}
-				{{#if @first}}
-					{{> noticias-eventos/noticias-eventos-card-head lang=../lang}}
-					{{else}}
-						{{> noticias-eventos/noticias-eventos-card-body lang=../lang}}
-				{{/if}}
+				{{> noticias-eventos/noticias-eventos-card-body lang=../lang}}
 			{{/each}}
 			<style>
         .custom-pag-wrapper {
@@ -36,31 +32,46 @@
         .custom-pag-btn {
           width: 42px;
           height: 42px;
-          border-radius: 50%;
+          border-radius: 10px;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: bold;
           font-size: 17px;
-          border: none;
+          border: 1px solid transparent;
           background: transparent;
-          color: #4b5563;
+          color: #1d3557;
           transition: all 0.3s ease;
           text-decoration: none;
           cursor: pointer;
         }
         .custom-pag-btn:hover {
-          background-color: #f3f4f6;
-          color: #1d3557;
+          background-color: transparent;
+          color: #C8102E;
+          border: 1px solid #C8102E;
         }
         .custom-pag-btn.active {
-          background-color: #1d3557;
+          background-color: #C8102E;
           color: white;
           box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .custom-pag-btn.active:hover {
+          background-color: #C8102E;
+          color: white;
+          border: 1px solid transparent;
         }
         .custom-pag-btn i {
           font-size: 20px;
         }
+
+        .pd-desc .cl {
+          font-family: "Barlow Semi Condensed", sans-serif;
+          font-weight: bold;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
       </style>
 
       <div class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">

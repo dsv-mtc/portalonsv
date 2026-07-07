@@ -685,12 +685,13 @@ routes.post("/search", async (req, res) => {
 	const slug = req.body["search"];
 	const lang = req.body["lang"];
 	const filter = req.body["filter"];
+	const featured = filter !== 'notas-prensa';
 
 	const results = await apiGhost.getSearchPosts(`tags:${filter}`, slug);
 
 	if (results.success) {
 		const { page, prev, next, step } = req.body;
-		const searchRendered = utils.renderNoticiasEventosTemplate({ post: results.posts, lang, keyword: req.body['search'], page, prev, next, step })
+		const searchRendered = utils.renderNoticiasEventosTemplate({ post: results.posts, lang, keyword: req.body['search'], page, prev, next, step, featured })
 		res.send({ success: true, posts: searchRendered });
 	} else {
 		res.send({ success: false })
