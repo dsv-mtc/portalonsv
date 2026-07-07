@@ -1,0 +1,79 @@
+<section class="rsp-wrap victims-section">
+	<div class="container">
+
+		<div class="victims-tab-row">
+			<span class="victims-tab">Contáctenos</span>
+		</div>
+
+		<p class="victims-lead">
+			El Observatorio Nacional de Seguridad Vial es un mecanismo de articulación multisectorial gestionado por la Dirección de Seguridad Vial del MTC. Escríbenos y te responderemos a la brevedad.
+		</p>
+
+		<div class="victims-layout">
+
+			<div class="victims-form-card">
+				<h2>Envíanos un mensaje</h2>
+				<p class="victims-sub">Todos los campos son obligatorios</p>
+
+				<form id="victimsContactForm">
+					<div class="victims-field">
+						<input id="vN" placeholder=" ">
+						<label>Nombre completo</label>
+					</div>
+					<div class="victims-field">
+						<input id="vE" type="email" placeholder=" ">
+						<label>Correo electrónico</label>
+					</div>
+					<div class="victims-field">
+						<input id="vA" placeholder=" ">
+						<label>Asunto</label>
+					</div>
+					<div class="victims-field">
+						<textarea id="vM" placeholder=" "></textarea>
+						<label>Mensaje</label>
+					</div>
+					<div class="victims-err" id="vErr">Por favor completa todos los campos con datos válidos.</div>
+					<button type="submit" class="btn btn-rsp victims-submit">
+						Enviar mensaje <i class="fal fa-long-arrow-right pl-2"></i>
+					</button>
+				</form>
+			</div>
+
+			<div class="victims-side">
+				<h3>Datos de contacto</h3>
+
+				<div class="victims-ci">
+					<span class="ic"><i class="fas fa-map-marker-alt"></i></span>
+					<div><b>Dirección</b><span>Jr. Zorritos 1203, Cercado de Lima</span></div>
+				</div>
+
+				<div class="victims-ci">
+					<span class="ic"><i class="fas fa-phone"></i></span>
+					<div><b>Teléfono</b><span>(01) 615-7800</span></div>
+				</div>
+
+				<div class="victims-ci">
+					<span class="ic"><i class="fas fa-envelope"></i></span>
+					<div><b>Correo</b><span>onsv@mtc.gob.pe</span></div>
+				</div>
+
+				<div class="victims-ci">
+					<span class="ic"><i class="fas fa-clock"></i></span>
+					<div><b>Horario</b><span>Lunes a viernes · 9:00 a 18:00</span></div>
+				</div>
+
+				<div class="victims-map">
+					<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-77.0425%2C-12.0525%2C-77.0375%2C-12.0475&layer=mapnik&marker=-12.0500%2C-77.0400" frameborder="0"></iframe>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</section>
+
+<script>
+document.getElementById('victimsContactForm').addEventListener('submit', function(e) {
+	e.preventDefault();
+	// TODO: conectar con backend de envío de correo/formulario cuando esté definido
+});
+</script>

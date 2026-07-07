@@ -181,7 +181,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 
 	// 8. Orientación a víctimas (hardcoded link)
 	var victimLabel = secondary_navigation ? 'Victim Support' : 'Orientación a víctimas';
-	htmlMenu += '<li class="nav-item nav-special"><a class="nav-link" href="#">' + victimLabel + '</a></li>';
+	htmlMenu += '<li class="nav-item nav-special"><a class="nav-link" href="/orientacion-victimas">' + victimLabel + '</a></li>';
 
 	// 9. Programas (hardcoded dropdown)
 	var progLabel = secondary_navigation ? 'Programs' : 'Programas';

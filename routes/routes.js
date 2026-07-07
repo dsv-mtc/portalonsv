@@ -323,6 +323,12 @@ routes.get("/peru-in-world", async (req, res) => {
 	res.locals.enabledNavigation = false;
 	res.render("pages/peru-world");
 })
+
+/** ORIENTACION VICTIMAS */
+routes.get("/orientacion-victimas", (req, res) => {
+	res.render("pages/orientacion-victimas");
+});
+
 /**PUBLICACIONES */
 routes.get("/publicaciones/:page?", async (req, res) => {
 	const pageSize = 6;
@@ -419,6 +425,32 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 	}))
 
 	const tags = utils.filterTags(posts);
+
+	posts.forEach(post => {
+		if (post.tags) {
+			const categoryTag = post.tags.find(tag =>
+				!isYearRegExp.test(tag.slug) &&
+				!regiones.some(r => r.slug === tag.slug) &&
+				tag.slug !== 'publicaciones'
+			);
+			post.categoryTag = categoryTag ? categoryTag.name : null;
+
+			const regionTag = post.tags.find(tag =>
+				regiones.some(r => r.slug === tag.slug)
+			);
+			const regionData = regionTag ? regiones.find(r => r.slug === regionTag.slug) : null;
+			if (regionData) {
+				post.regionName = regionData.value;
+			}
+		}
+
+		if (!post.regionName) {
+			const regionFromText =
+				utils.extractDepartmentFromText(post.title, regiones) ||
+				utils.extractDepartmentFromText(post.custom_excerpt || post.excerpt, regiones);
+			post.regionName = regionFromText || 'Nacional';
+		}
+	});
 
 	res.render("pages/publicaciones", {
 		posts,

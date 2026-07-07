@@ -141,6 +141,19 @@ const deleteDiacritics = (text) => {
 		.normalize();
 }
 
+const extractDepartmentFromText = (text, regiones) => {
+	if (!text) return null;
+	const normalizedText = deleteDiacritics(text).toLowerCase();
+	const sortedRegiones = [...regiones].sort((a, b) => b.value.length - a.value.length);
+	for (const region of sortedRegiones) {
+		const normalizedRegion = deleteDiacritics(region.value).toLowerCase();
+		if (normalizedText.includes(normalizedRegion)) {
+			return region.value;
+		}
+	}
+	return null;
+}
+
 const serviceMap = (region, dataGhost) => {
 	let data = { regionData: {}, template: '' }
 	let condicion = region;
@@ -360,6 +373,7 @@ module.exports = {
 	unSubscribeUser: unSubscribeUser,
 	constants,
 	capitalizeNameRecursive,
+	extractDepartmentFromText,
 	saveDocument: saveDocument,
 	filterTags: filterTags,
 	renderTemplate,
