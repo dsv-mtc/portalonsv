@@ -14274,6 +14274,8 @@ border: 1px solid #a2a2a2;
 .pub-filterbox{background:#fff;border:1px solid #e3e7ef;border-radius:14px;padding:20px;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08)}
 .pub-filterbox #searchForm .input-group{margin-bottom:16px}
 
+.pub-filterbox .input-group-text{background:#1d3557;border-color:#1d3557;color:#fff}
+
 .pub-field{margin:0 0 14px}
 .pub-field label{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#14213D;display:block;margin:0 0 6px}
 .pub-field select.form-control{width:100%;height:auto;padding:10px 11px;border:1.5px solid #e3e7ef;border-radius:9px;font-family:"Barlow",sans-serif;font-size:14px;background:#fff;color:#1a1a1a}

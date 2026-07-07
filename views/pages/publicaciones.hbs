@@ -4,67 +4,74 @@
 
 <section class="publicaciones-section">
 
-	<div class="filters pub-filterbox">
+	<div>
+		<div class="pub-title">
+			<h1>Publicaciones</h1>
+		</div>
 
-		<form id="searchForm" method="GET">
+		<div class="filters pub-filterbox">
 
-			<div class="input-group mb-4">
-				<input type="text" id="title" name="title"
-				       class="form-control main-search"
-				       placeholder="{{t lang "buscar"}}"
-				       {{#if title}}
-				       	value="{{title}}"
-				       {{/if}}>
+			<form id="searchForm" method="GET">
 
-				<div class="input-group-append">
-					<button class="input-group-text search-input" type="submit">
-						<i class="fal fa-search"></i>
+				<div class="input-group mb-4">
+					<input type="text" id="title" name="title"
+					       class="form-control main-search"
+					       placeholder="{{t lang "buscar"}}"
+					       {{#if title}}
+					       	value="{{title}}"
+					       {{/if}}>
+
+					<div class="input-group-append">
+						<button class="input-group-text search-input" type="submit">
+							<i class="fal fa-search"></i>
+						</button>
+					</div>
+				</div>
+
+				<div class="pub-field">
+					<label for="categoria">Categoría</label>
+					<select name="categoria" id="categoria" class="form-control">
+						<option {{#if categoria}} {{else}} selected {{/if}} value=''>Selecione una categoría</option>
+						{{#each allTags}}
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
+						{{/each}}
+					</select>
+				</div>
+
+				<div class="pub-field">
+					<label for="region">Región</label>
+					<select name="region" id="region" class="form-control">
+						<option {{#if region}} {{else}} selected {{/if}} value=''>Selecione una región</option>
+						{{#each regiones}}
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.value}}</option>
+						{{/each}}
+					</select>
+				</div>
+
+				<div class="pub-field">
+					<label for="year">Año</label>
+					<select name="year" id="year" class="form-control">
+						<option {{#if year}} {{else}} selected {{/if}} value=''>Selecione un año</option>
+						{{#each years}}
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
+						{{/each}}
+					</select>
+				</div>
+
+				<div class="pub-fbtns">
+					<button class="pub-btn-buscar" type="submit">
+						Buscar
+					</button>
+					<button class="pub-btn-limpiar" id="clearButton">
+						Limpiar
 					</button>
 				</div>
-			</div>
 
-			<div class="pub-field">
-				<label for="categoria">Categoría</label>
-				<select name="categoria" id="categoria" class="form-control">
-					<option {{#if categoria}} {{else}} selected {{/if}} value=''>Selecione una categoría</option>
-					{{#each allTags}}
-						<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
-					{{/each}}
-				</select>
-			</div>
+			</form>
 
-			<div class="pub-field">
-				<label for="region">Región</label>
-				<select name="region" id="region" class="form-control">
-					<option {{#if region}} {{else}} selected {{/if}} value=''>Selecione una región</option>
-					{{#each regiones}}
-						<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.value}}</option>
-					{{/each}}
-				</select>
-			</div>
+			{{>sidebar-widgets/subscribers lang=lang}}
 
-			<div class="pub-field">
-				<label for="year">Año</label>
-				<select name="year" id="year" class="form-control">
-					<option {{#if year}} {{else}} selected {{/if}} value=''>Selecione un año</option>
-					{{#each years}}
-						<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
-					{{/each}}
-				</select>
-			</div>
-
-			<div class="pub-fbtns">
-				<button class="pub-btn-buscar" type="submit">
-					Buscar
-				</button>
-				<button class="pub-btn-limpiar" id="clearButton">
-					Limpiar
-				</button>
-			</div>
-
-		</form>
-
-		{{>sidebar-widgets/subscribers lang=lang}}
+		</div>
 
 	</div>
 

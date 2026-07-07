@@ -1,7 +1,7 @@
 .publicaciones-section {
 	display: grid;
 	justify-content: center;
-	grid-template-columns: 1fr 3fr;
+	grid-template-columns: 295px 1fr;
 	gap: 3rem;
 	padding: 2.5rem 11rem;
 }
@@ -99,4 +99,35 @@
 .publicaciones-section .so-links li {
 	margin: 0;
 	gap: 1.5rem;
+}
+
+.pub-title {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	background: #fab41e;
+	color: #14213D;
+	border-radius: 6px;
+	padding: 15px 25px 15px 20px;
+	position: relative;
+	margin-bottom: 20px;
+}
+.pub-title::before {
+	content: "";
+	width: 6px;
+	height: 24px;
+	background: #c8102e;
+	border-radius: 3px;
+	flex-shrink: 0;
+}
+.pub-title h1 {
+	margin: 0;
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 800;
+	font-size: 30px !important;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+	color: #14213D;
+	line-height: 1.1;
+	white-space: nowrap;
 }
