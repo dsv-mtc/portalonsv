@@ -350,7 +350,7 @@ function checkTagsVisible(url) {
 }
 
 function setTarget(label) {
-	if (label == "srat" || label == "analítica") {
+	if (label == "srat") {
 		return "_blank"
 	}
 	return "_self"

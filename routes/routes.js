@@ -290,8 +290,6 @@ routes.get("/analitica", async (req, res) => {
 	})
 
 
-	res.locals.enabledNavigation = false;
-	res.locals.enabledFooter = false;
 	res.render("pages/analitica", {
 		menu: fullMenu
 	})

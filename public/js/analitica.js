@@ -57,9 +57,9 @@ $submenusWrapper.addEventListener('click', evt => {
 
 	$menuContainer.classList.add('d-none')
 
-	$navigation.classList.add('d-none')
+	if ($navigation) $navigation.classList.add('d-none')
 	$subnavigation.classList.remove('d-none')
-	$footer.classList.add('d-none')
+	if ($footer) $footer.classList.add('d-none')
 
 	document.getElementById(`subnav_${$submenu.dataset.submenuId}`).classList.add('active')
 
@@ -84,7 +84,7 @@ $exitIframe.addEventListener('click', () => {
 	$iframe.setAttribute('src', '')
 	$iframeContainer.classList.add('d-none')
 	$menuContainer.classList.remove('d-none')
-	$navigation.classList.remove('d-none')
+	if ($navigation) $navigation.classList.remove('d-none')
 	$subnavigation.classList.add('d-none')
-	$footer.classList.remove('d-none')
+	if ($footer) $footer.classList.remove('d-none')
 })

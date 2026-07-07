@@ -1,96 +1,85 @@
-<!--search section-->
-<section class="open_data">
-  <div class="container">
-		
-		<!--form search-->
-		<form id="open-data-form-search">
-			<div class="search_box">
-				
-				<div class="input_wrapper">
-					<label for="descripcion">Descripción</label>
-					<input type="text" id="descripcion" name="descripcion" placeholder="{{t lang "buscar"}}" >
-				</div>
-
-				<div class="input_wrapper">
-					<label for="categoria">Categoría</label>
-					<select name="categoria" id="categoria">
-						<option selected>Todas</option>
-						{{#each categorias}}
-							<option value="{{id}}">{{value}}</option>
-						{{/each}}
-					</select>
-				</div>
-
-				<div class="input_wrapper">
-					<label for="tipo">Tipo</label>
-					<select name="tipo" id="tipo">
-						<option selected>Todos</option>
-						{{#each tipos}}
-							<option value="{{id}}">{{value}}</option>
-						{{/each}}
-					</select>
-				</div>
-
-				<button type="submit"> Consultar </button>
-				<button type="button" id="clean-search"> Limpiar </button>
-
-			</div>
-		</form>
-    
-		<div 
-			id="open-data-search-alert" 
-			class="alert alert-danger alert-dismissible fade d-none" 
-			role="alert"
-		>
-			No se encontraron resultados
-    </div>
-		
-	</div>
+<section class="container" style="padding-top: 40px; padding-bottom: 20px;">
+  <div class="events-main-title">
+    <h1>INFORMACIÓN DE DATOS ABIERTOS</h1>
+  </div>
 </section>
 
-<!-- main section-->
-<main class="container" >
+<section class="open_data container">
+  <form id="open-data-form-search" class="od-search-form">
+    <div class="od-search-grid">
+      
+      <div class="od-input-group od-col-desc">
+        <label for="descripcion">DESCRIPCIÓN</label>
+        <input type="text" id="descripcion" name="descripcion" placeholder="Buscar aquí...">
+      </div>
 
-	<section id="default">
-		
-		<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
-			{{message}}
-		</h3>
-		{{>datos-abiertos/datos-abiertos-card-body datosAbiertos=datosAbiertos}}
-		
-		{{#if pagination}}
-			<div class="col-12 d-flex justify-content-center mb-3">
-				<div class="l-wrapper">
-					<nav class="m-pagination" aria-label="{{t lang "Paginación"}}">
-						{{#if pagination.prev}}
-							<a
-								href="{{page_url pagination.url_page pagination.prev lang}}"
-								class="btn btn-rsp ft-bold"
-								aria-label="{{t lang "Pagina de datos abiertos"}}"
-							>
-								<span class="fal fa-long-arrow-left"></span>
-							</a>
-						{{/if}}
-						<span class="m-pagination__text">
-							{{t lang "Página"}} {{pagination.page}} {{t lang "de"}} {{pagination.pages}}
-						</span>
-						{{#if pagination.next}}
-							<a
-								href="{{page_url pagination.url_page pagination.next lang}}"
-								class="btn btn-rsp ft-bold"
-								aria-label="{{t lang "Pagina de datos abiertos"}}"
-							>
-								<span class="fal fa-long-arrow-right"></span>
-							</a>
-						{{/if}}
-					</nav>
-				</div>
-			{{/if}}
-		</div>  
-	</section>
+      <div class="od-input-group od-col-cat">
+        <label for="categoria">CATEGORÍA</label>
+        <select name="categoria" id="categoria">
+          <option selected value="Todas">Todas</option>
+          {{#each categorias}}
+            <option value="{{id}}">{{value}}</option>
+          {{/each}}
+        </select>
+      </div>
 
-	<section id="results-template">
+      <div class="od-input-group od-col-tipo">
+        <label for="tipo">TIPO</label>
+        <select name="tipo" id="tipo">
+          <option selected value="Todos">Todos</option>
+          {{#each tipos}}
+            <option value="{{id}}">{{value}}</option>
+          {{/each}}
+        </select>
+      </div>
 
-	</section>
+      <div class="od-input-group od-col-actions">
+        <button type="submit" class="od-btn-submit">CONSULTAR</button>
+        <button type="button" id="clean-search" class="od-btn-clean">LIMPIAR</button>
+      </div>
 
+    </div>
+  </form>
+    
+  <div id="open-data-search-alert" class="alert alert-danger alert-dismissible fade d-none mt-3" role="alert">
+    No se encontraron resultados
+  </div>
+</section>
+
+<main class="container" style="padding-bottom: 60px;">
+  <section id="default">
+    
+    <h3 class="od-results-msg">
+      {{message}}
+    </h3>
+    
+    <div class="od-cards-container">
+      {{>datos-abiertos/datos-abiertos-card-body datosAbiertos=datosAbiertos}}
+    </div>
+    
+    {{#if pagination}}
+      <div class="col-12 d-flex justify-content-center mt-4">
+        <div class="l-wrapper">
+          <nav class="m-pagination" aria-label="{{t lang "Paginación"}}">
+            {{#if pagination.prev}}
+              <a href="{{page_url pagination.url_page pagination.prev lang}}" class="btn btn-rsp ft-bold" aria-label="Anterior">
+                <span class="fal fa-long-arrow-left"></span>
+              </a>
+            {{/if}}
+            <span class="m-pagination__text" style="font-family: 'Barlow', sans-serif; font-weight: 700; color: #162645;">
+              {{t lang "Página"}} {{pagination.page}} {{t lang "de"}} {{pagination.pages}}
+            </span>
+            {{#if pagination.next}}
+              <a href="{{page_url pagination.url_page pagination.next lang}}" class="btn btn-rsp ft-bold" aria-label="Siguiente">
+                <span class="fal fa-long-arrow-right"></span>
+              </a>
+            {{/if}}
+          </nav>
+        </div>
+      </div>
+    {{/if}}
+
+  </section>
+
+  <section id="results-template"></section>
 </main>

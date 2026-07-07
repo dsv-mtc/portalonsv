@@ -1,137 +1,73 @@
 <link rel="stylesheet" href="/css/analitica.css">
 
-<section class="rsp-navbar banner navbar_open_data" id="nav">
-	<div class="logo">
-		<!--Cambiar la imagen-->
-		<a class="menu_wrapper navbar-brand" href="{{endpointRebase settings.url}}">
-			<img style="margin-top: -4px;" class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}">
-		</a>
-	</div>
-	<p>
-		Analítica de datos
-	</p>
-</section>
-
 <section class="analitica_container">
-	
-	<section class="subnav d-none" id="subnav">
-		<div id="close-frame">
-			<svg width="18" height="18" viewBox="0 0 24 24">
-				<path
-					fill="currentColor"
-					d="M3 11V3h8v8Zm0 10v-8h8v8Zm10-10V3h8v8Zm0 10v-8h8v8ZM5 9h4V5H5Zm10 0h4V5h-4Zm0 10h4v-4h-4ZM5 19h4v-4H5ZM15 9Zm0 6Zm-6 0Zm0-6Z"
-				></path>
-			</svg>
-			ANALITICA
-		</div>
-		<p id="current"></p>
-		<b>
-			/
-		</b>
-		<ul id="submenu_list_alt">
-		</ul>
-	</section>
+  
+  <!-- BARRA SUPERIOR (Aparece cuando abres el Iframe) -->
+  <section class="subnav d-none" id="subnav">
+    <div id="close-frame">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M3 11V3h8v8Zm0 10v-8h8v8Zm10-10V3h8v8Zm0 10v-8h8v8ZM5 9h4V5H5Zm10 0h4V5h-4Zm0 10h4v-4h-4ZM5 19h4v-4H5ZM15 9Zm0 6Zm-6 0Zm0-6Z"></path></svg>
+      ANALÍTICA
+    </div>
+    <p id="current"></p>
+    <b>/</b>
+    <ul id="submenu_list_alt"></ul>
+  </section>
 
-	<div class="menu-container">
-		
-		<section class="rsp-noti-sec rsp-wrap">
-			<div class="d-flex justify-content-center">
-				<div class="owl-carousel owl-theme" id="menus-wrapper">
-					{{#each menu}}
-						<article class="menu" data-menu-id="{{id}}">
-							<img src="{{urlImagen}}">
-							<p>{{descripcion}}</p>
-						</article>
-					{{/each}}
-				</div>
-			</div>
-		</section>
+  <!-- CONTENEDOR PRINCIPAL DE LA VISTA -->
+  <div class="menu-container">
+    
+    <!-- ENCABEZADO IDÉNTICO AL PROTOTIPO -->
+    <div class="analitica-header container text-left mt-4 mb-4" style="width: 100%; max-width: 1200px; padding: 0 15px;">
+      <div class="events-main-title mb-3">
+        <h1>ANALÍTICA DE DATOS</h1>
+      </div>
+      <p class="analitica-subtitle">Selecciona una categoría para ver sus tableros, videos explicativos y reportes en PDF.</p>
+    </div>
 
-		<section class="submenus-wrapper d-none" id="submenus-wrapper">
-			{{#each menu}}
-				<ul class="submenu-list d-none" data-list-menu-target="{{this.id}}">
-					{{#each this.submenu}}
-						<li class="submenu" data-submenu-id="{{this.id}}" data-submenu-rutabi="{{this.rutabi}}">
-							<div class="submenu-info">
-								<p>{{this.submenu}}</p>
-								<img src="{{this.imagen}}">
-							</div>
-							<div class="options">
-								
-								<a 
-									target="_blank" 
-									href="{{this.linkvideo}}"
-									title="ver video"
-								>
-									<svg viewBox="0 0 24 24">
-										<path 
-											d="m9.5 16.5l7-4.5l-7-4.5ZM12 22q-2.075 0-3.9-.788q-1.825-.787-3.175-2.137q-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175q1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138q1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175q-1.35 1.35-3.175 2.137Q14.075 22 12 22Z">
-										</path>
-									</svg>
-									<small>Ver video</small>
-								</a>
-								
-								<a 
-									target="_blank"
-									href="{{this.linkpdf}}"
-									title="ver pdf"
-								>
-									<svg viewBox="0 0 256 256">
-										<path
-											d="M48 136a8 8 0 0 0 8-8V40h88v48a8 8 0 0 0 8 8h48v32a8 8 0 0 0 16 0V88a7.7 7.7 0 0 0-2.4-5.7l-55.9-56A8.1 8.1 0 0 0 152 24H56a16 16 0 0 0-16 16v88a8 8 0 0 0 8 8Zm112-84.7L188.7 80H160ZM64 160H48a8 8 0 0 0-8 8v48a8 8 0 0 0 16 0v-8h8a24 24 0 0 0 0-48Zm0 32h-8v-16h8a8 8 0 0 1 0 16Zm132-16v12h16a8 8 0 0 1 0 16h-16v12a8 8 0 0 1-16 0v-48a8 8 0 0 1 8-8h28a8 8 0 0 1 0 16Zm-68-16h-14a8 8 0 0 0-8 8v48a8 8 0 0 0 8 8h14a32 32 0 0 0 0-64Zm0 48h-6v-32h6a16 16 0 0 1 0 32Z">
-										</path>
-									</svg>
-									<small>Ver pdf</small>
-								</a>
+    <!-- TARJETAS PRINCIPALES (Tu HTML original intacto) -->
+    <section class="rsp-noti-sec rsp-wrap w-100">
+      <div class="d-flex justify-content-center">
+        <div class="owl-carousel owl-theme" id="menus-wrapper">
+          {{#each menu}}
+            <article class="menu" data-menu-id="{{id}}">
+              <img src="{{urlImagen}}">
+              <p>{{descripcion}}</p>
+            </article>
+          {{/each}}
+        </div>
+      </div>
+    </section>
 
-							</div>
-						</li>
-					{{/each}}
-				</ul>
-			{{/each}}
-		</section>
+    <!-- SUBMENÚS (Tu HTML original intacto) -->
+    <section class="submenus-wrapper d-none" id="submenus-wrapper">
+      {{#each menu}}
+        <ul class="submenu-list d-none" data-list-menu-target="{{this.id}}">
+          {{#each this.submenu}}
+            <li class="submenu" data-submenu-id="{{this.id}}" data-submenu-rutabi="{{this.rutabi}}">
+              <div class="submenu-info">
+                <p>{{this.submenu}}</p>
+                <img src="{{this.imagen}}">
+              </div>
+              <div class="options">
+                <a target="_blank" href="{{this.linkvideo}}" title="ver video">
+                  <svg viewBox="0 0 24 24"><path fill="currentColor" d="m9.5 16.5l7-4.5l-7-4.5ZM12 22q-2.075 0-3.9-.788q-1.825-.787-3.175-2.137q-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175q1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138q1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175q-1.35 1.35-3.175 2.137Q14.075 22 12 22Z"></path></svg>
+                  <small>VER VIDEO</small>
+                </a>
+                <a target="_blank" href="{{this.linkpdf}}" title="ver pdf">
+                  <svg viewBox="0 0 256 256"><path fill="currentColor" d="M48 136a8 8 0 0 0 8-8V40h88v48a8 8 0 0 0 8 8h48v32a8 8 0 0 0 16 0V88a7.7 7.7 0 0 0-2.4-5.7l-55.9-56A8.1 8.1 0 0 0 152 24H56a16 16 0 0 0-16 16v88a8 8 0 0 0 8 8Zm112-84.7L188.7 80H160ZM64 160H48a8 8 0 0 0-8 8v48a8 8 0 0 0 16 0v-8h8a24 24 0 0 0 0-48Zm0 32h-8v-16h8a8 8 0 0 1 0 16Zm132-16v12h16a8 8 0 0 1 0 16h-16v12a8 8 0 0 1-16 0v-48a8 8 0 0 1 8-8h28a8 8 0 0 1 0 16Zm-68-16h-14a8 8 0 0 0-8 8v48a8 8 0 0 0 8 8h14a32 32 0 0 0 0-64Zm0 48h-6v-32h6a16 16 0 0 1 0 32Z"></path></svg>
+                  <small>VER PDF</small>
+                </a>
+              </div>
+            </li>
+          {{/each}}
+        </ul>
+      {{/each}}
+    </section>
 
-	</div>
+  </div>
 
-
-	<div class="iframe_container d-none" id="iframe_container">
-		<iframe id="analitica"></iframe>
-	</div>
-	<footer class="footer_analitica">
-		<ul class="ad-list with-ic">
-			<li class="mail">
-				{{t lang "Correo"}} :
-				<span>
-					<a href="mailto:{{footerData.email}}">
-						{{footerData.email}}
-					</a>
-				</span>
-			</li>
-		</ul>
-		<p>
-			© Copyright 2020, Gob. Todos los Derechos resevados.
-		</p>
-
-		<ul class="so-links">
-			<li>
-				<a href="https://www.facebook.com/onsvPE" target="_black">
-					<i class="fab fa-facebook-f"></i>
-				</a>
-			</li>
-			<li>
-				<a href="https://twitter.com/onsvPE" target="_black">
-					<i class="fab fa-twitter"></i>
-				</a>
-			</li>
-			<li>
-				<a
-					href="https://www.youtube.com/channel/UCdNz5eyTZClohkpJgk4oa2Q"
-					target="_black"
-				>
-					<i class="fab fa-youtube"></i>
-				</a>
-			</li>
-		</ul>
-	</footer>
+  <div class="iframe_container d-none" id="iframe_container">
+    <iframe id="analitica"></iframe>
+  </div>
 </section>
-<script src="/js/analitica.js" type="module" ></script>
+<script src="/js/analitica.js" type="module"></script>
