@@ -4,107 +4,74 @@
 
 <section class="normas-legales-section">
 
-	<div class="filters">
+	<div>
+		<div class="pub-title">
+			<h1>Normas Legales</h1>
+		</div>
 
-		<form id="searchForm" method="GET">
+		<div class="filters pub-filterbox">
 
-			<div class="input-group mb-4">
-				<input 
-					type="text" 
-					id="title" 
-					name="title" 
-					class="form-control main-search" 
-					placeholder="{{t lang "buscar"}}"
-					{{#if title}}
-						value="{{title}}"
-					{{/if}}
-				>
-				<div class="input-group-append">
-					<button class="input-group-text search-input" type="submit">
-						<i class="fal fa-search"></i>
-					</button>
+			<form id="searchForm" method="GET">
+
+				<div class="input-group mb-4">
+					<input type="text" id="title" name="title"
+					       class="form-control main-search"
+					       placeholder="{{t lang "buscar"}}"
+					       {{#if title}}
+					       	value="{{title}}"
+					       {{/if}}>
+
+					<div class="input-group-append">
+						<button class="input-group-text search-input" type="submit">
+							<i class="fal fa-search"></i>
+						</button>
+					</div>
 				</div>
-			</div>
 
-			<div class="form-group row">
-				<label for="categoria" class="col-3 col-form-label">
-					Categoría
-				</label>
-				<div class="col-9">
+				<div class="pub-field">
+					<label for="categoria">Categoría</label>
 					<select name="categoria" id="categoria" class="form-control">
 						<option {{#if categoria}} {{else}} selected {{/if}} value=''>Selecione una categoría</option>
 						{{#each allTags}}
-							<option 
-								value="{{this.slug}}"
-								{{#if this.estaSeleccionado}}
-									selected
-								{{/if}}
-							>
-								{{this.name}}
-							</option>
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
 						{{/each}}
 					</select>
 				</div>
-			</div>
 
-			<div class="form-group row">
-				<label for="region" class="col-3 col-form-label">
-					Región
-				</label>
-				<div class="col-9">
+				<div class="pub-field">
+					<label for="region">Región</label>
 					<select name="region" id="region" class="form-control">
 						<option {{#if region}} {{else}} selected {{/if}} value=''>Selecione una región</option>
 						{{#each regiones}}
-							<option 
-								value="{{this.slug}}"
-								{{#if this.estaSeleccionado}}
-									selected
-								{{/if}}
-							>
-								{{this.value}}
-							</option>
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.value}}</option>
 						{{/each}}
 					</select>
 				</div>
-			</div>
 
-			<div class="form-group row">
-				<label for="year" class="col-3 col-form-label">
-					Año
-				</label>
-				<div class="col-9">
+				<div class="pub-field">
+					<label for="year">Año</label>
 					<select name="year" id="year" class="form-control">
 						<option {{#if year}} {{else}} selected {{/if}} value=''>Selecione un año</option>
 						{{#each years}}
-							<option 
-								value="{{this.slug}}"
-								{{#if this.estaSeleccionado}}
-									selected
-								{{/if}}
-							>
-								{{this.name}}
-							</option>
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
 						{{/each}}
 					</select>
 				</div>
-			</div>
 
-			<div class="d-flex justify-content-center " style="gap: 1rem;">
-				<button class="ny-btn btn btn-rsp ft-bold" type="submit">
-					<i class="fal fa-search"></i>
-					Buscar
-				</button>
-				
-				<button class="ny-btn btn btn-rsp ft-bold" id="clearButton">
-					<i class="fas fa-broom"></i>
-					Limpiar
-				</button>
-			</div>
+				<div class="pub-fbtns">
+					<button class="pub-btn-buscar" type="submit">
+						Buscar
+					</button>
+					<button class="pub-btn-limpiar" id="clearButton">
+						Limpiar
+					</button>
+				</div>
 
+			</form>
 
-		</form>
+			{{>sidebar-widgets/subscribers lang=lang}}
 
-		{{>sidebar-widgets/subscribers lang=lang}}
+		</div>
 
 	</div>
 
@@ -116,38 +83,44 @@
 
 			{{#if pagination}}
         <style>
-          .custom-pag-wrapper {
-            gap: 8px;
-          }
-          .custom-pag-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 17px;
-            border: none;
-            background: transparent;
-            color: #4b5563;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            cursor: pointer;
-          }
-          .custom-pag-btn:hover {
-            background-color: #f3f4f6;
-            color: #1d3557;
-          }
-          .custom-pag-btn.active {
-            background-color: #1d3557;
-            color: white;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-          }
-          .custom-pag-btn i {
-            font-size: 20px;
-          }
-        </style>
+        .custom-pag-wrapper {
+          gap: 8px;
+        }
+        .custom-pag-btn {
+          width: 42px;
+          height: 42px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 17px;
+          border: 1px solid transparent;
+          background: transparent;
+          color: #1d3557;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          cursor: pointer;
+        }
+        .custom-pag-btn:hover {
+          background-color: transparent;
+          color: #C8102E;
+          border: 1px solid #C8102E;
+        }
+        .custom-pag-btn.active {
+          background-color: #C8102E;
+          color: white;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .custom-pag-btn.active:hover {
+          background-color: #C8102E;
+          color: white;
+          border: 1px solid transparent;
+        }
+        .custom-pag-btn i {
+          font-size: 20px;
+        }
+      </style>
 
         <nav class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
           <a href="#" class="custom-pag-btn active" aria-label="Página 1">1</a>

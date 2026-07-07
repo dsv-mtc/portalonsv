@@ -568,6 +568,32 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 
 	const tags = utils.filterTags(posts);
 
+	posts.forEach(post => {
+		if (post.tags) {
+			const categoryTag = post.tags.find(tag =>
+				!isYearRegExp.test(tag.slug) &&
+				!regiones.some(r => r.slug === tag.slug) &&
+				tag.slug !== 'normas-legales'
+			);
+			post.categoryTag = categoryTag ? categoryTag.name : null;
+
+			const regionTag = post.tags.find(tag =>
+				regiones.some(r => r.slug === tag.slug)
+			);
+			const regionData = regionTag ? regiones.find(r => r.slug === regionTag.slug) : null;
+			if (regionData) {
+				post.regionName = regionData.value;
+			}
+		}
+
+		if (!post.regionName) {
+			const regionFromText =
+				utils.extractDepartmentFromText(post.title, regiones) ||
+				utils.extractDepartmentFromText(post.custom_excerpt || post.excerpt, regiones);
+			post.regionName = regionFromText || 'Nacional';
+		}
+	});
+
 	res.render("pages/normas-legales", {
 		posts,
 		hasResults: posts.length !== 0,
