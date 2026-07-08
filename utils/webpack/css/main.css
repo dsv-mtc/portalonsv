@@ -865,31 +865,6 @@ footer {
 .rsp-noti-sec {
     padding: 60px 0;
 }
-.rsp-noti-sec .owl-prev span {
-    background-image: url(../img/left.png);
-    width: 34px;
-    height: 34px;
-    background-repeat: no-repeat;
-    position: absolute;
-    left: -64px;
-    top: 40%;
-    background-size: 100%;
-    color: transparent;
-}
-.rsp-noti-sec .owl-next span {
-    background-image: url(../img/right.png);
-    width: 34px;
-    height: 34px;
-    background-repeat: no-repeat;
-    position: absolute;
-    top: 40%;
-    right: -64px;
-    background-size: 100%;
-    color: transparent;
-}
-.rsp-noti-sec .owl-nav {
-    display: block !important;
-}
 .pd-desc .fas {
     color: #C8102E;
 }
@@ -1244,7 +1219,7 @@ border: 1px solid #a2a2a2;
 .pmap-card .vu-map{flex:1}
 
 .crsv-map-toolbar{padding:16px 26px}
-#select-region{border-radius:50px}
+#select-region{border-radius:50px;padding-left:20px;padding-top:13px}
 
 /* --- ORIENTACIÓN A VÍCTIMAS --- */
 .victims-section{padding-top:50px;padding-bottom:80px}

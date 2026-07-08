@@ -142,12 +142,13 @@ function showRegionLabel(regionId){
 const selectRegion = document.getElementById('select-region');
 if(selectRegion){
     selectRegion.addEventListener('change', function(e){
-        const regionName = e.target.value;
-        const pathElement = document.getElementById(regionName);
+        const opt = e.target.options[e.target.selectedIndex];
+        const pathId = opt.getAttribute('data-map') || opt.value;
+        const pathElement = document.getElementById(pathId);
         if(pathElement){
             setTimeout(()=>{
-                updateRegionName(regionName);
-                showRegionLabel(regionName);
+                updateRegionName(opt.value);
+                showRegionLabel(pathId);
             }, 50);
         }
     });
@@ -156,12 +157,11 @@ if(selectRegion){
 // Usar delegación de eventos en el contenedor del mapa
 document.querySelector('.gmap_canvas').addEventListener('click', function(e){
     if(e.target.tagName === 'path' && e.target.id){
-        setTimeout(()=>{
-            updateRegionName(e.target.id);
-            showRegionLabel(e.target.id);
-            const opt = selectRegion.querySelector('option[value="' + e.target.id + '"], option[data-map="' + e.target.id + '"]');
-            if (opt) selectRegion.value = opt.value;
-        }, 50);
+        const opt = selectRegion.querySelector('option[value="' + e.target.id + '"], option[data-map="' + e.target.id + '"]');
+        if (opt) {
+            selectRegion.value = opt.value;
+            selectRegion.dispatchEvent(new Event('change'));
+        }
     }
 });
 
