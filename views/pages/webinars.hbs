@@ -1,23 +1,32 @@
-<div class="container mt-5">
-    {{#each playlist}}
-        <div class="row">
-            <div class="col-12 col-md-6 pt-4 mb-3">
-                <div class="embed-responsive embed-responsive-16by9">
-                <iframe
-                    src="https://www.youtube.com/embed/{{video}}" 
-                    title="YouTube video player"  
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen
-                    >
-                </iframe>
-            </div>
-            </div>
-            <div class="col-12 col-md-6 my-auto">
-                <h2 class="mb-2">{{title}}</h2>
-                <p class="text-justify mb-5">
-                    {{description}}
-                </p>
-            </div>
-        </div>
-    {{/each}}
+<div class="container mt-5 wbn-page">
+
+	<div class="wbn-tab-row">
+		<span class="wbn-tab">Webinars</span>
+	</div>
+	<p class="wbn-lead">Mesas de trabajo y sesiones en línea del Observatorio Nacional de Seguridad Vial.</p>
+
+	{{#each playlist}}
+		<div class="row wbn-row">
+			<div class="col-12 col-md-6 pt-4 mb-3">
+				<div class="wbn-thumb-wrap">
+					<div class="embed-responsive embed-responsive-16by9">
+					<iframe
+						src="https://www.youtube.com/embed/{{video}}" 
+						title="YouTube video player"  
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+						allowfullscreen
+						>
+					</iframe>
+				</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-6 my-auto">
+				<h2 class="mb-2 wbn-title">{{title}}</h2>
+				<p class="text-justify mb-3 wbn-desc">
+					{{description}}
+				</p>
+				<a href="https://www.youtube.com/watch?v={{video}}" target="_blank" class="wbn-yt">▶ Mirar en YouTube</a>
+			</div>
+		</div>
+	{{/each}}
 </div>
