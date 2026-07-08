@@ -191,7 +191,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 	htmlMenu += `
 		<li class="nav-item nav-special ${progActive} dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${progLabel}</a>
-			<div class="dropdown-menu"><a class="dropdown-item" href="#">${progItemLabel}</a></div>
+			<div class="dropdown-menu"><a class="dropdown-item" href="/entornos-viales">${progItemLabel}</a></div>
 		</li>`;
 
 	// 10. Educación Vial (dropdown)

@@ -354,6 +354,11 @@ routes.get("/orientacion-victimas", (req, res) => {
 	res.render("pages/orientacion-victimas");
 });
 
+/** ENTORNOS VIALES */
+routes.get("/entornos-viales", (req, res) => {
+	res.render("pages/entornos-viales");
+});
+
 /**PUBLICACIONES */
 routes.get("/publicaciones/:page?", async (req, res) => {
 	const pageSize = 6;

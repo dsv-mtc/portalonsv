@@ -84,7 +84,7 @@
         margin-top: -20px;
     }
     .navbar-brand-text {
-        transform: translateX(20px) translateY(8px);
+        transform: translateX(-80px) translateY(8px);
     }
     .logo-icon-img {
         height: 42px;
@@ -102,10 +102,10 @@
         margin-left: 30px;
     }
     .logo-container .logo-sm {
-        transform: translateX(30px);
+        transform: translateX(-20px);
     }
     .logo-container .d-flex.flex-row-reverse {
-        transform: translateX(30px);
+        transform: translateX(-20px);
     }
     i.fal.fa-bars {
         color: #fff;
@@ -175,7 +175,7 @@
         margin-top: 0;
     }
     .navbar-brand-text {
-        transform: translateX(-20px) translateY(15px);
+        transform: translateX(-80px) translateY(15px);
     }
     .logo-icon-img {
         height: 36px;
@@ -208,10 +208,10 @@
         padding-left: 0;
     }
     .logo-container .row .col-4 .logo-sm {
-        transform: translateX(0);
+        transform: translateX(-20px);
     }
     body .logo-container .d-flex.flex-row-reverse {
-        transform: translateX(115px);
+        transform: translateX(-20px);
         position: static;
         justify-content: center;
         padding-right: 0;

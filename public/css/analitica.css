@@ -133,3 +133,7 @@
 /* --- FOOTER --- */
 footer.footer_analitica { padding: 25px !important; display: flex; align-items: center; justify-content: space-between; color: #fff; border-top: 1px solid rgba(0, 0, 0, .2); }
 .iframe_container:not(.d-none) + footer.footer_analitica { display: none; }
+
+#menus-wrapper .owl-dots,
+#menus-wrapper .owl-dot,
+#menus-wrapper .owl-dot span { display: none !important; }
