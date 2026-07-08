@@ -159,6 +159,8 @@ document.querySelector('.gmap_canvas').addEventListener('click', function(e){
         setTimeout(()=>{
             updateRegionName(e.target.id);
             showRegionLabel(e.target.id);
+            const opt = selectRegion.querySelector('option[value="' + e.target.id + '"], option[data-map="' + e.target.id + '"]');
+            if (opt) selectRegion.value = opt.value;
         }, 50);
     }
 });

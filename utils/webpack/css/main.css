@@ -1226,7 +1226,7 @@ border: 1px solid #a2a2a2;
 .crsv-region{font-size:26px;color:#fff;text-transform:uppercase;line-height:1;margin-top:4px;font-weight:800}
 .crsv-body{padding:22px 26px}
 .crsv-logo{display:flex;justify-content:center;padding:2px 0 18px}
-.crsv-logo img{width:80px !important}
+.crsv-logo img{width:130px !important}
 .rfield{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #dee2e6}
 .rfield:last-child{border-bottom:none}
 .rfield .ic{width:38px;height:38px;border-radius:10px;background:#fdeef0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -1242,6 +1242,9 @@ border: 1px solid #a2a2a2;
 .pmap-card{background:#f1f4f9;border:1px solid #dee2e6;border-radius:16px;padding:18px;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08);display:flex;flex-direction:column;height:100%}
 .reg-pick{width:100%;padding:11px 13px;border:1.5px solid #dee2e6;border-radius:10px;font-size:15px;margin-bottom:14px;background:#fff;color:#1a1a1a}
 .pmap-card .vu-map{flex:1}
+
+.crsv-map-toolbar{padding:16px 26px}
+#select-region{border-radius:50px}
 
 /* --- ORIENTACIÓN A VÍCTIMAS --- */
 .victims-section{padding-top:50px;padding-bottom:80px}

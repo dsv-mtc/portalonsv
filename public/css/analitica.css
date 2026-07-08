@@ -16,6 +16,7 @@
 /* --- TARJETAS PRINCIPALES (CATEGORÍAS) --- */
 .rsp-noti-sec { width: 100%; max-width: 1200px; padding: 0 15px; position: relative; /* NUEVO: necesario para anclar las flechas */ }
 .owl-carousel { width: 100%; display: block; } /* Forzar block si JS tarda en cargar */
+#menus-wrapper .owl-stage{padding-top:8px}
 
 .owl-carousel .menu { display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s ease; border: 2px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.06); height: 210px; margin-bottom: 10px; position: relative; }
 .owl-carousel .menu:hover, .owl-carousel .menu.active { border-color: #c8102e; box-shadow: 0 8px 25px rgba(200,16,46,0.15); transform: translateY(-4px); }
@@ -94,7 +95,7 @@
 .submenu-list.d-none { display: none !important; }
 
 .submenu { display: flex; flex-direction: column; width: 220px; flex-shrink: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; transition: 0.3s; background: #fff; cursor: pointer; scroll-snap-align: start; /* NUEVO */ }
-.submenu:hover, .submenu.active { border-color: #c8102e; box-shadow: 0 8px 25px rgba(200,16,46,0.15); transform: translateY(-4px); }
+.submenu:hover, .submenu.active { box-shadow: 0 8px 25px rgba(200,16,46,0.15); transform: translateY(-4px); }
 
 /* Invertir orden del texto e imagen visualmente sin tocar HTML */
 .submenu-info { height: 120px; display: flex; flex-direction: column-reverse; justify-content: center; align-items: center; gap: 12px; padding: 15px; text-align: center; }
