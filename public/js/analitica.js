@@ -7,7 +7,6 @@ const $subnavigation = document.getElementById('subnav')
 const $footer= document.querySelector('.footer_analitica')
 const $menuContainer = document.querySelector('.menu-container')
 
-
 const $menusWrapper = document.getElementById('menus-wrapper')
 const $submenusWrapper = document.getElementById('submenus-wrapper')
 
