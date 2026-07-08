@@ -29,7 +29,7 @@
       <div class="d-flex justify-content-center">
         <div class="owl-carousel owl-theme" id="menus-wrapper">
           {{#each menu}}
-            <article class="menu" data-menu-id="{{id}}">
+            <article class="menu{{#if @first}} active{{/if}}" data-menu-id="{{id}}">
               <img src="{{urlImagen}}">
               <p>{{descripcion}}</p>
             </article>
@@ -39,9 +39,9 @@
     </section>
 
     <!-- SUBMENÚS (Tu HTML original intacto) -->
-    <section class="submenus-wrapper d-none" id="submenus-wrapper">
+    <section class="submenus-wrapper" id="submenus-wrapper">
       {{#each menu}}
-        <ul class="submenu-list d-none" data-list-menu-target="{{this.id}}">
+        <ul class="submenu-list{{#unless @first}} d-none{{/unless}}" data-list-menu-target="{{this.id}}">
           {{#each this.submenu}}
             <li class="submenu" data-submenu-id="{{this.id}}" data-submenu-rutabi="{{this.rutabi}}">
               <div class="submenu-info">

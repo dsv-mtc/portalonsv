@@ -21,16 +21,20 @@
 .owl-carousel .menu:hover, .owl-carousel .menu.active { border-color: #c8102e; box-shadow: 0 8px 25px rgba(200,16,46,0.15); transform: translateY(-4px); }
 
 /* Icono blanco centrado */
-.owl-carousel .menu img { position: absolute; top: 45px; left: 50%; transform: translateX(-50%); width: 65px !important; height: 65px; object-fit: contain; filter: brightness(0) invert(1); z-index: 2; }
+.owl-carousel .menu img { position: absolute; top: 45px; left: 50%; transform: translateX(-50%); width: 56px !important; height: 56px; object-fit: contain; filter: brightness(0) invert(1); z-index: 2; }
 
 /* Texto inferior blanco */
 .owl-carousel .menu p { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: #ffffff; margin: 0; display: flex; justify-content: center; align-items: center; font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 16px; color: #162645; text-transform: uppercase; letter-spacing: 0.05em; border-top: 1px solid #e2e8f0; z-index: 3; }
 .owl-carousel .menu:hover p, .owl-carousel .menu.active p { color: #c8102e; }
 
 /* Gradientes Tarjeta Principal */
-.owl-item:nth-child(3n+1) .menu { background: linear-gradient(135deg, #1e3a8a, #172554); }
-.owl-item:nth-child(3n+2) .menu { background: linear-gradient(135deg, #0d9488, #0f766e); }
-.owl-item:nth-child(3n+3) .menu { background: linear-gradient(135deg, #b91c1c, #7f1d1d); }
+.menu { background-color:#fff; background-repeat:no-repeat; background-size:100% 150px; background-position:top; }
+.menu:nth-child(1), .owl-item:nth-child(1) .menu { background-image: linear-gradient(150deg,#1E5BAA,#14213D); }
+.menu:nth-child(2), .owl-item:nth-child(2) .menu { background-image: linear-gradient(150deg,#1597B8,#0e2f3a); }
+.menu:nth-child(3), .owl-item:nth-child(3) .menu { background-image: linear-gradient(150deg,#C8102E,#3a1116); }
+.menu:nth-child(4), .owl-item:nth-child(4) .menu { background-image: linear-gradient(150deg,#1f7a44,#0a2820); }
+.menu:nth-child(5), .owl-item:nth-child(5) .menu { background-image: linear-gradient(150deg,#caa10a,#3a2a00); }
+.menu:nth-child(6), .owl-item:nth-child(6) .menu { background-image: linear-gradient(150deg,#5a2b8c,#231235); }
 
 /* NUEVO: Flechas de navegación (owl-nav) para el carrusel principal, estilo círculo gris con chevron */
 .owl-carousel .owl-nav {
@@ -47,12 +51,12 @@
 .owl-carousel .owl-nav button.owl-prev,
 .owl-carousel .owl-nav button.owl-next {
   pointer-events: all;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: none;
-  background: #e2e8f0;
-  color: #475569;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #162645;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,7 +111,7 @@
 .options a { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 4px; color: #162645; text-decoration: none !important; transition: 0.2s; }
 .options a svg { width: 13px; height: 13px; }
 .options a small { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 800; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em; }
-.options a:hover { border-color: #c8102e; color: #c8102e; background: #fef2f2; }
+.options a:hover { border-color: #162645; color: #fff; background: #162645; }
 
 
 /* --- SUBNAV SUPERIOR (Cinta oscura arriba del Iframe) --- */

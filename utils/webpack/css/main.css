@@ -8,7 +8,7 @@ h1.title{
     overflow: hidden;
 }
 .tags-extended:hover{
-    background-color:#ee1d27 ;
+    background-color:#C8102E ;
     color: white;
     border: none;
 }
@@ -16,32 +16,34 @@ h1.title{
     font-weight: bold;
 }
 li>.dropdown-menu{
-    background-color: #585856;
-    max-width: 180px !important;
-    padding-left: 0px !important;
-    border: 0px !important;
-    border-radius: 0px !important;
-    text-transform: uppercase;
-    font-size: 13px;
-    font-weight: bold;
-    text-align: inherit;
-    
+    background-color:#fff;
+    max-width:220px!important;
+    padding:8px 0!important;
+    border:1px solid #e3e7ef!important;
+    border-top:3px solid #C8102E!important;
+    border-radius:12px!important;
+    box-shadow:0 10px 30px rgba(20,33,61,.12);
+    text-transform:uppercase;
+    font-size:13px;
+    font-weight:600;
+    font-family:"Barlow Semi Condensed",sans-serif;
 }
 .pu-3-extend,.regiones-img-extend{
     height: 200px;
 }
 
 .dropdown-item{
-    color: white;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    color:#14213D;
+    padding:10px 20px;
+}
+.dropdown-item-wrap {
+    white-space: normal;
 }
 
 
 .dropdown .dropdown-menu a:hover{
-    background-color: #ee1d27;
-    color: white;
-    width: 180px;
+    background-color:transparent;
+    color:#C8102E;
 }
 
 .rsp-navbar .nav-rsp .nav-link-dropdown {
@@ -142,7 +144,7 @@ li>.dropdown-menu{
     background-color: blue !important;
 }
 .enlace:hover{
-    background-color: #ee1d27 !important;
+    background-color: #C8102E !important;
 }
 svg g g path.map:hover{
     cursor: pointer;
@@ -209,7 +211,7 @@ svg g g path.map-selected{
     font-size: 1.2rem;
 }
 .icon-newsletter{
-    color: #ee1d27;
+    color: #C8102E;
 }
 #search-button{
     border-top-right-radius: 10px;
@@ -304,7 +306,7 @@ footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
-    font-family: 'Roboto', sans-serif !important;
+    font-family: 'Roboto Condensed', sans-serif !important;
     font-weight: 400 !important;
     font-size: 0.875rem !important;
     line-height: 24px !important;
@@ -440,42 +442,44 @@ button:focus {
     line-height: 28px;
 }
 .btn-rsp {
-    background-color: #ee1d27;
+    background-color: #C8102E;
     color: #fff;
     border-radius: 100px;
     box-shadow: none;
-    border: 1px solid #ee1d27;
+    border: 1px solid #C8102E;
 }
 .btn-rsp:hover, .btn-rsp:focus {
-    background-color: #ee1d27;
+    background-color: #C8102E;
     color: #fff;
-    border: 1px solid #ee1d27;
+    border: 1px solid #C8102E;
 }
 .btn-rsp-outline {
     background-color: transparent;
-    color: #ee1d27;
+    color: #C8102E;
     border-radius: 100px;
     box-shadow: none;
-    border: 1px solid #ee1d27;
+    border: 1px solid #C8102E;
 }
 .btn-rsp-outline:hover, .btn-rsp-outline:focus {
-    background-color: #ee1d27;
+    background-color: #C8102E;
     color: #fff;
-    border: 1px solid #ee1d27;
+    border: 1px solid #C8102E;
 }
 /***************** End Helper Class *******************/
 /* Custom styles */
 #mainNav {
-    background-color: rgb(88, 88, 86);
+    background-color: #3C4250;
     padding: 0;
 }
 .logo-sm {
-    text-align: right;
+    text-align: center;
+    margin-left: 408px;
+    margin-top: -35px;
 }
 .logo-sm img {
     width: 120px;
     position: relative;
-    top: 15px;
+    top: 35px;
 }
 .nav-rsp {
     width: 100%;
@@ -485,15 +489,21 @@ button:focus {
 .rsp-navbar .nav-rsp .nav-link {
     color: #fff;
     font-size: 15px;
-    font-weight: 700;
-    padding: 16px 28px;
+    font-weight: 600;
+    padding: 16px 10px;
     text-transform: uppercase;
+    font-family: 'Roboto Condensed', sans-serif;
     background-color: transparent;
+    white-space: nowrap;
 }
 
 
-.rsp-navbar .nav-rsp .nav-link:hover, .rsp-navbar .nav-rsp .nav-link:focus, .rsp-navbar .nav-rsp .nav-link.active, .rsp-navbar .nav-rsp  .nav-link.nav-current { 
-    background-color: #ee1d27;
+.rsp-navbar .nav-rsp .nav-link:hover, .rsp-navbar .nav-rsp .nav-link:focus, .rsp-navbar .nav-rsp .nav-link.active, .rsp-navbar .nav-rsp  .nav-link.nav-current {
+    background-color: #C8102E;
+}
+
+.rsp-navbar .nav-rsp .nav-special.add-color > .nav-link {
+    background-color: #C8102E;
 }
 
 .fixed-header .logo-container {
@@ -570,7 +580,7 @@ button:focus {
     margin: 0 0 22px 0;
 }
 .dt-blk .fal {
-    color: #ee1d27;
+    color: #C8102E;
 }
 .vu-map img {
     width: 100%;
@@ -671,7 +681,7 @@ footer {
     height: 18px;
     font-style: normal;
     left: 0;
-    color: #ee1d27;
+    color: #C8102E;
 }
 .with-ic li.clock::before {
     content: "\f017";
@@ -683,7 +693,7 @@ footer {
     height: 18px;
     font-style: normal;
     left: 0;
-    color: #ee1d27;
+    color: #C8102E;
 }
 .with-ic li.mail::before {
     content: "\f0e0";
@@ -695,7 +705,7 @@ footer {
     height: 18px;
     font-style: normal;
     left: 0;
-    color: #ee1d27;
+    color: #C8102E;
 }
 .with-ic li.ph::before {
     content: "\f095";
@@ -708,7 +718,7 @@ footer {
     font-style: normal;
     transform: rotate(102deg);
     left: 0;
-    color: #ee1d27;
+    color: #C8102E;
 }
 .menu-list li {
     margin: 0 0 15px 0;
@@ -878,10 +888,10 @@ footer {
     display: block !important;
 }
 .pd-desc .fas {
-    color: #ee1d27;
+    color: #C8102E;
 }
 .cl {
-    color: #ee1d27;
+    color: #C8102E;
 }
 .rsp-nye-desc {
     box-shadow: none;
@@ -911,7 +921,7 @@ footer {
 
 .noticias-featured-label {
     display: block;
-    color: #ee1d27;
+    color: #C8102E;
     font-weight: 700;
     font-size: 12px;
     text-transform: uppercase;
@@ -1002,8 +1012,8 @@ footer {
 }
 .input-group-text {
     color: #fff;
-    background-color: #ee1d27;
-    border: 1px solid #ee1d27;
+    background-color: #C8102E;
+    border: 1px solid #C8102E;
     border-radius: 0;
 }
 .main-search {
@@ -1050,7 +1060,7 @@ footer {
 }
 .dropdown-menu{
     min-width: 5rem !important;
-    padding: 3px 35% !important;
+    padding: 3px 16px !important;
     margin: 0% !important;
     border-radius: 5px !important;
 }
@@ -1061,7 +1071,7 @@ footer {
     height: 240px;
 }
 .icon-slider:hover, .icon-slider:focus{
-    border: 10px solid #ee1d27
+    border: 10px solid #C8102E
 }
 .p-hide{
     display: -webkit-box;
@@ -1151,9 +1161,9 @@ footer {
     font-family: 'Roboto Condensed', sans-serif;
     font-weight: 700;
     font-size: 11px;
-    color: #ee1d27;
+    color: #C8102E;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 2px;
 }
 
 .mapouter { position:relative;text-align:right;height:500px;width:100%;}
@@ -1198,3 +1208,83 @@ border: 1px solid #a2a2a2;
     width: 100px;
     border: none;
   }
+
+/* --- NOTICIAS: badge y tarjeta --- */
+.new-card { position: relative; display: flex; flex-direction: column; height: 100%; border-radius: 16px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.new-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(20,33,61,.18); }
+.card-badge { position: absolute; top: 16px; left: 16px; background: #ffffff; color: #1d3557; font-family: "Roboto Condensed", sans-serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; padding: 5px 12px; border-radius: 6px; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+
+/* --- REGIONES: tarjeta de Consejo Regional --- */
+.crsv-card{background:#fff;border:1px solid #dee2e6;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08);display:flex;flex-direction:column;height:100%}
+.crsv-head{background:linear-gradient(120deg,#C8102E,#9E0C24);color:#fff;padding:22px 26px}
+.crsv-head .crumb{font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:12.5px;color:#ffd9df;display:flex;align-items:center;gap:8px}
+.crsv-head .crumb .sep{opacity:.7}
+.crsv-title{font-size:22px !important;line-height:1.15 !important;color:#fff !important;text-transform:uppercase;margin-top:8px !important;margin-bottom:0 !important}
+.crsv-region{font-size:26px;color:#fff;text-transform:uppercase;line-height:1;margin-top:4px;font-weight:800}
+.crsv-body{padding:22px 26px}
+.crsv-logo{display:flex;justify-content:center;padding:2px 0 18px}
+.crsv-logo img{width:80px !important}
+.rfield{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #dee2e6}
+.rfield:last-child{border-bottom:none}
+.rfield .ic{width:38px;height:38px;border-radius:10px;background:#fdeef0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rfield .ic i{color:#C8102E;font-size:15px}
+.rfield .k{display:block;font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.rfield .v{font-size:14.5px;color:#1a1a1a;display:block;border:none !important;background:none !important;height:auto !important;padding:0 !important}
+.rfield a.v{color:#1d3557;text-decoration:none}
+.rfield a.v:hover{text-decoration:underline}
+
+.regiones-tab-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.regiones-tab{display:inline-flex;align-items:center;gap:12px;background:#F4B41A;color:#14213D;font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:22px;padding:11px 24px 11px 18px;border-radius:6px;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08)}
+.regiones-tab::before{content:"";width:6px;height:24px;background:#C8102E;border-radius:3px;margin-right:2px}
+.pmap-card{background:#f1f4f9;border:1px solid #dee2e6;border-radius:16px;padding:18px;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08);display:flex;flex-direction:column;height:100%}
+.reg-pick{width:100%;padding:11px 13px;border:1.5px solid #dee2e6;border-radius:10px;font-size:15px;margin-bottom:14px;background:#fff;color:#1a1a1a}
+.pmap-card .vu-map{flex:1}
+
+/* --- ORIENTACIÓN A VÍCTIMAS --- */
+.victims-section{padding-top:50px;padding-bottom:80px}
+.victims-tab-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.victims-tab{display:inline-flex;align-items:center;gap:12px;background:#F4B41A;color:#14213D;font-family:"Roboto Condensed",sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(20px,2.6vw,28px);padding:11px 24px 11px 18px;border-radius:6px;position:relative;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08)}
+.victims-tab::before{content:"";width:6px;height:24px;background:#C8102E;border-radius:3px}
+.victims-lead{color:#5c6273;max-width:820px;font-size:15.5px;margin-bottom:26px}
+.victims-layout{display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:stretch}
+@media(max-width:768px){.victims-layout{grid-template-columns:1fr}}
+.victims-form-card{background:#fff;border:1px solid #e3e7ef;border-radius:18px;padding:34px;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08)}
+.victims-form-card h2{font-size:30px;color:#14213D;text-transform:uppercase;text-align:center;font-family:"Roboto Condensed",sans-serif;font-weight:700}
+.victims-form-card .victims-sub{text-align:center;color:#5c6273;font-size:14px;margin-bottom:24px}
+.victims-field{position:relative;margin-bottom:20px}
+.victims-field input,.victims-field textarea{width:100%;border:1.5px solid #e3e7ef;border-radius:11px;padding:15px 14px 6px;font-family:"Roboto",sans-serif;font-size:15px;outline:none;transition:.18s}
+.victims-field textarea{min-height:120px;resize:vertical;padding-top:22px}
+.victims-field label{position:absolute;left:14px;top:14px;color:#5c6273;font-size:15px;pointer-events:none;transition:.16s;background:#fff;padding:0 4px}
+.victims-field input:focus,.victims-field textarea:focus{border-color:#1E5BAA}
+.victims-field input:focus + label,.victims-field input:not(:placeholder-shown) + label,
+.victims-field textarea:focus + label,.victims-field textarea:not(:placeholder-shown) + label{top:-9px;font-size:12px;color:#1E5BAA;font-weight:600}
+.victims-err{color:#C8102E;font-size:12px;margin-top:8px;display:none}
+.victims-submit{width:100%;justify-content:center;display:flex;align-items:center}
+.victims-side{background:#14213D;color:#cdd6e6;border-radius:18px;padding:30px;display:flex;flex-direction:column;gap:8px}
+.victims-side h3{color:#fff;font-size:22px;text-transform:uppercase;margin-bottom:6px;font-family:"Roboto Condensed",sans-serif;font-weight:700}
+.victims-ci{display:flex;gap:13px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #2a3a63}
+.victims-ci .ic{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.victims-ci .ic i{color:#F4B41A;font-size:15px}
+.victims-ci b{color:#fff;font-family:"Roboto Condensed",sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.06em;display:block}
+.victims-ci span{font-size:14px}
+.victims-map{margin-top:auto;height:130px;border-radius:12px;overflow:hidden}
+.victims-map iframe{width:100%;height:100%;border:none}
+
+/* --- PUBLICACIONES: panel de filtros --- */
+.pub-filterbox{background:#fff;border:1px solid #e3e7ef;border-radius:14px;padding:20px;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08)}
+.pub-filterbox #searchForm .input-group{margin-bottom:16px}
+.pub-field{margin:0 0 14px}
+.pub-field label{font-family:"Roboto Condensed",sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#14213D;display:block;margin:0 0 6px}
+.pub-field select.form-control{width:100%;height:auto;padding:10px 11px;border:1.5px solid #e3e7ef;border-radius:9px;font-family:"Roboto",sans-serif;font-size:14px;background:#fff;color:#1a1a1a}
+.pub-fbtns{display:flex;gap:8px;margin-top:16px}
+.pub-fbtns button{flex:1;border:none;border-radius:9px;padding:11px;font-family:"Roboto Condensed",sans-serif;font-weight:700;text-transform:uppercase;font-size:13px;cursor:pointer}
+.pub-btn-buscar{background:#C8102E;color:#fff}
+.pub-btn-buscar:hover{background:#9E0C24;color:#fff}
+.pub-btn-limpiar{background:#f1f4f9;color:#14213D}
+.pub-btn-limpiar:hover{background:#e3e7ef;color:#14213D}
+.pub-filterbox .newsletter-subscribers{margin-top:22px !important;padding-top:18px !important;border-top:1px solid #e3e7ef}
+.pub-filterbox .newsletter-subscribers .container{padding:0;max-width:none}
+.pub-filterbox .newsletter-subscribers .jumbotron{background:transparent;padding:0;margin:0;box-shadow:none}
+.pub-filterbox .titulo-newsletter{font-family:"Roboto Condensed",sans-serif;font-weight:700;color:#14213D;font-size:18px;text-transform:uppercase;margin-bottom:10px !important}
+.pub-filterbox .boton-newsletter{background:#C8102E;border-color:#C8102E;border-radius:9px}
+.pub-filterbox .boton-newsletter:hover{background:#9E0C24;border-color:#9E0C24}
