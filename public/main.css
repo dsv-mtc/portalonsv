@@ -13919,6 +13919,134 @@ border: 1px solid #a2a2a2;
 .wbn-desc{font-size:14px;color:#5c6273;max-width:680px}
 .wbn-yt{display:inline-flex;gap:7px;align-items:center;color:#C8102E;font-family:"Roboto Condensed",sans-serif;font-weight:700;text-transform:uppercase;font-size:12.5px;text-decoration:none}
 .wbn-yt:hover{color:#9E0C24;text-decoration:underline}
+
+#others .owl-nav{display:block!important}
+
+/* ==========================================================
+   REDISEÑO MODERNO: DASHBOARD ADMINISTRADOR (INICIO)
+   ========================================================== */
+
+/* Banner Superior */
+.banner-admin {
+  background: #c8102e;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  border-bottom: 4px solid #fab41e;
+}
+.logo-img-admin {
+  height: 55px;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+/* Botón - Barlow Condensed (uppercase, bold) */
+.btn-logout-admin {
+  color: #ffffff !important;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none !important;
+  transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-logout-admin:hover {
+  background: #ffffff;
+  color: #c8102e !important;
+}
+
+/* Contenedor General */
+.admin-main-content {
+  background: #f8fafc;
+  min-height: calc(100vh - 140px);
+}
+
+/* Caja de Bienvenida */
+.welcome-box-admin {
+  background: #ffffff;
+  border-left: 5px solid #fab41e;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+/* Título de Bienvenida - Barlow Condensed (bold, uppercase) */
+.welcome-box-admin h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  color: #162645;
+  font-size: 26px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+/* Párrafo de Bienvenida - Barlow Normal */
+.welcome-box-admin p {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Tarjetas de Estadísticas / Accesos Rápidos */
+.card-stat-admin {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: 0.3s ease;
+  height: 100%;
+}
+.card-stat-admin:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(22, 38, 69, 0.08);
+}
+
+.stat-icon {
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+/* Colores Dinámicos de Iconos */
+.stat-blue .stat-icon { background: linear-gradient(135deg, #1e3a8a, #172554); }
+.stat-teal .stat-icon { background: linear-gradient(135deg, #0d9488, #0f766e); }
+.stat-red .stat-icon { background: linear-gradient(135deg, #b91c1c, #7f1d1d); }
+
+/* Título de Tarjeta - Barlow Condensed (bold, uppercase) */
+.stat-info h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  color: #162645;
+  margin: 0 0 6px 0;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* Descripción de Tarjeta - Barlow Normal */
+.stat-info p {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 400;
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
 @media screen and (min-width: 2388px) {
     .disclaimer{
         height: 20px;
