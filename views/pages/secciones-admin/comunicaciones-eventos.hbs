@@ -25,14 +25,14 @@
 {{>admin/navigation secondary_navigation=secondary_navigation}}
 
 <main class="container-fluid mt-3 mb-3" id="comunicaciones-eventos-crud">
-	<h3 class="rsp-title ft-bold mb-3 text-center">
+	<h3 class="rsp-title ft-bold admin-title mb-3 text-center">
 		Comunicaciones - Eventos
 	</h3>
 	
 	<form class="filters d-flex justify-content-between" method="GET">
 			
 		<div class="form-group row col-12 col-md-3">
-			<label for="searchedEvento" class="col-3 col-form-label">
+			<label for="searchedEvento" class="col-3 col-form-label admin-label">
 				Evento:
 			</label>
 			<div class="col-9">
@@ -40,18 +40,18 @@
 					type="text" 
 					id="searchedEvento"  
 					name="searchedEvento" 
-					class="form-control"
+					class="form-control admin-input"
 					value="{{searched.evento}}"
 				>
 			</div>
 		</div>
 
 		<div class="form-group row col-12 col-md-3">
-			<label for="searchedTipoEvento" class="col-3 col-form-label">
+			<label for="searchedTipoEvento" class="col-3 col-form-label admin-label">
 				Tipo evento:
 			</label>
 			<div class="col-9">
-				<select class="form-control" name="searchedTipoEvento" id="searchedTipoEvento">
+				<select class="form-control admin-input" name="searchedTipoEvento" id="searchedTipoEvento">
 					<option value="">Selecione una opción</option>
 					{{#each tiposEvento}}
 						<option value="{{id}}" {{#if selected}} selected {{/if}} >{{value}}</option>
@@ -62,7 +62,7 @@
 		</div>
 
 		<div class="form-group row col-12 col-md-2">
-			<label for="searchedStartDate" class="col-3 col-form-label">
+			<label for="searchedStartDate" class="col-3 col-form-label admin-label">
 				Fecha inicio:
 			</label>
 			<div class="col-8">
@@ -70,14 +70,14 @@
 					type="date"
 					id="searchedStartDate"
 					name="searchedStartDate"
-					class="form-control"
+					class="form-control admin-input"
 					value="{{searched.startDate}}"
 				>
 			</div>
 		</div>
 
 		<div class="form-group row col-12 col-md-2">
-			<label for="searchedEndDate" class="col-3 col-form-label">
+			<label for="searchedEndDate" class="col-3 col-form-label admin-label">
 				Fecha fin:
 			</label>
 			<div class="col-8">
@@ -85,7 +85,7 @@
 					type="date"
 					id="searchedEndDate"
 					name="searchedEndDate"
-					class="form-control"
+					class="form-control admin-input"
 					value="{{searched.endDate}}"
 				>
 			</div>
