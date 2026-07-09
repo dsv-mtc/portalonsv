@@ -90,7 +90,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(routes);
 
-
 //cronjob
 
 app.listen(process.env.PORT || 3000, async () => {

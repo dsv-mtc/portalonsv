@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --brand-red: #C8102E;
+  --brand-red-dark: #9E0C24;
+  --brand-navy: #14213D;
+  --brand-navy-2: #1F3864;
+  --brand-amber: #F4B41A;
+  --brand-cyan: #1597B8;
+  --brand-green: #2E7D32;
+  --brand-ink: #1b1e28;
+  --brand-mist: #f1f4f9;
+  --brand-line: #e3e7ef;
+  --background: #ffffff;
+  --foreground: #1b1e28;
+  --muted-foreground: #5c6273;
+  --shadow-brand: 0 1px 2px rgba(20,33,61,.05), 0 10px 28px rgba(20,33,61,.08);
+  --font-display: "Barlow Condensed", system-ui, sans-serif;
+  --font-cond: "Barlow Semi Condensed", system-ui, sans-serif;
+  --font-sans: "Barlow", system-ui, sans-serif;
+}
+
+body {
+  background: var(--brand-mist);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

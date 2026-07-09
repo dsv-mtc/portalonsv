@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "webpack": "webpack --mode production --config ./utils/webpack/webpack.config.js"
+    "webpack": "webpack --mode production --config ./utils/webpack/webpack.config.js",
+    "build:admin": "cd admin && pnpm run build"
   },
   "keywords": [
     "ghost"

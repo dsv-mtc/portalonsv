@@ -1,0 +1,206 @@
+import { useState, useEffect } from "react";
+import { NavLink, Outlet, useNavigate, useLocation, Link } from "react-router-dom";
+import { LayoutDashboard, PanelBottom, BarChart3, Map, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight } from "lucide-react";
+import { cn } from "../lib/utils";
+import { OnsvLogo } from "./OnsvLogo";
+import { apiGet } from "../lib/api";
+
+type NavItem = { label: string; icon: React.ComponentType<{ className?: string }>; to?: string; children?: { label: string; to: string }[] };
+
+const NAV: NavItem[] = [
+  { label: "Inicio", icon: LayoutDashboard, to: "/" },
+  { label: "Pie de página", icon: PanelBottom, to: "/pie" },
+  { label: "Cifras", icon: BarChart3, to: "/cifras" },
+  { label: "Regiones", icon: Map, to: "/regiones" },
+  { label: "Comunicaciones", icon: Megaphone, to: "/comunicaciones" },
+  { label: "Misión — Visión", icon: Target, to: "/mision" },
+  { label: "Analítica", icon: LineChart, children: [{ label: "Menú", to: "/analitica" }, { label: "Submenú", to: "/analitica-submenu" }] },
+  { label: "Popup", icon: Sparkles, to: "/popup" },
+  { label: "Datos Abiertos", icon: Database, children: [{ label: "Datos", to: "/datos" }, { label: "Categorías", to: "/datos-categorias" }, { label: "Tipos", to: "/datos-tipos" }] },
+  { label: "Usuarios", icon: Users, to: "/usuarios" },
+  { label: "Roles", icon: Users, to: "/roles" },
+];
+
+export function AdminLayout() {
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => Object.fromEntries(NAV.filter(n => n.children).map(n => [n.label, true])));
+  const [user, setUser] = useState<{ email: string; role: string } | null>(null);
+  const navigate = useNavigate();
+  const loc = useLocation();
+  const pathname = '/' + loc.pathname.split('/').slice(2).join('/');
+
+  useEffect(() => {
+    apiGet<{ email: string; role: string }>("/auth/me").then(setUser).catch(() => setUser(null));
+  }, []);
+
+  const initials = user
+    ? user.email.split('@')[0].split('.').map(s => s[0]).join('').toUpperCase().slice(0, 2)
+    : 'AD';
+
+  const displayName = user
+    ? user.email.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
+    : 'Admin ONSV';
+
+  const toggleMenu = () => {
+    if (window.matchMedia("(min-width: 1024px)").matches) {
+      setCollapsed(c => !c);
+    } else {
+      setMobileOpen(true);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex" style={{ background: "var(--brand-mist)" }}>
+      {mobileOpen && <button type="button" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)} className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />}
+      <aside className={cn("text-[color:var(--sidebar-foreground)] flex flex-col fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-300 ease-out lg:relative lg:translate-x-0 lg:z-auto lg:transition-[width] lg:shrink-0", mobileOpen ? "translate-x-0" : "-translate-x-full", collapsed ? "lg:w-[72px]" : "lg:w-[280px]")} style={{ background: "linear-gradient(180deg, #0d1730 0%, #101a34 55%, #0b1428 100%)", borderRight: "1px solid rgba(255,255,255,0.06)" }}>
+        <span aria-hidden className="absolute inset-y-0 right-0 w-[3px]" style={{ background: "linear-gradient(180deg,transparent, #C8102E 30%, #C8102E 70%, transparent)" }} />
+        <div className="relative flex items-center gap-3 px-4 h-[72px] border-b border-white/5">
+          <OnsvLogo className="w-11 h-11" tone="light" />
+          {(!collapsed || mobileOpen) && (
+            <div className="flex flex-col leading-none">
+              <span className="text-[15px] font-extrabold uppercase tracking-tight text-white font-[family-name:var(--font-display)]">Portal ONSV</span>
+              <span className="text-[10px] font-bold tracking-[0.18em] uppercase mt-1 font-[family-name:var(--font-cond)]" style={{ color: "#F4B41A" }}>Panel Administrativo</span>
+            </div>
+          )}
+          <button type="button" onClick={() => setMobileOpen(false)} aria-label="Cerrar menú" className="lg:hidden ml-auto w-9 h-9 rounded-lg grid place-items-center text-white/70 hover:text-white hover:bg-white/10 transition"><svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+          {NAV.map((item) => {
+            const Icon = item.icon;
+            if (item.children) {
+              const open = openGroups[item.label];
+              const anyActive = item.children.some(c => pathname.startsWith(c.to));
+              return (
+                <div key={item.label}>
+                  <button type="button" onClick={() => !collapsed || mobileOpen ? setOpenGroups(g => ({ ...g, [item.label]: !open })) : navigate(item.children![0].to)}
+                    className={cn("w-full flex items-center gap-3 rounded-lg h-10 px-3 text-[13.5px] font-[family-name:var(--font-cond)] font-semibold uppercase tracking-wide transition", anyActive ? "text-white bg-white/[0.06]" : "text-white/70 hover:text-white hover:bg-white/[0.04]")}>
+                    <Icon className="w-[18px] h-[18px] shrink-0" />
+                    {(!collapsed || mobileOpen) && <><span className="flex-1 text-left truncate">{item.label}</span><ChevronDown className={cn("w-4 h-4 transition-transform", open && "rotate-180")} /></>}
+                  </button>
+                  {(!collapsed || mobileOpen) && open && (
+                    <div className="pl-4 mt-1 mb-2 space-y-0.5">
+                      {item.children.map(c => {
+                        const active = pathname.startsWith(c.to);
+                        return (
+                          <NavLink key={c.label} to={c.to} onClick={() => setMobileOpen(false)}
+                            className={cn("flex items-center gap-3 pl-6 pr-3 h-8 rounded-md text-[12.5px] font-[family-name:var(--font-cond)] font-semibold uppercase tracking-wider transition", active ? "text-white bg-[color:var(--brand-red)]" : "text-white/55 hover:text-white hover:bg-white/[0.05]")}>
+                            <span aria-hidden className={cn("w-1.5 h-1.5 rounded-full", active ? "bg-white" : "bg-white/30")} />
+                            {c.label}
+                          </NavLink>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+            const active = pathname === item.to;
+            return (
+              <NavLink key={item.label} to={item.to!} onClick={() => setMobileOpen(false)}
+                className={cn("relative flex items-center gap-3 rounded-lg h-10 px-3 text-[13.5px] font-[family-name:var(--font-cond)] font-semibold uppercase tracking-wide transition", active ? "text-white bg-[color:var(--brand-red)]" : "text-white/70 hover:text-white hover:bg-white/[0.05]")}>
+                {active && <span aria-hidden className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-6 rounded-r bg-[color:var(--brand-amber)]" />}
+                <Icon className="w-[18px] h-[18px] shrink-0" />
+                {(!collapsed || mobileOpen) && <span className="flex-1 truncate">{item.label}</span>}
+              </NavLink>
+            );
+          })}
+        </nav>
+        <div className="border-t border-white/5 p-3 space-y-2">
+          <a href="/administrador/logout" className="w-full flex items-center gap-2 rounded-lg h-10 px-3 bg-white/[0.03] hover:bg-[color:var(--brand-red)] text-white/80 hover:text-white text-[12px] uppercase font-[family-name:var(--font-cond)] font-bold tracking-wider transition border border-white/5">
+            <LogOut className="w-4 h-4" /><span>Cerrar sesión</span>
+          </a>
+        </div>
+      </aside>
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Ribbon — franja superior separada del header */}
+        <div
+          className="text-center py-1.5 px-4 sm:px-6 text-[11px] sm:text-[12px] text-white uppercase font-bold"
+          style={{
+            fontFamily: "var(--font-cond)",
+            letterSpacing: "0.13em",
+            background: "repeating-linear-gradient(45deg, #101a34, #101a34 14px, #16223f 14px, #16223f 28px)",
+          }}
+        >
+          Portal ONSV · <b className="text-[color:var(--brand-amber)]">Panel Administrativo</b> · MTC
+        </div>
+
+        <header className="sticky top-0 z-30 bg-white/85 backdrop-blur border-b border-[color:var(--brand-line)]">
+          <div className="flex items-center gap-2 sm:gap-4 h-16 px-3 sm:px-6">
+            <button
+              type="button"
+              onClick={toggleMenu}
+              aria-label="Alternar menú"
+              title="Alternar menú"
+              className="w-10 h-10 rounded-lg border border-[color:var(--brand-line)] bg-white grid place-items-center text-[color:var(--brand-navy)] hover:border-[color:var(--brand-red)] hover:text-[color:var(--brand-red)] transition shrink-0"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+
+            <nav aria-label="Migas" className="flex items-center gap-2 text-[11px] sm:text-[12px] uppercase tracking-[0.1em] min-w-0" style={{ fontFamily: "var(--font-cond)" }}>
+              <Link to="/" className="flex items-center gap-1.5 text-muted-foreground hover:text-[color:var(--brand-red)] font-bold">
+                <Home className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Panel</span>
+              </Link>
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/50 shrink-0" />
+              <span className="text-[color:var(--brand-navy)] font-extrabold truncate">Administración</span>
+            </nav>
+
+            <div className="ml-auto flex items-center gap-2 sm:gap-3 shrink-0">
+              <div
+                title="Estado del portal"
+                className="flex items-center gap-2 h-10 px-3 rounded-lg border border-[color:var(--brand-line)] bg-white text-[color:var(--brand-navy)]"
+              >
+                <Activity className="w-4 h-4 text-[color:var(--brand-cyan)]" />
+                <span
+                  className="hidden sm:inline text-[11px] font-bold uppercase tracking-[0.14em] text-[#1f7a44]"
+                  style={{ fontFamily: "var(--font-cond)" }}
+                >
+                  Online
+                </span>
+                <span className="relative flex w-2 h-2">
+                  <span className="absolute inline-flex w-full h-full rounded-full bg-[#22c55e] opacity-70 animate-ping" />
+                  <span className="relative inline-flex w-2 h-2 rounded-full bg-[#1f7a44]" />
+                </span>
+              </div>
+
+              <div className="hidden md:flex items-center gap-3 pl-3 border-l border-[color:var(--brand-line)]">
+                <div className="text-right leading-none">
+                  <div className="text-[13px] font-bold text-[color:var(--brand-navy)]" style={{ fontFamily: "var(--font-cond)" }}>{displayName}</div>
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground mt-1" style={{ fontFamily: "var(--font-cond)" }}>{user?.role || "Superadministrador"}</div>
+                </div>
+                <div
+                  className="w-10 h-10 rounded-full grid place-items-center text-white font-extrabold text-[14px]"
+                  style={{
+                    background: "linear-gradient(135deg,#C8102E,#9E0C24)",
+                    fontFamily: "var(--font-display)",
+                    boxShadow: "0 6px 18px -6px rgba(200,16,46,0.7)",
+                  }}
+                >
+                  {initials}
+                </div>
+              </div>
+
+              <div
+                className="md:hidden w-9 h-9 rounded-full grid place-items-center text-white font-extrabold text-[12px]"
+                style={{
+                  background: "linear-gradient(135deg,#C8102E,#9E0C24)",
+                  fontFamily: "var(--font-display)",
+                  boxShadow: "0 6px 18px -6px rgba(200,16,46,0.7)",
+                }}
+              >
+                {initials}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-10">
+          <div className="max-w-[1360px] mx-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}

@@ -1,6 +1,7 @@
 const routes = require("express").Router();
 const consejoRegionalRoutes = require("./consejoRegionalRoutes");
 const adminRoutes = require("./admin/routes");
+const adminApiRoutes = require("./admin/api");
 
 const apiGhost = new (require("../api/ghost"));
 const utils = require("../utils/utils");
@@ -760,6 +761,7 @@ routes.post("/datosabiertos", async (req, res) => {
 })
 
 routes.use("/administrador", adminRoutes);
+routes.use("/administrador/api", adminApiRoutes);
 
 routes.use("/consejo-regional", consejoRegionalRoutes);
 
