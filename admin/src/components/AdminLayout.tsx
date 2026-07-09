@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate, useLocation, Link, matchPath } from "react-router-dom";
 import { LayoutDashboard, PanelBottom, BarChart3, Map, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight } from "lucide-react";
 import { cn } from "../lib/utils";
@@ -26,6 +26,9 @@ export function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => Object.fromEntries(NAV.filter(n => n.children).map(n => [n.label, true])));
   const [user, setUser] = useState<{ email: string; role: string } | null>(null);
+  const [isLg, setIsLg] = useState(() => window.matchMedia("(min-width: 1024px)").matches);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const avatarRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const loc = useLocation();
   const pathname = '/' + loc.pathname.split('/').slice(2).join('/');
@@ -34,6 +37,23 @@ export function AdminLayout() {
     apiGet<{ email: string; role: string }>("/auth/me").then(setUser).catch(() => setUser(null));
   }, []);
 
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const handler = (e: MediaQueryListEvent) => setIsLg(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (avatarOpen && avatarRef.current && !avatarRef.current.contains(e.target as Node)) {
+        setAvatarOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [avatarOpen]);
+
   const initials = user
     ? user.email.split('@')[0].split('.').map(s => s[0]).join('').toUpperCase().slice(0, 2)
     : 'AD';
@@ -41,6 +61,9 @@ export function AdminLayout() {
   const displayName = user
     ? user.email.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
     : 'Admin ONSV';
+
+  const sidebarWidth = collapsed ? 72 : 280;
+  const contentMarginLeft = isLg ? sidebarWidth : 0;
 
   const toggleMenu = () => {
     if (window.matchMedia("(min-width: 1024px)").matches) {
@@ -53,7 +76,7 @@ export function AdminLayout() {
   return (
     <div className="min-h-screen flex" style={{ background: "var(--brand-mist)" }}>
       {mobileOpen && <button type="button" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)} className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />}
-      <aside className={cn("text-[color:var(--sidebar-foreground)] flex flex-col fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-300 ease-out lg:relative lg:translate-x-0 lg:z-auto lg:transition-[width] lg:shrink-0", mobileOpen ? "translate-x-0" : "-translate-x-full", collapsed ? "lg:w-[72px]" : "lg:w-[280px]")} style={{ background: "linear-gradient(180deg, #0d1730 0%, #101a34 55%, #0b1428 100%)", borderRight: "1px solid rgba(255,255,255,0.06)" }}>
+      <aside className={cn("text-[color:var(--sidebar-foreground)] flex flex-col fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-300 ease-out lg:z-30 lg:h-screen lg:translate-x-0 lg:transition-[width]", mobileOpen ? "translate-x-0" : "-translate-x-full", collapsed ? "lg:w-[72px]" : "lg:w-[280px]")} style={{ background: "linear-gradient(180deg, #0d1730 0%, #101a34 55%, #0b1428 100%)", borderRight: "1px solid rgba(255,255,255,0.06)" }}>
         <span aria-hidden className="absolute inset-y-0 right-0 w-[3px]" style={{ background: "linear-gradient(180deg,transparent, #C8102E 30%, #C8102E 70%, transparent)" }} />
         <div className="relative flex items-center gap-3 px-4 h-[72px] border-b border-white/5">
           <OnsvLogo className="w-11 h-11" tone="light" />
@@ -65,7 +88,7 @@ export function AdminLayout() {
           )}
           <button type="button" onClick={() => setMobileOpen(false)} aria-label="Cerrar menú" className="lg:hidden ml-auto w-9 h-9 rounded-lg grid place-items-center text-white/70 hover:text-white hover:bg-white/10 transition"><svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+        <nav className="flex-1 overflow-y-hidden px-3 py-4 space-y-0.5">
           {NAV.map((item) => {
             const Icon = item.icon;
             if (item.children) {
@@ -106,13 +129,8 @@ export function AdminLayout() {
             );
           })}
         </nav>
-        <div className="border-t border-white/5 p-3 space-y-2">
-          <a href="/administrador/logout" className="w-full flex items-center gap-2 rounded-lg h-10 px-3 bg-white/[0.03] hover:bg-[color:var(--brand-red)] text-white/80 hover:text-white text-[12px] uppercase font-[family-name:var(--font-cond)] font-bold tracking-wider transition border border-white/5">
-            <LogOut className="w-4 h-4" /><span>Cerrar sesión</span>
-          </a>
-        </div>
       </aside>
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 lg:overflow-y-auto lg:h-screen transition-[margin] duration-300 ease-out" style={{ marginLeft: contentMarginLeft }}>
         {/* Ribbon — franja superior separada del header */}
         <div
           className="text-center py-1.5 px-4 sm:px-6 text-[11px] sm:text-[12px] text-white uppercase font-bold"
@@ -146,7 +164,7 @@ export function AdminLayout() {
               <span className="text-[color:var(--brand-navy)] font-extrabold truncate">Administración</span>
             </nav>
 
-            <div className="ml-auto flex items-center gap-2 sm:gap-3 shrink-0">
+            <div ref={avatarRef} className="ml-auto flex items-center gap-2 sm:gap-3 shrink-0">
               <div
                 title="Estado del portal"
                 className="flex items-center gap-2 h-10 px-3 rounded-lg border border-[color:var(--brand-line)] bg-white text-[color:var(--brand-navy)]"
@@ -164,13 +182,36 @@ export function AdminLayout() {
                 </span>
               </div>
 
-              <div className="hidden md:flex items-center gap-3 pl-3 border-l border-[color:var(--brand-line)]">
-                <div className="text-right leading-none">
-                  <div className="text-[13px] font-bold text-[color:var(--brand-navy)]" style={{ fontFamily: "var(--font-cond)" }}>{displayName}</div>
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground mt-1" style={{ fontFamily: "var(--font-cond)" }}>{user?.role || "Superadministrador"}</div>
-                </div>
-                <div
-                  className="w-10 h-10 rounded-full grid place-items-center text-white font-extrabold text-[14px]"
+              <div className="hidden md:flex items-center gap-3 pl-3 border-l border-[color:var(--brand-line)] relative">
+                <button type="button" onClick={() => setAvatarOpen(o => !o)} className="flex items-center gap-3 cursor-pointer">
+                  <div className="text-right leading-none">
+                    <div className="text-[13px] font-bold text-[color:var(--brand-navy)]" style={{ fontFamily: "var(--font-cond)" }}>{displayName}</div>
+                    <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground mt-1" style={{ fontFamily: "var(--font-cond)" }}>{user?.role || "Superadministrador"}</div>
+                  </div>
+                  <div
+                    className="w-10 h-10 rounded-full grid place-items-center text-white font-extrabold text-[14px]"
+                    style={{
+                      background: "linear-gradient(135deg,#C8102E,#9E0C24)",
+                      fontFamily: "var(--font-display)",
+                      boxShadow: "0 6px 18px -6px rgba(200,16,46,0.7)",
+                    }}
+                  >
+                    {initials}
+                  </div>
+                </button>
+                {avatarOpen && (
+                  <div className="absolute right-0 top-full mt-2 z-50 min-w-[180px] rounded-xl border border-[color:var(--brand-line)] bg-white p-1 shadow-lg">
+                    <a href="/administrador/logout"
+                      className="flex items-center gap-2.5 rounded-lg h-10 px-3 text-[12.5px] font-bold font-[family-name:var(--font-cond)] uppercase tracking-wider text-[color:var(--brand-red)] hover:bg-red-50 transition cursor-pointer">
+                      <LogOut className="w-4 h-4" /> Cerrar sesión
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <div className="md:hidden relative">
+                <button type="button" onClick={() => setAvatarOpen(o => !o)}
+                  className="w-9 h-9 rounded-full grid place-items-center text-white font-extrabold text-[12px] cursor-pointer"
                   style={{
                     background: "linear-gradient(135deg,#C8102E,#9E0C24)",
                     fontFamily: "var(--font-display)",
@@ -178,18 +219,15 @@ export function AdminLayout() {
                   }}
                 >
                   {initials}
-                </div>
-              </div>
-
-              <div
-                className="md:hidden w-9 h-9 rounded-full grid place-items-center text-white font-extrabold text-[12px]"
-                style={{
-                  background: "linear-gradient(135deg,#C8102E,#9E0C24)",
-                  fontFamily: "var(--font-display)",
-                  boxShadow: "0 6px 18px -6px rgba(200,16,46,0.7)",
-                }}
-              >
-                {initials}
+                </button>
+                {avatarOpen && (
+                  <div className="absolute right-0 top-full mt-2 z-50 min-w-[180px] rounded-xl border border-[color:var(--brand-line)] bg-white p-1 shadow-lg">
+                    <a href="/administrador/logout"
+                      className="flex items-center gap-2.5 rounded-lg h-10 px-3 text-[12.5px] font-bold font-[family-name:var(--font-cond)] uppercase tracking-wider text-[color:var(--brand-red)] hover:bg-red-50 transition cursor-pointer">
+                      <LogOut className="w-4 h-4" /> Cerrar sesión
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>
