@@ -39,6 +39,7 @@
   </head>
 
 	<body>
+		<div id="fb-root"></div>
 		{{#if enabledNavigation}}
 			{{> default/navigation}}
 		{{/if}}
@@ -53,10 +54,24 @@
 			{{> default/suscribers-modal}}
 		{{/if}}
 		
-		<div id="fb-root"></div>
-
-		<!--Facebookk-->
-		<script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
+		<script>
+			window.fbAsyncInit = function () {
+				FB.init({
+					xfbml: true,
+					version: 'v19.0'
+				});
+				if (document.querySelector('.fb-page')) {
+					FB.XFBML.parse();
+				}
+			};
+			(function (d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) { return; }
+				js = d.createElement(s); js.id = id;
+				js.src = 'https://connect.facebook.net/es_LA/sdk.js';
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
 		<script src="/main.js"></script>
 		<script src="/opendata.js"></script>
 		<script src="/features.js"></script>

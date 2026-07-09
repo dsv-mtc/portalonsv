@@ -27,5 +27,6 @@
     "titulo",
     "Todas",
     "Última"
-  ]
+  ],
+  "postman.settings.dotenv-detection-notification-visibility": false
 }
