@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, Outlet, useNavigate, useLocation, Link } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation, Link, matchPath } from "react-router-dom";
 import { LayoutDashboard, PanelBottom, BarChart3, Map, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight } from "lucide-react";
 import { cn } from "../lib/utils";
 import { OnsvLogo } from "./OnsvLogo";
@@ -70,7 +70,7 @@ export function AdminLayout() {
             const Icon = item.icon;
             if (item.children) {
               const open = openGroups[item.label];
-              const anyActive = item.children.some(c => pathname.startsWith(c.to));
+              const anyActive = item.children.some(c => matchPath({ path: c.to, end: true }, pathname));
               return (
                 <div key={item.label}>
                   <button type="button" onClick={() => !collapsed || mobileOpen ? setOpenGroups(g => ({ ...g, [item.label]: !open })) : navigate(item.children![0].to)}
@@ -80,28 +80,28 @@ export function AdminLayout() {
                   </button>
                   {(!collapsed || mobileOpen) && open && (
                     <div className="pl-4 mt-1 mb-2 space-y-0.5">
-                      {item.children.map(c => {
-                        const active = pathname.startsWith(c.to);
-                        return (
+                      {item.children.map(c => (
                           <NavLink key={c.label} to={c.to} onClick={() => setMobileOpen(false)}
-                            className={cn("flex items-center gap-3 pl-6 pr-3 h-8 rounded-md text-[12.5px] font-[family-name:var(--font-cond)] font-semibold uppercase tracking-wider transition", active ? "text-white bg-[color:var(--brand-red)]" : "text-white/55 hover:text-white hover:bg-white/[0.05]")}>
-                            <span aria-hidden className={cn("w-1.5 h-1.5 rounded-full", active ? "bg-white" : "bg-white/30")} />
-                            {c.label}
+                            className={({ isActive }) => cn("flex items-center gap-3 pl-6 pr-3 h-8 rounded-md text-[12.5px] font-[family-name:var(--font-cond)] font-semibold uppercase tracking-wider transition", isActive ? "text-white bg-[color:var(--brand-red)]" : "text-white/55 hover:text-white hover:bg-white/[0.05]")}>
+                            {({ isActive }) => (
+                              <><span aria-hidden className={cn("w-1.5 h-1.5 rounded-full", isActive ? "bg-white" : "bg-white/30")} />
+                            {c.label}</>
+                            )}
                           </NavLink>
-                        );
-                      })}
+                        ))}
                     </div>
                   )}
                 </div>
               );
             }
-            const active = pathname === item.to;
             return (
               <NavLink key={item.label} to={item.to!} onClick={() => setMobileOpen(false)}
-                className={cn("relative flex items-center gap-3 rounded-lg h-10 px-3 text-[13.5px] font-[family-name:var(--font-cond)] font-semibold uppercase tracking-wide transition", active ? "text-white bg-[color:var(--brand-red)]" : "text-white/70 hover:text-white hover:bg-white/[0.05]")}>
-                {active && <span aria-hidden className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-6 rounded-r bg-[color:var(--brand-amber)]" />}
+                className={({ isActive }) => cn("relative flex items-center gap-3 rounded-lg h-10 px-3 text-[13.5px] font-[family-name:var(--font-cond)] font-semibold uppercase tracking-wide transition", isActive ? "text-white bg-[color:var(--brand-red)]" : "text-white/70 hover:text-white hover:bg-white/[0.05]")}>
+                {({ isActive }) => (
+                  <>{isActive && <span aria-hidden className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-6 rounded-r bg-[color:var(--brand-amber)]" />}
                 <Icon className="w-[18px] h-[18px] shrink-0" />
-                {(!collapsed || mobileOpen) && <span className="flex-1 truncate">{item.label}</span>}
+                {(!collapsed || mobileOpen) && <span className="flex-1 truncate">{item.label}</span>}</>
+                )}
               </NavLink>
             );
           })}

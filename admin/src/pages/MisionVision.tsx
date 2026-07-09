@@ -1,12 +1,34 @@
 import { useState, useEffect } from "react";
-import { Send } from "lucide-react";
+import { Send, Languages } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { Panel, BrandButton } from "../components/UIBits";
 import { apiGet, apiPut } from "../lib/api";
 
+type Lang = "es" | "en";
+
+interface FieldDef {
+  key: "descripcion" | "mision" | "vision";
+  label: string;
+  max: number;
+}
+
+const FIELDS: Record<Lang, FieldDef[]> = {
+  es: [
+    { key: "descripcion", label: "Definición ONSV", max: 10000 },
+    { key: "mision", label: "Misión", max: 2000 },
+    { key: "vision", label: "Visión", max: 2000 },
+  ],
+  en: [
+    { key: "descripcion", label: "ONSV Definition", max: 10000 },
+    { key: "mision", label: "Mission", max: 10000 },
+    { key: "vision", label: "Vision", max: 10000 },
+  ],
+};
+
 export function MisionVision() {
   const [form, setForm] = useState({ en: { descripcion: "", mision: "", vision: "" }, es: { descripcion: "", mision: "", vision: "" } });
   const [msg, setMsg] = useState("");
+  const [lang, setLang] = useState<Lang>("es");
 
   useEffect(() => {
     apiGet<{ en: { descripcion: string; mision: string; vision: string }; es: { descripcion: string; mision: string; vision: string } }>("/mision-vision").then(setForm).catch(() => {});
@@ -18,27 +40,44 @@ export function MisionVision() {
     setMsg(r.message || "Guardado");
   };
 
-  const Section = ({ lang, label }: { lang: "en" | "es"; label: string }) => (
-    <Panel title={`${label} (${lang === "en" ? "Inglés" : "Español"})`}>
-      <div className="space-y-4">
-        {(["descripcion", "mision", "vision"] as const).map(f => (
-          <label key={f} className="block">
-            <span className="text-[11px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>{f === "descripcion" ? "¿Quiénes somos?" : f === "mision" ? "Misión" : "Visión"}</span>
-            <textarea rows={4} value={form[lang][f]} onChange={e => { const v = e.target.value; setForm(p => ({ ...p, [lang]: { ...p[lang], [f]: v } })); }} className="mt-1 w-full rounded-lg border-2 p-3 text-[14.5px] outline-none" style={{ borderColor: "var(--brand-line)" }} />
-          </label>
-        ))}
-      </div>
-    </Panel>
-  );
+  const fields = FIELDS[lang];
 
   return (
     <>
-      <PageHeader title="Misión — Visión" eyebrow="¿Quiénes somos?" description="Actualiza la sección de presentación del portal en ambos idiomas." />
+      <PageHeader title="Misión — Visión" eyebrow="Identidad institucional (ES / EN)"
+        description="Define los textos institucionales bilingües del Portal ONSV." />
+
+      <div className="mb-5 inline-flex rounded-lg border-2 border-[color:var(--brand-line)] p-1 bg-white">
+        {(["es", "en"] as const).map((l) => (
+          <button key={l} onClick={() => setLang(l)}
+            className={"px-4 h-9 rounded-md text-[12px] uppercase font-bold tracking-wider transition font-[family-name:var(--font-cond)] inline-flex items-center gap-2 " +
+              (lang === l ? "bg-[color:var(--brand-navy)] text-white" : "text-[color:var(--brand-navy)] hover:bg-[color:var(--brand-mist)]")}>
+            <Languages className="w-3.5 h-3.5" /> {l === "es" ? "Español" : "English"}
+          </button>
+        ))}
+      </div>
+
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Section lang="es" label="Español" />
-        <Section lang="en" label="Inglés" />
-        <div className="flex justify-end"><BrandButton type="submit"><Send className="w-4 h-4" /> Guardar</BrandButton></div>
+
+      <form onSubmit={handleSubmit}>
+        <Panel title={lang === "es" ? "Textos institucionales" : "Institutional texts"}>
+          <div className="space-y-5">
+            {fields.map((f) => (
+              <label key={f.key} className="block">
+                <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
+                  {f.label} <span className="text-[color:var(--brand-red)]">*</span>
+                </span>
+                <textarea required maxLength={f.max} value={form[lang][f.key]}
+                  onChange={e => { const v = e.target.value; setForm(p => ({ ...p, [lang]: { ...p[lang], [f.key]: v } })); }}
+                  className="mt-1 w-full min-h-[140px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-3 text-[14.5px] leading-relaxed resize-y" />
+                <span className="text-[10.5px] text-muted-foreground mt-1 inline-block">Máx. {f.max.toLocaleString()} caracteres</span>
+              </label>
+            ))}
+          </div>
+          <div className="mt-6 flex justify-end">
+            <BrandButton type="submit"><Send className="w-4 h-4" /> Enviar Información</BrandButton>
+          </div>
+        </Panel>
       </form>
     </>
   );
