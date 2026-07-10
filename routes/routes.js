@@ -760,8 +760,8 @@ routes.post("/datosabiertos", async (req, res) => {
 
 })
 
-routes.use("/administrador", adminRoutes);
 routes.use("/administrador/api", adminApiRoutes);
+routes.use("/administrador", adminRoutes);
 
 routes.use("/consejo-regional", consejoRegionalRoutes);
 
