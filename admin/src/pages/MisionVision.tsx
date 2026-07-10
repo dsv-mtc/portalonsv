@@ -7,7 +7,7 @@ import { apiGet, apiPut } from "../lib/api";
 type Lang = "es" | "en";
 
 interface FieldDef {
-  key: "descripcion" | "mision" | "vision";
+  key: string;
   label: string;
   max: number;
 }
@@ -17,21 +17,100 @@ const FIELDS: Record<Lang, FieldDef[]> = {
     { key: "descripcion", label: "Definición ONSV", max: 10000 },
     { key: "mision", label: "Misión", max: 2000 },
     { key: "vision", label: "Visión", max: 2000 },
+    { key: "comp_titulo", label: "Componentes tecnológicos — Título", max: 2000 },
+    { key: "comp1_titulo", label: "COMP 1 — Título", max: 2000 },
+    { key: "comp1_desc", label: "COMP 1 — Descripción", max: 2000 },
+    { key: "comp2_titulo", label: "COMP 2 — Título", max: 2000 },
+    { key: "comp2_desc", label: "COMP 2 — Descripción", max: 2000 },
+    { key: "comp3_titulo", label: "COMP 3 — Título", max: 2000 },
+    { key: "comp3_desc", label: "COMP 3 — Descripción", max: 2000 },
+    { key: "comp4_titulo", label: "COMP 4 — Título", max: 2000 },
+    { key: "comp4_desc", label: "COMP 4 — Descripción", max: 2000 },
+    { key: "val_intro", label: "Valores — Descripción introductoria", max: 2000 },
+    { key: "val1_titulo", label: "VALOR 1 — Título", max: 2000 },
+    { key: "val1_desc", label: "VALOR 1 — Descripción", max: 2000 },
+    { key: "val2_titulo", label: "VALOR 2 — Título", max: 2000 },
+    { key: "val2_desc", label: "VALOR 2 — Descripción", max: 2000 },
+    { key: "val3_titulo", label: "VALOR 3 — Título", max: 2000 },
+    { key: "val3_desc", label: "VALOR 3 — Descripción", max: 2000 },
+    { key: "val4_titulo", label: "VALOR 4 — Título", max: 2000 },
+    { key: "val4_desc", label: "VALOR 4 — Descripción", max: 2000 },
+    { key: "val5_titulo", label: "VALOR 5 — Título", max: 2000 },
+    { key: "val5_desc", label: "VALOR 5 — Descripción", max: 2000 },
+    { key: "val6_titulo", label: "VALOR 6 — Título", max: 2000 },
+    { key: "val6_desc", label: "VALOR 6 — Descripción", max: 2000 },
   ],
   en: [
     { key: "descripcion", label: "ONSV Definition", max: 10000 },
     { key: "mision", label: "Mission", max: 10000 },
     { key: "vision", label: "Vision", max: 10000 },
+    { key: "comp_titulo", label: "Technological components — Title", max: 2000 },
+    { key: "comp1_titulo", label: "COMP 1 — Title", max: 2000 },
+    { key: "comp1_desc", label: "COMP 1 — Description", max: 2000 },
+    { key: "comp2_titulo", label: "COMP 2 — Title", max: 2000 },
+    { key: "comp2_desc", label: "COMP 2 — Description", max: 2000 },
+    { key: "comp3_titulo", label: "COMP 3 — Title", max: 2000 },
+    { key: "comp3_desc", label: "COMP 3 — Description", max: 2000 },
+    { key: "comp4_titulo", label: "COMP 4 — Title", max: 2000 },
+    { key: "comp4_desc", label: "COMP 4 — Description", max: 2000 },
+    { key: "val_intro", label: "Values — Introductory description", max: 2000 },
+    { key: "val1_titulo", label: "VALUE 1 — Title", max: 2000 },
+    { key: "val1_desc", label: "VALUE 1 — Description", max: 2000 },
+    { key: "val2_titulo", label: "VALUE 2 — Title", max: 2000 },
+    { key: "val2_desc", label: "VALUE 2 — Description", max: 2000 },
+    { key: "val3_titulo", label: "VALUE 3 — Title", max: 2000 },
+    { key: "val3_desc", label: "VALUE 3 — Description", max: 2000 },
+    { key: "val4_titulo", label: "VALUE 4 — Title", max: 2000 },
+    { key: "val4_desc", label: "VALUE 4 — Description", max: 2000 },
+    { key: "val5_titulo", label: "VALUE 5 — Title", max: 2000 },
+    { key: "val5_desc", label: "VALUE 5 — Description", max: 2000 },
+    { key: "val6_titulo", label: "VALUE 6 — Title", max: 2000 },
+    { key: "val6_desc", label: "VALUE 6 — Description", max: 2000 },
   ],
 };
 
+type FormData = Record<string, string>;
+
+const initForm = (): Record<Lang, FormData> => ({
+  es: {
+    descripcion: "", mision: "", vision: "",
+    comp_titulo: "",
+    comp1_titulo: "", comp1_desc: "",
+    comp2_titulo: "", comp2_desc: "",
+    comp3_titulo: "", comp3_desc: "",
+    comp4_titulo: "", comp4_desc: "",
+    val_intro: "",
+    val1_titulo: "", val1_desc: "",
+    val2_titulo: "", val2_desc: "",
+    val3_titulo: "", val3_desc: "",
+    val4_titulo: "", val4_desc: "",
+    val5_titulo: "", val5_desc: "",
+    val6_titulo: "", val6_desc: "",
+  },
+  en: {
+    descripcion: "", mision: "", vision: "",
+    comp_titulo: "",
+    comp1_titulo: "", comp1_desc: "",
+    comp2_titulo: "", comp2_desc: "",
+    comp3_titulo: "", comp3_desc: "",
+    comp4_titulo: "", comp4_desc: "",
+    val_intro: "",
+    val1_titulo: "", val1_desc: "",
+    val2_titulo: "", val2_desc: "",
+    val3_titulo: "", val3_desc: "",
+    val4_titulo: "", val4_desc: "",
+    val5_titulo: "", val5_desc: "",
+    val6_titulo: "", val6_desc: "",
+  },
+});
+
 export function MisionVision() {
-  const [form, setForm] = useState({ en: { descripcion: "", mision: "", vision: "" }, es: { descripcion: "", mision: "", vision: "" } });
+  const [form, setForm] = useState<Record<Lang, FormData>>(initForm());
   const [msg, setMsg] = useState("");
   const [lang, setLang] = useState<Lang>("es");
 
   useEffect(() => {
-    apiGet<{ en: { descripcion: string; mision: string; vision: string }; es: { descripcion: string; mision: string; vision: string } }>("/mision-vision").then(setForm).catch(() => {});
+    apiGet<Record<Lang, FormData>>("/mision-vision").then(setForm).catch(() => {});
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,7 +130,7 @@ export function MisionVision() {
         {(["es", "en"] as const).map((l) => (
           <button key={l} onClick={() => setLang(l)}
             className={"px-4 h-9 rounded-md text-[12px] uppercase font-bold tracking-wider transition font-[family-name:var(--font-cond)] inline-flex items-center gap-2 " +
-              (lang === l ? "bg-[color:var(--brand-navy)] text-white" : "text-[color:var(--brand-navy)] hover:bg-[color:var(--brand-mist)]")}>
+                (lang === l ? "bg-[color:var(--brand-navy)] text-white" : "text-[color:var(--brand-navy)] hover:bg-[color:var(--brand-mist)]")}>
             <Languages className="w-3.5 h-3.5" /> {l === "es" ? "Español" : "English"}
           </button>
         ))}
@@ -67,9 +146,9 @@ export function MisionVision() {
                 <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
                   {f.label} <span className="text-[color:var(--brand-red)]">*</span>
                 </span>
-                <textarea required maxLength={f.max} value={form[lang][f.key]}
-                  onChange={e => { const v = e.target.value; setForm(p => ({ ...p, [lang]: { ...p[lang], [f.key]: v } })); }}
-                  className="mt-1 w-full min-h-[140px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-3 text-[14.5px] leading-relaxed resize-y" />
+                <textarea required maxLength={f.max} value={form[lang][f.key] ?? ""}
+                  onChange={e => setForm(p => ({ ...p, [lang]: { ...p[lang], [f.key]: e.target.value } }))}
+                  className="mt-1 w-full min-h-[80px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-3 text-[14.5px] leading-relaxed resize-y" />
                 <span className="text-[10.5px] text-muted-foreground mt-1 inline-block">Máx. {f.max.toLocaleString()} caracteres</span>
               </label>
             ))}

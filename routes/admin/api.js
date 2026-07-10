@@ -80,16 +80,68 @@ router.get("/mision-vision", isAuthenticated, async (req, res) => {
   res.json({
     success: true,
     data: {
-      en: { descripcion: enData[0].contenido, mision: enData[1].contenido, vision: enData[2].contenido },
-      es: { descripcion: esData[0].contenido, mision: esData[1].contenido, vision: esData[2].contenido }
+      en: {
+        descripcion: enData[0].contenido,
+        mision: enData[1].contenido,
+        vision: enData[2].contenido,
+        comp_titulo: enData[3].contenido,
+        val_intro: enData[4].contenido,
+        comp1_titulo: enData[5].contenido,
+        comp1_desc: enData[6].contenido,
+        comp2_titulo: enData[7].contenido,
+        comp2_desc: enData[8].contenido,
+        comp3_titulo: enData[9].contenido,
+        comp3_desc: enData[10].contenido,
+        comp4_titulo: enData[11].contenido,
+        comp4_desc: enData[12].contenido,
+        val1_titulo: enData[13].contenido,
+        val1_desc: enData[14].contenido,
+        val2_titulo: enData[15].contenido,
+        val2_desc: enData[16].contenido,
+        val3_titulo: enData[17].contenido,
+        val3_desc: enData[18].contenido,
+        val4_titulo: enData[19].contenido,
+        val4_desc: enData[20].contenido,
+        val5_titulo: enData[21].contenido,
+        val5_desc: enData[22].contenido,
+        val6_titulo: enData[23].contenido,
+        val6_desc: enData[24].contenido,
+      },
+      es: {
+        descripcion: esData[0].contenido,
+        mision: esData[1].contenido,
+        vision: esData[2].contenido,
+        comp_titulo: esData[3].contenido,
+        val_intro: esData[4].contenido,
+        comp1_titulo: esData[5].contenido,
+        comp1_desc: esData[6].contenido,
+        comp2_titulo: esData[7].contenido,
+        comp2_desc: esData[8].contenido,
+        comp3_titulo: esData[9].contenido,
+        comp3_desc: esData[10].contenido,
+        comp4_titulo: esData[11].contenido,
+        comp4_desc: esData[12].contenido,
+        val1_titulo: esData[13].contenido,
+        val1_desc: esData[14].contenido,
+        val2_titulo: esData[15].contenido,
+        val2_desc: esData[16].contenido,
+        val3_titulo: esData[17].contenido,
+        val3_desc: esData[18].contenido,
+        val4_titulo: esData[19].contenido,
+        val4_desc: esData[20].contenido,
+        val5_titulo: esData[21].contenido,
+        val5_desc: esData[22].contenido,
+        val6_titulo: esData[23].contenido,
+        val6_desc: esData[24].contenido,
+      }
     }
   });
 });
 
 router.put("/mision-vision", isAuthenticated, async (req, res) => {
   const { en, es } = req.body;
-  const r1 = await mysql.updateMisionVision(true, { descripcion: en.descripcion, mision: en.mision, vision: en.vision });
-  const r2 = await mysql.updateMisionVision(false, { descripcion: es.descripcion, mision: es.mision, vision: es.vision });
+  const r1 = await mysql.updateMisionVision(true, en);
+  const r2 = await mysql.updateMisionVision(false, es);
   res.json({ success: r1.success && r2.success, message: "Actualizado" });
 });
 

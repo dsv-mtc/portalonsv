@@ -685,28 +685,38 @@ class DataBase {
 
 	async getContenidoQuienesSomos(secondary_navigation) {
 		const idioma = secondary_navigation ? 'EN' : 'ES';
-		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4 FROM pagina WHERE idioma like '${idioma}'`;
+		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4, seccion5, seccion6, seccion7, seccion8, seccion9, seccion10, seccion11, seccion12, seccion13, seccion14, seccion15, seccion16, seccion17, seccion18, seccion19, seccion20, seccion21, seccion22, seccion23, seccion24, seccion25 FROM pagina WHERE idioma like '${idioma}'`;
 		try {
 			const results = await this.query(queryString);
+			const r = results[0];
 			return {
 				success: true,
 				data: [
-					{
-						label: '¿Quiénes somos?',
-						contenido: results[0].seccion1
-					},
-					{
-						label: 'Misión',
-						contenido: results[0].seccion2
-					},
-					{
-						label: 'Visión',
-						contenido: results[0].seccion3
-					},
-					{
-						label: 'Componentes tecnológicos',
-						contenido: results[0].seccion4.replace(/\s+/g, ' ').trim()
-					},
+					{ label: '¿Quiénes somos?',              contenido: r.seccion1 },
+					{ label: 'Misión',                       contenido: r.seccion2 },
+					{ label: 'Visión',                       contenido: r.seccion3 },
+					{ label: 'Componentes tecnológicos',     contenido: r.seccion4 },
+					{ label: 'Valores',                      contenido: r.seccion5 },
+					{ label: 'Comp1 título',                 contenido: r.seccion6  },
+					{ label: 'Comp1 desc',                   contenido: r.seccion7  },
+					{ label: 'Comp2 título',                 contenido: r.seccion8  },
+					{ label: 'Comp2 desc',                   contenido: r.seccion9  },
+					{ label: 'Comp3 título',                 contenido: r.seccion10 },
+					{ label: 'Comp3 desc',                   contenido: r.seccion11 },
+					{ label: 'Comp4 título',                 contenido: r.seccion12 },
+					{ label: 'Comp4 desc',                   contenido: r.seccion13 },
+					{ label: 'Val1 título',                  contenido: r.seccion14 },
+					{ label: 'Val1 desc',                    contenido: r.seccion15 },
+					{ label: 'Val2 título',                  contenido: r.seccion16 },
+					{ label: 'Val2 desc',                    contenido: r.seccion17 },
+					{ label: 'Val3 título',                  contenido: r.seccion18 },
+					{ label: 'Val3 desc',                    contenido: r.seccion19 },
+					{ label: 'Val4 título',                  contenido: r.seccion20 },
+					{ label: 'Val4 desc',                    contenido: r.seccion21 },
+					{ label: 'Val5 título',                  contenido: r.seccion22 },
+					{ label: 'Val5 desc',                    contenido: r.seccion23 },
+					{ label: 'Val6 título',                  contenido: r.seccion24 },
+					{ label: 'Val6 desc',                    contenido: r.seccion25 },
 				]
 			}
 		} catch (error) {
@@ -718,14 +728,45 @@ class DataBase {
 		}
 	}
 
-	async updateMisionVision(secondary_navigation, { descripcion, mision, vision }) {
+	async updateMisionVision(secondary_navigation, data) {
 		const idioma = secondary_navigation ? 'EN' : 'ES';
+		const {
+			descripcion, mision, vision,
+			comp_titulo, val_intro,
+			comp1_titulo, comp1_desc, comp2_titulo, comp2_desc,
+			comp3_titulo, comp3_desc, comp4_titulo, comp4_desc,
+			val1_titulo, val1_desc, val2_titulo, val2_desc,
+			val3_titulo, val3_desc, val4_titulo, val4_desc,
+			val5_titulo, val5_desc, val6_titulo, val6_desc
+		} = data;
 		const queryString = `
-            UPDATE pagina 
-                SET 
+            UPDATE pagina
+                SET
                     seccion1='${descripcion}',
                     seccion2='${mision}',
-                    seccion3='${vision}' 
+                    seccion3='${vision}',
+                    seccion4='${comp_titulo}',
+                    seccion5='${val_intro}',
+                    seccion6='${comp1_titulo}',
+                    seccion7='${comp1_desc}',
+                    seccion8='${comp2_titulo}',
+                    seccion9='${comp2_desc}',
+                    seccion10='${comp3_titulo}',
+                    seccion11='${comp3_desc}',
+                    seccion12='${comp4_titulo}',
+                    seccion13='${comp4_desc}',
+                    seccion14='${val1_titulo}',
+                    seccion15='${val1_desc}',
+                    seccion16='${val2_titulo}',
+                    seccion17='${val2_desc}',
+                    seccion18='${val3_titulo}',
+                    seccion19='${val3_desc}',
+                    seccion20='${val4_titulo}',
+                    seccion21='${val4_desc}',
+                    seccion22='${val5_titulo}',
+                    seccion23='${val5_desc}',
+                    seccion24='${val6_titulo}',
+                    seccion25='${val6_desc}'
             WHERE idioma LIKE '${idioma}'`;
 		try {
 			const result = await this.query(queryString);
