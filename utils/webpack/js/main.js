@@ -290,17 +290,13 @@ function showRegionLabel(regionId){
 	const pathElement = document.getElementById(regionId);
 	
 	if(label && pathElement){
-		const bbox = pathElement.getBBox();
 		const svgRect = pathElement.ownerSVGElement.getBoundingClientRect();
 		const pathRect = pathElement.getBoundingClientRect();
-		
-		const centerX = (bbox.x + bbox.width / 2) * (svgRect.width / pathElement.ownerSVGElement.viewBox.baseVal.width);
-		const centerY = (bbox.y + bbox.height / 2) * (svgRect.height / pathElement.ownerSVGElement.viewBox.baseVal.height);
 		
 		label.textContent = regionId;
 		label.style.display = 'block';
 		label.style.left = (pathRect.left - svgRect.left + pathRect.width / 2) + 'px';
-		label.style.top = (pathRect.top - svgRect.top) + 'px';
+		label.style.top = (pathRect.top - svgRect.top + pathRect.height / 2) + 'px';
 	}
 }
 
