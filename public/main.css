@@ -13802,6 +13802,13 @@ border: 1px solid #a2a2a2;
 .new-card { position: relative; display: flex; flex-direction: column; height: 100%; border-radius: 16px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .new-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(20,33,61,.18); }
 .card-badge { position: absolute; top: 16px; left: 16px; background: #ffffff; color: #1d3557; font-family: "Roboto Condensed", sans-serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; padding: 5px 12px; border-radius: 6px; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+.new-card .card-img{width:100%;height:200px;-o-object-fit:cover;object-fit:cover;border-bottom:1px solid var(--line)}
+.new-card .card-content{padding:16px 20px 20px;display:flex;flex-direction:column;flex:1;text-align:left}
+.new-card .card-meta{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:12px;color:#0355a3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.new-card .card-title{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:20px;color:var(--navy);line-height:1.25;margin:0 0 8px 0;letter-spacing:-.01em}
+.new-card .p-hide{margin:0 0 14px 0;padding:0;flex:1;color:#64748b;font-family:"Barlow",sans-serif;font-size:13.5px;line-height:1.4}
+.new-card .card-link{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--red);display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:.2s;margin-top:auto;align-self:flex-start}
+.new-card .card-link:hover{color:var(--navy);gap:10px;text-decoration:none}
 
 /* --- REGIONES: tarjeta de Consejo Regional --- */
 .crsv-card{background:#fff;border:1px solid #dee2e6;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08);display:flex;flex-direction:column;height:100%}
@@ -13812,7 +13819,7 @@ border: 1px solid #a2a2a2;
 .crsv-region{font-size:26px;color:#fff;text-transform:uppercase;line-height:1;margin-top:4px;font-weight:800}
 .crsv-body{padding:22px 26px}
 .crsv-logo{display:flex;justify-content:center;padding:2px 0 18px}
-.crsv-logo img{width:130px !important}
+.crsv-logo img{width:180px !important}
 .rfield{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #dee2e6}
 .rfield:last-child{border-bottom:none}
 .rfield .ic{width:38px;height:38px;border-radius:10px;background:#fdeef0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -13920,13 +13927,24 @@ border: 1px solid #a2a2a2;
 .wbn-yt{display:inline-flex;gap:7px;align-items:center;color:#C8102E;font-family:"Roboto Condensed",sans-serif;font-weight:700;text-transform:uppercase;font-size:12.5px;text-decoration:none}
 .wbn-yt:hover{color:#9E0C24;text-decoration:underline}
 
-#others{position:relative}
+#others{position:relative;padding:0 40px}
 #others .owl-nav{position:absolute;top:50%;left:-20px;right:-20px;transform:translateY(-50%);display:flex;justify-content:space-between;pointer-events:none;z-index:4}
 #others .owl-nav button.owl-prev,
 #others .owl-nav button.owl-next{pointer-events:all;width:44px;height:44px;border-radius:50%;border:1px solid #e2e8f0;background:#fff;color:#14213D;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.12);transition:.2s ease}
 #others .owl-nav button.owl-prev:hover,
 #others .owl-nav button.owl-next:hover{background:#C8102E;color:#fff}
 #others .owl-nav .disabled{opacity:.4;cursor:default;pointer-events:none}
+
+#noti{position:relative;padding:0 40px}
+#noti .owl-nav{position:absolute;top:50%;left:-20px;right:-20px;transform:translateY(-50%);display:flex;justify-content:space-between;pointer-events:none;z-index:4}
+#noti .owl-nav button.owl-prev,
+#noti .owl-nav button.owl-next{pointer-events:all;width:44px;height:44px;border-radius:50%;border:1px solid #e2e8f0;background:#fff;color:#14213D;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.12);transition:.2s ease}
+#noti .owl-nav button.owl-prev:hover,
+#noti .owl-nav button.owl-next:hover{background:#C8102E;color:#fff}
+#noti .owl-nav .disabled{opacity:.4;cursor:default;pointer-events:none}
+#noti .owl-stage{display:flex}
+#noti .owl-item{display:flex;height:auto}
+#noti .owl-item .item{height:100%;width:100%}
 
 /* ==========================================================
    REDISEÑO MODERNO: DASHBOARD ADMINISTRADOR (INICIO)
@@ -14217,24 +14235,12 @@ border: 1px solid #a2a2a2;
         text-transform: uppercase;
         background-color: transparent;
     }
-    .rsp-noti-sec .owl-prev span {
-        left: -39px;
-    }
-    .rsp-noti-sec .owl-next span {
-        right: -34px;
-    }
     .disclaimer{
         height: 20px;
       }
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
-    .rsp-noti-sec .owl-prev span {
-        left: -20px;
-    }
-    .rsp-noti-sec .owl-next span {
-        right: -20px;
-    }
     .logo img {
         width: 200px;
     }
@@ -14466,29 +14472,6 @@ border: 1px solid #a2a2a2;
     }
     .conf-blk {
         padding: 50px 15px;
-    }
-    .rsp-noti-sec .owl-prev span {
-        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC8AAAAvCAMAAABE+WOeAAABRFBMVEUAAACioqL///+ioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKRkZGioqKRkZGioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKRkZGioqLcVYanAAAAanRSTlMAAAACAwQFBg0ODxMUFRYXGRocHR4fITEyMzM0NTY5Oj0+P0BBQkRUVVVWV1hZWl1mbG1yc3V2d3h5eoiJioyNkJKTmaKlpqeoqaqrrK2ys7S8vb6/xcbJysvMzc7d5ebo6err7O7w8fL6YGME7AAAAhtJREFUSMel1u1b0zAQAPAky+RNkMmLpYIKG7KN4djYRHwZtE42xhBYUaDVIQhEu///u61bWZtc2vFwn3+XJ00vd0GYi5iyUT1t33Zu26fVkhLDJBgoqBXt0trOLyRG8WhiIV+xLjUlxKcMqzgRyJ8oWkZK4me+GhksBMkYhzOQz7BNDIRjNllW8FRrpLDEk+SeRoN+aF+PY6kncX1/yO9pfQfjEE/IToP6vKbjCE90re+ze/FIH6+vev4pS+JIT5bYVM833+MBPNlqdn3yBA/kyUnyvz/OBgDyIp1GQZ89dv3zcwz6ddteD3piqo7XiqB3uP2B80WNoNjVOORd/pnbDxm/iiHFwoDvct4TS0GlCuB7XPCVEvryRvQeF3yuhixF8Hdc8M9+oF9PeN/ngk+00d9HnPdxwQ//QR2+AG5s+yeSeNIR15+7CV1f3L8vAdg/cD79BOB8dtfE879LAM6//An4v14C7z++RS++Q/XTS+D9t5eI/n4M1Wc3QahPirBeAOvfTYDqX3q/nIQ0dL9wS3J/515z+8m07tcf3EngLnGwNZB/d9DrV1NsaQC/yKa9/rlaj+6ftJa7X3/W/f2/Edn/m/QB88WdX7VFqX+1y88vJ3KsLPFltgbN39mj1grgV1pHs5L5vmyYhbGAHiuYxnLI+0HVr83t/PzkCB6ZnM9XzGtdDX1vOB+ublTPLliHXZxVSyrl3yf/AAGqZTfKkgRMAAAAAElFTkSuQmCC);
-        width: 34px;
-        height: 34px;
-        background-repeat: no-repeat;
-        position: absolute;
-        left: auto;
-        top: -40px;
-        background-size: 100%;
-        color: transparent;
-        right: 50px;
-    }
-    .rsp-noti-sec .owl-next span {
-        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC8AAAAvCAMAAABE+WOeAAABRFBMVEUAAACioqL///+ioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKRkZGioqKRkZGioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKioqKioqKioqKRkZGioqKioqKioqKioqKRkZGioqLcVYanAAAAanRSTlMAAAACAwQFBg0ODxMUFRYXGRocHR4fITEyMzM0NTY5Oj0+P0BBQkRUVVVWV1hZWl1mbG1yc3V2d3h5eoiJioyNkJKTmaKlpqeoqaqrrK2ys7S8vb6/xcbJysvMzc7d5ebo6err7O7w8fL6YGME7AAAAhtJREFUSMel1u9f0kAYAPC748jUNMm0sbRSMAExBCGzH+gWCSKWMkvbCtPEq/H/v28T1rjbcxt+fF5/n/vcbs89zyEsREzZrJ12rnvXndNaWYlhwgfitaJdWDuFxcQEnkgsFqrWhaaE+LRhlaa5/OmSZaQlfu6zkcWBIFnjyxzks2wLA+GYLZYLeKo101jiSWpfo7wfO9DjWOpJXD8YG/a0sYtxiCdkt0mHvKbjCE90zfe5/XikjzfWPP+IpXCkJ8tsduBbb/EInmy3+j51gkfy5CR1449zvECZDPKC87lj1z/9Lqy4YdsboCem6nitJPh3tp/A+5JGUOxySvDoo5/A+6nLGFIs8QvRUALviaWgcjXo/QTBV8vo0yvA/08QfL6OLAXyXoLgn/xAvx6CfpAg+EQH/b0H+36C4O//QT0s8einbXcFT3qh63eTwfVD9t9NAvuXn4/DgfPZW5ecv8uB8698gP/vDRf9+9fo2Tewfvpc9F+fI/r7AVCfAx6oT4qwXgzWv8eB+g/er4zPofuF2+L9fZmE72+2fbv+4E4Ct/8cbo/k3xwO+tUsWx7BL7HHXv9ca0T3T1rP364/68P9vxnZ/1v0DvPFnV/1Jal/sSfOLyfyrCLxFbYOzd/5o/Yq4FfbR/OS+b5imMVJTk8WTWMl5P2g6lfmTmFhZhyPzywUquaVroa+N5wPVzdrZ+esx87PamWViu+Tf/VdZTfRM5zVAAAAAElFTkSuQmCC);
-        width: 34px;
-        height: 34px;
-        background-repeat: no-repeat;
-        position: absolute;
-        top: -40px;
-        right: 0;
-        background-size: 100%;
-        color: transparent;
     }
     .rsp-c-tab-blk {
         margin: 0 0 40px 0;

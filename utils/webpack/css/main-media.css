@@ -53,24 +53,12 @@
         text-transform: uppercase;
         background-color: transparent;
     }
-    .rsp-noti-sec .owl-prev span {
-        left: -39px;
-    }
-    .rsp-noti-sec .owl-next span {
-        right: -34px;
-    }
     .disclaimer{
         height: 20px;
       }
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
-    .rsp-noti-sec .owl-prev span {
-        left: -20px;
-    }
-    .rsp-noti-sec .owl-next span {
-        right: -20px;
-    }
     .logo img {
         width: 200px;
     }
@@ -302,29 +290,6 @@
     }
     .conf-blk {
         padding: 50px 15px;
-    }
-    .rsp-noti-sec .owl-prev span {
-        background-image: url(../img/left.png);
-        width: 34px;
-        height: 34px;
-        background-repeat: no-repeat;
-        position: absolute;
-        left: auto;
-        top: -40px;
-        background-size: 100%;
-        color: transparent;
-        right: 50px;
-    }
-    .rsp-noti-sec .owl-next span {
-        background-image: url(../img/right.png);
-        width: 34px;
-        height: 34px;
-        background-repeat: no-repeat;
-        position: absolute;
-        top: -40px;
-        right: 0;
-        background-size: 100%;
-        color: transparent;
     }
     .rsp-c-tab-blk {
         margin: 0 0 40px 0;

@@ -74,12 +74,6 @@
 }
 
 .logos .logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80px;
-}
-.logos .logo {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -91,6 +85,15 @@
 	width: auto;
 	height: auto;
 	object-fit: contain;
+}
+.logos .logo img[src*="minjus"],
+.logos .logo img[src*="PCM-Interior"] {
+	max-width: 75%;
+	max-height: 75%;
+}
+.logos .logo img[src*="logomp"],
+.logos .logo img[src*="bomberos"] {
+	transform: scale(1.3);
 }
 
 /* 
