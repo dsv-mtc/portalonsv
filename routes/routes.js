@@ -340,14 +340,14 @@ routes.get("/capacitaciones", async (req, res) => {
 routes.get("/srat", async (req, res) => {
 	res.locals.enabledFooter = false;
 	res.locals.enabledNavigation = false;
-	res.render("pages/srat");
+	res.render("pages/srat", { layout: false });
 })
 
 /** PERU-WORLD */
 routes.get("/peru-in-world", async (req, res) => {
 	res.locals.enabledFooter = false;
 	res.locals.enabledNavigation = false;
-	res.render("pages/peru-world");
+	res.render("pages/peru-world", { layout: false });
 })
 
 /** ORIENTACION VICTIMAS */

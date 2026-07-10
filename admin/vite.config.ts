@@ -6,7 +6,7 @@ export default defineConfig({
   base: '/administrador/',
   plugins: [react(), tailwindcss()],
   build: {
-    outDir: '../public/administrador',
+    outDir: '../admin/dist',
     emptyOutDir: true,
   },
 })

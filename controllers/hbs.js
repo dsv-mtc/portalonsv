@@ -202,7 +202,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 				<div class="dropdown-menu">
 					<a class="dropdown-item" href="/en/webinars" target="_self">Webinars</a>
 					<a class="dropdown-item" href="/en/capacitaciones" target="_self">Trainings</a>
-					<a class="dropdown-item" href="/en/peru-in-world/" target="_blank">PERU-IN-world</a>
+					<a class="dropdown-item" href="/en/peru-in-world" target="_blank">PERU-IN-world</a>
 					<a class="dropdown-item" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">Virtual Room</a>
 				</div>
 			</li>`;
@@ -213,7 +213,7 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 				<div class="dropdown-menu">
 					<a class="dropdown-item" href="/webinars" target="_self">Webinars</a>
 					<a class="dropdown-item" href="/capacitaciones" target="_self">Capacitaciones</a>
-					<a class="dropdown-item" href="/peru-in-world/" target="_blank">peru-in-world</a>
+					<a class="dropdown-item" href="/peru-in-world" target="_blank">peru-in-world</a>
 					<a class="dropdown-item" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">Aula Virtual</a>
 				</div>
 			</li>`;

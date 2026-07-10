@@ -1,4 +1,5 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const passport = require("passport");
 const criptoUtils = require("../../utils/criptoUtils");
 const path = require('path');
@@ -24,9 +25,12 @@ router.get("/logout", (req, res) => {
 	res.redirect("/administrador/login")
 })
 
-// SPA catch-all — serve React admin for all /administrador/* routes
+// Serve SPA static assets (JS, CSS, images) only if authenticated
+router.use(isAuthenticated, express.static(path.join(__dirname, '../../admin/dist')));
+
+// SPA catch-all — serve React admin for all /administrador/* routes (client-side routing)
 router.get('/*', isAuthenticated, (req, res) => {
-	res.sendFile(path.join(__dirname, '../../public/administrador', 'index.html'));
+	res.sendFile(path.join(__dirname, '../../admin/dist', 'index.html'));
 });
 
 async function isAuthenticated(req, res, next) {
