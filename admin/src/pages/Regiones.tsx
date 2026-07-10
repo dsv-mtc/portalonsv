@@ -47,14 +47,7 @@ export function Regiones() {
 
   const pagBtn = (label: React.ReactNode, active: boolean, onClick: () => void, ariaLabel: string) => (
     <button type="button" aria-label={ariaLabel} onClick={onClick}
-      style={{
-        width: 42, height: 42, borderRadius: 10, border: active ? "1px solid transparent" : "1px solid transparent",
-        background: active ? "#C8102E" : "transparent", color: active ? "#fff" : "#1d3557",
-        fontWeight: 700, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center",
-        cursor: "pointer", transition: "all .3s ease"
-      }}
-      onMouseEnter={e => { if (!active) { e.currentTarget.style.borderColor = "#C8102E"; e.currentTarget.style.color = "#C8102E"; } }}
-      onMouseLeave={e => { if (!active) { e.currentTarget.style.borderColor = "transparent"; e.currentTarget.style.color = "#1d3557"; } }}>
+      className={`pag-btn${active ? " active" : ""}`}>
       {label}
     </button>
   );
@@ -70,6 +63,15 @@ export function Regiones() {
     <>
       <PageHeader title="Regiones" eyebrow="Gestión territorial" description="Administra los encargados de cada región." />
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
+      <style>{`
+        .pag-btn { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent;
+          background: transparent; color: #1d3557; font-weight: 700; font-size: 17px;
+          display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+          transition: all .3s ease; }
+        .pag-btn:hover { border-color: #C8102E; color: #C8102E; }
+        .pag-btn.active { background: #C8102E; color: #fff; border-color: transparent; }
+        .pag-btn.active:hover { background: #C8102E; color: #fff; border-color: transparent; }
+      `}</style>
       <Panel title={`Regiones (${allRegiones.length})`}>
         <div className="space-y-4">
           {pageRegiones.map(r => {
