@@ -154,19 +154,28 @@ const extractDepartmentFromText = (text, regiones) => {
 	return null;
 }
 
-const serviceMap = (region, dataGhost) => {
+const serviceMap = async (region, dataGhost) => {
 	let data = { regionData: {}, template: '' }
 	let condicion = region;
 	if (condicion === 'san-martin') region = 'SAN MARTIN';
 	if (condicion === 'la-libertad') region = 'LA LIBERTAD';
 	region = deleteDiacritics(region).toUpperCase();
-	//console.log(region)
-	regions.REGIONES.forEach(x => {
-		//console.log(x.REGION,region)
-		if (x.REGION == region) {
-			data.regionData = x;
+	try {
+		const { data: regionRow } = await mysqlClient.getRegion(region);
+		if (regionRow) {
+			data.regionData = {
+				REGION: regionRow.value,
+				NOMBRE: regionRow.nombreEncargado,
+				TELEFONO: regionRow.celularEncargado,
+				'E-MAIL': regionRow.correoEncargado,
+				WEBSITE: regionRow.pageLink,
+				imageUrl: regionRow.imageUrl,
+				slug: regionRow.slug
+			};
 		}
-	})
+	} catch (error) {
+		console.error(error);
+	}
 	data.template = renderCarouselRegions(dataGhost);
 	return data;
 }

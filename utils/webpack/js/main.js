@@ -224,9 +224,9 @@ function getMapFromForm(){
 				if(document.getElementById(mapId)){
 					document.getElementById(mapId).classList.replace('map','map-selected');
 				}
-				document.getElementById('nombre').value=response.regionData.NOMBRE;
-				document.getElementById('telefono').value=response.regionData.TELEFONO;
-				document.getElementById('email').value=response.regionData['E-MAIL'];
+				document.getElementById('nombre').textContent=response.regionData.NOMBRE;
+				document.getElementById('telefono').textContent=response.regionData.TELEFONO;
+				document.getElementById('email').textContent=response.regionData['E-MAIL'];
 				setImage(response.regionData.REGION);
 				showRegionLabel(response.regionData.REGION);
 				updateRegionName(response.regionData.REGION);
@@ -246,15 +246,24 @@ function getMapFromForm(){
  * obtiene las noticias asociadas a la región seleccionada y que coloca sobre el carousel.
  */ 
 function getMap(){
-	//By default
+	//By default - cargar Lima desde /services-map (consulta BD)
 	if(location.href.includes('regiones')){
-		document.querySelector('svg g g path[id="Lima"]').classList.replace('map','map-selected');
-		document.getElementById('nombre').value='José Eduardo Pretel Saldaña';
-		document.getElementById('telefono').value='943990699';
-		document.getElementById('email').value='jpretel@regionlima.gob.pe';
-		setImage('Lima');
-		showRegionLabel('Lima');
-		updateRegionName('Lima');
+		let lang=location.href.includes('/en/')?'en':'es';
+		fetch('/services-map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region:'Lima',lang})})
+		.then(results=>results.json())
+		.then(response=>{
+			document.querySelector('svg g g path[id="Lima"]').classList.replace('map','map-selected');
+			document.getElementById('nombre').textContent=response.regionData.NOMBRE || '';
+			document.getElementById('telefono').textContent=response.regionData.TELEFONO || '';
+			document.getElementById('email').textContent=response.regionData['E-MAIL'] || '';
+			setImage(response.regionData.REGION || 'Lima');
+			showRegionLabel('Lima');
+			updateRegionName('Lima');
+			document.getElementById('noti').innerHTML=response.template;
+			$("#noti").trigger('destroy.owl.carousel');
+			carousel();
+		})
+		.catch(error=>console.error(error));
 	}
 	
 	//For click event
@@ -267,9 +276,9 @@ function getMap(){
 		.then(response=>{
 			document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
 			document.getElementById(e.target.id).classList.replace('map','map-selected');
-			document.getElementById('nombre').value=response.regionData.NOMBRE;
-			document.getElementById('telefono').value=response.regionData.TELEFONO;
-			document.getElementById('email').value=response.regionData['E-MAIL'];
+			document.getElementById('nombre').textContent=response.regionData.NOMBRE;
+			document.getElementById('telefono').textContent=response.regionData.TELEFONO;
+			document.getElementById('email').textContent=response.regionData['E-MAIL'];
 			setImage(response.regionData.REGION);
 			document.getElementById('noti').innerHTML=response.template;
 			$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery

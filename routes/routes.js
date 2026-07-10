@@ -268,7 +268,7 @@ routes.post("/services-map", async (req, res) => {
 	const lang = req.body['lang']
 	const filter = `tags:[${regionRequest}]`;
 	const post = await apiGhost.getPosts(8, "tags,authors", filter, "published_at DESC");
-	const data = utils.serviceMap(regionRequest, { post, lang })
+	const data = await utils.serviceMap(regionRequest, { post, lang })
 	res.send(data)
 })
 
