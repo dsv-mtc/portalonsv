@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Send, MapPin, Phone, Mail, AlignLeft, Plus, Trash2, Link2, Globe } from "lucide-react";
+import { Send, MapPin, Phone, Mail, AlignLeft, Clock, Plus, Trash2, Link2, Globe } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { Panel, BrandButton, Chip } from "../components/UIBits";
 import { apiGet, apiPut } from "../lib/api";
@@ -7,14 +7,14 @@ import { apiGet, apiPut } from "../lib/api";
 type Social = { id: number; red: string; url: string };
 
 export function PiePagina() {
-  const [footer, setFooter] = useState({ telefono: "", direccion: "", email: "", piePagina: "" });
+  const [footer, setFooter] = useState({ telefono: "", direccion: "", email: "", piePagina: "", horario: "" });
   const [socials, setSocials] = useState<Social[]>([]);
   const [nuevaRed, setNuevaRed] = useState("Facebook");
   const [nuevaUrl, setNuevaUrl] = useState("");
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    apiGet<{ telefono: string; direccion: string; email: string; piePagina: string }>("/footer").then(setFooter).catch(() => {});
+    apiGet<{ telefono: string; direccion: string; email: string; piePagina: string; horario: string }>("/footer").then(setFooter).catch(() => {});
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,6 +61,7 @@ export function PiePagina() {
             <Field label="Dirección" value={footer.direccion} icon={<MapPin className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="direccion" />
             <Field label="Correo" value={footer.email} icon={<Mail className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="email" />
             <Field label="Pie de página" value={footer.piePagina} icon={<AlignLeft className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="piePagina" />
+            <Field label="Horario de atención" value={footer.horario} icon={<Clock className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="horario" />
           </div>
           <div className="mt-6 flex justify-end"><BrandButton type="submit"><Send className="w-4 h-4" /> Enviar Información</BrandButton></div>
         </Panel>

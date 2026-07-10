@@ -624,7 +624,8 @@ class DataBase {
 				telefono, 
 				email, 
 				direccion,
-				piePagina
+				piePagina,
+				horario
 			FROM footer
 		`;
 		try {
@@ -635,7 +636,8 @@ class DataBase {
 					telefono: results[0].telefono,
 					email: results[0].email,
 					direccion: results[0].direccion,
-					piePagina: results[0].piePagina
+					piePagina: results[0].piePagina,
+					horario: results[0].horario
 				}
 			}
 		} catch (error) {
@@ -651,7 +653,8 @@ class DataBase {
 		telefono,
 		email,
 		direccion,
-		piePagina
+		piePagina,
+		horario
 	}) {
 		const queryString = `
 			UPDATE footer 
@@ -659,7 +662,8 @@ class DataBase {
 					telefono='${telefono}',
 					email='${email}',
 					direccion='${direccion}',
-					piePagina='${piePagina}'
+					piePagina='${piePagina}',
+					horario='${horario}'
 		`;
 		try {
 			const result = await this.query(queryString);

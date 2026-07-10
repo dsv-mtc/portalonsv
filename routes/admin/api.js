@@ -54,8 +54,8 @@ router.get("/footer", isAuthenticated, async (req, res) => {
 });
 
 router.put("/footer", isAuthenticated, async (req, res) => {
-  const { telefono, email, direccion, piePagina } = req.body;
-  const result = await mysql.updateFooterData({ telefono, email, direccion, piePagina });
+  const { telefono, email, direccion, piePagina, horario } = req.body;
+  const result = await mysql.updateFooterData({ telefono, email, direccion, piePagina, horario });
   res.json(result);
 });
 
