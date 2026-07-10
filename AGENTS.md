@@ -28,5 +28,19 @@
 > - Si el archivo está en `utils/webpack/` → es el fuente. Edítalo y recompila con `npm run webpack`.
 > - Si el archivo está en `public/` y NO es `main.css` ni `main.js` → es estático. Edítalo directo, sin recompilar.
 > - Si el archivo es `public/main.css` o `public/main.js` → NO lo toques. Se sobrescribe al recompilar.
+
+## Ahorro de tokens (opencode)
+
+- Responde siempre breve y directo, sin preámbulos ni explicaciones a menos que el usuario las pida.
+- No analices archivos innecesarios. Sé preciso: busca solo lo relevante a la tarea.
+- Prioriza cambios acotados por módulo en lugar de abarcar múltiples áreas.
+- Sugiere al usuario ejecutar `/compact` si la conversación se alarga (>10 intercambios).
+- Sugiere `/new` si detectas un cambio de tema drástico.
+
+## Alcance de cambios
+
+- Cualquier cambio, mejora o corrección debe preservar la funcionalidad y diseño original. No romper, alterar ni quitar nada existente.
+- Ejecuta únicamente la tarea solicitada. No hagas nada que no se haya pedido explícitamente.
+- Sin scope creep: si la instrucción es acotada, no agregues "mejoras" no solicitadas.
 </content>
 </invoke>
