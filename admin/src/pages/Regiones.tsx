@@ -1,36 +1,78 @@
-import { useState, useEffect } from "react";
-import { Send, Map } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Send, Map, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { Panel, BrandButton } from "../components/UIBits";
 import { apiGet, apiPut } from "../lib/api";
 
+const PAGE_SIZE = 5;
+
 type Region = { id: number; value: string; slug: string; nombreEncargado: string; celularEncargado: string; correoEncargado: string; imageUrl: string; pageLink: string };
 
 export function Regiones() {
-  const [regiones, setRegiones] = useState<Region[]>([]);
+  const [allRegiones, setAllRegiones] = useState<Region[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Record<number, Partial<Region>>>({});
   const [msg, setMsg] = useState("");
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(allRegiones.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+
+  const pageRegiones = useMemo(
+    () => allRegiones.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [allRegiones, currentPage]
+  );
 
   useEffect(() => {
-    apiGet<{ regiones: Region[] }>("/regiones").then(d => setRegiones(d.regiones)).catch(() => {});
+    apiGet<{ allRegiones: Region[] }>("/regiones").then(d => {
+      setAllRegiones(d.allRegiones);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!msg) return;
+    const t = setTimeout(() => setMsg(""), 5000);
+    return () => clearTimeout(t);
+  }, [msg]);
 
   const handleSave = async (id: number) => {
     const data = editing[id];
     if (!data) return;
     const r = await apiPut(`/regiones/${id}`, data);
     setMsg(r.message || "Guardado");
-    setRegiones(prev => prev.map(r => r.id === id ? { ...r, ...data } : r));
+    setAllRegiones(prev => prev.map(r => r.id === id ? { ...r, ...data } : r));
     setEditing(prev => { const n = { ...prev }; delete n[id]; return n; });
   };
+
+  const pagBtn = (label: React.ReactNode, active: boolean, onClick: () => void, ariaLabel: string) => (
+    <button type="button" aria-label={ariaLabel} onClick={onClick}
+      style={{
+        width: 42, height: 42, borderRadius: 10, border: active ? "1px solid transparent" : "1px solid transparent",
+        background: active ? "#C8102E" : "transparent", color: active ? "#fff" : "#1d3557",
+        fontWeight: 700, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center",
+        cursor: "pointer", transition: "all .3s ease"
+      }}
+      onMouseEnter={e => { if (!active) { e.currentTarget.style.borderColor = "#C8102E"; e.currentTarget.style.color = "#C8102E"; } }}
+      onMouseLeave={e => { if (!active) { e.currentTarget.style.borderColor = "transparent"; e.currentTarget.style.color = "#1d3557"; } }}>
+      {label}
+    </button>
+  );
+
+  if (loading) return (
+    <>
+      <PageHeader title="Regiones" eyebrow="Gestión territorial" description="Administra los encargados de cada región." />
+      <p className="text-[14px]" style={{ color: "var(--muted-foreground)" }}>Cargando...</p>
+    </>
+  );
 
   return (
     <>
       <PageHeader title="Regiones" eyebrow="Gestión territorial" description="Administra los encargados de cada región." />
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
-      <Panel title={`Regiones (${regiones.length})`}>
+      <Panel title={`Regiones (${allRegiones.length})`}>
         <div className="space-y-4">
-          {regiones.map(r => {
+          {pageRegiones.map(r => {
             const edit = editing[r.id] || {};
             return (
               <div key={r.id} className="rounded-xl border-2 p-4" style={{ borderColor: "var(--brand-line)" }}>
@@ -54,6 +96,16 @@ export function Regiones() {
             );
           })}
         </div>
+
+        {totalPages > 1 && (
+          <div className="mt-6 flex justify-center items-center gap-1.5">
+            {pagBtn(<ChevronsLeft className="w-4 h-4" />, false, () => setPage(1), "Primera página")}
+            {pagBtn(<ChevronLeft className="w-4 h-4" />, false, () => setPage(p => Math.max(1, p - 1)), "Página anterior")}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => pagBtn(p, p === currentPage, () => setPage(p), `Página ${p}`))}
+            {pagBtn(<ChevronRight className="w-4 h-4" />, false, () => setPage(p => Math.min(totalPages, p + 1)), "Página siguiente")}
+            {pagBtn(<ChevronsRight className="w-4 h-4" />, false, () => setPage(totalPages), "Última página")}
+          </div>
+        )}
       </Panel>
     </>
   );

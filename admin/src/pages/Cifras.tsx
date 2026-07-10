@@ -11,10 +11,16 @@ export function Cifras() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    apiGet<{ lesionado: string; accidente: string; fallecido: string; mensaje1: string; mensaje2: string }>("/cifras").then(d => {
-      setForm({ lesionados: d.lesionado, accidentados: d.accidente, fallecidos: d.fallecido, mensaje1: d.mensaje1, mensaje2: d.mensaje2 });
+    apiGet<{ lesionados: string; accidentados: string; fallecidos: string; mensaje1: string; mensaje2: string }>("/cifras").then(d => {
+      setForm({ lesionados: d.lesionados ?? "", accidentados: d.accidentados ?? "", fallecidos: d.fallecidos ?? "", mensaje1: d.mensaje1 ?? "", mensaje2: d.mensaje2 ?? "" });
     }).finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!msg) return;
+    const t = setTimeout(() => setMsg(""), 5000);
+    return () => clearTimeout(t);
+  }, [msg]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +33,9 @@ export function Cifras() {
   if (loading) return <p className="text-[14px]" style={{ color: "var(--muted-foreground)" }}>Cargando...</p>;
 
   const NUMS = [
-    { name: "lesionados", label: "Lesionados", value: form.lesionados, color: "#F4B41A", icon: Heart },
-    { name: "accidentados", label: "Accidentados", value: form.accidentados, color: "#1597B8", icon: AlertTriangle },
-    { name: "fallecidos", label: "Fallecidos", value: form.fallecidos, color: "#C8102E", icon: Skull },
+    { name: "accidentados", label: "Siniestros", value: form.accidentados, color: "#1597B8", icon: AlertTriangle },
+    { name: "lesionados", label: "Lesiones", value: form.lesionados, color: "#F4B41A", icon: Heart },
+    { name: "fallecidos", label: "Muertes", value: form.fallecidos, color: "#C8102E", icon: Skull },
   ];
 
   return (
