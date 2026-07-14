@@ -264,30 +264,30 @@ function getMap(){
 			carousel();
 		})
 		.catch(error=>console.error(error));
+
+		//For click event
+		if(document.querySelectorAll('path')) document.querySelectorAll('path').forEach(element=>element.addEventListener('click',(e)=>{
+			e.preventDefault();
+			console.log(e.target.id);
+			let lang=location.href.includes('/en/')?'en':'es';
+			fetch('/services-map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region:e.target.id,lang})})
+			.then(results=>results.json())
+			.then(response=>{
+				document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
+				document.getElementById(e.target.id).classList.replace('map','map-selected');
+				document.getElementById('nombre').textContent=response.regionData.NOMBRE;
+				document.getElementById('telefono').textContent=response.regionData.TELEFONO;
+				document.getElementById('email').textContent=response.regionData['E-MAIL'];
+				setImage(response.regionData.REGION);
+				document.getElementById('noti').innerHTML=response.template;
+				$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
+				carousel();
+				showRegionLabel(e.target.id);
+				updateRegionName(e.target.id);
+			})
+			.catch(error=>console.error(error))
+		}));
 	}
-	
-	//For click event
-	if(document.querySelectorAll('path')) document.querySelectorAll('path').forEach(element=>element.addEventListener('click',(e)=>{
-		e.preventDefault();
-		console.log(e.target.id);
-		let lang=location.href.includes('/en/')?'en':'es';
-		fetch('/services-map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region:e.target.id,lang})})
-		.then(results=>results.json())
-		.then(response=>{
-			document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
-			document.getElementById(e.target.id).classList.replace('map','map-selected');
-			document.getElementById('nombre').textContent=response.regionData.NOMBRE;
-			document.getElementById('telefono').textContent=response.regionData.TELEFONO;
-			document.getElementById('email').textContent=response.regionData['E-MAIL'];
-			setImage(response.regionData.REGION);
-			document.getElementById('noti').innerHTML=response.template;
-			$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
-			carousel();
-			showRegionLabel(e.target.id);
-			updateRegionName(e.target.id);
-		})
-		.catch(error=>console.error(error))
-	})); 
 }
 
 /**
