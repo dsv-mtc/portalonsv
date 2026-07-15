@@ -685,7 +685,7 @@ class DataBase {
 
 	async getContenidoQuienesSomos(secondary_navigation) {
 		const idioma = secondary_navigation ? 'EN' : 'ES';
-		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4, seccion5, seccion6, seccion7, seccion8, seccion9, seccion10, seccion11, seccion12, seccion13, seccion14, seccion15, seccion16, seccion17, seccion18, seccion19, seccion20, seccion21, seccion22, seccion23, seccion24, seccion25 FROM pagina WHERE idioma like '${idioma}'`;
+		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4, seccion5, seccion6, seccion7, seccion8, seccion9, seccion10, seccion11, seccion12, seccion13, seccion14, seccion15, seccion16, seccion17, seccion18, seccion19, seccion20, seccion21, seccion22, seccion23, seccion24, seccion25, seccion26, seccion27, seccion28, seccion29, seccion30, seccion31, seccion32, seccion33, seccion34, seccion35 FROM pagina WHERE idioma like '${idioma}'`;
 		try {
 			const results = await this.query(queryString);
 			const r = results[0];
@@ -717,6 +717,16 @@ class DataBase {
 					{ label: 'Val5 desc',                    contenido: r.seccion23 },
 					{ label: 'Val6 título',                  contenido: r.seccion24 },
 					{ label: 'Val6 desc',                    contenido: r.seccion25 },
+					{ label: 'Comp5 título',                 contenido: r.seccion26 },
+					{ label: 'Comp5 desc',                   contenido: r.seccion27 },
+					{ label: 'Comp6 título',                 contenido: r.seccion28 },
+					{ label: 'Comp6 desc',                   contenido: r.seccion29 },
+					{ label: 'Comp7 título',                 contenido: r.seccion30 },
+					{ label: 'Comp7 desc',                   contenido: r.seccion31 },
+					{ label: 'Comp8 título',                 contenido: r.seccion32 },
+					{ label: 'Comp8 desc',                   contenido: r.seccion33 },
+					{ label: 'Comp9 título',                 contenido: r.seccion34 },
+					{ label: 'Comp9 desc',                   contenido: r.seccion35 },
 				]
 			}
 		} catch (error) {
@@ -735,6 +745,9 @@ class DataBase {
 			comp_titulo, val_intro,
 			comp1_titulo, comp1_desc, comp2_titulo, comp2_desc,
 			comp3_titulo, comp3_desc, comp4_titulo, comp4_desc,
+			comp5_titulo, comp5_desc, comp6_titulo, comp6_desc,
+			comp7_titulo, comp7_desc, comp8_titulo, comp8_desc,
+			comp9_titulo, comp9_desc,
 			val1_titulo, val1_desc, val2_titulo, val2_desc,
 			val3_titulo, val3_desc, val4_titulo, val4_desc,
 			val5_titulo, val5_desc, val6_titulo, val6_desc
@@ -766,7 +779,17 @@ class DataBase {
                     seccion22='${val5_titulo}',
                     seccion23='${val5_desc}',
                     seccion24='${val6_titulo}',
-                    seccion25='${val6_desc}'
+                    seccion25='${val6_desc}',
+                    seccion26='${comp5_titulo}',
+                    seccion27='${comp5_desc}',
+                    seccion28='${comp6_titulo}',
+                    seccion29='${comp6_desc}',
+                    seccion30='${comp7_titulo}',
+                    seccion31='${comp7_desc}',
+                    seccion32='${comp8_titulo}',
+                    seccion33='${comp8_desc}',
+                    seccion34='${comp9_titulo}',
+                    seccion35='${comp9_desc}'
             WHERE idioma LIKE '${idioma}'`;
 		try {
 			const result = await this.query(queryString);

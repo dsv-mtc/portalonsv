@@ -10,3 +10,4 @@ status.mjs
 public/estaticos/
 AGENTS.md
 .env
+.gitignore

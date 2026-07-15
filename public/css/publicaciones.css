@@ -132,3 +132,11 @@
 	line-height: 1.1;
 	white-space: nowrap;
 }
+
+.revista-card .card-content {
+	justify-content: flex-start;
+}
+
+.revista-card .card-content .btn-rsp {
+	align-self: flex-end;
+}

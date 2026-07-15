@@ -16,6 +16,20 @@ mysql.setQuery();
 
 require('dotenv').config();
 
+const revistasData = require("../data/revistas.json");
+
+const COMPONENTES_ICONS = [
+	{ icon: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>', color: "#dc2626", bg: "#fde2e2", link: "#", external: false },
+	{ icon: '<path d="M18 20V10M12 20V4M6 20v-6"/>', color: "#2563eb", bg: "#dbeafe", link: "#", external: false },
+	{ icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>', color: "#0ea5e9", bg: "#e0f2fe", link: "#", external: false },
+	{ icon: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>', color: "#16a34a", bg: "#d1fae5", link: "#", external: false },
+	{ icon: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>', color: "#eab308", bg: "#fef9c3", link: "/datosabiertos", external: false },
+	{ icon: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/>', color: "#7e22ce", bg: "#f3e8ff", link: "#", external: false },
+	{ icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>', color: "#f97316", bg: "#fff7ed", link: "#", external: false },
+	{ icon: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>', color: "#14b8a6", bg: "#ccfbf1", link: "#", external: false },
+	{ icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>', color: "#ef4444", bg: "#fee2e2", link: "https://sratma.mtc.gob.pe/SRATMA/mapa/", external: true },
+];
+
 routes.use(async (req, res, next) => {
 	res.locals.settings = await apiGhost.getSettings();
 	res.locals.titlesPosts = await apiGhost.getLastFivePostsTitleAndUrl();
@@ -52,6 +66,18 @@ routes.get("/", async (req, res) => {
 	const modalinfo = await apiGhost.getModalPosts();
 
 	const { data: cifras } = await mysql.getCifras();
+	const { data: contenido } = await mysql.getContenidoQuienesSomos(res.locals.secondary_navigation);
+
+	const compIndices = [[5,6],[7,8],[9,10],[11,12],[25,26],[27,28],[29,30],[31,32],[33,34]];
+	const componentesCards = COMPONENTES_ICONS.map((iconData, i) => ({
+		icon: iconData.icon,
+		color: iconData.color,
+		bg: iconData.bg,
+		link: iconData.link,
+		external: iconData.external,
+		titulo: contenido[compIndices[i][0]].contenido,
+		descripcion: contenido[compIndices[i][1]].contenido,
+	}));
 
 	const popupData = await mysql.getPopup()
 
@@ -62,6 +88,7 @@ routes.get("/", async (req, res) => {
 		banners,
 		modalinfo,
 		...cifras,
+		componentesCards,
 		popup: popupData.data,
 		popupStatus: JSON.stringify(popupData.data.estado)
 	});
@@ -69,8 +96,17 @@ routes.get("/", async (req, res) => {
 
 routes.get("/quienes-somos", async (req, res) => {
 	const { data: contenido } = await mysql.getContenidoQuienesSomos(res.locals.secondary_navigation)
+	const compIndices = [[5,6],[7,8],[9,10],[11,12],[25,26],[27,28],[29,30],[31,32],[33,34]];
+	const componentesCards = COMPONENTES_ICONS.map((iconData, i) => ({
+		icon: iconData.icon,
+		color: iconData.color,
+		bg: iconData.bg,
+		titulo: contenido[compIndices[i][0]].contenido,
+		descripcion: contenido[compIndices[i][1]].contenido,
+	}));
 	res.render("pages/quienes-somos", {
-		contenido
+		contenido,
+		componentesCards,
 	});
 })
 
@@ -350,11 +386,6 @@ routes.get("/peru-in-world", async (req, res) => {
 	res.render("pages/peru-world", { layout: false });
 })
 
-/** ORIENTACION VICTIMAS */
-routes.get("/orientacion-victimas", (req, res) => {
-	res.render("pages/orientacion-victimas");
-});
-
 /** ENTORNOS VIALES */
 routes.get("/entornos-viales", (req, res) => {
 	res.render("pages/entornos-viales");
@@ -498,6 +529,68 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 		year,
 		categoria,
 		region,
+		title,
+	});
+})
+
+/**REVISTAS */
+routes.get("/revistas/:page?", async (req, res) => {
+	const pageSize = 6;
+	const {
+		tema,
+		title,
+	} = req.query
+	const page = req.params.page ? Number(req.params.page) : 1;
+
+	const temasDisponibles = [
+		{ name: "Economía", slug: "economia" },
+		{ name: "Derecho", slug: "derecho" },
+		{ name: "Psicología", slug: "psicologia" },
+		{ name: "Antropología", slug: "antropologia" },
+		{ name: "Medio Ambiente", slug: "medio-ambiente" },
+		{ name: "Educación", slug: "educacion" },
+	];
+
+	let revistasFiltradas = [...revistasData];
+
+	if (title) {
+		revistasFiltradas = revistasFiltradas.filter(r =>
+			`${r.slug} ${r.title}`.toLowerCase().includes(title.toLowerCase())
+		);
+	}
+
+	if (tema) {
+		const temaSeleccionado = temasDisponibles.find(t => t.slug === tema);
+		if (temaSeleccionado) {
+			revistasFiltradas = revistasFiltradas.filter(r => {
+				const rTemaSlug = r.tema.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+				const filterSlug = temaSeleccionado.slug.toLowerCase();
+				return rTemaSlug === filterSlug;
+			});
+		}
+	}
+
+	const splitArray = (array, size) => {
+		const result = [];
+		for (let i = 0; i < array.length; i += size) {
+			result.push(array.slice(i, i + size));
+		}
+		return result;
+	};
+
+	const pages = splitArray(revistasFiltradas, pageSize);
+	const totalPages = pages.length;
+	const currentPage = Math.min(page, Math.max(totalPages, 1));
+	const revistasPagina = pages[currentPage - 1] || [];
+
+	res.render("pages/revistas", {
+		revistas: revistasPagina,
+		hasResults: revistasPagina.length > 0,
+		temas: temasDisponibles.map(t => ({
+			...t,
+			estaSeleccionado: t.slug === tema
+		})),
+		tema,
 		title,
 	});
 })

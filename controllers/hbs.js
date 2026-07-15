@@ -136,11 +136,23 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 			<div class="dropdown-menu">${commItems.map(renderDropdownItem).join('')}</div>
 		</li>`;
 
-	// 4. Publicaciones (Ghost)
-	var pubGhost = secondary_navigation
-		? findGhostCI('publications') || findGhostCI('Publications') || findGhostCI('Publicaciones') || findGhostCI('publicaciones')
-		: findGhostCI('Publicaciones') || findGhostCI('publicaciones') || findGhostCI('publications') || findGhostCI('Publications');
-	if (pubGhost) htmlMenu += renderGhostItem(pubGhost);
+	// 4. Publicaciones (dropdown)
+	var pubLabel = secondary_navigation ? 'Publications' : 'Publicaciones';
+	var pubActive = url_selected === '/publicaciones' || url_selected.startsWith('/publicaciones/') || url_selected === '/revistas' || url_selected.startsWith('/revistas/') || url_selected === '/en/publicaciones' || url_selected.startsWith('/en/publicaciones/') || url_selected === '/en/revistas' || url_selected.startsWith('/en/revistas/') ? 'add-color' : '';
+	var pubItems = secondary_navigation
+		? [
+			{ label: 'Publications', url: '/en/publicaciones' },
+			{ label: 'Journals', url: '/en/revistas' }
+		]
+		: [
+			{ label: 'Publicaciones', url: '/publicaciones' },
+			{ label: 'Revistas', url: '/revistas' }
+		];
+	htmlMenu += `
+		<li class="nav-item nav-special ${pubActive} dropdown">
+			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${pubLabel}</a>
+			<div class="dropdown-menu">${pubItems.map(renderDropdownItem).join('')}</div>
+		</li>`;
 
 	// 5. Aplicaciones (hardcoded dropdown)
 	var appGhost = findGhost('analítica') || findGhost('analytics');
@@ -179,19 +191,18 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 		: findGhostCI('Regiones') || findGhostCI('regiones') || findGhostCI('regions') || findGhostCI('Regions');
 	if (regionGhost) htmlMenu += renderGhostItem(regionGhost);
 
-	// 8. Orientación a víctimas (hardcoded link)
-	var victimLabel = secondary_navigation ? 'Victim Support' : 'Orientación a víctimas';
-	var victimActive = url_selected === '/orientacion-victimas' || url_selected === '/en/orientacion-victimas' ? 'add-color' : '';
-	htmlMenu += '<li class="nav-item nav-special ' + victimActive + '"><a class="nav-link" href="/orientacion-victimas">' + victimLabel + '</a></li>';
-
-	// 9. Programas (hardcoded dropdown)
+	// 8. Programas (hardcoded dropdown)
 	var progLabel = secondary_navigation ? 'Programs' : 'Programas';
 	var progItemLabel = secondary_navigation ? 'Road Environments' : 'Entornos viales';
+	var victimLabel = secondary_navigation ? 'Victim Support' : 'Orientación a víctimas';
 	var progActive = url_selected.includes('entornos-viales') || url_selected.includes('road-environments') ? 'add-color' : '';
 	htmlMenu += `
 		<li class="nav-item nav-special ${progActive} dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${progLabel}</a>
-			<div class="dropdown-menu"><a class="dropdown-item" href="/entornos-viales">${progItemLabel}</a></div>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="/entornos-viales">${progItemLabel}</a>
+				<a class="dropdown-item" href="https://dsv-mtc.github.io/orientacion-victimas/" target="_blank">${victimLabel}</a>
+			</div>
 		</li>`;
 
 	// 10. Educación Vial (dropdown)
