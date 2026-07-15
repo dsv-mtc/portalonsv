@@ -62,20 +62,21 @@ if (process.env.STRATEGY_MODE === 'GCP') {
     }));
     app.use(passport.initialize());
     app.use(passport.session());
-
+    app.use(flash()); // <--- MUEVELO AQUÍ
 }
 
-
+// Bloque ON_PREMISE
 if (process.env.STRATEGY_MODE === 'ON_PREMISE') {
     app.use(session({
         secret: process.env.SECRET_APPLICATION,
         resave: false,
         saveUninitialized: true,
         store: mysqlClient.sessionStore(session),
-        cookie: { maxAge: 1000 * 60 * 60 * 24 } //Es igual a 1 día
+        cookie: { maxAge: 1000 * 60 * 60 * 24 }
     }));
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(flash()); // <--- MUEVELO AQUÍ TAMBIÉN
 }
 
 app.use(flash());
