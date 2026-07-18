@@ -24,6 +24,24 @@ const uploadMw = multer({
   }
 }).single('image');
 
+const eventosAssetsDir = path.join(__dirname, '../../public/assets/eventos');
+if (!fs.existsSync(eventosAssetsDir)) fs.mkdirSync(eventosAssetsDir, { recursive: true });
+
+const uploadEventoMw = multer({
+  storage: multer.diskStorage({
+    destination: eventosAssetsDir,
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname) || '.png';
+      cb(null, `evento_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
+
 function isAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ success: false, message: "No autenticado" });
@@ -343,6 +361,19 @@ router.put("/comunicaciones-eventos/:id", isAuthenticated, async (req, res) => {
 router.delete("/comunicaciones-eventos/:id", isAuthenticated, async (req, res) => {
   const result = await mysql.deleteComunication(req.params.id);
   res.json(result);
+});
+
+router.post("/comunicaciones-eventos/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadEventoMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message || "Error al subir" });
+      const url = `/assets/eventos/${req.file.filename}`;
+      res.json({ success: true, url });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 router.get("/tipos-evento", isAuthenticated, async (req, res) => {
