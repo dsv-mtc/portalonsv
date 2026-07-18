@@ -74,14 +74,14 @@ export function Regiones() {
 
   if (loading) return (
     <>
-      <PageHeader title="Regiones" eyebrow="Gestión territorial" description="Administra los encargados de cada región." />
+      <PageHeader title="Regiones" eyebrow="Gestión territorial" />
       <p className="text-[14px]" style={{ color: "var(--muted-foreground)" }}>Cargando...</p>
     </>
   );
 
   return (
     <>
-      <PageHeader title="Regiones" eyebrow="Gestión territorial" description="Administra los encargados de cada región." style={{ marginBottom: 0 }} />
+      <PageHeader title="Regiones" eyebrow="Gestión territorial" style={{ marginBottom: 0 }} />
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
       <style>{`
         .pag-btn { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent;
@@ -183,15 +183,15 @@ export function Regiones() {
             </div>
 
             <div className="space-y-4">
-              {(["nombreEncargado", "celularEncargado", "correoEncargado", "pageLink"] as const).map(f => (
+              {(["nombreEncargado", "celularEncargado", "correoEncargado"] as const).map(f => (
                 <label key={f} className="block">
                   <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
-                    {f === "nombreEncargado" ? "Nombre encargado" : f === "celularEncargado" ? "Celular encargado" : f === "correoEncargado" ? "Correo encargado" : "Enlace página"}
+                    {f === "nombreEncargado" ? "Nombre encargado" : f === "celularEncargado" ? "Celular encargado" : "Correo encargado"}
                   </span>
                   <input value={form[f] ?? ""} onChange={e => setForm(p => ({ ...p, [f]: e.target.value }))}
                     className="mt-1 w-full h-10 rounded-lg border-2 px-3 text-[13.5px] outline-none"
                     style={{ borderColor: "var(--brand-line)" }}
-                    placeholder={`Ingrese ${f === "nombreEncargado" ? "el nombre" : f === "celularEncargado" ? "el celular" : f === "correoEncargado" ? "el correo" : "el enlace"}`}
+                    placeholder={`Ingrese ${f === "nombreEncargado" ? "el nombre" : f === "celularEncargado" ? "el celular" : "el correo"}`}
                   />
                 </label>
               ))}
@@ -209,6 +209,14 @@ export function Regiones() {
                 }}
                   className="mt-1 w-full h-10 rounded-lg border-2 px-3 text-[13px] outline-none file:h-full file:border-0 file:bg-[color:var(--brand-navy)] file:text-white file:px-4 file:rounded-lg file:cursor-pointer file:font-bold"
                   style={{ borderColor: "var(--brand-line)", paddingTop: 0, paddingBottom: 0, display: "flex", alignItems: "center" }}
+                />
+              </label>
+              <label className="block">
+                <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>Enlace página</span>
+                <input value={form.pageLink ?? ""} onChange={e => setForm(p => ({ ...p, pageLink: e.target.value }))}
+                  className="mt-1 w-full h-10 rounded-lg border-2 px-3 text-[13.5px] outline-none"
+                  style={{ borderColor: "var(--brand-line)" }}
+                  placeholder="Ingrese el enlace"
                 />
               </label>
             </div>

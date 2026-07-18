@@ -77,7 +77,7 @@ export function PiePagina() {
 
   return (
     <>
-      <PageHeader title="Pie de página" eyebrow="Configuracion del sitio" description="Actualiza la información que aparece en el pie de página del portal público." />
+      <PageHeader title="Pie de página" eyebrow="Configuracion del sitio" />
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
       <form onSubmit={handleSubmit}>
         <Panel title="Información del pie de página">

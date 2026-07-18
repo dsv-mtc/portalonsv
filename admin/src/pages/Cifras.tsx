@@ -40,7 +40,7 @@ export function Cifras() {
 
   return (
     <>
-      <PageHeader title="Cifras" eyebrow="Indicadores de la portada" description="Actualiza las cifras y mensajes que se muestran en la página principal del Portal ONSV." />
+      <PageHeader title="Cifras" eyebrow="Indicadores de la portada" />
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
       <form onSubmit={handleSubmit} className="space-y-6">
         <Panel title="Cifras numéricas">
