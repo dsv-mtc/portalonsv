@@ -93,7 +93,7 @@ export function Regiones() {
         .pag-btn.active:hover { background: #C8102E; color: #fff; border-color: transparent; }
         .region-img { width: 64px; height: 48px; object-fit: contain; border-radius: 6px; display: block; transition: transform .3s ease; }
         .region-img:hover { transform: scale(3); z-index: 99999; position: relative; }
-        .table-wrap { overflow: visible; }
+                .table-wrap { overflow: visible; }
       `}</style>
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
         <select value={filterId} onChange={e => { setFilterId(e.target.value ? Number(e.target.value) : ""); setPage(1); }}
