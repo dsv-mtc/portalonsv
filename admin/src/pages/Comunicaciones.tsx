@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Plus, Trash2, Pencil, Calendar, Upload, X, ExternalLink } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { Panel, BrandButton, Chip } from "../components/UIBits";
@@ -75,8 +75,42 @@ export function Comunicaciones() {
   const fileRef = useRef<HTMLInputElement>(null);
   const editFileRef = useRef<HTMLInputElement>(null);
 
-  const load = () => apiGet<{ eventos: Evento[]; tiposEvento: TipoEvento[] }>("/comunicaciones-eventos").then(d => { setEventos(d.eventos || []); setTipos(d.tiposEvento || []); }).catch(() => {});
-  useEffect(() => { load(); }, []);
+  const [filters, setFilters] = useState({ title: "", idTipoEvento: 0, startDate: "", endDate: "" });
+  const filtersRef = useRef(filters);
+  filtersRef.current = filters;
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const firstRender = useRef(true);
+
+  const load = useCallback(() => {
+    const f = filtersRef.current;
+    const params = new URLSearchParams();
+    if (f.title) params.set("searchedEvento", f.title);
+    if (f.idTipoEvento) params.set("searchedTipoEvento", String(f.idTipoEvento));
+    if (f.startDate) params.set("searchedStartDate", f.startDate);
+    if (f.endDate) params.set("searchedEndDate", f.endDate);
+    const qs = params.toString();
+    apiGet<{ eventos: Evento[]; tiposEvento: TipoEvento[] }>(`/comunicaciones-eventos${qs ? `?${qs}` : ""}`)
+      .then(d => { setEventos(d.eventos || []); setTipos(d.tiposEvento || []); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      load();
+    } else {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(load, 300);
+      return () => clearTimeout(debounceRef.current);
+    }
+  }, [filters, load]);
+
+  const clearFilters = () => {
+    setFilters({ title: "", idTipoEvento: 0, startDate: "", endDate: "" });
+    clearTimeout(debounceRef.current);
+    filtersRef.current = { title: "", idTipoEvento: 0, startDate: "", endDate: "" };
+    load();
+  };
 
   useEffect(() => {
     if (!msg) return;
@@ -158,15 +192,38 @@ export function Comunicaciones() {
       <PageHeader title="Comunicaciones — Eventos" eyebrow="Agenda" />
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
 
-      <div className="mb-5 inline-flex rounded-lg border-2 border-[color:var(--brand-line)] p-1 bg-white">
-        {(["programacion", "agregar"] as const).map((t) => (
-          <button key={t} onClick={() => setTab(t)}
-            className={"px-5 h-9 rounded-md text-[12px] uppercase font-bold tracking-wider transition font-[family-name:var(--font-cond)] inline-flex items-center gap-2 " +
-                (tab === t ? "bg-[color:var(--brand-navy)] text-white" : "text-[color:var(--brand-navy)] hover:bg-[color:var(--brand-mist)]")}>
-            {t === "programacion" ? <Calendar className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-            {t === "programacion" ? "Programación" : "Agregar"}
-          </button>
-        ))}
+      <div className="mb-5 flex items-center justify-between gap-3 flex-wrap">
+        <div className="inline-flex rounded-lg border-2 border-[color:var(--brand-line)] p-1 bg-white">
+          {(["programacion", "agregar"] as const).map((t) => (
+            <button key={t} onClick={() => setTab(t)}
+              className={"px-5 h-9 rounded-md text-[12px] uppercase font-bold tracking-wider transition font-[family-name:var(--font-cond)] inline-flex items-center gap-2 " +
+                  (tab === t ? "bg-[color:var(--brand-navy)] text-white" : "text-[color:var(--brand-navy)] hover:bg-[color:var(--brand-mist)]")}>
+              {t === "programacion" ? <Calendar className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+              {t === "programacion" ? "Programación" : "Agregar"}
+            </button>
+          ))}
+        </div>
+        {tab === "programacion" && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <input placeholder="Buscar por título..." value={filters.title}
+              onChange={e => setFilters(p => ({ ...p, title: e.target.value }))}
+              className="h-9 rounded-lg border-2 px-3 text-[12px] outline-none bg-white" style={{ borderColor: "var(--brand-line)", width: 160 }} />
+            <select value={filters.idTipoEvento} onChange={e => setFilters(p => ({ ...p, idTipoEvento: Number(e.target.value) }))}
+              className="h-9 rounded-lg border-2 px-3 text-[12px] outline-none bg-white" style={{ borderColor: "var(--brand-line)", width: 110 }}>
+              <option value={0}>Todos</option>
+              {tipos.map(t => <option key={t.id} value={t.id}>{t.value}</option>)}
+            </select>
+            <input type="date" value={filters.startDate} onChange={e => setFilters(p => ({ ...p, startDate: e.target.value }))}
+              className="h-9 rounded-lg border-2 px-3 text-[12px] outline-none bg-white" style={{ borderColor: "var(--brand-line)", width: 130 }} />
+            <input type="date" value={filters.endDate} onChange={e => setFilters(p => ({ ...p, endDate: e.target.value }))}
+              className="h-9 rounded-lg border-2 px-3 text-[12px] outline-none bg-white" style={{ borderColor: "var(--brand-line)", width: 130 }} />
+            <button onClick={clearFilters}
+              className="h-9 px-3 rounded-lg border-2 text-[11px] font-bold uppercase tracking-wider font-[family-name:var(--font-cond)] hover:bg-[color:var(--brand-mist)] transition"
+              style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
+              Limpiar
+            </button>
+          </div>
+        )}
       </div>
 
       {tab === "programacion" && (
