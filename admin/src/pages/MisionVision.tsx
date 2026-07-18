@@ -166,22 +166,51 @@ export function MisionVision() {
         ))}
       </div>
 
-      {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
+      {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[14.5px] font-semibold">{msg}</div>}
 
       <form onSubmit={handleSubmit}>
         <Panel title={lang === "es" ? "Textos institucionales" : "Institutional texts"}>
           <div className="space-y-5">
-            {fields.map((f) => (
-              <label key={f.key} className="block">
-                <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
-                  {f.label} <span className="text-[color:var(--brand-red)]">*</span>
-                </span>
-                <textarea required maxLength={f.max} value={form[lang][f.key] ?? ""}
-                  onChange={e => setForm(p => ({ ...p, [lang]: { ...p[lang], [f.key]: e.target.value } }))}
-                  className="mt-1 w-full min-h-[80px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-3 text-[14.5px] leading-relaxed resize-y" />
-                <span className="text-[10.5px] text-muted-foreground mt-1 inline-block">Máx. {f.max.toLocaleString()} caracteres</span>
-              </label>
-            ))}
+            {fields.map((f, idx) => {
+              const next = fields[idx + 1];
+              const isPaired = /^[a-z]+[1-9]_titulo$/.test(f.key) && next && next.key === f.key.replace('_titulo', '_desc');
+
+              if (/^[a-z]+[1-9]_desc$/.test(f.key)) return null;
+
+              if (isPaired) {
+                return (
+                  <div key={f.key} className="grid sm:grid-cols-2 gap-4">
+                    <label className="block">
+                      <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
+                        {f.label} <span className="text-[color:var(--brand-red)]">*</span>
+                      </span>
+                      <textarea required maxLength={f.max} value={form[lang][f.key] ?? ""}
+                        onChange={e => setForm(p => ({ ...p, [lang]: { ...p[lang], [f.key]: e.target.value } }))}
+                        className="mt-1 w-full h-[50px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-1 text-[14.5px] leading-none resize-none overflow-y-auto" />
+                    </label>
+                    <label className="block">
+                      <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
+                        {next!.label} <span className="text-[color:var(--brand-red)]">*</span>
+                      </span>
+                      <textarea required maxLength={next!.max} value={form[lang][next!.key] ?? ""}
+                        onChange={e => setForm(p => ({ ...p, [lang]: { ...p[lang], [next!.key]: e.target.value } }))}
+                        className="mt-1 w-full h-[50px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-1 text-[14.5px] leading-none resize-none overflow-y-auto" />
+                    </label>
+                  </div>
+                );
+              }
+
+              return (
+                <label key={f.key} className="block">
+                  <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
+                    {f.label} <span className="text-[color:var(--brand-red)]">*</span>
+                  </span>
+                  <textarea required maxLength={f.max} value={form[lang][f.key] ?? ""}
+                    onChange={e => setForm(p => ({ ...p, [lang]: { ...p[lang], [f.key]: e.target.value } }))}
+                    className="mt-1 w-full min-h-[80px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-3 text-[14.5px] leading-relaxed resize-y" />
+                </label>
+              );
+            })}
           </div>
           <div className="mt-6 flex justify-end">
             <BrandButton type="submit"><Send className="w-4 h-4" /> Enviar Información</BrandButton>
