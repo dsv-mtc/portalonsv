@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { Pencil, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, X } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { Panel, BrandButton } from "../components/UIBits";
-import { apiGet, apiPut } from "../lib/api";
+import { apiGet, apiPut, apiUpload } from "../lib/api";
 
 const PAGE_SIZE = 5;
 
@@ -51,7 +51,7 @@ export function Regiones() {
 
   const openEdit = useCallback((r: Region) => {
     setEditId(r.id);
-    setForm({ nombreEncargado: r.nombreEncargado, celularEncargado: r.celularEncargado, correoEncargado: r.correoEncargado, imageUrl: r.imageUrl, pageLink: r.pageLink });
+    setForm({ nombreEncargado: r.nombreEncargado, celularEncargado: r.celularEncargado, correoEncargado: r.correoEncargado, pageLink: r.pageLink });
   }, []);
 
   const handleSave = async () => {
@@ -183,18 +183,34 @@ export function Regiones() {
             </div>
 
             <div className="space-y-4">
-              {(["nombreEncargado", "celularEncargado", "correoEncargado", "imageUrl", "pageLink"] as const).map(f => (
+              {(["nombreEncargado", "celularEncargado", "correoEncargado", "pageLink"] as const).map(f => (
                 <label key={f} className="block">
                   <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
-                    {f === "nombreEncargado" ? "Nombre encargado" : f === "celularEncargado" ? "Celular encargado" : f === "correoEncargado" ? "Correo encargado" : f === "imageUrl" ? "Imagen (URL)" : "Enlace página"}
+                    {f === "nombreEncargado" ? "Nombre encargado" : f === "celularEncargado" ? "Celular encargado" : f === "correoEncargado" ? "Correo encargado" : "Enlace página"}
                   </span>
                   <input value={form[f] ?? ""} onChange={e => setForm(p => ({ ...p, [f]: e.target.value }))}
                     className="mt-1 w-full h-10 rounded-lg border-2 px-3 text-[13.5px] outline-none"
                     style={{ borderColor: "var(--brand-line)" }}
-                    placeholder={f === "imageUrl" ? "https://..." : `Ingrese ${f === "nombreEncargado" ? "el nombre" : f === "celularEncargado" ? "el celular" : f === "correoEncargado" ? "el correo" : "el enlace"}`}
+                    placeholder={`Ingrese ${f === "nombreEncargado" ? "el nombre" : f === "celularEncargado" ? "el celular" : f === "correoEncargado" ? "el correo" : "el enlace"}`}
                   />
                 </label>
               ))}
+              <label className="block">
+                <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>Imagen</span>
+                <input type="file" accept="image/*" onChange={async e => {
+                  const file = e.currentTarget.files?.[0];
+                  if (!file || !editId) return;
+                  const fd = new FormData();
+                  fd.append("image", file);
+                  const r = await apiUpload(`/regiones/${editId}/upload`, fd);
+                  setMsg(r.message || "Imagen actualizada");
+                  setAllRegiones(prev => [...prev]);
+                  setEditId(null);
+                }}
+                  className="mt-1 w-full h-10 rounded-lg border-2 px-3 text-[13px] outline-none file:h-full file:border-0 file:bg-[color:var(--brand-navy)] file:text-white file:px-4 file:rounded-lg file:cursor-pointer file:font-bold"
+                  style={{ borderColor: "var(--brand-line)", paddingTop: 0, paddingBottom: 0, display: "flex", alignItems: "center" }}
+                />
+              </label>
             </div>
 
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 24 }}>

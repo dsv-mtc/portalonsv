@@ -29,3 +29,12 @@ export async function apiDelete<T>(path: string) {
   const result = await api<T>(path, { method: 'DELETE' });
   return result;
 }
+
+export async function apiUpload(path: string, formData: FormData) {
+  const res = await fetch(`${BASE}${path}`, {
+    credentials: 'include',
+    method: 'POST',
+    body: formData,
+  });
+  return res.json();
+}

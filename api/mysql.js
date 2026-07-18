@@ -624,7 +624,7 @@ class DataBase {
 				telefono, 
 				email, 
 				direccion,
-				piePagina,
+				descripcion,
 				horario
 			FROM footer
 		`;
@@ -636,7 +636,7 @@ class DataBase {
 					telefono: results[0].telefono,
 					email: results[0].email,
 					direccion: results[0].direccion,
-					piePagina: results[0].piePagina,
+					descripcion: results[0].descripcion,
 					horario: results[0].horario
 				}
 			}
@@ -653,7 +653,7 @@ class DataBase {
 		telefono,
 		email,
 		direccion,
-		piePagina,
+		descripcion,
 		horario
 	}) {
 		const queryString = `
@@ -662,7 +662,7 @@ class DataBase {
 					telefono='${telefono}',
 					email='${email}',
 					direccion='${direccion}',
-					piePagina='${piePagina}',
+					descripcion='${descripcion}',
 					horario='${horario}'
 		`;
 		try {

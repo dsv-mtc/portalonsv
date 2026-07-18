@@ -12,28 +12,35 @@ type FieldProps = {
   icon: React.ReactNode;
   field: string;
   onFieldChange: (field: string, value: string) => void;
+  multiline?: boolean;
 };
 
-const Field = ({ label, value, icon, field, onFieldChange }: FieldProps) => (
+const Field = ({ label, value, icon, field, onFieldChange, multiline }: FieldProps) => (
   <label className="block">
     <span className="text-[11px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>{label} <span style={{ color: "var(--brand-red)" }}>*</span></span>
-    <div className="mt-1 flex items-center gap-2 rounded-lg border-2 h-11 px-3 bg-white" style={{ borderColor: "var(--brand-line)" }}>
-      {icon}
-      <input value={value} onChange={e => onFieldChange(field, e.target.value)} maxLength={200} required className="flex-1 bg-transparent outline-none text-[14.5px]" />
-    </div>
-    <span className="text-[10.5px] mt-1 inline-block" style={{ color: "var(--muted-foreground)" }}>Máx. 200 caracteres</span>
+    {multiline ? (
+      <div className="mt-1 flex items-start gap-2 rounded-lg border-2 px-3 py-2 bg-white" style={{ borderColor: "var(--brand-line)", minHeight: 80 }}>
+        <div className="mt-0.5">{icon}</div>
+        <textarea value={value} onChange={e => onFieldChange(field, e.target.value)} required className="flex-1 bg-transparent outline-none text-[14.5px] resize-y" style={{ minHeight: 60 }} />
+      </div>
+    ) : (
+      <div className="mt-1 flex items-center gap-2 rounded-lg border-2 h-11 px-3 bg-white" style={{ borderColor: "var(--brand-line)" }}>
+        {icon}
+        <input value={value} onChange={e => onFieldChange(field, e.target.value)} required className="flex-1 bg-transparent outline-none text-[14.5px]" />
+      </div>
+    )}
   </label>
 );
 
 export function PiePagina() {
-  const [footer, setFooter] = useState({ telefono: "", direccion: "", email: "", piePagina: "", horario: "" });
+  const [footer, setFooter] = useState({ telefono: "", direccion: "", email: "", descripcion: "", horario: "" });
   const [socials, setSocials] = useState<Social[]>([]);
   const [nuevaRed, setNuevaRed] = useState("Facebook");
   const [nuevaUrl, setNuevaUrl] = useState("");
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    apiGet<{ telefono: string; direccion: string; email: string; piePagina: string; horario: string }>("/footer").then(setFooter).catch(() => {});
+    apiGet<{ telefono: string; direccion: string; email: string; descripcion: string; horario: string }>("/footer").then(setFooter).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -78,8 +85,8 @@ export function PiePagina() {
             <Field label="Número de teléfono" value={footer.telefono} icon={<Phone className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="telefono" onFieldChange={handleFieldChange} />
             <Field label="Dirección" value={footer.direccion} icon={<MapPin className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="direccion" onFieldChange={handleFieldChange} />
             <Field label="Correo" value={footer.email} icon={<Mail className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="email" onFieldChange={handleFieldChange} />
-            <Field label="Pie de página" value={footer.piePagina} icon={<AlignLeft className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="piePagina" onFieldChange={handleFieldChange} />
             <Field label="Horario de atención" value={footer.horario} icon={<Clock className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="horario" onFieldChange={handleFieldChange} />
+            <Field label="Descripción" value={footer.descripcion} icon={<AlignLeft className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="descripcion" onFieldChange={handleFieldChange} multiline />
           </div>
           <div className="mt-6 flex justify-end"><BrandButton type="submit"><Send className="w-4 h-4" /> Enviar Información</BrandButton></div>
         </Panel>

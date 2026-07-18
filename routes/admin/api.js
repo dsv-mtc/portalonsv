@@ -1,9 +1,28 @@
 const router = require('express').Router();
 const passport = require("passport");
 const criptoUtils = require("../../utils/criptoUtils");
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const mysql = new (require("../../api/mysql"));
 mysql.setQuery();
+
+const assetsDir = path.join(__dirname, '../../public/assets');
+const uploadMw = multer({
+  storage: multer.diskStorage({
+    destination: assetsDir,
+    filename(req, file, cb) {
+      const normalized = req.regionName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      cb(null, `${normalized}.png`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
 
 function isAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) {
@@ -54,8 +73,8 @@ router.get("/footer", isAuthenticated, async (req, res) => {
 });
 
 router.put("/footer", isAuthenticated, async (req, res) => {
-  const { telefono, email, direccion, piePagina, horario } = req.body;
-  const result = await mysql.updateFooterData({ telefono, email, direccion, piePagina, horario });
+  const { telefono, email, direccion, descripcion, horario } = req.body;
+  const result = await mysql.updateFooterData({ telefono, email, direccion, descripcion, horario });
   res.json(result);
 });
 
@@ -205,16 +224,32 @@ router.get("/regiones", isAuthenticated, async (req, res) => {
 });
 
 router.put("/regiones/:id", isAuthenticated, async (req, res) => {
-  const { nombreEncargado, celularEncargado, correoEncargado, imageUrl, pageLink } = req.body;
+  const { nombreEncargado, celularEncargado, correoEncargado, pageLink } = req.body;
   const result = await mysql.updateRegiones({
     id: req.params.id,
     nombreEncargado,
     celularEncargado,
     correoEncargado,
-    imageUrl,
+    imageUrl: '',
     pageLink
   });
   res.json(result);
+});
+
+router.post("/regiones/:id/upload", isAuthenticated, async (req, res) => {
+  try {
+    const { data: all } = await mysql.getRegiones({ paginate: false });
+    const region = all.find(r => r.id === Number(req.params.id));
+    if (!region) return res.status(404).json({ success: false, message: "Región no encontrada" });
+    req.regionName = region.value;
+    uploadMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message || "Error al subir" });
+      res.json({ success: true, message: "Imagen actualizada" });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 // --- Analítica - Menú ---
