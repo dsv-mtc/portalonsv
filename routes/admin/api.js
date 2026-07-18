@@ -42,6 +42,24 @@ const uploadEventoMw = multer({
   }
 }).single('image');
 
+const menuAssetsDir = path.join(__dirname, '../../public/assets/menu');
+if (!fs.existsSync(menuAssetsDir)) fs.mkdirSync(menuAssetsDir, { recursive: true });
+
+const uploadMenuMw = multer({
+  storage: multer.diskStorage({
+    destination: menuAssetsDir,
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname) || '.png';
+      cb(null, `menu_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
+
 function isAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ success: false, message: "No autenticado" });
@@ -291,6 +309,18 @@ router.put("/analitica-menu/:id", isAuthenticated, async (req, res) => {
 router.delete("/analitica-menu/:id", isAuthenticated, async (req, res) => {
   const result = await mysql.deleteMenu(req.params.id);
   res.json(result);
+});
+
+router.post("/analitica-menu/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadMenuMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      res.json({ success: true, url: `/assets/menu/${req.file.filename}` });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 // --- Analítica - Submenú ---
