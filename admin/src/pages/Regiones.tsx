@@ -91,7 +91,7 @@ export function Regiones() {
         .pag-btn:hover { border-color: #C8102E; color: #C8102E; }
         .pag-btn.active { background: #C8102E; color: #fff; border-color: transparent; }
         .pag-btn.active:hover { background: #C8102E; color: #fff; border-color: transparent; }
-        .region-img { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; display: block; transition: transform .3s ease; }
+        .region-img { width: 64px; height: 48px; object-fit: contain; border-radius: 6px; display: block; transition: transform .3s ease; }
         .region-img:hover { transform: scale(3); z-index: 99999; position: relative; }
         .table-wrap { overflow: visible; }
       `}</style>
