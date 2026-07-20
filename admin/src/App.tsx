@@ -10,6 +10,7 @@ import { Regiones } from "./pages/Regiones";
 import { AnaliticaMenu } from "./pages/AnaliticaMenu";
 import { AnaliticaSubmenu } from "./pages/AnaliticaSubmenu";
 import { Comunicaciones } from "./pages/Comunicaciones";
+import { ComunicacionesRevistas } from "./pages/ComunicacionesRevistas";
 import { DatosAbiertos } from "./pages/DatosAbiertos";
 import { DatosAbiertosCategorias } from "./pages/DatosAbiertosCategorias";
 import { DatosAbiertosTipos } from "./pages/DatosAbiertosTipos";
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="analitica" element={<AnaliticaMenu />} />
           <Route path="analitica-submenu" element={<AnaliticaSubmenu />} />
           <Route path="comunicaciones" element={<Comunicaciones />} />
+          <Route path="comunicaciones-revistas" element={<ComunicacionesRevistas />} />
           <Route path="datos" element={<DatosAbiertos />} />
           <Route path="datos-categorias" element={<DatosAbiertosCategorias />} />
           <Route path="datos-tipos" element={<DatosAbiertosTipos />} />

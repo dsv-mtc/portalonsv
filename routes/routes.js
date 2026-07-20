@@ -542,20 +542,20 @@ routes.get("/revistas/:page?", async (req, res) => {
 	} = req.query
 	const page = req.params.page ? Number(req.params.page) : 1;
 
-	const temasDisponibles = [
-		{ name: "Economía", slug: "economia" },
-		{ name: "Derecho", slug: "derecho" },
-		{ name: "Psicología", slug: "psicologia" },
-		{ name: "Antropología", slug: "antropologia" },
-		{ name: "Medio Ambiente", slug: "medio-ambiente" },
-		{ name: "Educación", slug: "educacion" },
-	];
+	const { data: allRevistas } = await mysql.getRevistas();
+	const revistasActivas = (allRevistas || []).filter(r => r.esta_activo);
 
-	let revistasFiltradas = [...revistasData];
+	const temasUnicos = [...new Set(revistasActivas.map(r => r.tema).filter(Boolean))];
+	const temasDisponibles = temasUnicos.map(t => ({
+		name: t,
+		slug: t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-")
+	}));
+
+	let revistasFiltradas = [...revistasActivas];
 
 	if (title) {
 		revistasFiltradas = revistasFiltradas.filter(r =>
-			`${r.slug} ${r.title}`.toLowerCase().includes(title.toLowerCase())
+			`${r.slug} ${r.titulo}`.toLowerCase().includes(title.toLowerCase())
 		);
 	}
 
@@ -563,7 +563,7 @@ routes.get("/revistas/:page?", async (req, res) => {
 		const temaSeleccionado = temasDisponibles.find(t => t.slug === tema);
 		if (temaSeleccionado) {
 			revistasFiltradas = revistasFiltradas.filter(r => {
-				const rTemaSlug = r.tema.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+				const rTemaSlug = (r.tema || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 				const filterSlug = temaSeleccionado.slug.toLowerCase();
 				return rTemaSlug === filterSlug;
 			});
@@ -584,7 +584,7 @@ routes.get("/revistas/:page?", async (req, res) => {
 	const revistasPagina = pages[currentPage - 1] || [];
 
 	res.render("pages/revistas", {
-		revistas: revistasPagina,
+		revistas: revistasPagina.map(r => ({ ...r, title: r.titulo, image: r.imagen_url, pdf: r.pdf_url })),
 		hasResults: revistasPagina.length > 0,
 		temas: temasDisponibles.map(t => ({
 			...t,

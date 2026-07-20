@@ -12,7 +12,7 @@ const NAV: NavItem[] = [
   { label: "Pie de página", icon: PanelBottom, to: "/pie" },
   { label: "Cifras", icon: BarChart3, to: "/cifras" },
   { label: "Regiones", icon: Map, to: "/regiones" },
-  { label: "Comunicaciones", icon: Megaphone, to: "/comunicaciones" },
+  { label: "Comunicaciones", icon: Megaphone, children: [{ label: "Eventos", to: "/comunicaciones" }, { label: "Revistas", to: "/comunicaciones-revistas" }] },
   { label: "Misión — Visión", icon: Target, to: "/mision" },
   { label: "Analítica", icon: LineChart, children: [{ label: "Menú", to: "/analitica" }, { label: "Submenú", to: "/analitica-submenu" }] },
   { label: "Popup", icon: Sparkles, to: "/popup" },

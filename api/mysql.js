@@ -2669,6 +2669,61 @@ class DataBase {
 		return days === 1 ? "ayer" : `hace ${days} d`;
 	}
 
+	async getRevistas() {
+		const queryString = `
+			SELECT id, titulo, slug, tema, imagen_url, pdf_url, esta_activo, created_at
+			FROM revistas
+			ORDER BY created_at DESC
+		`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener las revistas" };
+		}
+	}
+
+	async createRevista({ titulo, slug, tema, imagen_url, pdf_url, esta_activo }) {
+		const queryString = `
+			INSERT INTO revistas (titulo, slug, tema, imagen_url, pdf_url, esta_activo)
+			VALUES (?, ?, ?, ?, ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [titulo, slug || '', tema || '', imagen_url || '', pdf_url || '', esta_activo ? 1 : 0]);
+			return { success: true, data: { insertId: result.insertId } };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear la revista" };
+		}
+	}
+
+	async updateRevista({ id, titulo, slug, tema, imagen_url, pdf_url, esta_activo }) {
+		const queryString = `
+			UPDATE revistas
+			SET titulo = ?, slug = ?, tema = ?, imagen_url = ?, pdf_url = ?, esta_activo = ?
+			WHERE id = ?
+		`;
+		try {
+			await this.query(queryString, [titulo, slug || '', tema || '', imagen_url || '', pdf_url || '', esta_activo ? 1 : 0, id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar la revista" };
+		}
+	}
+
+	async deleteRevista(id) {
+		const queryString = `DELETE FROM revistas WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar la revista" };
+		}
+	}
+
 }
 
 

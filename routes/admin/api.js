@@ -113,6 +113,26 @@ const uploadCategoriaMw = multer({
   }
 }).single('image');
 
+const revistasAssetsDir = path.join(__dirname, '../../public/assets/revistas');
+if (!fs.existsSync(revistasAssetsDir)) fs.mkdirSync(revistasAssetsDir, { recursive: true });
+
+const uploadRevistaMw = multer({
+  storage: multer.diskStorage({
+    destination: revistasAssetsDir,
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname).toLowerCase() || '';
+      cb(null, `revista_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(ext)) return cb(null, true);
+    if (ext === '.pdf') return cb(null, true);
+    cb(new Error('Solo imágenes (PNG, JPG, GIF, WebP) o PDF'));
+  }
+}).single('file');
+
 function isAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ success: false, message: "No autenticado" });
@@ -540,6 +560,50 @@ router.post("/comunicaciones-eventos/upload", isAuthenticated, async (req, res) 
 router.get("/tipos-evento", isAuthenticated, async (req, res) => {
   const { data: tiposEvento } = await mysql.getTiposEvento();
   res.json({ success: true, data: tiposEvento });
+});
+
+// --- Comunicaciones - Revistas ---
+router.get("/comunicaciones-revistas", isAuthenticated, async (req, res) => {
+  const { data: revistas } = await mysql.getRevistas();
+  res.json({ success: true, data: revistas });
+});
+
+router.post("/comunicaciones-revistas", isAuthenticated, async (req, res) => {
+  const { titulo, tema, imagen_url, pdf_url, esta_activo } = req.body;
+  const slug = titulo ? titulo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : '';
+  const result = await mysql.createRevista({ titulo, slug, tema, imagen_url, pdf_url, esta_activo });
+  const log = await logAction('created', 'Revista', result.data?.insertId, `Se creó la revista '${titulo}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/comunicaciones-revistas/:id", isAuthenticated, async (req, res) => {
+  const { titulo, tema, imagen_url, pdf_url, esta_activo } = req.body;
+  const slug = titulo ? titulo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : '';
+  const result = await mysql.updateRevista({ id: req.params.id, titulo, slug, tema, imagen_url, pdf_url, esta_activo });
+  const log = await logAction('updated', 'Revista', Number(req.params.id), `Se actualizó la revista '${titulo}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/comunicaciones-revistas/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { data: revistas } = await mysql.getRevistas();
+  const name = revistas?.find(r => r.id === id)?.titulo || '';
+  const result = await mysql.deleteRevista(id);
+  const log = await logAction('deleted', 'Revista', id, `Se eliminó la revista '${name}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/comunicaciones-revistas/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadRevistaMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      const url = `/assets/revistas/${req.file.filename}`;
+      res.json({ success: true, url });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 // --- Datos Abiertos ---
