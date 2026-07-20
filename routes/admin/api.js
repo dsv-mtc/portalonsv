@@ -751,4 +751,32 @@ router.delete("/roles/:id", isAuthenticated, async (req, res) => {
   res.json({ ...result, log: log || undefined });
 });
 
+// --- Dashboard Stats ---
+router.get("/stats/dashboard", isAuthenticated, async (req, res) => {
+  try {
+    const [usuarios, menus, submenus, eventosMeta, datosMeta] = await Promise.all([
+      mysql.getUsers(),
+      mysql.getMenu(),
+      mysql.getSubmenu(),
+      mysql.getComunicationsMeta({ pageSize: 1, conditions: {} }),
+      mysql.getDatosAbiertosPages({ pageLength: 1, conditions: {} }),
+    ]);
+    res.json({
+      success: true,
+      data: {
+        usuarios: usuarios.data?.length || 0,
+        menus: menus.data?.length || 0,
+        menusActivos: menus.data?.filter(m => m.estaActivo)?.length || 0,
+        submenus: submenus.data?.length || 0,
+        submenusActivos: submenus.data?.filter(s => s.estado)?.length || 0,
+        eventos: eventosMeta?.amount || 0,
+        datasets: datosMeta?.dataLength || 0,
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error al obtener estadísticas" });
+  }
+});
+
 module.exports = router;

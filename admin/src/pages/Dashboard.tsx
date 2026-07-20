@@ -1,16 +1,25 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Database, Megaphone, LineChart, ArrowUpRight, Map, BarChart3, Target, Sparkles, PanelBottom, Users, FileEdit, Upload, Trash2 } from "lucide-react";
-import { PageHeader } from "../components/PageHeader";
+import { ArrowUpRight, Map, BarChart3, Target, Sparkles, PanelBottom, Users, FileEdit, Upload, Trash2, FolderOpen, TrendingUp } from "lucide-react";
 import { Panel, BrandButton, Chip } from "../components/UIBits";
 import { apiGet } from "../lib/api";
 import type { LogEntry } from "../lib/api";
 
+interface DashboardStats {
+  usuarios: number;
+  menusActivos: number;
+  submenusActivos: number;
+  eventos: number;
+  datasets: number;
+}
+
 export function Dashboard() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [stats, setStats] = useState<DashboardStats>({ usuarios: 0, menusActivos: 0, submenusActivos: 0, eventos: 0, datasets: 0 });
 
   useEffect(() => {
     apiGet<LogEntry[]>("/logs/recent").then(setLogs).catch(() => {});
+    apiGet<DashboardStats>("/stats/dashboard").then(setStats).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -28,10 +37,10 @@ export function Dashboard() {
     return { Icon: Trash2, color: '#7A3FBF' };
   };
 
-  const cards = [
-    { label: "Datos Abiertos", desc: "Publica datasets, categorías y tipos de archivo.", color: "#1597B8", icon: Database, to: "/datos" },
-    { label: "Analítica de Datos", desc: "Administra menús y submenús con tableros BI.", color: "#14213D", icon: LineChart, to: "/analitica" },
-    { label: "Comunicaciones", desc: "Programa eventos, campañas y entrevistas.", color: "#C8102E", icon: Megaphone, to: "/comunicaciones" },
+  const statCards = [
+    { label: "Usuarios registrados", value: stats.usuarios, color: "#1597B8", icon: Users, desc: "Cuentas en el sistema" },
+    { label: "Analítica activa", value: stats.menusActivos + stats.submenusActivos, color: "#14213D", icon: TrendingUp, desc: "Menús y submenús publicados" },
+    { label: "Contenido publicado", value: stats.eventos + stats.datasets, color: "#C8102E", icon: FolderOpen, desc: "Eventos y datasets" },
   ];
   const quickLinks = [
     { label: "Pie de página", to: "/pie", icon: PanelBottom, color: "#14213D" },
@@ -44,7 +53,6 @@ export function Dashboard() {
 
   return (
     <>
-      <PageHeader eyebrow="Panel Administrativo" title="Inicio" description="Desde aquí gestionas todos los contenidos del Portal ONSV." />
       <section className="relative overflow-hidden rounded-2xl p-8 lg:p-10 mb-8 text-white" style={{ background: "linear-gradient(100deg,rgba(13,21,40,.96),rgba(13,21,40,.55) 55%,rgba(13,21,40,.15)),repeating-linear-gradient(115deg,#1c2c4e 0 2px,transparent 2px 26px),linear-gradient(160deg,#21314f,#0e1830)" }}>
         <span className="inline-block px-3 py-1 mb-4 text-[11px] uppercase tracking-[0.16em] font-bold rounded font-[family-name:var(--font-cond)]" style={{ background: "#C8102E" }}>Estado del portal</span>
         <h2 className="text-[clamp(28px,3.4vw,44px)] uppercase leading-[0.98] max-w-2xl font-[family-name:var(--font-display)] font-extrabold">¡Bienvenido al Panel de <em className="not-italic" style={{ color: "var(--brand-amber)" }}>Control Administrativo</em>!</h2>
@@ -54,15 +62,15 @@ export function Dashboard() {
         </div>
       </section>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-        {cards.map(c => {
+        {statCards.map(c => {
           const Icon = c.icon;
           return (
-            <Link key={c.label} to={c.to} className="group relative overflow-hidden rounded-2xl border border-[color:var(--brand-line)] bg-white p-6 hover:-translate-y-1 transition-all" style={{ boxShadow: "var(--shadow-brand)", borderTop: `4px solid ${c.color}` }}>
-              <div className="w-14 h-14 rounded-2xl grid place-items-center mb-4" style={{ background: `color-mix(in srgb, ${c.color} 12%, #fff)`, color: c.color }}><Icon className="w-7 h-7" /></div>
-              <h3 className="text-[20px] uppercase text-[color:var(--brand-navy)] font-[family-name:var(--font-display)] font-bold">{c.label}</h3>
-              <p className="mt-2 text-[13.5px] leading-relaxed" style={{ color: "var(--muted-foreground)" }}>{c.desc}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.1em] font-bold text-[color:var(--brand-red)] group-hover:gap-2 transition-all font-[family-name:var(--font-cond)]">Ir al módulo <ArrowUpRight className="w-3.5 h-3.5" /></span>
-            </Link>
+            <div key={c.label} className="relative overflow-hidden rounded-2xl border border-[color:var(--brand-line)] bg-white p-6" style={{ boxShadow: "var(--shadow-brand)", borderTop: `4px solid ${c.color}` }}>
+              <div className="w-12 h-12 rounded-xl grid place-items-center mb-4" style={{ background: `color-mix(in srgb, ${c.color} 12%, #fff)`, color: c.color }}><Icon className="w-6 h-6" /></div>
+              <span className="text-[28px] font-extrabold font-[family-name:var(--font-display)]" style={{ color: "var(--brand-navy)" }}>{c.value}</span>
+              <h3 className="text-[14px] uppercase font-[family-name:var(--font-cond)] font-bold mt-1" style={{ color: "var(--brand-navy)" }}>{c.label}</h3>
+              <p className="mt-1 text-[12px]" style={{ color: "var(--muted-foreground)" }}>{c.desc}</p>
+            </div>
           );
         })}
       </div>
