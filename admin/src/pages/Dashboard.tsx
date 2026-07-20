@@ -25,7 +25,7 @@ export function Dashboard() {
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail as LogEntry;
-      setLogs(prev => [detail, ...prev].slice(0, 10));
+      setLogs(prev => [detail, ...prev]);
     };
     window.addEventListener("admin:log", handler);
     return () => window.removeEventListener("admin:log", handler);
@@ -76,8 +76,8 @@ export function Dashboard() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
         <div className="lg:col-span-2">
-          <Panel title="Actividad reciente" actions={<Chip color="cyan">● En vivo</Chip>}>
-            <ol className="relative">
+          <Panel title="Actividad reciente" actions={<Chip color="cyan"><span className="relative inline-flex w-2 h-2 align-middle mr-0.5"><span className="absolute inline-flex w-full h-full rounded-full bg-[#1597B8] opacity-70 animate-ping" /><span className="relative inline-flex w-2 h-2 rounded-full bg-[#1597B8]" /></span> En vivo</Chip>}>
+            <ol className="relative max-h-[272px] overflow-y-auto scrollbar-auto-hide">
               <span aria-hidden className="absolute left-[19px] top-2 bottom-2 w-px" style={{ background: "var(--brand-line)" }} />
               {logs.map((l) => {
                 const { Icon, color } = actionIcon(l.action);
