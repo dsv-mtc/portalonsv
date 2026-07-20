@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Plus, Trash2, Pencil, Upload, X } from "lucide-react";
+import { Plus, Trash2, Pencil, Upload, X, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { BrandButton, Chip } from "../components/UIBits";
 import { ConfirmModal } from "../components/ConfirmModal";
@@ -26,9 +26,15 @@ export function AnaliticaMenu() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const load = () => apiGet<Menu[]>("/analitica-menu").then(setItems).catch(() => {});
+  const PER_PAGE = 5;
+  const totalPages = Math.max(1, Math.ceil(items.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const paginatedItems = items.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  const load = () => { setPage(1); apiGet<Menu[]>("/analitica-menu").then(setItems).catch(() => {}); };
   useEffect(() => { load(); }, []);
 
   useEffect(() => {
@@ -91,6 +97,13 @@ export function AnaliticaMenu() {
 
   const activeCount = items.filter(i => i.estaActivo).length;
 
+  const pagBtn = (label: React.ReactNode, active: boolean, onClick: () => void, ariaLabel: string) => (
+    <button type="button" aria-label={ariaLabel} onClick={onClick}
+      className={`pag-btn${active ? " active" : ""}`}>
+      {label}
+    </button>
+  );
+
   return (
     <>
       <PageHeader title="Analítica — Menú" eyebrow="Navegación" actions={
@@ -100,10 +113,17 @@ export function AnaliticaMenu() {
         </div>
       } />
 
-      <style>{`.region-img { width:40px; height:40px; object-fit:contain; border-radius:6px; display:block; transition:transform .25s ease; } .region-img:hover { transform:scale(3); z-index:99999; position:relative; }`}</style>
+      <style>{`
+        .region-img { width:40px; height:40px; object-fit:contain; border-radius:6px; display:block; transition:transform .25s ease; }
+        .region-img:hover { transform:scale(3); z-index:99999; position:relative; }
+        .pag-btn { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: #1d3557; font-weight: 700; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .3s ease; }
+        .pag-btn:hover { border-color: #C8102E; color: #C8102E; }
+        .pag-btn.active { background: #C8102E; color: #fff; border-color: transparent; }
+        .pag-btn.active:hover { background: #C8102E; color: #fff; border-color: transparent; }
+      `}</style>
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
 
-      <div className="rounded-2xl border border-[color:var(--brand-line)] bg-white p-5" style={{ boxShadow: "var(--shadow-brand)" }}>
+      <div className="rounded-2xl border border-[color:var(--brand-line)] bg-white p-5" style={{ boxShadow: "var(--shadow-brand)", marginTop: 75 }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
           <thead>
             <tr style={{ borderBottom: "2px solid var(--brand-line)" }}>
@@ -114,13 +134,13 @@ export function AnaliticaMenu() {
             </tr>
           </thead>
           <tbody>
-            {items.map(item => (
+            {paginatedItems.map(item => (
               <tr key={item.id} style={{ borderBottom: "1px solid var(--brand-line)" }}>
                 <td style={{ padding: "10px 8px", fontWeight: 600, color: "var(--brand-navy)" }}>{item.descripcion}</td>
                 <td style={{ padding: "10px 8px" }}>
                   {item.urlImagen ? (
                     <img className="region-img" src={encodeURI(item.urlImagen)} alt=""
-                      onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                      onError={e => { (e.target as HTMLImageElement).style.opacity = "0"; }} />
                   ) : <span style={{ color: "#94a3b8" }}>—</span>}
                 </td>
                 <td style={{ padding: "10px 8px" }}>
@@ -148,6 +168,16 @@ export function AnaliticaMenu() {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="mt-6 flex justify-center items-center gap-1.5">
+          {pagBtn(<ChevronsLeft className="w-4 h-4" />, false, () => setPage(1), "Primera página")}
+          {pagBtn(<ChevronLeft className="w-4 h-4" />, false, () => setPage(p => Math.max(1, p - 1)), "Página anterior")}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => pagBtn(p, p === currentPage, () => setPage(p), `Página ${p}`))}
+          {pagBtn(<ChevronRight className="w-4 h-4" />, false, () => setPage(p => Math.min(totalPages, p + 1)), "Página siguiente")}
+          {pagBtn(<ChevronsRight className="w-4 h-4" />, false, () => setPage(totalPages), "Última página")}
+        </div>
+      )}
 
       {modalOpen && (
         <Modal onClose={() => setModalOpen(false)}>

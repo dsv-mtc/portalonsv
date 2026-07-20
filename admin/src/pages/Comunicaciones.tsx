@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Plus, Trash2, Pencil, Calendar, Upload, X, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Pencil, Calendar, Upload, X, ExternalLink, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
-import { Panel, BrandButton, Chip } from "../components/UIBits";
+import { Panel, BrandButton } from "../components/UIBits";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { apiGet, apiPost, apiPut, apiDelete, apiUpload } from "../lib/api";
 
@@ -74,6 +74,7 @@ export function Comunicaciones() {
   const [viewingEvent, setViewingEvent] = useState<Evento | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const editFileRef = useRef<HTMLInputElement>(null);
+  const [page, setPage] = useState(1);
 
   const [filters, setFilters] = useState({ title: "", idTipoEvento: 0, startDate: "", endDate: "" });
   const filtersRef = useRef(filters);
@@ -185,7 +186,18 @@ export function Comunicaciones() {
     load();
   };
 
-  const activeCount = eventos.filter(e => e.isActive).length;
+  const PER_PAGE = 5;
+  const totalPages = Math.max(1, Math.ceil(eventos.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const paginatedEventos = eventos.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  const formatDate = (day?: string, time?: string) => {
+    if (!day) return "—";
+    const parts = day.split("-");
+    const dateStr = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : day;
+    const timeStr = time?.slice(0, 5);
+    return timeStr ? `${dateStr} ${timeStr}` : dateStr;
+  };
 
   return (
     <>
@@ -227,31 +239,84 @@ export function Comunicaciones() {
       </div>
 
       {tab === "programacion" && (
-        <Panel title="Eventos programados" actions={<Chip color="cyan">{activeCount} activos</Chip>}>
-          <div className="space-y-3">
-            {eventos.map(ev => {
-              const tc = tipoStyle(ev.tipoEvento);
-              return (
-                <div key={ev.id} className="flex items-center gap-3 rounded-lg border-2 p-3" style={{ borderColor: "var(--brand-line)" }}>
-                  <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setViewingEvent(ev)}>
-                    <span className="font-semibold text-[14px]" style={{ color: "var(--brand-navy)" }}>{ev.title}</span>
-                    <span className="ml-2 inline-block px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-[0.06em] font-[family-name:var(--font-cond)]"
-                      style={{ background: tc.bg, color: tc.text }}>
-                      {ev.tipoEvento || `Tipo #${ev.idTipoEvento}`}
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-bold font-[family-name:var(--font-cond)]" style={{ color: ev.isActive ? "var(--brand-green)" : "var(--muted-foreground)" }}>{ev.isActive ? "Activo" : "Inactivo"}</span>
-                  <button onClick={() => openEdit(ev)} className="w-9 h-9 rounded-lg grid place-items-center hover:bg-[#e8ebf0] transition" style={{ color: "#101a34" }}>
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => handleDelete(ev.id)} className="w-9 h-9 rounded-lg grid place-items-center hover:bg-[#fdecec] transition" style={{ color: "var(--brand-red)" }}>
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              );
-            })}
+        <>
+          <style>{`
+            .pag-btn { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: #1d3557; font-weight: 700; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .3s ease; }
+            .pag-btn:hover { border-color: #C8102E; color: #C8102E; }
+            .pag-btn.active { background: #C8102E; color: #fff; border-color: transparent; }
+            .pag-btn.active:hover { background: #C8102E; color: #fff; border-color: transparent; }
+          `}</style>
+          <div className="rounded-2xl border border-[color:var(--brand-line)] bg-white p-5" style={{ boxShadow: "var(--shadow-brand)" }}>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+                <thead>
+                  <tr style={{ borderBottom: "2px solid var(--brand-line)" }}>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 90 }}>Tipo Evento</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 130 }}>Evento</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 100 }}>Organizador</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 80 }}>Lugar</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 110 }}>Dirección</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 140 }}>Descripción</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 100 }}>Fecha inicio</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 100 }}>Fecha fin</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 70 }}>Estado</th>
+                    <th style={{ width: 56, padding: "8px 6px" }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedEventos.map(ev => {
+                    const tc = tipoStyle(ev.tipoEvento);
+                    return (
+                      <tr key={ev.id} style={{ borderBottom: "1px solid var(--brand-line)" }}>
+                        <td style={{ padding: "8px 6px" }}>
+                          <span style={{ display: "inline-block", padding: "1px 6px", borderRadius: 999, fontSize: 9, fontWeight: 700, fontFamily: "var(--font-cond)", textTransform: "uppercase", letterSpacing: "0.04em", background: tc.bg, color: tc.text }}>
+                            {ev.tipoEvento || `Tipo #${ev.idTipoEvento}`}
+                          </span>
+                        </td>
+                        <td style={{ padding: "8px 6px", fontWeight: 600, color: "var(--brand-navy)", cursor: "pointer", maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} onClick={() => setViewingEvent(ev)}
+                          title="Ver detalle">{ev.title}</td>
+                        <td style={{ padding: "8px 6px", color: "var(--brand-navy)", maxWidth: 100, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={ev.organizedBy}>{ev.organizedBy}</td>
+                        <td style={{ padding: "8px 6px", color: "var(--brand-navy)" }}>{ev.place || "—"}</td>
+                        <td style={{ padding: "8px 6px", color: "var(--brand-navy)", maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={ev.direccion}>{ev.direccion || "—"}</td>
+                        <td style={{ padding: "8px 6px", color: "#475569", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={ev.shortDescription}>{ev.shortDescription || "—"}</td>
+                        <td style={{ padding: "8px 6px", color: "var(--brand-navy)", whiteSpace: "nowrap", fontSize: 11 }}>{formatDate(ev.startDayISO, ev.startTimeISO)}</td>
+                        <td style={{ padding: "8px 6px", color: "var(--brand-navy)", whiteSpace: "nowrap", fontSize: 11 }}>{formatDate(ev.endDayISO, ev.endTimeISO)}</td>
+                        <td style={{ padding: "8px 6px" }}>
+                          <span style={{ display: "inline-block", padding: "1px 6px", borderRadius: 999, fontSize: 9, fontWeight: 700, fontFamily: "var(--font-cond)", textTransform: "uppercase", letterSpacing: "0.04em", background: ev.isActive ? "#dcfce7" : "#f1f5f9", color: ev.isActive ? "#166534" : "#475569" }}>
+                            {ev.isActive ? "Activo" : "Inactivo"}
+                          </span>
+                        </td>
+                        <td style={{ padding: "8px 6px" }}>
+                          <div style={{ display: "flex", gap: 2 }}>
+                            <button onClick={() => openEdit(ev)} className="w-7 h-7 rounded-lg grid place-items-center hover:bg-[#e8ebf0] transition" style={{ color: "#101a34" }}>
+                              <Pencil className="w-3 h-3" />
+                            </button>
+                            <button onClick={() => handleDelete(ev.id)} className="w-7 h-7 rounded-lg grid place-items-center hover:bg-[#fdecec] transition" style={{ color: "var(--brand-red)" }}>
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </Panel>
+
+          {totalPages > 1 && (
+            <div className="mt-6 flex justify-center items-center gap-1.5">
+              <button type="button" aria-label="Primera página" onClick={() => setPage(1)} className="pag-btn"><ChevronsLeft className="w-4 h-4" /></button>
+              <button type="button" aria-label="Página anterior" onClick={() => setPage(p => Math.max(1, p - 1))} className="pag-btn"><ChevronLeft className="w-4 h-4" /></button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <button key={p} type="button" aria-label={`Página ${p}`} onClick={() => setPage(p)}
+                  className={`pag-btn${p === currentPage ? " active" : ""}`}>{p}</button>
+              ))}
+              <button type="button" aria-label="Página siguiente" onClick={() => setPage(p => Math.min(totalPages, p + 1))} className="pag-btn"><ChevronRight className="w-4 h-4" /></button>
+              <button type="button" aria-label="Última página" onClick={() => setPage(totalPages)} className="pag-btn"><ChevronsRight className="w-4 h-4" /></button>
+            </div>
+          )}
+        </>
       )}
 
       {tab === "agregar" && (

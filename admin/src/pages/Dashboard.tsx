@@ -1,9 +1,33 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Database, Megaphone, LineChart, ArrowUpRight, Map, BarChart3, Target, Sparkles, PanelBottom, Users, FileEdit, Upload, UserPlus, CheckCircle2 } from "lucide-react";
+import { Database, Megaphone, LineChart, ArrowUpRight, Map, BarChart3, Target, Sparkles, PanelBottom, Users, FileEdit, Upload, Trash2 } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { Panel, BrandButton, Chip } from "../components/UIBits";
+import { apiGet } from "../lib/api";
+import type { LogEntry } from "../lib/api";
 
 export function Dashboard() {
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+
+  useEffect(() => {
+    apiGet<LogEntry[]>("/logs/recent").then(setLogs).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as LogEntry;
+      setLogs(prev => [detail, ...prev].slice(0, 10));
+    };
+    window.addEventListener("admin:log", handler);
+    return () => window.removeEventListener("admin:log", handler);
+  }, []);
+
+  const actionIcon = (action: string) => {
+    if (action === 'created') return { Icon: Upload, color: '#1597B8' };
+    if (action === 'updated') return { Icon: FileEdit, color: '#C8102E' };
+    return { Icon: Trash2, color: '#7A3FBF' };
+  };
+
   const cards = [
     { label: "Datos Abiertos", desc: "Publica datasets, categorías y tipos de archivo.", color: "#1597B8", icon: Database, to: "/datos" },
     { label: "Analítica de Datos", desc: "Administra menús y submenús con tableros BI.", color: "#14213D", icon: LineChart, to: "/analitica" },
@@ -47,24 +71,23 @@ export function Dashboard() {
           <Panel title="Actividad reciente" actions={<Chip color="cyan">● En vivo</Chip>}>
             <ol className="relative">
               <span aria-hidden className="absolute left-[19px] top-2 bottom-2 w-px" style={{ background: "var(--brand-line)" }} />
-              {[
-                { icon: FileEdit, color: "#1597B8", title: "Se actualizaron las cifras del portal", who: "Admin ONSV", when: "hace 5 min" },
-                { icon: Upload, color: "#C8102E", title: "Nuevo dataset publicado en Datos Abiertos", who: "Editor", when: "hace 42 min" },
-                { icon: Megaphone, color: "#F4B41A", title: "Se programó una nueva comunicación", who: "Comunicaciones", when: "hace 2 h" },
-                { icon: UserPlus, color: "#14213D", title: "Se registró un nuevo usuario administrador", who: "Superadmin", when: "ayer" },
-                { icon: CheckCircle2, color: "#1f7a44", title: "Región Lima actualizó su encargado", who: "Admin Regional", when: "ayer" },
-              ].map((a, i) => {
-                const AIcon = a.icon;
+              {logs.map((l) => {
+                const { Icon, color } = actionIcon(l.action);
                 return (
-                  <li key={i} className="relative flex gap-4 py-3 first:pt-0 last:pb-0">
-                    <div className="relative z-10 w-10 h-10 rounded-full grid place-items-center shrink-0 border-2 border-white" style={{ background: `color-mix(in srgb, ${a.color} 12%, #fff)`, color: a.color, boxShadow: "0 0 0 1px var(--brand-line)" }}><AIcon className="w-4 h-4" /></div>
+                  <li key={l.id} className="relative flex gap-4 py-3 first:pt-0 last:pb-0">
+                    <div className="relative z-10 w-10 h-10 rounded-full grid place-items-center shrink-0 border-2 border-white" style={{ background: `color-mix(in srgb, ${color} 12%, #fff)`, color, boxShadow: "0 0 0 1px var(--brand-line)" }}><Icon className="w-4 h-4" /></div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[13.5px] text-[color:var(--brand-navy)] font-semibold leading-tight">{a.title}</p>
-                      <p className="text-[11.5px] mt-1 uppercase tracking-[0.06em] font-[family-name:var(--font-cond)]" style={{ color: "var(--muted-foreground)" }}><span className="font-bold text-[color:var(--brand-red)]">{a.who}</span> · {a.when}</p>
+                      <p className="text-[13.5px] text-[color:var(--brand-navy)] font-semibold leading-tight">{l.description}</p>
+                      <p className="text-[11.5px] mt-1 uppercase tracking-[0.06em] font-[family-name:var(--font-cond)]" style={{ color: "var(--muted-foreground)" }}><span className="font-bold text-[color:var(--brand-red)]">{l.user_email}</span> · {l.created_at}</p>
                     </div>
                   </li>
                 );
               })}
+              {logs.length === 0 && (
+                <li className="relative flex gap-4 py-3">
+                  <p className="text-[13px]" style={{ color: "var(--muted-foreground)" }}>No hay actividad reciente aún.</p>
+                </li>
+              )}
             </ol>
           </Panel>
         </div>

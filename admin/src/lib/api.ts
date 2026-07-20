@@ -1,12 +1,27 @@
 const BASE = '/administrador/api';
 
-export async function api<T>(path: string, options?: RequestInit): Promise<{ success: boolean; data?: T; message?: string }> {
+export interface LogEntry {
+  id: number;
+  action: string;
+  entity: string;
+  entity_id: number | null;
+  description: string;
+  user_id: number;
+  user_email: string;
+  created_at: string;
+}
+
+export async function api<T>(path: string, options?: RequestInit): Promise<{ success: boolean; data?: T; message?: string; log?: LogEntry }> {
   const res = await fetch(`${BASE}${path}`, {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     ...options,
   });
-  return res.json();
+  const result = await res.json();
+  if (result.log) {
+    window.dispatchEvent(new CustomEvent("admin:log", { detail: result.log }));
+  }
+  return result;
 }
 
 export async function apiGet<T>(path: string) {

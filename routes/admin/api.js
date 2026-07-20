@@ -60,6 +60,59 @@ const uploadMenuMw = multer({
   }
 }).single('image');
 
+const popupAssetsDir = path.join(__dirname, '../../public/assets/popup');
+if (!fs.existsSync(popupAssetsDir)) fs.mkdirSync(popupAssetsDir, { recursive: true });
+
+const uploadPopupMw = multer({
+  storage: multer.diskStorage({
+    destination: popupAssetsDir,
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname) || '.png';
+      cb(null, `popup_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
+
+const datosAssetsDir = path.join(__dirname, '../../public/assets/datos');
+if (!fs.existsSync(datosAssetsDir)) fs.mkdirSync(datosAssetsDir, { recursive: true });
+
+const uploadDatosMw = multer({
+  storage: multer.diskStorage({
+    destination: datosAssetsDir,
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname) || '';
+      cb(null, `datos_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    return cb(null, true);
+  }
+}).single('file');
+
+const categoriaAssetsDir = path.join(__dirname, '../../public/assets/categoria');
+if (!fs.existsSync(categoriaAssetsDir)) fs.mkdirSync(categoriaAssetsDir, { recursive: true });
+
+const uploadCategoriaMw = multer({
+  storage: multer.diskStorage({
+    destination: categoriaAssetsDir,
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname) || '.png';
+      cb(null, `cat_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
+
 function isAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ success: false, message: "No autenticado" });
@@ -78,9 +131,22 @@ function isAuthenticated(req, res, next) {
   });
 }
 
+async function logAction(action, entity, entityId, description, req) {
+  const { id: userId, user: userEmail } = req.adminUser || {};
+  if (!userId) return null;
+  const { data: logEntry } = await mysql.createLog({ action, entity, entity_id: entityId, description, user_id: userId, user_email: userEmail }).catch(() => ({ data: null }));
+  return logEntry;
+}
+
 // --- Auth ---
 router.get("/auth/me", isAuthenticated, (req, res) => {
   res.json({ success: true, data: { email: req.adminUser.user, role: req.adminUser.role } });
+});
+
+// --- Logs ---
+router.get("/logs/recent", isAuthenticated, async (req, res) => {
+  const result = await mysql.getRecentLogs(10);
+  res.json(result);
 });
 
 router.post("/login", passport.authenticate('local-login', {
@@ -111,7 +177,8 @@ router.get("/footer", isAuthenticated, async (req, res) => {
 router.put("/footer", isAuthenticated, async (req, res) => {
   const { telefono, email, direccion, descripcion, horario } = req.body;
   const result = await mysql.updateFooterData({ telefono, email, direccion, descripcion, horario });
-  res.json(result);
+  const log = await logAction('updated', 'Footer', 1, `Se actualizó el pie de página`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 // --- Cifras ---
@@ -123,7 +190,8 @@ router.get("/cifras", isAuthenticated, async (req, res) => {
 router.put("/cifras", isAuthenticated, async (req, res) => {
   const { lesionados, accidentados, fallecidos, mensaje1, mensaje2 } = req.body;
   const result = await mysql.updateCifras({ lesionados, accidentados, fallecidos, mensaje1, mensaje2 });
-  res.json(result);
+  const log = await logAction('updated', 'Cifras', 1, `Se actualizaron las cifras`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 // --- Misión y Visión ---
@@ -217,7 +285,8 @@ router.put("/mision-vision", isAuthenticated, async (req, res) => {
   const { en, es } = req.body;
   const r1 = await mysql.updateMisionVision(true, en);
   const r2 = await mysql.updateMisionVision(false, es);
-  res.json({ success: r1.success && r2.success, message: "Actualizado" });
+  const log = await logAction('updated', 'Misión/Visión', 1, `Se actualizó Misión y Visión`, req);
+  res.json({ success: r1.success && r2.success, message: "Actualizado", log: log || undefined });
 });
 
 // --- Popup ---
@@ -229,7 +298,20 @@ router.get("/popup", isAuthenticated, async (req, res) => {
 router.put("/popup", isAuthenticated, async (req, res) => {
   const { imagen, estado, enlace } = req.body;
   const result = await mysql.updatePopup({ imagen, estado: estado ? '1' : '0', enlace });
-  res.json(result);
+  const log = await logAction('updated', 'Popup', 1, `Se actualizó el popup`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/popup/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadPopupMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      res.json({ success: true, url: `/assets/popup/${req.file.filename}` });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 // --- Regiones ---
@@ -261,15 +343,36 @@ router.get("/regiones", isAuthenticated, async (req, res) => {
 
 router.put("/regiones/:id", isAuthenticated, async (req, res) => {
   const { nombreEncargado, celularEncargado, correoEncargado, pageLink } = req.body;
+  const id = Number(req.params.id);
+  const { data: regiones } = await mysql.getRegiones({ paginate: false });
+  const oldRegion = regiones?.find(r => r.id === id);
+  const regionName = oldRegion?.value || '';
+
   const result = await mysql.updateRegiones({
-    id: req.params.id,
+    id,
     nombreEncargado,
     celularEncargado,
     correoEncargado,
     imageUrl: '',
     pageLink
   });
-  res.json(result);
+
+  const fieldLabels = {
+    nombreEncargado: 'el nombre del encargado',
+    celularEncargado: 'el celular del encargado',
+    correoEncargado: 'el correo del encargado',
+    pageLink: 'el enlace de la página'
+  };
+  const changed = Object.keys(fieldLabels)
+    .filter(key => String(oldRegion?.[key] ?? '') !== String(req.body[key] ?? ''))
+    .map(key => fieldLabels[key]);
+
+  const description = changed.length
+    ? `Se actualizó ${changed.join(', ')} de la región de ${regionName}`
+    : `Se actualizó la región de ${regionName}`;
+
+  const log = await logAction('updated', 'Región', id, description, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.post("/regiones/:id/upload", isAuthenticated, async (req, res) => {
@@ -297,18 +400,23 @@ router.get("/analitica-menu", isAuthenticated, async (req, res) => {
 router.post("/analitica-menu", isAuthenticated, async (req, res) => {
   const { descripcion, urlImagen, observacion, estaActivo } = req.body;
   const result = await mysql.createMenu({ descripcion, urlImagen, observacion, estaActivo });
-  res.json(result);
+  const log = await logAction('created', 'Menú', result.data?.insertId, `Se creó el menú '${descripcion}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.put("/analitica-menu/:id", isAuthenticated, async (req, res) => {
   const { descripcion, urlImagen, observacion, estaActivo } = req.body;
   const result = await mysql.updateMenu({ id: req.params.id, descripcion, urlImagen, observacion, estaActivo });
-  res.json(result);
+  const log = await logAction('updated', 'Menú', Number(req.params.id), `Se actualizó el menú '${descripcion}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.delete("/analitica-menu/:id", isAuthenticated, async (req, res) => {
+  const { data: menus } = await mysql.getMenu();
+  const menuName = menus?.find(m => m.id === Number(req.params.id))?.descripcion || '';
   const result = await mysql.deleteMenu(req.params.id);
-  res.json(result);
+  const log = await logAction('deleted', 'Menú', Number(req.params.id), `Se eliminó el menú '${menuName}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.post("/analitica-menu/upload", isAuthenticated, async (req, res) => {
@@ -335,18 +443,35 @@ router.get("/analitica-submenu", isAuthenticated, async (req, res) => {
 router.post("/analitica-submenu", isAuthenticated, async (req, res) => {
   const { descripcion, menu_id, rutabi, linkvideo, linkpdf, imagenpath, estado } = req.body;
   const result = await mysql.createSubmenu({ descripcion, menu_id, rutabi, linkvideo, linkpdf, imagenpath, estado: estado ?? true });
-  res.json(result);
+  const log = await logAction('created', 'Submenú', result.data?.insertId, `Se creó el submenú '${descripcion}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.put("/analitica-submenu/:id", isAuthenticated, async (req, res) => {
   const { descripcion, menu_id, rutabi, linkvideo, linkpdf, imagenpath, estado } = req.body;
   const result = await mysql.updateSubmenu({ id: req.params.id, descripcion, menu_id, rutabi, linkvideo, linkpdf, imagenpath, estado });
-  res.json(result);
+  const log = await logAction('updated', 'Submenú', Number(req.params.id), `Se actualizó el submenú '${descripcion}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.delete("/analitica-submenu/:id", isAuthenticated, async (req, res) => {
+  const { data: submenus } = await mysql.getSubmenu();
+  const submenuName = submenus?.find(s => s.id === Number(req.params.id))?.descripcion || '';
   const result = await mysql.deleteSubmenu(req.params.id);
-  res.json(result);
+  const log = await logAction('deleted', 'Submenú', Number(req.params.id), `Se eliminó el submenú '${submenuName}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/analitica-submenu/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadMenuMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      res.json({ success: true, url: `/assets/menu/${req.file.filename}` });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 // --- Comunicaciones - Eventos ---
@@ -379,18 +504,24 @@ router.get("/comunicaciones-eventos", isAuthenticated, async (req, res) => {
 router.post("/comunicaciones-eventos", isAuthenticated, async (req, res) => {
   const { title, idTipoEvento, organizedBy, place, direccion, shortDescription, description, startDay, startTime, endDay, endTime, price, imageUrl, reunionLink, facebookLink, youtubeLink, twitterLink, isActive } = req.body;
   const result = await mysql.createComunication({ title, idTipoEvento, organizedBy, place, shortDescription, description, startDay, startTime, endDay, endTime, price, imageUrl, direccion, reunionLink, facebookLink, youtubeLink, twitterLink, isActive: isActive ? 1 : 0 });
-  res.json(result);
+  const log = await logAction('created', 'Evento', result.data?.insertId, `Se creó el evento '${title}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.put("/comunicaciones-eventos/:id", isAuthenticated, async (req, res) => {
   const { idTipoEvento, title, organizedBy, place, shortDescription, description, startDay, startTime, endDay, endTime, price, imageUrl, direccion, reunionLink, facebookLink, youtubeLink, twitterLink, isActive } = req.body;
   const result = await mysql.updateComunication({ id: req.params.id, idTipoEvento, title, organizedBy, place, shortDescription, description, startDay, startTime, endDay, endTime, price, imageUrl, direccion, reunionLink, facebookLink, youtubeLink, twitterLink, isActive });
-  res.json(result);
+  const log = await logAction('updated', 'Evento', Number(req.params.id), `Se actualizó el evento '${title}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.delete("/comunicaciones-eventos/:id", isAuthenticated, async (req, res) => {
-  const result = await mysql.deleteComunication(req.params.id);
-  res.json(result);
+  const id = Number(req.params.id);
+  const { data: eventos } = await mysql.getComunications({ paginate: false });
+  const eventTitle = eventos?.find(e => e.id === id)?.title || '';
+  const result = await mysql.deleteComunication(id);
+  const log = await logAction('deleted', 'Evento', id, `Se eliminó el evento '${eventTitle}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.post("/comunicaciones-eventos/upload", isAuthenticated, async (req, res) => {
@@ -441,20 +572,38 @@ router.get("/datos-abiertos", isAuthenticated, async (req, res) => {
 });
 
 router.post("/datos-abiertos", isAuthenticated, async (req, res) => {
-  const { titulo, autor, descripcion, idCategoria, idTipo, excelfilepath, pdffilepath, csvfilepath, fecha } = req.body;
-  const result = await mysql.createDatosAbiertos({ titulo, autor, descripcion, idCategoria, idTipo, excelfilepath: excelfilepath || 'null', pdffilepath: pdffilepath || 'null', csvfilepath: csvfilepath || 'null', fecha });
-  res.json(result);
+  const { titulo, autor, descripcion, idCategoria, idTipo, excelfilepath, pdffilepath, csvfilepath, shapefilepath, fecha } = req.body;
+  const result = await mysql.createDatosAbiertos({ titulo, autor, descripcion, idCategoria, idTipo, excelfilepath: excelfilepath || 'null', pdffilepath: pdffilepath || 'null', csvfilepath: csvfilepath || 'null', shapefilepath: shapefilepath || 'null', fecha });
+  const log = await logAction('created', 'Dataset', result.data?.insertId, `Se creó el dataset '${titulo}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.put("/datos-abiertos/:id", isAuthenticated, async (req, res) => {
-  const { titulo, autor, descripcion, idCategoria, idTipo, excelfilepath, pdffilepath, csvfilepath, fecha } = req.body;
-  const result = await mysql.updateDatosAbiertos({ id: req.params.id, titulo, autor, descripcion, idCategoria, idTipo, excelfilepath: excelfilepath || 'null', pdffilepath: pdffilepath || 'null', csvfilepath: csvfilepath || 'null', fecha });
-  res.json(result);
+  const { titulo, autor, descripcion, idCategoria, idTipo, excelfilepath, pdffilepath, csvfilepath, shapefilepath, fecha } = req.body;
+  const result = await mysql.updateDatosAbiertos({ id: req.params.id, titulo, autor, descripcion, idCategoria, idTipo, excelfilepath: excelfilepath || 'null', pdffilepath: pdffilepath || 'null', csvfilepath: csvfilepath || 'null', shapefilepath: shapefilepath || 'null', fecha });
+  const log = await logAction('updated', 'Dataset', Number(req.params.id), `Se actualizó el dataset '${titulo}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.delete("/datos-abiertos/:id", isAuthenticated, async (req, res) => {
-  const result = await mysql.deleteDatosAbiertos(req.params.id);
-  res.json(result);
+  const id = Number(req.params.id);
+  const { data: datasets } = await mysql.getDatosAbiertos({ paginate: false });
+  const titulo = datasets?.find(d => d.id === id)?.titulo || '';
+  const result = await mysql.deleteDatosAbiertos(id);
+  const log = await logAction('deleted', 'Dataset', id, `Se eliminó el dataset '${titulo}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/datos-abiertos/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadDatosMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      res.json({ success: true, url: `/assets/datos/${req.file.filename}` });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 // --- Datos Abiertos - Categorías ---
@@ -466,18 +615,36 @@ router.get("/datos-abiertos-categorias", isAuthenticated, async (req, res) => {
 router.post("/datos-abiertos-categorias", isAuthenticated, async (req, res) => {
   const { value, icon, estaActivo } = req.body;
   const result = await mysql.createCategoria({ value, icon, estaActivo });
-  res.json(result);
+  const log = await logAction('created', 'Categoría', result.data?.insertId, `Se creó la categoría '${value}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.put("/datos-abiertos-categorias/:id", isAuthenticated, async (req, res) => {
   const { value, icon, estaActivo } = req.body;
   const result = await mysql.updateCategoria({ id: req.params.id, value, icon, estaActivo });
-  res.json(result);
+  const log = await logAction('updated', 'Categoría', Number(req.params.id), `Se actualizó la categoría '${value}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.delete("/datos-abiertos-categorias/:id", isAuthenticated, async (req, res) => {
-  const result = await mysql.deleteCategoria(req.params.id);
-  res.json(result);
+  const id = Number(req.params.id);
+  const { data: categorias } = await mysql.getCategorias();
+  const name = categorias?.find(c => c.id === id)?.value || '';
+  const result = await mysql.deleteCategoria(id);
+  const log = await logAction('deleted', 'Categoría', id, `Se eliminó la categoría '${name}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/datos-abiertos-categorias/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadCategoriaMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      res.json({ success: true, url: `/assets/categoria/${req.file.filename}` });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 // --- Datos Abiertos - Tipos ---
@@ -489,18 +656,24 @@ router.get("/datos-abiertos-tipos", isAuthenticated, async (req, res) => {
 router.post("/datos-abiertos-tipos", isAuthenticated, async (req, res) => {
   const { value, estaActivo } = req.body;
   const result = await mysql.createTipo({ value, estaActivo });
-  res.json(result);
+  const log = await logAction('created', 'Tipo', result.data?.insertId, `Se creó el tipo '${value}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.put("/datos-abiertos-tipos/:id", isAuthenticated, async (req, res) => {
   const { value, estaActivo } = req.body;
   const result = await mysql.updateTipo({ id: req.params.id, value, estaActivo });
-  res.json(result);
+  const log = await logAction('updated', 'Tipo', Number(req.params.id), `Se actualizó el tipo '${value}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.delete("/datos-abiertos-tipos/:id", isAuthenticated, async (req, res) => {
-  const result = await mysql.deleteTipo(req.params.id);
-  res.json(result);
+  const id = Number(req.params.id);
+  const { data: tipos } = await mysql.getTipos();
+  const name = tipos?.find(t => t.id === id)?.value || '';
+  const result = await mysql.deleteTipo(id);
+  const log = await logAction('deleted', 'Tipo', id, `Se eliminó el tipo '${name}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 // --- Usuarios ---
@@ -515,18 +688,24 @@ router.get("/usuarios", isAuthenticated, async (req, res) => {
 router.post("/usuarios", isAuthenticated, async (req, res) => {
   const { user, password, roleId } = req.body;
   const result = await mysql.createUser({ email: user, password, roleId });
-  res.json(result);
+  const log = await logAction('created', 'Usuario', result.data?.insertId, `Se creó el usuario '${user}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.put("/usuarios/:id", isAuthenticated, async (req, res) => {
   const { user, password, roleId } = req.body;
   const result = await mysql.updateUser({ id: req.params.id, email: user, password, roleId });
-  res.json(result);
+  const log = await logAction('updated', 'Usuario', Number(req.params.id), `Se actualizó el usuario '${user}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.delete("/usuarios/:id", isAuthenticated, async (req, res) => {
-  const result = await mysql.deleteUser(req.params.id);
-  res.json(result);
+  const id = Number(req.params.id);
+  const { data: usuarios } = await mysql.getUsers();
+  const email = usuarios?.find(u => u.id === id)?.user || '';
+  const result = await mysql.deleteUser(id);
+  const log = await logAction('deleted', 'Usuario', id, `Se eliminó el usuario '${email}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 // --- Roles ---
@@ -552,18 +731,24 @@ router.get("/roles", isAuthenticated, async (req, res) => {
 router.post("/roles", isAuthenticated, async (req, res) => {
   const { value, permissionIds } = req.body;
   const result = await mysql.createRole({ value, permissionIds });
-  res.json(result);
+  const log = await logAction('created', 'Rol', null, `Se creó el rol '${value}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.put("/roles/:id", isAuthenticated, async (req, res) => {
   const { value, permissionIds } = req.body;
   const result = await mysql.updateRole({ id: req.params.id, value, permissionIds });
-  res.json(result);
+  const log = await logAction('updated', 'Rol', Number(req.params.id), `Se actualizó el rol '${value}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 router.delete("/roles/:id", isAuthenticated, async (req, res) => {
-  const result = await mysql.deleteRole(req.params.id);
-  res.json(result);
+  const id = Number(req.params.id);
+  const { data: roles } = await mysql.getRoles();
+  const name = roles?.find(r => r.id === id)?.value || '';
+  const result = await mysql.deleteRole(id);
+  const log = await logAction('deleted', 'Rol', id, `Se eliminó el rol '${name}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 module.exports = router;

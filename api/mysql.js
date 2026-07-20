@@ -1322,10 +1322,11 @@ class DataBase {
 				c.icon iconCategoria,
 				f.idTipo,
 				t.value tipo,
-				f.excelfile,
-				f.pdffile,
-				f.csvfile,
-				f.fecha
+			f.excelfile,
+			f.pdffile,
+			f.csvfile,
+			f.shapefile,
+			f.fecha
 			FROM files f
 			LEFT JOIN categoria c ON c.id = f.idCategoria
 			LEFT JOIN tipo t ON t.id = f.idTipo
@@ -1357,8 +1358,10 @@ class DataBase {
 					hasExcel: res.excelfile === 'null' ? false : true,
 					pdffile: res.pdffile === 'null' ? 'No existe' : res.pdffile,
 					hasPdf: res.pdffile === 'null' ? false : true,
-					csvfile: res.csvfile === 'null' ? 'No existe' : res.csvfile,
-					hasCsv: res.csvfile === 'null' ? false : true,
+				csvfile: res.csvfile === 'null' ? 'No existe' : res.csvfile,
+				hasCsv: res.csvfile === 'null' ? false : true,
+				shapefile: res.shapefile === 'null' ? 'No existe' : res.shapefile,
+				hasShapefile: res.shapefile === 'null' ? false : true,
 					fecha: res.fecha.split('/').reverse().join('-')
 				}))
 			}
@@ -1380,6 +1383,7 @@ class DataBase {
 		excelfilepath,
 		pdffilepath,
 		csvfilepath,
+		shapefilepath,
 		fecha
 	}) {
 		const queryString = `
@@ -1393,6 +1397,7 @@ class DataBase {
 					excelfile,
 					pdffile,
 					csvfile,
+					shapefile,
 					fecha
 				)
 			VALUES (
@@ -1404,6 +1409,7 @@ class DataBase {
 				'${excelfilepath}', 
 				'${pdffilepath}', 
 				'${csvfilepath}', 
+				'${shapefilepath}',
 				'${fecha}' 
 			)
 		`;
@@ -1433,6 +1439,7 @@ class DataBase {
 		excelfilepath,
 		pdffilepath,
 		csvfilepath,
+		shapefilepath,
 		fecha
 	}) {
 		const queryString = `
@@ -1446,6 +1453,7 @@ class DataBase {
 					excelfile='${excelfilepath}',
 					pdffile='${pdffilepath}',
 					csvfile='${csvfilepath}',
+					shapefile='${shapefilepath}',
 					fecha='${fecha}'
 				WHERE id=${id}
 		`;
@@ -2587,6 +2595,78 @@ class DataBase {
 				message: "No se pudo eliminar el plan regional"
 			}
 		}
+	}
+
+	async createLog({
+		action,
+		entity,
+		entity_id,
+		description,
+		user_id,
+		user_email
+	}) {
+		const queryString = `
+			INSERT INTO logs (action, entity, entity_id, description, user_id, user_email)
+			VALUES (?, ?, ?, ?, ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [
+				action,
+				entity,
+				entity_id !== undefined && entity_id !== null ? entity_id : null,
+				description,
+				user_id,
+				user_email || ''
+			]);
+			return {
+				success: true,
+				data: {
+					id: result.insertId,
+					action,
+					entity,
+					entity_id,
+					description,
+					user_id,
+					user_email: user_email || '',
+					created_at: new Date().toISOString()
+				}
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo registrar el log" };
+		}
+	}
+
+	async getRecentLogs(limit = 10) {
+		const queryString = `
+			SELECT l.*,
+				TIMESTAMPDIFF(MINUTE, l.created_at, NOW()) AS minutes_ago
+			FROM logs l
+			ORDER BY l.created_at DESC
+			LIMIT ${limit}
+		`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results.map(r => ({
+					...r,
+					created_at: this.formatTimeAgo(r.minutes_ago)
+				}))
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener los logs" };
+		}
+	}
+
+	formatTimeAgo(minutes) {
+		if (minutes < 1) return "ahora";
+		if (minutes < 60) return minutes === 1 ? "hace 1 min" : `hace ${minutes} min`;
+		const hours = Math.floor(minutes / 60);
+		if (hours < 24) return hours === 1 ? "hace 1 h" : `hace ${hours} h`;
+		const days = Math.floor(hours / 24);
+		return days === 1 ? "ayer" : `hace ${days} d`;
 	}
 
 }
