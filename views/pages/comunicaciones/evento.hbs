@@ -4,7 +4,7 @@
 	<div class="d-flex justify-content-end mb-4">
 		<div class="return-buton ny-btn">
 			<a href="/comunicaciones/todos" class="btn btn-rsp ft-bold">
-				Regresar 
+				{{t lang "Regresar"}} 
 				<i class="fal fa-long-arrow-right pl-2" aria-hidden="true"></i>
 			</a>
 		</div>
@@ -35,7 +35,7 @@
 
 			<div class="event-info">
 				<div class="description">
-					<h6 class="ft-bold description-title">Descripción</h6>
+					<h6 class="ft-bold description-title">{{t lang "Descripción"}}</h6>
 					<p class="description-detail">
 						{{{description}}}
 					</p>
@@ -50,13 +50,13 @@
 
 					{{#if place}}
 						<div class="event-data event-place">
-							<span class="label">Lugar:</span>
+							<span class="label">{{t lang "Lugar:"}}</span>
 							<span class="value">{{place}}</span>
 						</div>
 					{{/if}}
 
 					<div class="event-data event-date">
-						<span class="label">Fecha de inicio:</span>
+						<span class="label">{{t lang "Fecha de inicio:"}}</span>
 						<span class="value">{{startDateString}}</span>
 					</div>
 
@@ -67,7 +67,7 @@
 
 					{{#if endTime}}
 						<div class="event-data event-date">
-							<span class="label">Fecha de finalización:</span>
+							<span class="label">{{t lang "Fecha de finalización:"}}</span>
 							<span class="value">{{endDateString}}</span>
 						</div>
 
@@ -79,14 +79,14 @@
 					
 					{{#if price}}
 						<div class="event-data event-price">
-							<span class="label">Precio:</span>
+							<span class="label">{{t lang "Precio:"}}</span>
 							<span class="value">S/. {{price}}</span>
 						</div>
 					{{/if}}
 
 					{{#if reunionLink}}
 						<div class="event-data event-links">
-							<span class="label d-block mb-2">Enlace reunión:</span>
+							<span class="label d-block mb-2">{{t lang "Enlace reunión:"}}</span>
 							<span class="value pl-4">
 								{{#if reunionIsInGoogleMeet}}
 									<a class="event-link" href="{{reunionLink}}" target="_blank">

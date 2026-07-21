@@ -1,7 +1,7 @@
 <div class="col-lg-4 col-md-6 mb-4">
   <article class="rsp-res-blk new-card">
     
-    <div class="card-badge">{{#if primary_tag.name}}{{primary_tag.name}}{{else}}Informe{{/if}}</div>
+    <div class="card-badge">{{#if primary_tag.name}}{{primary_tag.name}}{{else}}{{t lang "Informe"}}{{/if}}</div>
     
     <a href="{{endpointPostParse (parseHttp url) lang }}" class="m-gap">
       <img class="pu-3-extend card-img" src="{{parseHttpImage feature_image }}" alt="Publicación">
@@ -20,7 +20,7 @@
       </h3>
       
       <a href="{{endpointPostParse (parseHttp url) lang }}" class="card-link">
-        Descargar PDF &rarr;
+        {{t lang "Descargar PDF &rarr;"}}
       </a>
     </div>
 

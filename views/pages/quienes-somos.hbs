@@ -246,11 +246,11 @@
 
       <div class="col-lg-3 col-md-4 mb-4">
         <div class="sidebar-menu">
-          <b class="sidebar-link active" data-tab="quienes-somos" data-content="about_item_quienes-somos">¿QUIÉNES SOMOS?</b>
-          <b class="sidebar-link" data-tab="mision" data-content="about_item_mision">MISIÓN</b>
-          <b class="sidebar-link" data-tab="vision" data-content="about_item_vision">VISIÓN</b>
-          <b class="sidebar-link" data-tab="valores" data-content="about_item_valores">VALORES</b>
-          <b class="sidebar-link" data-tab="componentes" data-content="about_item_componentes" data-hide-banner="true">COMPONENTES TECNOLÓGICOS</b>
+          <b class="sidebar-link active" data-tab="quienes-somos" data-content="about_item_quienes-somos">{{t lang "¿QUIÉNES SOMOS?"}}</b>
+          <b class="sidebar-link" data-tab="mision" data-content="about_item_mision">{{t lang "MISIÓN"}}</b>
+          <b class="sidebar-link" data-tab="vision" data-content="about_item_vision">{{t lang "VISIÓN"}}</b>
+          <b class="sidebar-link" data-tab="valores" data-content="about_item_valores">{{t lang "VALORES"}}</b>
+          <b class="sidebar-link" data-tab="componentes" data-content="about_item_componentes" data-hide-banner="true">{{t lang "COMPONENTES TECNOLÓGICOS"}}</b>
         </div>
       </div>
 
@@ -266,14 +266,14 @@
             </svg>
           </div>
           <div class="qs-text">
-            <h1 id="banner-title">¿QUIÉNES SOMOS?</h1>
-            <p>Observatorio Nacional de Seguridad Vial</p>
+            <h1 id="banner-title">{{t lang "¿QUIÉNES SOMOS?"}}</h1>
+            <p>{{t lang "Observatorio Nacional de Seguridad Vial"}}</p>
           </div>
         </div>
 
         <div class="qs-meta">
           <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
-          <span id="meta-text">PUBLICADO: 15 DE ENERO DE 2021 · ACTUALIZADO: JUNIO DE 2025</span>
+          <span id="meta-text">{{t lang "Publicado y actualizado"}}</span>
         </div>
 
         <div class="qs-content">
@@ -308,9 +308,9 @@
                 {{/each}}
               </div>
               <div class="comp-pagination" id="compPagination">
-                <button class="comp-page-btn" id="compPrev" disabled>← Anterior</button>
-                <span class="comp-page-info" id="compPageInfo">Página 1 de 5</span>
-                <button class="comp-page-btn" id="compNext">Siguiente →</button>
+                <button class="comp-page-btn" id="compPrev" disabled>← {{t lang "Anterior"}}</button>
+                <span class="comp-page-info" id="compPageInfo">{{t lang "Página"}} 1 {{t lang "de"}} 5</span>
+                <button class="comp-page-btn" id="compNext">{{t lang "Siguiente"}} →</button>
               </div>
             </div>
           </div>
@@ -333,7 +333,8 @@
     const metaText = document.getElementById('meta-text');
     const iconWrap = document.querySelector('.qs-icon');
 
-    const DEFAULT_META = "PUBLICADO: 15 DE ENERO DE 2021 · ACTUALIZADO: JUNIO DE 2025";
+    const isEn = location.href.includes('/en/');
+    const DEFAULT_META = isEn ? "PUBLISHED: JANUARY 15, 2021 · UPDATED: JUNE 2025" : "PUBLICADO: 15 DE ENERO DE 2021 · ACTUALIZADO: JUNIO DE 2025";
     const DEFAULT_BG = "#0355a3";
 
     const icons = {
@@ -413,7 +414,7 @@
       });
       prevBtn.disabled = page <= 1;
       nextBtn.disabled = page >= totalPages;
-      info.textContent = 'P\u00e1gina ' + page + ' de ' + totalPages;
+      info.textContent = (location.href.includes('/en/') ? 'Page ' : 'P\u00e1gina ') + page + (location.href.includes('/en/') ? ' of ' : ' de ') + totalPages;
     }
 
     prevBtn.addEventListener('click', function () {

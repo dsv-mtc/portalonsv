@@ -1,7 +1,7 @@
 <section class="rsp-cont-tab-section rsp-wrap">
 	<div class="container">
 		<div class="regiones-tab-row">
-			<span class="regiones-tab">Consejos Regionales de Seguridad Vial</span>
+			<span class="regiones-tab">{{t lang "Consejos Regionales de Seguridad Vial"}}</span>
 		</div>
 		<div class="row">
 
@@ -52,9 +52,9 @@
 				<div class="rsp-c-tab-blk crsv-card">
 
 					<div class="crsv-head">
-						<div class="crumb">Perú <span class="sep">›</span> Departamento</div>
+						<div class="crumb">{{t lang "Perú"}} <span class="sep">›</span> {{t lang "Departamento"}}</div>
 						<h3 class="rsp-title ft-bold crsv-title">
-							Consejo Regional de Seguridad Vial
+							{{t lang "Consejo Regional de Seguridad Vial"}}
 						</h3>
 						<span
 							style="display: block; text-align: left; color: white; margin-left: 2px; font-weight: bold; font-size: 2rem;"
@@ -72,7 +72,7 @@
 						<div class="rfield">
 							<span class="ic"><i class="fas fa-user"></i></span>
 							<div>
-								<span class="k">Nombre</span>
+								<span class="k">{{t lang "Nombre"}}</span>
 								<span class="v form-control" id="nombre">{{t lang "Nombre"}}</span>
 							</div>
 						</div>
@@ -80,7 +80,7 @@
 						<div class="rfield">
 							<span class="ic"><i class="fas fa-phone"></i></span>
 							<div>
-								<span class="k">Teléfono</span>
+								<span class="k">{{t lang "Telefono"}}</span>
 								<span class="v form-control" id="telefono">{{t lang "Telefono"}}</span>
 							</div>
 						</div>
@@ -88,7 +88,7 @@
 						<div class="rfield">
 							<span class="ic"><i class="fas fa-envelope"></i></span>
 							<div>
-								<span class="k">Correo</span>
+								<span class="k">{{t lang "Correo"}}</span>
 								<span class="v form-control" id="email">{{t lang "Correo"}}</span>
 							</div>
 						</div>
@@ -96,8 +96,8 @@
 						<div class="rfield">
 							<span class="ic"><i class="fas fa-globe"></i></span>
 							<div>
-								<span class="k">Sitio web</span>
-								<a class="v form-control" id="pageLink" target="_blank">Sitio web</a>
+								<span class="k">{{t lang "Sitio web"}}</span>
+								<a class="v form-control" id="pageLink" target="_blank">{{t lang "Sitio web"}}</a>
 							</div>
 						</div>
 
@@ -118,7 +118,7 @@ function updateRegionName(regionId){
     
     const breadcrumbElement = document.querySelector('.crumb');
     if(breadcrumbElement){
-        breadcrumbElement.innerHTML = 'Perú <span class="sep">›</span> ' + regionId;
+        breadcrumbElement.innerHTML = (location.href.includes('/en/') ? 'Peru' : 'Perú') + ' <span class="sep">›</span> ' + regionId;
     }
 }
 

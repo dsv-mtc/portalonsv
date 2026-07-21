@@ -19,7 +19,8 @@ moment.locale("es");
  * @description: Referido a traducir en otro idioma de turno
  */
 function t(lang, text) {
-	let rawData = fs.readFileSync(path.join(__dirname, `../utils/locales/${lang}.json`))
+	const locale = lang || 'es';
+	let rawData = fs.readFileSync(path.join(__dirname, `../utils/locales/${locale}.json`))
 	let data = JSON.parse(rawData);
 	return data[text];
 }

@@ -1,3 +1,5 @@
+const isEn = location.href.includes('/en/');
+
 // Nuevos colores para sincronizar con los botones del diseño actual
 const TIPO_EVENTO_COLOR = {
   ['Campaña']: '#f9d57b',   // Amarillo
@@ -20,10 +22,10 @@ const ID_TIPO_EVENTO = {
 }
 
 const TIPO_EVENTO = {
-  "0": "Eventos",
-  "1": "Campañas",
-  "2": "Eventos",
-  "3": "Entrevistas"
+  "0": isEn ? "Events" : "Eventos",
+  "1": isEn ? "Campaigns" : "Campañas",
+  "2": isEn ? "Events" : "Eventos",
+  "3": isEn ? "Interviews" : "Entrevistas"
 }
 
 function activeButton($buttons, $activeButton) {
@@ -87,7 +89,7 @@ function handleFilterButtons($domCalendar, $calendar) {
         right: 'today prev,next'
       },
       buttonText: {
-        today: 'HOY'
+        today: isEn ? 'TODAY' : 'HOY'
       },
       locale: 'es',
       events: parsedEventos
@@ -101,7 +103,7 @@ function handleFilterButtons($domCalendar, $calendar) {
       // Actualiza el título del sidebar dinámicamente
       const $sidebarTitle = $nearEventosContainer.querySelector('.sidebar-title') || $nearEventosContainer.querySelector('h3');
       if ($sidebarTitle) {
-        $sidebarTitle.innerHTML = `PRÓXIMOS: ${TIPO_EVENTO[idTipoEvento]}`;
+        $sidebarTitle.innerHTML = `${isEn ? 'UPCOMING: ' : 'PRÓXIMOS: '}${TIPO_EVENTO[idTipoEvento]}`;
       }
 
       // Inyecta las tarjetas con el NUEVO DISEÑO HTML (.nxt-event-card)

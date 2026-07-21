@@ -5,7 +5,7 @@
 
 	<div>
 		<div class="pub-title">
-			<h1>Revistas</h1>
+			<h1>{{t lang "Revistas"}}</h1>
 		</div>
 
 		<div class="filters pub-filterbox">
@@ -28,9 +28,9 @@
 				</div>
 
 				<div class="pub-field">
-					<label for="tema">Tema</label>
+					<label for="tema">{{t lang "Tema"}}</label>
 					<select name="tema" id="tema" class="form-control">
-						<option {{#if tema}} {{else}} selected {{/if}} value=''>Todos</option>
+						<option {{#if tema}} {{else}} selected {{/if}} value=''>{{t lang "Todos"}}</option>
 						{{#each temas}}
 							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
 						{{/each}}
@@ -39,10 +39,10 @@
 
 				<div class="pub-fbtns">
 					<button class="pub-btn-buscar" type="submit">
-						Buscar
+						{{t lang "Buscar"}}
 					</button>
 					<button class="pub-btn-limpiar" id="clearButton">
-						Limpiar
+						{{t lang "Limpiar"}}
 					</button>
 				</div>
 
@@ -114,7 +114,7 @@
         </nav>
 		{{else}}
 			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
-				No se encontraron resultados
+				{{t lang "No se encontraron resultados"}}
 			</h3>
 		{{/if}}
 	</div>

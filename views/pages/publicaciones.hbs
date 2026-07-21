@@ -6,7 +6,7 @@
 
 	<div>
 		<div class="pub-title">
-			<h1>Publicaciones</h1>
+			<h1>{{t lang "Publicaciones"}}</h1>
 		</div>
 
 		<div class="filters pub-filterbox">
@@ -29,9 +29,9 @@
 				</div>
 
 				<div class="pub-field">
-					<label for="categoria">Categoría</label>
+					<label for="categoria">{{t lang "Categoria"}}</label>
 					<select name="categoria" id="categoria" class="form-control">
-						<option {{#if categoria}} {{else}} selected {{/if}} value=''>Selecione una categoría</option>
+						<option {{#if categoria}} {{else}} selected {{/if}} value=''>{{t lang "Seleccionar categoría"}}</option>
 						{{#each allTags}}
 							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
 						{{/each}}
@@ -39,9 +39,9 @@
 				</div>
 
 				<div class="pub-field">
-					<label for="region">Región</label>
+					<label for="region">{{t lang "Región"}}</label>
 					<select name="region" id="region" class="form-control">
-						<option {{#if region}} {{else}} selected {{/if}} value=''>Selecione una región</option>
+						<option {{#if region}} {{else}} selected {{/if}} value=''>{{t lang "Seleccionar región"}}</option>
 						{{#each regiones}}
 							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.value}}</option>
 						{{/each}}
@@ -49,9 +49,9 @@
 				</div>
 
 				<div class="pub-field">
-					<label for="year">Año</label>
+					<label for="year">{{t lang "Año"}}</label>
 					<select name="year" id="year" class="form-control">
-						<option {{#if year}} {{else}} selected {{/if}} value=''>Selecione un año</option>
+						<option {{#if year}} {{else}} selected {{/if}} value=''>{{t lang "Seleccionar año"}}</option>
 						{{#each years}}
 							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
 						{{/each}}
@@ -60,10 +60,10 @@
 
 				<div class="pub-fbtns">
 					<button class="pub-btn-buscar" type="submit">
-						Buscar
+						{{t lang "Buscar"}}
 					</button>
 					<button class="pub-btn-limpiar" id="clearButton">
-						Limpiar
+						{{t lang "Limpiar"}}
 					</button>
 				</div>
 
@@ -138,7 +138,7 @@
         {{/if}}
 		{{else}}
 			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
-				No se encontraron resultados
+				{{t lang "No se encontraron resultados"}}
 			</h3>
 		{{/if}}
 	</div>

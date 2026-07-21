@@ -1,7 +1,7 @@
 <div class="results">
 	{{#each posts}}
 		<article class="rsp-res-blk new-card">
-			<div class="card-badge">{{#if categoryTag}}{{categoryTag}}{{else}}Informe{{/if}}</div>
+			<div class="card-badge">{{#if categoryTag}}{{categoryTag}}{{else}}{{t lang "Informe"}}{{/if}}</div>
 			<a href="{{endpointPostParse (parseHttp url) lang}}">
 				<img class="card-img" src="{{parseHttpImage feature_image}}" alt="{{title}}">
 			</a>
@@ -11,7 +11,7 @@
 					<i class="fal fa-calendar-alt"></i> {{parseDate published_at}}
 					<span class="card-region"><i class="fas fa-map-marker-alt"></i> {{regionName}}</span>
 				</div>
-				<a href="{{endpointPostParse (parseHttp url) lang}}" class="btn btn-rsp ft-bold">Descargar <i class="fal fa-long-arrow-right pl-2"></i></a>
+				<a href="{{endpointPostParse (parseHttp url) lang}}" class="btn btn-rsp ft-bold">{{t lang "Descargar"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
 			</div>
 		</article>
 	{{/each}}

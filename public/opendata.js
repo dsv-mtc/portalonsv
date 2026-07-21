@@ -140,16 +140,17 @@ function reloadPosts(response) {
 	
 	const $resultTemplate = document.getElementById('results-template')
 	$resultTemplate.classList.remove('d-none');
+	const isEn = location.href.includes('/en/');
 	
 	if (!response.success) {
-		$resultTemplate.innerHTML = 'Ocurrió un error al buscar los datos';
+		$resultTemplate.innerHTML = isEn ? 'An error occurred while searching the data' : 'Ocurrió un error al buscar los datos';
 		return;
 	}
 
 	if(response.dataLength === 0)
 		$resultTemplate.innerHTML = `
 			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
-				No se encontraron resultados
+				${isEn ? 'No results found' : 'No se encontraron resultados'}
 			</h3>
 		`;
 	else
