@@ -373,7 +373,11 @@ function modal(){
  * cambie el valor show por hide
  */
 function modalCampaign(){
-	if(document.querySelector("#campaign-modal"))  $('#campaign-modal').modal('show');
+	if(document.querySelector("#campaign-modal")) {
+		if (typeof popupStatusM === 'undefined' || popupStatusM == 1) {
+			$('#campaign-modal').modal('show');
+		}
+	}
 }
 /**
  * @description: Función encargada del despliegue del modal del menú analítica por defecto se auto ejecutan; si desea cambiar el comportamiento

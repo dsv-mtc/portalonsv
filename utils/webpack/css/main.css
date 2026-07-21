@@ -487,13 +487,14 @@ button:focus {
 .nav-rsp {
     width: 100%;
     flex: 0 0 100%;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-left: 170px;
 }
 .rsp-navbar .nav-rsp .nav-link {
     color: #fff;
     font-size: 15px;
     font-weight: 600;
-    padding: 16px 25px;
+    padding: 16px 20px;
     text-transform: uppercase;
     font-family: 'Roboto Condensed', sans-serif;
     background-color: transparent;
@@ -895,6 +896,15 @@ footer {
     background-color: #1d3557;
     color: #fff;
     border: 1px solid #1d3557;
+}
+
+#campaign-modal .modal-dialog {
+    margin-top: 2vh;
+}
+
+#campaign-modal .campaign_modal_img {
+    min-height: 200px;
+    object-fit: contain;
 }
 
 .noticias-featured-label {
@@ -1537,3 +1547,4 @@ border: 1px solid #a2a2a2;
   border-radius: 8px;
   border: none;
 }
+
