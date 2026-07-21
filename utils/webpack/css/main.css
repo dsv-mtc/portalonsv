@@ -488,7 +488,7 @@ button:focus {
     width: 100%;
     flex: 0 0 100%;
     justify-content: flex-start;
-    padding-left: 170px;
+    padding-left: 160px;
 }
 .rsp-navbar .nav-rsp .nav-link {
     color: #fff;
