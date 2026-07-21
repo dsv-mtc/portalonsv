@@ -73,7 +73,7 @@
         
         <div class="hero-in">
           <div class="hero-card">
-            <div class="kick">Decenio de Acción 2021–2030</div>
+            <div class="kick">{{t lang "Decenio de Acción 2021–2030"}}</div>
             <h1>{{{t lang "Datos que salvan vidas en las vías del Perú"}}}</h1>
             <p>{{t lang "El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre los siniestros viales para fortalecer las políticas de prevención."}}</p>
             <div class="btns">
@@ -90,11 +90,11 @@
         
         <div class="hero-in">
           <div class="hero-card">
-            <div class="kick">Campaña vigente</div>
-            <h1>Entornos viales <em>seguros</em></h1>
-            <p>Conoce las acciones para reducir la contaminación y el riesgo en corredores de alto tránsito.</p>
+            <div class="kick">{{t lang "Campaña vigente"}}</div>
+            <h1>{{{t lang "Entornos viales seguros"}}}</h1>
+            <p>{{t lang "Conoce las acciones para reducir la contaminación y el riesgo en corredores de alto tránsito."}}</p>
             <div class="btns">
-              <a class="btn-hero btn-white" href="/publicaciones">Ver más →</a>
+              <a class="btn-hero btn-white" href="/publicaciones">{{t lang "Ver más →"}}</a>
             </div>
           </div>
         </div>
@@ -106,11 +106,11 @@
         
         <div class="hero-in">
           <div class="hero-card">
-            <div class="kick">Aplicativo</div>
-            <h1>SRAT · Visor de alerta de <em>siniestros</em></h1>
-            <p>Monitoreo georreferenciado de los hechos de tránsito a nivel nacional, en tiempo cercano al real.</p>
+            <div class="kick">{{t lang "Aplicativo"}}</div>
+            <h1>{{{t lang "SRAT · Visor de alerta de siniestros"}}}</h1>
+            <p>{{t lang "Monitoreo georreferenciado de los hechos de tránsito a nivel nacional, en tiempo cercano al real."}}</p>
             <div class="btns">
-              <a class="btn-hero btn-white" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">Abrir visor →</a>
+              <a class="btn-hero btn-white" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">{{t lang "Abrir visor →"}}</a>
             </div>
           </div>
         </div>
@@ -172,7 +172,7 @@
   <div class="container wrap">
     <div class="sec-head">
       <div>
-        <div class="eyebrow">Panorama nacional</div>
+        <div class="eyebrow">{{t lang "Panorama nacional"}}</div>
         <h2 class="sec-title">{{t lang "Datos de siniestralidad"}}</h2>
       </div>
       <a class="more" href="#">{{t lang "Analítica completa →"}}</a>
@@ -180,21 +180,21 @@
 
     <div class="kpi-grid">
       <div class="kpi" style="--c:#C8102E">
-        <span class="kpi-badge">SINIESTROS</span>
+        <span class="kpi-badge">{{t lang "Siniestros"}}</span>
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 16.5v.5"/></svg></div>
         <div class="num" id="val-accidentados">{{accidentados}}</div>
         <div class="stats-variation" data-baseline="86757" id="var-accidentados"></div>
       </div>
       
       <div class="kpi" style="--c:#F2A900">
-        <span class="kpi-badge">LESIONES</span>
+        <span class="kpi-badge">{{t lang "Lesiones"}}</span>
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
         <div class="num" id="val-lesionados">{{lesionados}}</div>
         <div class="stats-variation" data-baseline="56747" id="var-lesionados"></div>
       </div>
       
       <div class="kpi" style="--c:#14213D">
-        <span class="kpi-badge">MUERTES</span>
+        <span class="kpi-badge">{{t lang "Muertes"}}</span>
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z"/><circle cx="12" cy="11" r="2.4"/></svg></div>
         <div class="num" id="val-fallecidos">{{fallecidos}}</div>
         <div class="stats-variation" data-baseline="3002" id="var-fallecidos"></div>
@@ -224,7 +224,8 @@
           if (currentVal && baseVal) {
               const diff = ((currentVal - baseVal) / baseVal) * 100;
               const sign = diff >= 0 ? '+' : '';
-              el.innerHTML = `2025 · Fuente PNP · <span class="red-text">${sign}${diff.toFixed(1)}% vs 2024</span>`;
+              const isEn = location.href.includes('/en/');
+              el.innerHTML = (isEn ? '2025 · Source PNP' : '2025 · Fuente PNP') + ' · <span class="red-text">' + sign + diff.toFixed(1) + '%' + (isEn ? ' vs 2024' : ' vs 2024') + '</span>';
           }
       });
   });
@@ -341,7 +342,7 @@
     <div class="sec-head">
       <div>
         <div class="eyebrow">{{t lang "Aplicaciones e Información"}}</div>
-        <h2 class="sec-title">Componentes tecnológicos</h2>
+        <h2 class="sec-title">{{t lang "Componentes tecnológicos"}}</h2>
         <span class="badge-admin">
         <span class="pulse-dot"></span> Administrable
       </span>
@@ -477,10 +478,10 @@
     
     <div class="sec-head">
       <div>
-        <div class="eyebrow">Georreferencia</div>
+        <div class="eyebrow">{{t lang "Georreferencia"}}</div>
         <h2 class="sec-title">{{t lang "Mapa de siniestros viales"}}</h2>
       </div>
-      <a class="more" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">{{t lang 'ver'}} SRAT Completo →</a>
+      <a class="more" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">{{t lang 'ver'}} {{t lang "SRAT Completo →"}}</a>
     </div>
 
     <div class="row">
@@ -493,8 +494,8 @@
       <div class="col-lg-4 col-md-5 vu-list-col">
         <div class="feed">
           <div class="fh">
-            <h3>{{t lang "Ultimos"}} Siniestros</h3>
-            <span class="live">EN VIVO</span>
+            <h3>{{t lang "Ultimos"}} {{t lang "Siniestros"}}</h3>
+            <span class="live">{{t lang "EN VIVO"}}</span>
           </div>
           <div class="vu-list bg-white">
             {{#each accidents}}
@@ -645,10 +646,10 @@
           <div class="promo-overlay"></div>
           
           <div class="promo-content">
-            <div class="eyebrow">Formación</div>
-            <h3>Educación Vial</h3>
+            <div class="eyebrow">{{t lang "Formación"}}</div>
+            <h3>{{t lang "Educación Vial"}}</h3>
             <p>{{t lang "Webinars, capacitaciones y aula virtual para fortalecer la cultura de seguridad vial en todo el país."}}</p>
-            <a href="#" class="promo-btn">Ir al aula virtual</a>
+            <a href="#" class="promo-btn">{{t lang "Ir al aula virtual"}}</a>
           </div>
         </div>
       </div>
@@ -658,10 +659,10 @@
           <div class="promo-overlay"></div>
           
           <div class="promo-content">
-            <div class="eyebrow">Publicación</div>
-            <h3>Revista Institucional</h3>
+            <div class="eyebrow">{{t lang "Publicación"}}</div>
+            <h3>{{t lang "Revista Institucional"}}</h3>
             <p>{{t lang "Análisis, investigación y buenas prácticas de seguridad vial en una edición periódica del Observatorio."}}</p>
-            <a href="#" class="promo-btn">Ver ediciones</a>
+            <a href="#" class="promo-btn">{{t lang "Ver ediciones"}}</a>
           </div>
         </div>
       </div>
@@ -762,7 +763,7 @@
     
     <div class="sec-head d-flex justify-content-between">
       <div>
-        <div class="eyebrow">Comunidad</div>
+        <div class="eyebrow">{{t lang "Comunidad"}}</div>
         <h2 class="sec-title">{{t lang "Síguenos en redes sociales"}}</h2>
       </div>
       <div class="sponsor d-none d-md-block">
@@ -810,12 +811,12 @@
                     </span>
                     <span>
                       <svg viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8v10H5V10h14z"/></svg>
-                      Se unió en enero de 2021
+                      {{t lang "Se unió en enero de 2021"}}
                     </span>
                   </div>
                   <div class="x-profile-stats">
-                    <span><strong>43</strong> <span class="stat-label">Siguiendo</span></span>
-                    <span><strong>1,000</strong> <span class="stat-label">Seguidores</span></span>
+                    <span><strong>43</strong> <span class="stat-label">{{t lang "Siguiendo"}}</span></span>
+                    <span><strong>1,000</strong> <span class="stat-label">{{t lang "Seguidores"}}</span></span>
                   </div>
                 </div>
               </div>
@@ -823,8 +824,8 @@
           </div>
           
           <div class="sc-footer">
-            <a href="https://www.facebook.com/onsvPE/" target="_blank" class="link" id="scFooterLink">VER MÁS PUBLICACIONES</a>
-            <a href="https://www.facebook.com/onsvPE/" target="_blank" class="btn-follow" id="scFooterBtn">VER PERFIL EN FB</a>
+            <a href="https://www.facebook.com/onsvPE/" target="_blank" class="link" id="scFooterLink">{{t lang "VER MÁS PUBLICACIONES"}}</a>
+            <a href="https://www.facebook.com/onsvPE/" target="_blank" class="btn-follow" id="scFooterBtn">{{t lang "VER PERFIL EN FB"}}</a>
           </div>
         </div>
       </div>
@@ -837,30 +838,30 @@
               <svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M9.996,15.5l0-7l6.5,3.5L9.996,15.5z"/></svg>
             </div>
             <div class="sc-info">
-              <h4>YOUTUBE</h4>
-              <span>ONSV · MTC</span>
+              <h4>{{t lang "YOUTUBE"}}</h4>
+              <span>{{t lang "ONSV · MTC"}}</span>
             </div>
           </div>
           
           <div class="yt-body">
             <div class="yt-main">
               <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-              <div class="yt-title">Campaña: Si tomas, no manejes</div>
+              <div class="yt-title">{{t lang "Campaña: Si tomas, no manejes"}}</div>
             </div>
             
             <div class="yt-list">
               <div class="yt-item active">
                 <div class="thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
                 <div class="info">
-                  <div class="title">Campaña: Si tomas, no manejes</div>
-                  <div class="desc">Educación vial · Spot</div>
+                  <div class="title">{{t lang "Campaña: Si tomas, no manejes"}}</div>
+                  <div class="desc">{{t lang "Educación vial · Spot"}}</div>
                 </div>
               </div>
               <div class="yt-item">
                 <div class="thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
                 <div class="info">
                   <div class="title">{{t lang "El MTC y la Seguridad Vial"}}</div>
-                  <div class="desc">Institucional · Video</div>
+                  <div class="desc">{{t lang "Institucional · Video"}}</div>
                 </div>
               </div>
             </div>
@@ -868,7 +869,7 @@
           
           <div class="sc-footer">
             <p>{{t lang "Selecciona y reproduce los videos del Observatorio."}}</p>
-            <a href="#" target="_blank" class="btn-yt">VER EN YOUTUBE</a>
+            <a href="#" target="_blank" class="btn-yt">{{t lang "VER EN YOUTUBE"}}</a>
           </div>
           
         </div>
@@ -890,14 +891,15 @@
     var footerLink = document.getElementById("scFooterLink");
     var footerBtn = document.getElementById("scFooterBtn");
 
+    var isEnSocial = location.href.includes('/en/');
     var redes = {
       fb: {
-        nombre: "FACEBOOK",
+        nombre: isEnSocial ? "FACEBOOK" : "FACEBOOK",
         handle: "@ObservatorioNSV",
         url: "https://www.facebook.com/onsvPE/"
       },
       x: {
-        nombre: "X (TWITTER)",
+        nombre: isEnSocial ? "X (TWITTER)" : "X (TWITTER)",
         handle: "@onsvPE",
         url: "https://x.com/onsvPE"
       }
@@ -927,7 +929,7 @@
           if (footerBtn) {
             footerBtn.classList.toggle("x", destino === "x");
             footerBtn.href = data.url;
-            footerBtn.textContent = destino === "x" ? "VER PERFIL EN X" : "VER PERFIL EN FB";
+            footerBtn.textContent = destino === "x" ? (isEnSocial ? "VIEW X PROFILE" : "VER PERFIL EN X") : (isEnSocial ? "VIEW FB PROFILE" : "VER PERFIL EN FB");
           }
         }
       });
@@ -1014,7 +1016,7 @@
     
     <div class="sec-head">
       <div>
-        <div class="eyebrow">Comunicacion</div>
+        <div class="eyebrow">{{t lang "Comunicación"}}</div>
         <h2 class="sec-title">{{t lang "Resumen de Noticias"}}</h2>
       </div>
       <a class="more" href="/comunicaciones/noticias/">{{t lang "Ver más"}} →</a>
@@ -1034,7 +1036,7 @@
     
     <div class="sec-head">
       <div>
-        <div class="eyebrow">Conocimiento</div>
+        <div class="eyebrow">{{t lang "Conocimiento"}}</div>
         <h2 class="sec-title">{{t lang "ultimas publicaciones"}}</h2>
       </div>
       <a class="more" href="/publicaciones/">{{t lang "Ver más"}} →</a>
@@ -1101,8 +1103,8 @@
   <section class="logos-container rsp-noti-sec rsp-wrap" style="padding: 0">
     <div class="sec-head col-12 mt-4 mb-5" style="padding: 0;">
       <div>
-        <div class="eyebrow">Trabajo articulado</div>
-        <h2 class="sec-title">Instituciones aliadas</h2>
+        <div class="eyebrow">{{t lang "Trabajo articulado"}}</div>
+        <h2 class="sec-title">{{t lang "Instituciones aliadas"}}</h2>
       </div>
     </div>
     <div class="d-flex justify-content-center">
@@ -1126,13 +1128,13 @@
           <img src="/img/logo-sutran.png" alt="sutran" />
         </a>
         <a class="logo" href="https://www.gob.pe/minjus" target="_blank">
-          <img src="/img/minjus.png" alt="Ministerio de justicia" />
+          <img src="/img/minjus.png" alt="{{t lang "Ministerio de Justicia"}}" />
         </a>
         <a class="logo" href="https://www.gob.pe/mininter" target="_blank">
-          <img src="/img/PCM-Interior.png" alt="Ministerio del interior" />
+          <img src="/img/PCM-Interior.png" alt="{{t lang "Ministerio del Interior"}}" />
         </a>
         <a class="logo" href="https://www.gob.pe/minsa" target="_blank">
-          <img src="/img/minsa.png" alt="Ministerio de salud" />
+          <img src="/img/minsa.png" alt="{{t lang "Ministerio de Salud"}}" />
         </a>
       </div>
     </div>

@@ -1,9 +1,9 @@
 <div class="container mt-5 wbn-page">
 
 	<div class="wbn-tab-row">
-		<span class="wbn-tab">Webinars</span>
+		<span class="wbn-tab">{{t lang "Webinars"}}</span>
 	</div>
-	<p class="wbn-lead">Mesas de trabajo y sesiones en línea del Observatorio Nacional de Seguridad Vial.</p>
+	<p class="wbn-lead">{{t lang "Mesas de trabajo y sesiones en línea del Observatorio Nacional de Seguridad Vial."}}</p>
 
 	{{#each playlist}}
 		<div class="row wbn-row">
@@ -25,7 +25,7 @@
 				<p class="text-justify mb-3 wbn-desc">
 					{{description}}
 				</p>
-				<a href="https://www.youtube.com/watch?v={{video}}" target="_blank" class="wbn-yt">▶ Mirar en YouTube</a>
+				<a href="https://www.youtube.com/watch?v={{video}}" target="_blank" class="wbn-yt">{{t lang "Mirar en YouTube"}}</a>
 			</div>
 		</div>
 	{{/each}}

@@ -46,7 +46,8 @@ function getMenuSelected(url_selected, label) {
 		}
 		return '';
 	} else {
-		let getLabel = url_selected.split('/')[1]
+		let segments = url_selected.split('/');
+		let getLabel = segments[1] === 'en' ? segments[2] : segments[1];
 		if (getLabel === label) {
 			return 'add-color';
 		} else {

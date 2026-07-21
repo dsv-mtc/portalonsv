@@ -13099,7 +13099,7 @@ button:focus {
     width: 100%;
     flex: 0 0 100%;
     justify-content: flex-start;
-    padding-left: 170px;
+    padding-left: 160px;
 }
 .rsp-navbar .nav-rsp .nav-link {
     color: #fff;
@@ -14162,6 +14162,12 @@ border: 1px solid #a2a2a2;
   font-family: 'Barlow', sans-serif;
   border-radius: 8px;
   border: none;
+}
+
+/* Navbar en inglés: ancho fijo por item */
+.rsp-navbar.lang-en .nav-rsp .nav-link {
+    min-width: 105px;
+    text-align: center;
 }
 
 

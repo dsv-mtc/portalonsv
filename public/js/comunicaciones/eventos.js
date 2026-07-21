@@ -154,7 +154,7 @@ function pageFilteredEventos ($calendar) {
       right: 'today prev,next'
     },
     buttonText: {
-      today: 'HOY'
+      today: typeof isEn !== 'undefined' && isEn ? 'TODAY' : 'HOY'
     },
     locale: 'es',
     events: parsedEventos

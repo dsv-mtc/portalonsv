@@ -1548,3 +1548,9 @@ border: 1px solid #a2a2a2;
   border: none;
 }
 
+/* Navbar en inglés: ancho fijo por item */
+.rsp-navbar.lang-en .nav-rsp .nav-link {
+    min-width: 105px;
+    text-align: center;
+}
+

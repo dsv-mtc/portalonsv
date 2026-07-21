@@ -6,15 +6,15 @@
   
   <div class="events-header">
     <div class="events-main-title">
-      <h1>CAMPAÑAS, EVENTOS Y ENTREVISTAS</h1>
+      <h1>{{t lang "CAMPAÑAS, EVENTOS Y ENTREVISTAS"}}</h1>
     </div>
     
     <div class="events-filter">
       <div class="filter-buttons" data-all-eventos="{{all}}" data-all-near-eventos="{{allNear}}">
-        <button class="ny-btn btn-filter all-button active" data-filter="todos">TODAS</button>
-        <button class="ny-btn btn-filter campaign-button" data-filter="campanias">CAMPAÑAS</button>
-        <button class="ny-btn btn-filter event-button" data-filter="eventos">EVENTOS</button>
-        <button class="ny-btn btn-filter interview-button" data-filter="entrevistas">ENTREVISTAS</button>
+        <button class="ny-btn btn-filter all-button active" data-filter="todos">{{t lang "TODAS"}}</button>
+        <button class="ny-btn btn-filter campaign-button" data-filter="campanias">{{t lang "CAMPAÑAS"}}</button>
+        <button class="ny-btn btn-filter event-button" data-filter="eventos">{{t lang "EVENTOS"}}</button>
+        <button class="ny-btn btn-filter interview-button" data-filter="entrevistas">{{t lang "ENTREVISTAS"}}</button>
       </div>
     </div>
   </div>
@@ -27,7 +27,7 @@
 
     <div class="sidebar-wrapper">
       <div class="events-sidebar">
-        <h3 class="sidebar-title">PRÓXIMOS EVENTOS</h3>
+        <h3 class="sidebar-title">{{t lang "PRÓXIMOS EVENTOS"}}</h3>
         
         <div class="results">
           {{#each eventosProximos}}

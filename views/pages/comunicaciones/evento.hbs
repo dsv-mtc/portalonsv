@@ -44,7 +44,7 @@
 				<div class="event-schedule">
 
 					<div class="event-data event-made-by">
-						<span class="label">Realizado por:</span>
+						<span class="label">{{t lang "Realizado por:"}}</span>
 						<span class="value">{{organizedBy}}</span>
 					</div>
 
@@ -61,7 +61,7 @@
 					</div>
 
 					<div class="event-data event-date">
-						<span class="label">Hora de inicio:</span>
+						<span class="label">{{t lang "Hora de inicio:"}}</span>
 						<span class="value">{{startTimeString}}</span>
 					</div>
 
@@ -72,7 +72,7 @@
 						</div>
 
 						<div class="event-data event-date">
-							<span class="label">Hora de finalización:</span>
+							<span class="label">{{t lang "Hora de finalización:"}}</span>
 							<span class="value">{{endTimeString}}</span>
 						</div>
 					{{/if}}
@@ -123,7 +123,7 @@
 
 					{{#if hasSocialLinks}}
 						<div class="event-data event-links">
-							<span class="label d-block mb-2">Redes sociales:</span>
+							<span class="label d-block mb-2">{{t lang "Redes sociales:"}}</span>
 							<span class="value pl-4 d-flex" style="gap: 1rem">
 								{{#if facebookLink}}
 									<a class="event-link" href="{{facebookLink}}" target="_blank">
