@@ -2671,9 +2671,11 @@ class DataBase {
 
 	async getRevistas() {
 		const queryString = `
-			SELECT id, titulo, slug, tema, imagen_url, pdf_url, esta_activo, created_at
-			FROM revistas
-			ORDER BY created_at DESC
+			SELECT r.id, r.titulo, r.slug, r.imagen_url, r.pdf_url, r.esta_activo, r.created_at,
+			       r.idTemaRevista, t.value AS tema
+			FROM revistas r
+			LEFT JOIN tipos_revista t ON r.idTemaRevista = t.id
+			ORDER BY r.created_at DESC
 		`;
 		try {
 			const results = await this.query(queryString);
@@ -2684,13 +2686,13 @@ class DataBase {
 		}
 	}
 
-	async createRevista({ titulo, slug, tema, imagen_url, pdf_url, esta_activo }) {
+	async createRevista({ titulo, slug, idTemaRevista, imagen_url, pdf_url, esta_activo }) {
 		const queryString = `
-			INSERT INTO revistas (titulo, slug, tema, imagen_url, pdf_url, esta_activo)
+			INSERT INTO revistas (titulo, slug, idTemaRevista, imagen_url, pdf_url, esta_activo)
 			VALUES (?, ?, ?, ?, ?, ?)
 		`;
 		try {
-			const result = await this.query(queryString, [titulo, slug || '', tema || '', imagen_url || '', pdf_url || '', esta_activo ? 1 : 0]);
+			const result = await this.query(queryString, [titulo, slug || '', idTemaRevista || null, imagen_url || '', pdf_url || '', esta_activo ? 1 : 0]);
 			return { success: true, data: { insertId: result.insertId } };
 		} catch (error) {
 			console.error(error);
@@ -2698,14 +2700,14 @@ class DataBase {
 		}
 	}
 
-	async updateRevista({ id, titulo, slug, tema, imagen_url, pdf_url, esta_activo }) {
+	async updateRevista({ id, titulo, slug, idTemaRevista, imagen_url, pdf_url, esta_activo }) {
 		const queryString = `
 			UPDATE revistas
-			SET titulo = ?, slug = ?, tema = ?, imagen_url = ?, pdf_url = ?, esta_activo = ?
+			SET titulo = ?, slug = ?, idTemaRevista = ?, imagen_url = ?, pdf_url = ?, esta_activo = ?
 			WHERE id = ?
 		`;
 		try {
-			await this.query(queryString, [titulo, slug || '', tema || '', imagen_url || '', pdf_url || '', esta_activo ? 1 : 0, id]);
+			await this.query(queryString, [titulo, slug || '', idTemaRevista || null, imagen_url || '', pdf_url || '', esta_activo ? 1 : 0, id]);
 			return { success: true };
 		} catch (error) {
 			console.error(error);
@@ -2721,6 +2723,64 @@ class DataBase {
 		} catch (error) {
 			console.error(error);
 			return { success: false, message: "No se pudo eliminar la revista" };
+		}
+	}
+
+	async getTiposRevista() {
+		const queryString = `SELECT id, value, isActive FROM tipos_revista ORDER BY id ASC`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results.map(t => ({ ...t, isActive: t.isActive === 1 }))
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener los tipos de revista" };
+		}
+	}
+
+	async createTipoRevista({ value, isActive }) {
+		const queryString = `INSERT INTO tipos_revista (value, isActive) VALUES (?, ?)`;
+		try {
+			const result = await this.query(queryString, [value, isActive ? 1 : 0]);
+			return { success: true, data: result, message: "Se creó el tipo de revista" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el tipo de revista" };
+		}
+	}
+
+	async updateTipoRevista({ id, value, isActive }) {
+		const queryString = `UPDATE tipos_revista SET value = ?, isActive = ? WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [value, isActive ? 1 : 0, id]);
+			return { success: true, data: result, message: "Se actualizó el tipo de revista" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el tipo de revista" };
+		}
+	}
+
+	async deleteTipoRevista(id) {
+		const queryString = `DELETE FROM tipos_revista WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [id]);
+			return { success: true, data: result, message: "Se eliminó el tipo de revista" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el tipo de revista" };
+		}
+	}
+
+	async countRevistasByTipoRevista(idTemaRevista) {
+		const queryString = `SELECT COUNT(*) AS count FROM revistas WHERE idTemaRevista = ?`;
+		try {
+			const results = await this.query(queryString, [idTemaRevista]);
+			return { success: true, count: results[0].count };
+		} catch (error) {
+			console.error(error);
+			return { success: false, count: 0 };
 		}
 	}
 

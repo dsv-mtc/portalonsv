@@ -582,29 +582,57 @@ router.get("/tipos-evento", isAuthenticated, async (req, res) => {
 });
 
 // --- Comunicaciones - Revistas ---
-router.get("/comunicaciones-revistas/temas", isAuthenticated, async (req, res) => {
-  const { data: revistas } = await mysql.getRevistas();
-  const temas = [...new Set((revistas || []).map(r => r.tema).filter(Boolean))].sort();
-  res.json({ success: true, data: temas });
+// CRUD de tipos de revista (catálogo de temas)
+router.get("/comunicaciones-revistas/tipos", isAuthenticated, async (req, res) => {
+  const { data: tipos } = await mysql.getTiposRevista();
+  res.json({ success: true, data: tipos });
 });
 
+router.post("/comunicaciones-revistas/tipos", isAuthenticated, async (req, res) => {
+  const { value, isActive } = req.body;
+  const result = await mysql.createTipoRevista({ value, isActive });
+  const log = await logAction('created', 'Tipo Revista', result.data?.insertId, `Se creó el tipo de revista '${value}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/comunicaciones-revistas/tipos/:id", isAuthenticated, async (req, res) => {
+  const { value, isActive } = req.body;
+  const result = await mysql.updateTipoRevista({ id: Number(req.params.id), value, isActive });
+  const log = await logAction('updated', 'Tipo Revista', Number(req.params.id), `Se actualizó el tipo de revista '${value}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/comunicaciones-revistas/tipos/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { data: tipos } = await mysql.getTiposRevista();
+  const name = tipos?.find(t => t.id === id)?.value || '';
+  const { count } = await mysql.countRevistasByTipoRevista(id);
+  if (count > 0) {
+    return res.status(400).json({ success: false, message: `No se puede eliminar: hay ${count} revista(s) asignada(s) a este tema` });
+  }
+  const result = await mysql.deleteTipoRevista(id);
+  const log = await logAction('deleted', 'Tipo Revista', id, `Se eliminó el tipo de revista '${name}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+// CRUD de revistas
 router.get("/comunicaciones-revistas", isAuthenticated, async (req, res) => {
   const { data: revistas } = await mysql.getRevistas();
   res.json({ success: true, data: revistas });
 });
 
 router.post("/comunicaciones-revistas", isAuthenticated, async (req, res) => {
-  const { titulo, tema, imagen_url, pdf_url, esta_activo } = req.body;
+  const { titulo, idTemaRevista, imagen_url, pdf_url, esta_activo } = req.body;
   const slug = titulo ? titulo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : '';
-  const result = await mysql.createRevista({ titulo, slug, tema, imagen_url, pdf_url, esta_activo });
+  const result = await mysql.createRevista({ titulo, slug, idTemaRevista, imagen_url, pdf_url, esta_activo });
   const log = await logAction('created', 'Revista', result.data?.insertId, `Se creó la revista '${titulo}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 
 router.put("/comunicaciones-revistas/:id", isAuthenticated, async (req, res) => {
-  const { titulo, tema, imagen_url, pdf_url, esta_activo } = req.body;
+  const { titulo, idTemaRevista, imagen_url, pdf_url, esta_activo } = req.body;
   const slug = titulo ? titulo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : '';
-  const result = await mysql.updateRevista({ id: req.params.id, titulo, slug, tema, imagen_url, pdf_url, esta_activo });
+  const result = await mysql.updateRevista({ id: req.params.id, titulo, slug, idTemaRevista, imagen_url, pdf_url, esta_activo });
   const log = await logAction('updated', 'Revista', Number(req.params.id), `Se actualizó la revista '${titulo}'`, req);
   res.json({ ...result, log: log || undefined });
 });
