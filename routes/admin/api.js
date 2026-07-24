@@ -362,7 +362,14 @@ router.get("/regiones", isAuthenticated, async (req, res) => {
 });
 
 router.put("/regiones/:id", isAuthenticated, async (req, res) => {
-  const { nombreEncargado, celularEncargado, correoEncargado, pageLink } = req.body;
+  const rawNombre = String(req.body.nombreEncargado ?? '');
+  const rawCelular = String(req.body.celularEncargado ?? '');
+  const correoEncargado = req.body.correoEncargado;
+  const pageLink = req.body.pageLink;
+
+  const nombreEncargado = rawNombre.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s.]/g, "").trim();
+  const celularEncargado = rawCelular.replace(/[^\d()+\s-]/g, '');
+
   const id = Number(req.params.id);
   const { data: regiones } = await mysql.getRegiones({ paginate: false });
   const oldRegion = regiones?.find(r => r.id === id);
@@ -373,7 +380,7 @@ router.put("/regiones/:id", isAuthenticated, async (req, res) => {
     nombreEncargado,
     celularEncargado,
     correoEncargado,
-    imageUrl: '',
+    imageUrl: oldRegion?.imageUrl || '',
     pageLink
   });
 
@@ -384,7 +391,7 @@ router.put("/regiones/:id", isAuthenticated, async (req, res) => {
     pageLink: 'el enlace de la página'
   };
   const changed = Object.keys(fieldLabels)
-    .filter(key => String(oldRegion?.[key] ?? '') !== String(req.body[key] ?? ''))
+    .filter(key => String(oldRegion?.[key] ?? '') !== String({ nombreEncargado, celularEncargado, correoEncargado, pageLink }[key] ?? ''))
     .map(key => fieldLabels[key]);
 
   const description = changed.length
@@ -401,9 +408,21 @@ router.post("/regiones/:id/upload", isAuthenticated, async (req, res) => {
     const region = all.find(r => r.id === Number(req.params.id));
     if (!region) return res.status(404).json({ success: false, message: "Región no encontrada" });
     req.regionName = region.value;
-    uploadMw(req, res, (err) => {
+    uploadMw(req, res, async (err) => {
       if (err) return res.status(400).json({ success: false, message: err.message || "Error al subir" });
-      res.json({ success: true, message: "Imagen actualizada" });
+      const stats = fs.statSync(req.file.path);
+      const version = Math.floor(stats.mtimeMs / 1000);
+      const imageUrl = `/assets/${req.file.filename}?v=${version}`;
+      await mysql.updateRegiones({
+        id: Number(req.params.id),
+        nombreEncargado: region.nombreEncargado,
+        celularEncargado: region.celularEncargado,
+        correoEncargado: region.correoEncargado,
+        imageUrl,
+        pageLink: region.pageLink
+      });
+      const log = await logAction('updated', 'Región', Number(req.params.id), `Se actualizó la imagen de la región de ${region.value}`, req);
+      res.json({ success: true, message: "Imagen actualizada", imageUrl, log: log || undefined });
     });
   } catch (error) {
     console.error(error);

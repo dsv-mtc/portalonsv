@@ -6,7 +6,7 @@ import { apiGet, apiPut, apiUpload } from "../lib/api";
 
 const PAGE_SIZE = 5;
 
-type Region = { id: number; value: string; slug: string; nombreEncargado: string; celularEncargado: string; correoEncargado: string; imageUrl: string; pageLink: string };
+type Region = { id: number; value: string; slug: string; nombreEncargado: string; celularEncargado: string; correoEncargado: string; imageUrl: string; pageLink: string; _imgVersion?: number };
 
 export function Regiones() {
   const [allRegiones, setAllRegiones] = useState<Region[]>([]);
@@ -15,6 +15,8 @@ export function Regiones() {
   const [page, setPage] = useState(1);
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState<Partial<Region>>({});
+  const [uploadedPreview, setUploadedPreview] = useState<string>("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [filterId, setFilterId] = useState<number | "">("");
 
   const filtered = useMemo(
@@ -42,25 +44,46 @@ export function Regiones() {
     return () => clearTimeout(t);
   }, [msg]);
 
-  useEffect(() => {
-    if (!editId) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setEditId(null); };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
-  }, [editId]);
-
   const openEdit = useCallback((r: Region) => {
     setEditId(r.id);
     setForm({ nombreEncargado: r.nombreEncargado, celularEncargado: r.celularEncargado, correoEncargado: r.correoEncargado, pageLink: r.pageLink });
+    setUploadedPreview(r.imageUrl || "");
+    setErrors({});
   }, []);
+
+  const closeEdit = useCallback(() => {
+    setEditId(null);
+    setForm({});
+    setUploadedPreview("");
+    setErrors({});
+  }, []);
+
+  useEffect(() => {
+    if (!editId) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") closeEdit(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [editId, closeEdit]);
+
+  const validate = (): boolean => {
+    const errs: Record<string, string> = {};
+    if (form.nombreEncargado && /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s.]/.test(form.nombreEncargado)) {
+      errs.nombreEncargado = "Solo se permiten letras";
+    }
+    if (form.celularEncargado && /[^\d()+\s-]/.test(form.celularEncargado)) {
+      errs.celularEncargado = "Solo se permiten números";
+    }
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleSave = async () => {
     if (editId === null) return;
+    if (!validate()) return;
     const r = await apiPut(`/regiones/${editId}`, form);
-    setMsg(r.message || "Guardado");
+    setMsg(r.message || "Región actualizada con éxito");
     setAllRegiones(prev => prev.map(x => x.id === editId ? { ...x, ...form } : x));
-    setEditId(null);
-    setForm({});
+    closeEdit();
   };
 
   const editRegion = allRegiones.find(r => r.id === editId);
@@ -132,7 +155,9 @@ export function Regiones() {
                   <Td style={{ maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.correoEncargado || <NullValue />}</Td>
                   <Td>
                     <img className="region-img"
-                      src={`/assets/${r.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}.png`}
+                      src={r.imageUrl
+                        ? r.imageUrl
+                        : `/assets/${r.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}.png${r._imgVersion ? `?t=${r._imgVersion}` : ""}`}
                       alt={r.value}
                       onError={e => { const el = e.currentTarget; el.onerror = null; el.style.display = "none"; el.insertAdjacentHTML("afterend", `<span style="color:var(--muted-foreground);font-size:12px">—</span>`); }}
                     />
@@ -164,7 +189,7 @@ export function Regiones() {
       </Panel>
 
       {editId !== null && (
-        <div onClick={() => setEditId(null)}
+        <div onClick={() => closeEdit()}
           style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.45)", backdropFilter: "blur(2px)" }}
         >
           <div onClick={e => e.stopPropagation()}
@@ -176,25 +201,40 @@ export function Regiones() {
                   Editar región — {editRegion?.value}
                 </h3>
               </div>
-              <button type="button" onClick={() => setEditId(null)}
+              <button type="button" onClick={() => closeEdit()}
                 style={{ background: "none", border: "none", cursor: "pointer", color: "#5c6273", padding: 4, borderRadius: 6 }}>
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-4">
-              {(["nombreEncargado", "celularEncargado", "correoEncargado"] as const).map(f => (
+              {(["nombreEncargado", "celularEncargado", "correoEncargado"] as const).map(f => {
+                const isInvalid = (
+                  (f === "nombreEncargado" && form[f] && /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s.]/.test(form[f] as string))
+                  || (f === "celularEncargado" && form[f] && /[^\d()+\s-]/.test(form[f] as string))
+                );
+                return (
                 <label key={f} className="block">
                   <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
                     {f === "nombreEncargado" ? "Nombre encargado" : f === "celularEncargado" ? "Celular encargado" : "Correo encargado"}
                   </span>
-                  <input value={form[f] ?? ""} onChange={e => setForm(p => ({ ...p, [f]: e.target.value }))}
-                    className="mt-1 w-full h-10 rounded-lg border-2 px-3 text-[13.5px] outline-none"
-                    style={{ borderColor: "var(--brand-line)" }}
+                  <input
+                    value={form[f] ?? ""}
+                    onChange={e => setForm(p => ({ ...p, [f]: e.target.value }))}
+                    inputMode={f === "celularEncargado" ? "numeric" : undefined}
+                    maxLength={f === "celularEncargado" ? 20 : undefined}
+                    className="mt-1 w-full h-10 rounded-lg border-2 px-3 text-[13.5px] outline-none transition-colors"
+                    style={{ borderColor: isInvalid ? "#C8102E" : "var(--brand-line)" }}
                     placeholder={`Ingrese ${f === "nombreEncargado" ? "el nombre" : f === "celularEncargado" ? "el celular" : "el correo"}`}
                   />
+                  {errors[f] && (
+                    <span className="mt-1 block text-[11px] font-semibold" style={{ color: "#C8102E" }}>
+                      {errors[f]}
+                    </span>
+                  )}
                 </label>
-              ))}
+                );
+              })}
               <label className="block">
                 <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>Imagen</span>
                 <input type="file" accept="image/*" onChange={async e => {
@@ -202,14 +242,34 @@ export function Regiones() {
                   if (!file || !editId) return;
                   const fd = new FormData();
                   fd.append("image", file);
-                  const r = await apiUpload(`/regiones/${editId}/upload`, fd);
-                  setMsg(r.message || "Imagen actualizada");
-                  setAllRegiones(prev => [...prev]);
-                  setEditId(null);
+                  try {
+                    const r = await apiUpload(`/regiones/${editId}/upload`, fd);
+                    if (r.success) {
+                      setUploadedPreview(r.imageUrl || "");
+                      setAllRegiones(prev => prev.map(x =>
+                        x.id === editId ? { ...x, imageUrl: r.imageUrl || x.imageUrl } : x
+                      ));
+                    }
+                  } catch (err) {
+                    /* error silencioso al subir */
+                  }
+                  e.currentTarget.value = "";
                 }}
                   className="mt-1 w-full h-10 rounded-lg border-2 px-3 text-[13px] outline-none file:h-full file:border-0 file:bg-[color:var(--brand-navy)] file:text-white file:px-4 file:rounded-lg file:cursor-pointer file:font-bold"
                   style={{ borderColor: "var(--brand-line)", paddingTop: 0, paddingBottom: 0, display: "flex", alignItems: "center" }}
                 />
+                {uploadedPreview && (
+                  <div className="mt-2 flex items-center gap-3">
+                    <img src={uploadedPreview} alt="Vista previa"
+                      className="w-20 h-20 object-contain rounded-lg border-2 bg-white"
+                      style={{ borderColor: "var(--brand-line)" }} />
+                    <button type="button" onClick={() => setUploadedPreview("")}
+                      className="text-[12px] font-semibold hover:underline"
+                      style={{ color: "#C8102E" }}>
+                      Quitar imagen
+                    </button>
+                  </div>
+                )}
               </label>
               <label className="block">
                 <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>Enlace página</span>
@@ -222,7 +282,7 @@ export function Regiones() {
             </div>
 
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 24 }}>
-              <BrandButton variant="outline" onClick={() => setEditId(null)}>Cancelar</BrandButton>
+              <BrandButton variant="outline" onClick={() => closeEdit()}>Cancelar</BrandButton>
               <BrandButton onClick={handleSave}>Guardar</BrandButton>
             </div>
           </div>

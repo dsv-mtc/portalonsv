@@ -227,7 +227,7 @@ function getMapFromForm(){
 				document.getElementById('nombre').textContent=response.regionData.NOMBRE;
 				document.getElementById('telefono').textContent=response.regionData.TELEFONO;
 				document.getElementById('email').textContent=response.regionData['E-MAIL'];
-				setImage(response.regionData.REGION);
+				setImage(response.regionData.REGION, response.regionData.imageUrl);
 				showRegionLabel(response.regionData.REGION);
 				updateRegionName(response.regionData.REGION);
 				document.getElementById('noti').innerHTML=response.template;
@@ -256,7 +256,7 @@ function getMap(){
 			document.getElementById('nombre').textContent=response.regionData.NOMBRE || '';
 			document.getElementById('telefono').textContent=response.regionData.TELEFONO || '';
 			document.getElementById('email').textContent=response.regionData['E-MAIL'] || '';
-			setImage(response.regionData.REGION || 'Lima');
+			setImage(response.regionData.REGION || 'Lima', response.regionData.imageUrl);
 			showRegionLabel('Lima');
 			updateRegionName('Lima');
 			document.getElementById('noti').innerHTML=response.template;
@@ -278,7 +278,7 @@ function getMap(){
 				document.getElementById('nombre').textContent=response.regionData.NOMBRE;
 				document.getElementById('telefono').textContent=response.regionData.TELEFONO;
 				document.getElementById('email').textContent=response.regionData['E-MAIL'];
-				setImage(response.regionData.REGION);
+				setImage(response.regionData.REGION, response.regionData.imageUrl);
 				document.getElementById('noti').innerHTML=response.template;
 				$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
 				carousel();
@@ -329,17 +329,15 @@ function updateRegionName(regionId){
  * una imagen por defecto
  * @param {String} region: Nombre de la región seleccionada, que coincide con el nombre de la imagen de la región. 
  */
-function setImage(region){
-	document.getElementById('img-region').innerHTML='';
-	fetch(`/assets${region.toLowerCase()}.svg`,{method:'GET'})
-	.then(results=>results)
-	.then(response=>{
-		if(response.status==200) document.getElementById('img-region').innerHTML=`<img src="../assets/${region.toLowerCase()}.png"></img>`;
-		if(response.status!=200) document.getElementById('img-region').innerHTML=`<img src="../assets/escudo.jpg"></img>`;    
-	})
-	.catch(error=>{
-		console.log(error);
-	})
+function setImage(region, imageUrl){
+	const imgRegion = document.getElementById('img-region');
+	if(!imgRegion) return;
+	const fallback = '/assets/escudo.jpg';
+	const normalized = region.toLowerCase();
+	const primary = imageUrl
+		? imageUrl
+		: `/assets/${normalized}.png`;
+	imgRegion.innerHTML = `<img src="${primary}" alt="${region}" onerror="this.onerror=null;this.src='${fallback}'">`;
 }
 /**
  * @description: Función encargada de desplegar el modal de suscripción al portal; valida el campo de correo y envía el mismo para 
