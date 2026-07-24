@@ -112,9 +112,9 @@ export function ComunicacionesRevistas() {
       <style>{`
         .revista-img { width:40px; height:40px; object-fit:contain; border-radius:6px; display:block; transition:transform .25s ease; }
         .revista-img:hover { transform:scale(3); z-index:99999; position:relative; }
-        .pag-btn { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: #1d3557; font-weight: 700; font-size: 17px; display: inline-flex; align-items: center, justify-content: center; cursor: pointer; transition: all .3s ease; }
-        .pag-btn:hover { border-color: #C8102E; color: #C8102E; }
-        .pag-btn.active { background: #C8102E; color: #fff; border-color: transparent; }
+        .pag-btn-t { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: #1d3557; font-weight: 700; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .3s ease; }
+        .pag-btn-t:hover { border-color: #C8102E; color: #C8102E; }
+        .pag-btn-t.active { background: #C8102E; color: #fff; border-color: transparent; }
       `}</style>
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
 
@@ -125,7 +125,7 @@ export function ComunicacionesRevistas() {
               className={"px-5 h-9 rounded-md text-[12px] uppercase font-bold tracking-wider transition font-[family-name:var(--font-cond)] inline-flex items-center gap-2 " +
                   (tab === t ? "bg-[color:var(--brand-navy)] text-white" : "text-[color:var(--brand-navy)] hover:bg-[color:var(--brand-mist)]")}>
               {t === "publicaciones" ? <Calendar className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-              {t === "publicaciones" ? "Publicaciones" : "Tipos"}
+              {t === "publicaciones" ? "Publicaciones" : "Temas"}
             </button>
           ))}
         </div>
@@ -200,14 +200,14 @@ export function ComunicacionesRevistas() {
 
           {totalPages > 1 && (
             <div className="mt-6 flex justify-center items-center gap-1.5">
-              <button type="button" aria-label="Primera página" onClick={() => setPage(1)} className="pag-btn"><ChevronsLeft className="w-4 h-4" /></button>
-              <button type="button" aria-label="Página anterior" onClick={() => setPage(p => Math.max(1, p - 1))} className="pag-btn"><ChevronLeft className="w-4 h-4" /></button>
+              <button type="button" aria-label="Primera página" onClick={() => setPage(1)} className="pag-btn-t"><ChevronsLeft className="w-4 h-4" /></button>
+              <button type="button" aria-label="Página anterior" onClick={() => setPage(p => Math.max(1, p - 1))} className="pag-btn-t"><ChevronLeft className="w-4 h-4" /></button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                 <button key={p} type="button" aria-label={`Página ${p}`} onClick={() => setPage(p)}
-                  className={`pag-btn${p === currentPage ? " active" : ""}`}>{p}</button>
+                  className={`pag-btn-t${p === currentPage ? " active" : ""}`}>{p}</button>
               ))}
-              <button type="button" aria-label="Página siguiente" onClick={() => setPage(p => Math.min(totalPages, p + 1))} className="pag-btn"><ChevronRight className="w-4 h-4" /></button>
-              <button type="button" aria-label="Última página" onClick={() => setPage(totalPages)} className="pag-btn"><ChevronsRight className="w-4 h-4" /></button>
+              <button type="button" aria-label="Página siguiente" onClick={() => setPage(p => Math.min(totalPages, p + 1))} className="pag-btn-t"><ChevronRight className="w-4 h-4" /></button>
+              <button type="button" aria-label="Última página" onClick={() => setPage(totalPages)} className="pag-btn-t"><ChevronsRight className="w-4 h-4" /></button>
             </div>
           )}
 
@@ -369,12 +369,6 @@ function TiposPanel({ tipos, loadTipos, setMsg }: { tipos: TipoRevista[]; loadTi
 
   return (
     <>
-      <style>{`
-        .pag-btn-t { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: #1d3557; font-weight: 700; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .3s ease; }
-        .pag-btn-t:hover { border-color: #C8102E; color: #C8102E; }
-        .pag-btn-t.active { background: #C8102E; color: #fff; border-color: transparent; }
-      `}</style>
-
       <div className="mb-5 flex items-center justify-end gap-3 flex-wrap">
         <Chip color="cyan">{activeCount} activos</Chip>
         <BrandButton onClick={openCreate}><Plus className="w-4 h-4" /> Agregar tema</BrandButton>
