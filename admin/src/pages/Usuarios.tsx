@@ -5,17 +5,18 @@ import { BrandButton, Chip } from "../components/UIBits";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { apiGet, apiPost, apiPut, apiDelete } from "../lib/api";
 
-type Usuario = { id: number; user: string; role: string; idUserRole: number };
+type Usuario = { id: number; user: string; role: string; idUserRole: number; esta_activo: boolean };
 type Role = { id: number; value: string };
 
 interface UserForm {
   user: string;
   password: string;
   roleId: number;
+  esta_activo: boolean;
 }
 
 function initUserForm(): UserForm {
-  return { user: "", password: "", roleId: 0 };
+  return { user: "", password: "", roleId: 0, esta_activo: true };
 }
 
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
@@ -90,7 +91,7 @@ export function Usuarios() {
 
   // --- Users ---
   const openUserCreate = () => { setUserForm(initUserForm()); setUserEditingId(null); setUserModalOpen(true); };
-  const openUserEdit = (item: Usuario) => { setUserForm({ user: item.user, password: "", roleId: item.idUserRole }); setUserEditingId(item.id); setUserModalOpen(true); };
+  const openUserEdit = (item: Usuario) => { setUserForm({ user: item.user, password: "", roleId: item.idUserRole, esta_activo: item.esta_activo ?? true }); setUserEditingId(item.id); setUserModalOpen(true); };
 
   const handleUserSubmit = async () => {
     if (!userForm.user.trim() || !userForm.roleId) { setMsg("Completa los campos obligatorios (*)"); return; }
@@ -168,6 +169,7 @@ export function Usuarios() {
                     <th style={thStyle}>Email</th>
                     <th style={{ ...thStyle, width: 90 }}>Contraseña</th>
                     <th style={{ ...thStyle, width: 100 }}>Rol</th>
+                    <th style={{ ...thStyle, width: 80 }}>Estado</th>
                     <th style={{ width: 56, padding: "8px 6px" }}></th>
                   </tr>
                 </thead>
@@ -179,6 +181,16 @@ export function Usuarios() {
                       <td style={tdStyle}>
                         <span style={{ display: "inline-block", padding: "1px 8px", borderRadius: 999, fontSize: 10, fontWeight: 700, fontFamily: "var(--font-cond)", textTransform: "uppercase", letterSpacing: "0.04em", background: "#eff6ff", color: "#1e40af" }}>
                           {u.role}
+                        </span>
+                      </td>
+                      <td style={tdStyle}>
+                        <span style={{
+                          display: "inline-block", padding: "1px 8px", borderRadius: 999, fontSize: 10, fontWeight: 700,
+                          fontFamily: "var(--font-cond)", textTransform: "uppercase", letterSpacing: "0.04em",
+                          background: u.esta_activo ? "#dcfce7" : "#f1f5f9",
+                          color: u.esta_activo ? "#166534" : "#475569",
+                        }}>
+                          {u.esta_activo ? "Activo" : "Inactivo"}
                         </span>
                       </td>
                       <td style={tdStyle}>
@@ -296,6 +308,11 @@ export function Usuarios() {
                   {roles.map(r => <option key={r.id} value={r.id}>{r.value}</option>)}
                 </select>
               </label>
+              <div className="flex items-center gap-2" style={{ marginBottom: 14 }}>
+                <input type="checkbox" id="userActive" checked={userForm.esta_activo} onChange={e => setUserForm(p => ({ ...p, esta_activo: e.target.checked }))}
+                  className="w-4 h-4 rounded border-2 accent-[color:var(--brand-navy)]" />
+                <label htmlFor="userActive" className="text-[13px] font-semibold" style={{ color: "var(--brand-navy)" }}>¿Está activo?</label>
+              </div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
               <span className="text-[13px] font-semibold" style={{ color: "var(--brand-red)" }}>*: Campos obligatorios</span>

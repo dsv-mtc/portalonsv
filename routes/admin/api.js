@@ -689,15 +689,15 @@ router.get("/datos-abiertos", isAuthenticated, async (req, res) => {
 });
 
 router.post("/datos-abiertos", isAuthenticated, async (req, res) => {
-  const { titulo, autor, descripcion, idCategoria, idTipo, excelfilepath, pdffilepath, csvfilepath, shapefilepath, fecha } = req.body;
-  const result = await mysql.createDatosAbiertos({ titulo, autor, descripcion, idCategoria, idTipo, excelfilepath: excelfilepath || 'null', pdffilepath: pdffilepath || 'null', csvfilepath: csvfilepath || 'null', shapefilepath: shapefilepath || 'null', fecha });
+  const { titulo, autor, descripcion, idCategoria, idTipo, excelfilepath, pdffilepath, csvfilepath, shapefilepath, estaActivo, fecha } = req.body;
+  const result = await mysql.createDatosAbiertos({ titulo, autor, descripcion, idCategoria, idTipo, excelfilepath: excelfilepath || 'null', pdffilepath: pdffilepath || 'null', csvfilepath: csvfilepath || 'null', shapefilepath: shapefilepath || 'null', estaActivo, fecha });
   const log = await logAction('created', 'Dataset', result.data?.insertId, `Se creó el dataset '${titulo}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 
 router.put("/datos-abiertos/:id", isAuthenticated, async (req, res) => {
-  const { titulo, autor, descripcion, idCategoria, idTipo, excelfilepath, pdffilepath, csvfilepath, shapefilepath, fecha } = req.body;
-  const result = await mysql.updateDatosAbiertos({ id: req.params.id, titulo, autor, descripcion, idCategoria, idTipo, excelfilepath: excelfilepath || 'null', pdffilepath: pdffilepath || 'null', csvfilepath: csvfilepath || 'null', shapefilepath: shapefilepath || 'null', fecha });
+  const { titulo, autor, descripcion, idCategoria, idTipo, excelfilepath, pdffilepath, csvfilepath, shapefilepath, estaActivo, fecha } = req.body;
+  const result = await mysql.updateDatosAbiertos({ id: req.params.id, titulo, autor, descripcion, idCategoria, idTipo, excelfilepath: excelfilepath || 'null', pdffilepath: pdffilepath || 'null', csvfilepath: csvfilepath || 'null', shapefilepath: shapefilepath || 'null', estaActivo, fecha });
   const log = await logAction('updated', 'Dataset', Number(req.params.id), `Se actualizó el dataset '${titulo}'`, req);
   res.json({ ...result, log: log || undefined });
 });
@@ -803,15 +803,15 @@ router.get("/usuarios", isAuthenticated, async (req, res) => {
 });
 
 router.post("/usuarios", isAuthenticated, async (req, res) => {
-  const { user, password, roleId } = req.body;
-  const result = await mysql.createUser({ email: user, password, roleId });
+  const { user, password, roleId, estaActivo } = req.body;
+  const result = await mysql.createUser({ email: user, password, roleId, estaActivo });
   const log = await logAction('created', 'Usuario', result.data?.insertId, `Se creó el usuario '${user}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 
 router.put("/usuarios/:id", isAuthenticated, async (req, res) => {
-  const { user, password, roleId } = req.body;
-  const result = await mysql.updateUser({ id: req.params.id, email: user, password, roleId });
+  const { user, password, roleId, estaActivo } = req.body;
+  const result = await mysql.updateUser({ id: req.params.id, email: user, password, roleId, estaActivo });
   const log = await logAction('updated', 'Usuario', Number(req.params.id), `Se actualizó el usuario '${user}'`, req);
   res.json({ ...result, log: log || undefined });
 });

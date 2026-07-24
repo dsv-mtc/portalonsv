@@ -354,6 +354,7 @@ class DataBase {
 				u.id,
 				u.user,
 				u.idUserRole,
+				u.estaActivo,
 				ur.value role
 			FROM ${process.env.USER_TABLE} u
 			JOIN user_role ur ON ur.id = u.idUserRole
@@ -362,7 +363,7 @@ class DataBase {
 			const results = await this.query(queryString);
 			return {
 				success: true,
-				data: results,
+				data: results.map(u => ({ ...u, esta_activo: u.estaActivo === 1 })),
 				message: "Se obtuvieron los usuarios"
 			}
 		} catch (error) {
@@ -378,15 +379,16 @@ class DataBase {
 	async createUser({
 		email,
 		password,
-		roleId
+		roleId,
+		estaActivo
 	}) {
 		try {
 			const passwordEncrypted = crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY);
 			const queryString = `
 				INSERT INTO ${process.env.USER_TABLE} 
-					(user, password, idUserRole) 
+					(user, password, idUserRole, estaActivo) 
 				VALUES 
-					("${email}","${passwordEncrypted}", ${roleId})
+					("${email}","${passwordEncrypted}", ${roleId}, ${estaActivo ? 1 : 0})
 			`
 			const result = await this.query(queryString)
 			return {
@@ -408,7 +410,8 @@ class DataBase {
 		id,
 		email,
 		password,
-		roleId
+		roleId,
+		estaActivo
 	}) {
 		const passwordEncrypted = password
 			? crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY)
@@ -418,7 +421,8 @@ class DataBase {
 				SET
 					user='${email}',
 					${password ? `password='${passwordEncrypted}',` : ''}
-					idUserRole=${roleId}
+					idUserRole=${roleId},
+					estaActivo=${estaActivo ? 1 : 0}
 				WHERE id=${id}
 		`;
 		try {
@@ -1239,15 +1243,19 @@ class DataBase {
 				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE '%${conditions.description}%'`
 				isFirstCondition = false
 			}
-			if (conditions.fecha) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE '${conditions.fecha}%'`
-				isFirstCondition = false
-			}
+		if (conditions.fecha) {
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE '${conditions.fecha}%'`
+			isFirstCondition = false
 		}
+		if (conditions.estaActivo !== undefined) {
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.estaActivo = ${conditions.estaActivo}`
+			isFirstCondition = false
+		}
+	}
 
-		const queryString = `
-			SELECT
-				count(f.id) pages
+	const queryString = `
+		SELECT
+			count(f.id) pages
 			FROM files f
 			LEFT JOIN categoria c ON c.id = f.idCategoria
 			LEFT JOIN tipo t ON t.id = f.idTipo
@@ -1305,28 +1313,33 @@ class DataBase {
 				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE '%${conditions.description}%'`
 				isFirstCondition = false
 			}
-			if (conditions.fecha) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE '${conditions.fecha}%'`
-				isFirstCondition = false
-			}
+		if (conditions.fecha) {
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE '${conditions.fecha}%'`
+			isFirstCondition = false
 		}
+		if (conditions.estaActivo !== undefined) {
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.estaActivo = ${conditions.estaActivo}`
+			isFirstCondition = false
+		}
+	}
 
-		let query = `
-			SELECT
-				f.id,
-				f.title titulo,
-				f.author autor,
-				f.description descripcion,
-				f.idCategoria,
-				c.value categoria,
-				c.icon iconCategoria,
-				f.idTipo,
-				t.value tipo,
-			f.excelfile,
-			f.pdffile,
-			f.csvfile,
-			f.shapefile,
-			f.fecha
+	let query = `
+		SELECT
+			f.id,
+			f.title titulo,
+			f.author autor,
+			f.description descripcion,
+			f.idCategoria,
+			c.value categoria,
+			c.icon iconCategoria,
+			f.idTipo,
+			t.value tipo,
+		f.excelfile,
+		f.pdffile,
+		f.csvfile,
+		f.shapefile,
+		f.estaActivo,
+		f.fecha
 			FROM files f
 			LEFT JOIN categoria c ON c.id = f.idCategoria
 			LEFT JOIN tipo t ON t.id = f.idTipo
@@ -1352,6 +1365,7 @@ class DataBase {
 				success: true,
 				data: results.map(res => ({
 					...res,
+					esta_activo: res.estaActivo === 1,
 					categoria: res.categoria ?? 'No existe',
 					tipo: res.tipo ?? 'No existe',
 					excelfile: res.excelfile === 'null' ? 'No existe' : res.excelfile,
@@ -1384,6 +1398,7 @@ class DataBase {
 		pdffilepath,
 		csvfilepath,
 		shapefilepath,
+		estaActivo,
 		fecha
 	}) {
 		const queryString = `
@@ -1398,6 +1413,7 @@ class DataBase {
 					pdffile,
 					csvfile,
 					shapefile,
+					estaActivo,
 					fecha
 				)
 			VALUES (
@@ -1410,6 +1426,7 @@ class DataBase {
 				'${pdffilepath}', 
 				'${csvfilepath}', 
 				'${shapefilepath}',
+				${estaActivo ? 1 : 0},
 				'${fecha}' 
 			)
 		`;
@@ -1440,6 +1457,7 @@ class DataBase {
 		pdffilepath,
 		csvfilepath,
 		shapefilepath,
+		estaActivo,
 		fecha
 	}) {
 		const queryString = `
@@ -1454,6 +1472,7 @@ class DataBase {
 					pdffile='${pdffilepath}',
 					csvfile='${csvfilepath}',
 					shapefile='${shapefilepath}',
+					estaActivo=${estaActivo ? 1 : 0},
 					fecha='${fecha}'
 				WHERE id=${id}
 		`;

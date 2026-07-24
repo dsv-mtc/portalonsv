@@ -5,7 +5,7 @@ import { BrandButton, Chip } from "../components/UIBits";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { apiGet, apiPost, apiPut, apiDelete, apiUpload } from "../lib/api";
 
-type Dato = { id: number; titulo: string; autor: string; descripcion: string; idCategoria: number; categoria: string; idTipo: number; tipo: string; excelfile: string; pdffile: string; csvfile: string; shapefile: string; fecha: string; hasExcel: boolean; hasPdf: boolean; hasCsv: boolean; hasShapefile: boolean };
+type Dato = { id: number; titulo: string; autor: string; descripcion: string; idCategoria: number; categoria: string; idTipo: number; tipo: string; excelfile: string; pdffile: string; csvfile: string; shapefile: string; fecha: string; esta_activo: boolean; hasExcel: boolean; hasPdf: boolean; hasCsv: boolean; hasShapefile: boolean };
 type Categoria = { id: number; value: string };
 type Tipo = { id: number; value: string };
 
@@ -19,11 +19,12 @@ interface FormData {
   pdffilepath: string;
   csvfilepath: string;
   shapefilepath: string;
+  esta_activo: boolean;
   fecha: string;
 }
 
 function initForm(): FormData {
-  return { titulo: "", autor: "", descripcion: "", idCategoria: 0, idTipo: 0, excelfilepath: "", pdffilepath: "", csvfilepath: "", shapefilepath: "", fecha: "" };
+  return { titulo: "", autor: "", descripcion: "", idCategoria: 0, idTipo: 0, excelfilepath: "", pdffilepath: "", csvfilepath: "", shapefilepath: "", esta_activo: true, fecha: "" };
 }
 
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
@@ -91,15 +92,22 @@ export function DatosAbiertos() {
       pdffilepath: item.pdffile !== "No existe" ? item.pdffile : "",
       csvfilepath: item.csvfile !== "No existe" ? item.csvfile : "",
       shapefilepath: item.shapefile !== "No existe" ? item.shapefile : "",
+      esta_activo: item.esta_activo ?? true,
       fecha: item.fecha,
     });
     setEditingId(item.id);
     setModalOpen(true);
   };
 
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>, field: keyof FormData) => {
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>, field: keyof FormData, validExtensions: string[], fieldLabel: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    if (!validExtensions.includes(ext)) {
+      setMsg(`Este archivo no es válido para el campo ${fieldLabel}. Solo se permiten: ${validExtensions.map(x => '.' + x).join(', ')}`);
+      e.target.value = "";
+      return;
+    }
     const fd = new FormData();
     fd.append("file", file);
     const r: any = await apiUpload("/datos-abiertos/upload", fd);
@@ -193,6 +201,7 @@ export function DatosAbiertos() {
               <th style={{ textAlign: "left", padding: "10px 8px", fontWeight: 700, color: "var(--brand-navy)", fontSize: "12px", textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em" }}>PDF</th>
               <th style={{ textAlign: "left", padding: "10px 8px", fontWeight: 700, color: "var(--brand-navy)", fontSize: "12px", textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em" }}>CSV</th>
               <th style={{ textAlign: "left", padding: "10px 8px", fontWeight: 700, color: "var(--brand-navy)", fontSize: "12px", textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em" }}>Shape</th>
+              <th style={{ textAlign: "left", padding: "10px 8px", fontWeight: 700, color: "var(--brand-navy)", fontSize: "12px", textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em" }}>Estado</th>
               <th style={{ textAlign: "left", padding: "10px 8px", fontWeight: 700, color: "var(--brand-navy)", fontSize: "12px", textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em" }}>Fecha</th>
               <th style={{ width: 80, padding: "10px 8px" }}></th>
             </tr>
@@ -224,6 +233,16 @@ export function DatosAbiertos() {
                   {hasFile(item.shapefile) ? (
                     <span className="file-chip" style={{ background: "#fef3c7", color: "#92400e" }} title={item.shapefile}>SHP</span>
                   ) : <span style={{ color: "#94a3b8" }}>—</span>}
+                </td>
+                <td style={{ padding: "10px 8px" }}>
+                  <span style={{
+                    display: "inline-block", padding: "2px 10px", borderRadius: 999, fontSize: 11, fontWeight: 700,
+                    fontFamily: "var(--font-cond)", textTransform: "uppercase", letterSpacing: "0.04em",
+                    background: item.esta_activo ? "#dcfce7" : "#f1f5f9",
+                    color: item.esta_activo ? "#166534" : "#475569",
+                  }}>
+                    {item.esta_activo ? "Activo" : "Inactivo"}
+                  </span>
                 </td>
                 <td style={{ padding: "10px 8px", fontSize: 12, color: "var(--brand-navy)", whiteSpace: "nowrap" }}>{item.fecha}</td>
                 <td style={{ padding: "10px 8px" }}>
@@ -317,13 +336,17 @@ export function DatosAbiertos() {
 
               <div className="grid grid-cols-2 gap-4">
                 <FileUpload label="Excel" fileRef={fileExcelRef} value={form.excelfilepath}
-                  onChange={e => handleFile(e, "excelfilepath")} />
+                  accept=".xlsx,.xls"
+                  onChange={e => handleFile(e, "excelfilepath", ["xlsx", "xls"], "Excel")} />
                 <FileUpload label="PDF" fileRef={filePdfRef} value={form.pdffilepath}
-                  onChange={e => handleFile(e, "pdffilepath")} />
+                  accept=".pdf"
+                  onChange={e => handleFile(e, "pdffilepath", ["pdf"], "PDF")} />
                 <FileUpload label="CSV" fileRef={fileCsvRef} value={form.csvfilepath}
-                  onChange={e => handleFile(e, "csvfilepath")} />
+                  accept=".csv"
+                  onChange={e => handleFile(e, "csvfilepath", ["csv"], "CSV")} />
                 <FileUpload label="Shapefile" fileRef={fileShapeRef} value={form.shapefilepath}
-                  onChange={e => handleFile(e, "shapefilepath")} />
+                  accept=".shp"
+                  onChange={e => handleFile(e, "shapefilepath", ["shp"], "Shapefile")} />
               </div>
 
               <label className="block">
@@ -333,6 +356,12 @@ export function DatosAbiertos() {
                 <input type="date" value={form.fecha} onChange={e => setForm(p => ({ ...p, fecha: e.target.value }))}
                   className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
               </label>
+
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="datoActive" checked={form.esta_activo} onChange={e => setForm(p => ({ ...p, esta_activo: e.target.checked }))}
+                  className="w-4 h-4 rounded border-2 accent-[color:var(--brand-navy)]" />
+                <label htmlFor="datoActive" className="text-[13px] font-semibold" style={{ color: "var(--brand-navy)" }}>¿Está activo?</label>
+              </div>
             </div>
 
             <div className="mt-5 flex items-center justify-between">
@@ -357,7 +386,7 @@ export function DatosAbiertos() {
   );
 }
 
-function FileUpload({ label, fileRef, value, onChange }: { label: string; fileRef: React.RefObject<HTMLInputElement | null>; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
+function FileUpload({ label, fileRef, value, onChange, accept }: { label: string; fileRef: React.RefObject<HTMLInputElement | null>; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; accept?: string }) {
   const name = value ? value.split("/").pop() || "" : "";
   return (
     <label className="block">
@@ -365,7 +394,7 @@ function FileUpload({ label, fileRef, value, onChange }: { label: string; fileRe
         {label}
       </span>
       <div className="flex gap-2 items-center mt-1">
-        <input ref={fileRef} type="file" onChange={onChange} className="hidden" />
+        <input ref={fileRef} type="file" accept={accept} onChange={onChange} className="hidden" />
         <button type="button" onClick={() => fileRef.current?.click()}
           className="h-11 px-4 rounded-lg border-2 text-[12px] font-bold uppercase tracking-wider font-[family-name:var(--font-cond)] inline-flex items-center gap-2 hover:bg-[color:var(--brand-mist)] transition"
           style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>

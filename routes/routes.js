@@ -791,6 +791,7 @@ routes.get("/datosabiertos/:page?", async (req, res) => {
 	const pageLength = 5
 	const { data: pages } = await mysql.getDatosAbiertosPages({
 		pageLength,
+		conditions: { estaActivo: 1 }
 	})
 
 	const pagination = {
@@ -805,6 +806,7 @@ routes.get("/datosabiertos/:page?", async (req, res) => {
 		paginate: true,
 		page,
 		pageLength,
+		conditions: { estaActivo: 1 }
 	})
 
 	const message = success
