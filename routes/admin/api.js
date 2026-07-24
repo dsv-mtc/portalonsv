@@ -582,6 +582,12 @@ router.get("/tipos-evento", isAuthenticated, async (req, res) => {
 });
 
 // --- Comunicaciones - Revistas ---
+router.get("/comunicaciones-revistas/temas", isAuthenticated, async (req, res) => {
+  const { data: revistas } = await mysql.getRevistas();
+  const temas = [...new Set((revistas || []).map(r => r.tema).filter(Boolean))].sort();
+  res.json({ success: true, data: temas });
+});
+
 router.get("/comunicaciones-revistas", isAuthenticated, async (req, res) => {
   const { data: revistas } = await mysql.getRevistas();
   res.json({ success: true, data: revistas });

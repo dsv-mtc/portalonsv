@@ -21,10 +21,10 @@ function initForm(): FormData {
 
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
 
-const TEMAS = ["Economía", "Derecho", "Psicología", "Antropología", "Medio Ambiente", "Educación"];
-
 export function ComunicacionesRevistas() {
   const [items, setItems] = useState<Revista[]>([]);
+  const [temas, setTemas] = useState<string[]>([]);
+  const [nuevoTema, setNuevoTema] = useState("");
   const [form, setForm] = useState<FormData>(initForm());
   const [msg, setMsg] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -40,7 +40,8 @@ export function ComunicacionesRevistas() {
   const paginatedItems = items.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
   const load = () => { setPage(1); apiGet<Revista[]>("/comunicaciones-revistas").then(setItems).catch(() => {}); };
-  useEffect(() => { load(); }, []);
+  const loadTemas = () => { apiGet<string[]>("/comunicaciones-revistas/temas").then(setTemas).catch(() => {}); };
+  useEffect(() => { load(); loadTemas(); }, []);
 
   useEffect(() => {
     if (!msg) return;
@@ -51,12 +52,14 @@ export function ComunicacionesRevistas() {
   const openCreate = () => {
     setForm(initForm());
     setEditingId(null);
+    setNuevoTema("");
     setModalOpen(true);
   };
 
   const openEdit = (item: Revista) => {
     setForm({ titulo: item.titulo, tema: item.tema || "", imagen_url: item.imagen_url || "", pdf_url: item.pdf_url || "", esta_activo: item.esta_activo });
     setEditingId(item.id);
+    setNuevoTema("");
     setModalOpen(true);
   };
 
@@ -78,17 +81,21 @@ export function ComunicacionesRevistas() {
       setMsg("Completa los campos obligatorios (*)");
       return;
     }
+    const temaFinal = nuevoTema.trim() || form.tema;
+    const payload = { ...form, tema: temaFinal };
     if (editingId !== null) {
-      await apiPut(`/comunicaciones-revistas/${editingId}`, form);
+      await apiPut(`/comunicaciones-revistas/${editingId}`, payload);
       setMsg("Revista actualizada");
     } else {
-      await apiPost("/comunicaciones-revistas", form);
+      await apiPost("/comunicaciones-revistas", payload);
       setMsg("Revista creada");
     }
     setModalOpen(false);
     setForm(initForm());
+    setNuevoTema("");
     setEditingId(null);
     load();
+    loadTemas();
   };
 
   const handleDelete = async () => {
@@ -219,16 +226,26 @@ export function ComunicacionesRevistas() {
                   className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
               </label>
 
-              <label className="block">
-                <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
-                  Tema
-                </span>
-                <select value={form.tema} onChange={e => setForm(p => ({ ...p, tema: e.target.value }))}
-                  className={inputCls} style={{ borderColor: "var(--brand-line)", cursor: "pointer" }}>
-                  <option value="">Seleccionar...</option>
-                  {TEMAS.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="block">
+                  <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
+                    Tema
+                  </span>
+                  <select value={form.tema} onChange={e => setForm(p => ({ ...p, tema: e.target.value }))}
+                    className={inputCls} style={{ borderColor: "var(--brand-line)", cursor: "pointer" }}>
+                    <option value="">Seleccionar...</option>
+                    {temas.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
+                    Nuevo tema
+                  </span>
+                  <input value={nuevoTema} onChange={e => setNuevoTema(e.target.value)}
+                    placeholder="Escribir nuevo tema..."
+                    className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
+                </label>
+              </div>
 
               <label className="block">
                 <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>

@@ -1943,8 +1943,8 @@ class DataBase {
 					reunionIsInZoom: evento.reunionLink?.includes("zoom"),
 					startDateString: moment(evento.startTime).format("DD/MM/YYYY"),
 					startTimeString: moment(evento.startTime).format("HH:mm"),
-					endDateString: moment(evento.endTime).format("DD/MM/YYYY"),
-					endTimeString: moment(evento.endTime).format("HH:mm"),
+					endDateString: evento.endTime ? moment(evento.endTime).format("DD/MM/YYYY") : null,
+					endTimeString: evento.endTime ? moment(evento.endTime).format("HH:mm") : null,
 					isActive: evento.isActive === 1
 				}))
 			}
@@ -2103,9 +2103,9 @@ class DataBase {
 					startDayISO: moment(evento.startTime).format("YYYY-MM-DD"),
 					startTimeISO: moment(evento.startTime).format("HH:mm:ss"),
 
-					endTimeString: evento.endTime ? moment(evento.endTime).format("DD/MM/YYYY HH:mm") : ' - ',
-					endDayISO: moment(evento.endTime).format("YYYY-MM-DD"),
-					endTimeISO: moment(evento.endTime).format("HH:mm:ss"),
+				endTimeString: evento.endTime ? moment(evento.endTime).format("DD/MM/YYYY HH:mm") : ' - ',
+					endDayISO: evento.endTime ? moment(evento.endTime).format("YYYY-MM-DD") : null,
+					endTimeISO: evento.endTime ? moment(evento.endTime).format("HH:mm:ss") : null,
 					isActive: evento.isActive === 1
 				}))
 			}
@@ -2227,7 +2227,7 @@ class DataBase {
 					shortDescription = ${shortDescription ? `'${shortDescription}'` : 'null'},
 					description = ${description ? `'${description}'` : 'null'},
 					startTime = '${startDay} ${startTime}',
-					endTime = ${endDay ? `'${endDay}${endTime ? ` ${endTime}` : ''}'` : 'null'},
+					endTime = ${(endDay && endDay !== 'Invalid date') ? `'${endDay}${endTime ? ` ${endTime}` : ''}'` : 'null'},
 					price = ${price ? price : 'null'},
 					imageUrl = ${imageUrl ? `'${imageUrl}'` : 'null'},
 					direccion = ${direccion ? `'${direccion}'` : 'null'},

@@ -371,16 +371,6 @@ export function Comunicaciones() {
               <input type="time" value={form.startTime} onChange={e => setForm(p => ({ ...p, startTime: e.target.value }))}
                 className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
             </Field>
-            <Field label="Día de finalización">
-              <input type="date" value={form.endDay} onChange={e => setForm(p => ({ ...p, endDay: e.target.value }))}
-                className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
-            </Field>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-4 mt-4">
-            <Field label="Hora de finalización">
-              <input type="time" value={form.endTime} onChange={e => setForm(p => ({ ...p, endTime: e.target.value }))}
-                className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
-            </Field>
             <Field label="Imagen">
               <div className="flex gap-2 items-center mt-1">
                 <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
@@ -393,6 +383,16 @@ export function Comunicaciones() {
                   <img src={form.imageUrl} className="w-11 h-11 rounded object-cover border" alt="" style={{ borderColor: "var(--brand-line)" }} />
                 )}
               </div>
+            </Field>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-4 mt-4">
+            <Field label="Día de finalización">
+              <input type="date" value={form.endDay} onChange={e => setForm(p => ({ ...p, endDay: e.target.value }))}
+                className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
+            </Field>
+            <Field label="Hora de finalización">
+              <input type="time" value={form.endTime} onChange={e => setForm(p => ({ ...p, endTime: e.target.value }))}
+                className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
             </Field>
             <Field label="Enlace reunión">
               <input type="url" value={form.reunionLink} onChange={e => setForm(p => ({ ...p, reunionLink: e.target.value }))}
@@ -623,16 +623,6 @@ function EditModal({ event, form, setForm, tipos, onSave, onClose, fileRef, onFi
             <input type="time" value={form.startTime} onChange={e => setForm(p => ({ ...p, startTime: e.target.value }))}
               className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
           </Field>
-          <Field label="Día de finalización">
-            <input type="date" value={form.endDay} onChange={e => setForm(p => ({ ...p, endDay: e.target.value }))}
-              className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
-          </Field>
-        </div>
-        <div className="grid sm:grid-cols-3 gap-4 mt-4">
-          <Field label="Hora de finalización">
-            <input type="time" value={form.endTime} onChange={e => setForm(p => ({ ...p, endTime: e.target.value }))}
-              className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
-          </Field>
           <Field label="Imagen">
             <div className="flex gap-2 items-center mt-1">
               <input ref={fileRef} type="file" accept="image/*" onChange={onFileChange} className="hidden" />
@@ -645,6 +635,16 @@ function EditModal({ event, form, setForm, tipos, onSave, onClose, fileRef, onFi
                 <img src={form.imageUrl} className="w-11 h-11 rounded object-cover border" alt="" style={{ borderColor: "var(--brand-line)" }} />
               )}
             </div>
+          </Field>
+        </div>
+        <div className="grid sm:grid-cols-3 gap-4 mt-4">
+          <Field label="Día de finalización">
+            <input type="date" value={form.endDay} onChange={e => setForm(p => ({ ...p, endDay: e.target.value }))}
+              className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
+          </Field>
+          <Field label="Hora de finalización">
+            <input type="time" value={form.endTime} onChange={e => setForm(p => ({ ...p, endTime: e.target.value }))}
+              className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
           </Field>
           <Field label="Enlace reunión">
             <input type="url" value={form.reunionLink} onChange={e => setForm(p => ({ ...p, reunionLink: e.target.value }))}
