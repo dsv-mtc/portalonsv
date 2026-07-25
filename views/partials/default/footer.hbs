@@ -92,6 +92,29 @@
       </div>
 
     </div>
+
+    {{#if footerData.redesSociales.length}}
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end gap-3 flex-wrap" style="padding: 16px 0;">
+          {{#each footerData.redesSociales}}
+            {{#if isActive}}
+            <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="d-inline-flex align-items-center gap-2"
+               style="color:#fff;text-decoration:none;font-weight:600;font-size:14px;padding:8px 16px;border-radius:10px;transition:0.2s;background:rgba(255,255,255,0.06);"
+               onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+              {{#if imagen_url}}
+                <img src="{{imagen_url}}" alt="{{red}}" style="width:20px;height:20px;object-fit:contain;border-radius:4px;">
+              {{else}}
+                <i class="fab fa-{{lower red}}"></i>
+              {{/if}}
+              {{red}}
+            </a>
+            {{/if}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    {{/if}}
     
     <div class="row">
       <div class="col-12">

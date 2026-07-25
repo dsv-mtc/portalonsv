@@ -7,6 +7,7 @@ const apiGhost = new (require("../api/ghost"));
 const utils = require("../utils/utils");
 const moment = require("moment");
 const seo = require("../controllers/seo");
+
 const feedController = new (require("../controllers/feed"));
 const youtubeApi = new (require("../api/gcp/Youtube"));
 
@@ -35,9 +36,11 @@ routes.use(async (req, res, next) => {
 	res.locals.titlesPosts = await apiGhost.getLastFivePostsTitleAndUrl();
 	res.locals.seoMetas = await seo.setMetaTags(req.originalUrl);
 	const footerData = await mysql.getFooterData();
+	const { data: redesSociales } = await mysql.getRedesSociales();
 	res.locals.url_selected = req.originalUrl;
 	res.locals.footerData = {
 		...footerData.data,
+		redesSociales: redesSociales || [],
 		year: new Date().getFullYear()
 	};
 	if (req.originalUrl.includes("/en/")) {

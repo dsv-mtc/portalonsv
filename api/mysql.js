@@ -2803,7 +2803,53 @@ class DataBase {
 		}
 	}
 
-}
+	async getRedesSociales() {
+		const queryString = `SELECT id, red, url, imagen_url, isActive FROM redes_sociales ORDER BY id ASC`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results.map(r => ({ ...r, isActive: r.isActive === 1 }))
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener las redes sociales" };
+		}
+	}
 
+	async createRedSocial({ red, url, imagen_url, isActive }) {
+		const queryString = `INSERT INTO redes_sociales (red, url, imagen_url, isActive) VALUES (?, ?, ?, ?)`;
+		try {
+			const result = await this.query(queryString, [red, url, imagen_url || null, isActive ? 1 : 0]);
+			return { success: true, data: result, message: "Red social creada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear la red social" };
+		}
+	}
+
+	async updateRedSocial({ id, red, url, imagen_url, isActive }) {
+		const queryString = `UPDATE redes_sociales SET red = ?, url = ?, imagen_url = ?, isActive = ? WHERE id = ?`;
+		try {
+			await this.query(queryString, [red, url, imagen_url || null, isActive ? 1 : 0, id]);
+			return { success: true, message: "Red social actualizada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar la red social" };
+		}
+	}
+
+	async deleteRedSocial(id) {
+		const queryString = `DELETE FROM redes_sociales WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true, message: "Red social eliminada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar la red social" };
+		}
+	}
+
+}
 
 module.exports = DataBase;

@@ -528,6 +528,8 @@ var hbs = exphbs.create({
 		parseCategory: parseCategory,
 		parseIcon: parseIcon,
 		parseRegion: parseRegion,
+		lower: str => (str || '').toLowerCase(),
+		eq: (a, b) => a === b,
 	}
 });
 
@@ -556,6 +558,8 @@ hbs2.registerHelper({
 	parseCategory: parseCategory,
 	parseIcon: parseIcon,
 	parseRegion: parseRegion,
+	lower: str => (str || '').toLowerCase(),
+	eq: (a, b) => a === b,
 })
 
 

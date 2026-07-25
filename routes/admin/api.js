@@ -133,6 +133,25 @@ const uploadRevistaMw = multer({
   }
 }).single('file');
 
+// --- Upload middleware para redes sociales ---
+const redesAssetsDir = path.join(__dirname, '../../public/assets/redes');
+if (!fs.existsSync(redesAssetsDir)) fs.mkdirSync(redesAssetsDir, { recursive: true });
+
+const uploadRedMw = multer({
+  storage: multer.diskStorage({
+    destination: redesAssetsDir,
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname).toLowerCase() || '';
+      cb(null, `red_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (!file.mimetype.startsWith('image/')) return cb(new Error('Solo se permiten imágenes'));
+    cb(null, true);
+  }
+}).single('image');
+
 function isAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ success: false, message: "No autenticado" });
@@ -893,6 +912,48 @@ router.get("/stats/dashboard", isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Error al obtener estadísticas" });
+  }
+});
+
+// --- Redes Sociales ---
+router.get("/redes-sociales", isAuthenticated, async (req, res) => {
+  const { data: redes } = await mysql.getRedesSociales();
+  res.json({ success: true, data: redes });
+});
+
+router.post("/redes-sociales", isAuthenticated, async (req, res) => {
+  const { red, url, imagen_url, isActive } = req.body;
+  const result = await mysql.createRedSocial({ red, url, imagen_url, isActive });
+  const log = await logAction('created', 'Red Social', result.data?.insertId, `Se creó la red social '${red}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/redes-sociales/:id", isAuthenticated, async (req, res) => {
+  const { red, url, imagen_url, isActive } = req.body;
+  const result = await mysql.updateRedSocial({ id: Number(req.params.id), red, url, imagen_url, isActive });
+  const log = await logAction('updated', 'Red Social', Number(req.params.id), `Se actualizó la red social '${red}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/redes-sociales/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { data: redes } = await mysql.getRedesSociales();
+  const name = redes?.find(r => r.id === id)?.red || '';
+  const result = await mysql.deleteRedSocial(id);
+  const log = await logAction('deleted', 'Red Social', id, `Se eliminó la red social '${name}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/redes-sociales/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadRedMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      const url = `/assets/redes/${req.file.filename}`;
+      res.json({ success: true, url });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
   }
 });
 
