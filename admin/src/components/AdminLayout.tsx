@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate, useLocation, Link, matchPath } from "react-router-dom";
-import { LayoutDashboard, PanelBottom, BarChart3, Map, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight } from "lucide-react";
+import { LayoutDashboard, PanelBottom, BarChart3, Map, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel } from "lucide-react";
 import { cn } from "../lib/utils";
 import { OnsvLogo } from "./OnsvLogo";
 import { apiGet } from "../lib/api";
@@ -9,14 +9,16 @@ type NavItem = { label: string; icon: React.ComponentType<{ className?: string }
 
 const NAV: NavItem[] = [
   { label: "Inicio", icon: LayoutDashboard, to: "/" },
-  { label: "Pie de página", icon: PanelBottom, to: "/pie" },
+  { label: "Misión — Visión", icon: Target, to: "/mision" },
   { label: "Cifras", icon: BarChart3, to: "/cifras" },
   { label: "Regiones", icon: Map, to: "/regiones" },
-  { label: "Comunicaciones", icon: Megaphone, children: [{ label: "Eventos", to: "/comunicaciones" }, { label: "Revistas", to: "/comunicaciones-revistas" }] },
-  { label: "Misión — Visión", icon: Target, to: "/mision" },
+  { label: "Comunicaciones", icon: Megaphone, children: [{ label: "Noticias", to: "/comunicaciones-noticias" }, { label: "Notas de prensa", to: "/comunicaciones-notas-prensa" }, { label: "Eventos", to: "/comunicaciones" }] },
+  { label: "Publicaciones", icon: Newspaper, children: [{ label: "Contenidos", to: "/publicaciones-contenidos" }, { label: "Revistas", to: "/publicaciones-revistas" }] },
+  { label: "Normas Legales", icon: Gavel, to: "/normas-legales" },
   { label: "Analítica", icon: LineChart, children: [{ label: "Menú", to: "/analitica" }, { label: "Submenú", to: "/analitica-submenu" }] },
   { label: "Popup", icon: Sparkles, to: "/popup" },
   { label: "Datos Abiertos", icon: Database, children: [{ label: "Datos", to: "/datos" }, { label: "Categorías", to: "/datos-categorias" }, { label: "Tipos", to: "/datos-tipos" }] },
+  { label: "Pie de página", icon: PanelBottom, to: "/pie" },
   { label: "Usuarios", icon: Users, to: "/usuarios" },
 ];
 

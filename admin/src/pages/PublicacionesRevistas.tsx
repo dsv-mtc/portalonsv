@@ -23,7 +23,7 @@ function initForm(): FormData {
 
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
 
-export function ComunicacionesRevistas() {
+export function PublicacionesRevistas() {
   const [tab, setTab] = useState<Tab>("publicaciones");
   const [items, setItems] = useState<Revista[]>([]);
   const [tipos, setTipos] = useState<TipoRevista[]>([]);
@@ -107,7 +107,7 @@ export function ComunicacionesRevistas() {
 
   return (
     <>
-      <PageHeader title="Revistas — Comunicaciones" eyebrow="Publicaciones" />
+      <PageHeader title="Revistas — Publicaciones" eyebrow="Publicaciones" />
 
       <style>{`
         .revista-img { width:40px; height:40px; object-fit:contain; border-radius:6px; display:block; transition:transform .25s ease; }

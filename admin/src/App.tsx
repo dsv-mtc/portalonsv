@@ -10,7 +10,11 @@ import { Regiones } from "./pages/Regiones";
 import { AnaliticaMenu } from "./pages/AnaliticaMenu";
 import { AnaliticaSubmenu } from "./pages/AnaliticaSubmenu";
 import { Comunicaciones } from "./pages/Comunicaciones";
-import { ComunicacionesRevistas } from "./pages/ComunicacionesRevistas";
+import { PublicacionesRevistas } from "./pages/PublicacionesRevistas";
+import { Noticias } from "./pages/Noticias";
+import { NotasPrensa } from "./pages/NotasPrensa";
+import { Contenidos } from "./pages/Contenidos";
+import { NormasLegales } from "./pages/NormasLegales";
 import { DatosAbiertos } from "./pages/DatosAbiertos";
 import { DatosAbiertosCategorias } from "./pages/DatosAbiertosCategorias";
 import { DatosAbiertosTipos } from "./pages/DatosAbiertosTipos";
@@ -31,7 +35,11 @@ export default function App() {
           <Route path="analitica" element={<AnaliticaMenu />} />
           <Route path="analitica-submenu" element={<AnaliticaSubmenu />} />
           <Route path="comunicaciones" element={<Comunicaciones />} />
-          <Route path="comunicaciones-revistas" element={<ComunicacionesRevistas />} />
+          <Route path="comunicaciones-noticias" element={<Noticias />} />
+          <Route path="comunicaciones-notas-prensa" element={<NotasPrensa />} />
+          <Route path="publicaciones-contenidos" element={<Contenidos />} />
+          <Route path="publicaciones-revistas" element={<PublicacionesRevistas />} />
+          <Route path="normas-legales" element={<NormasLegales />} />
           <Route path="datos" element={<DatosAbiertos />} />
           <Route path="datos-categorias" element={<DatosAbiertosCategorias />} />
           <Route path="datos-tipos" element={<DatosAbiertosTipos />} />
