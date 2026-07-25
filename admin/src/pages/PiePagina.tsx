@@ -8,8 +8,6 @@ import { apiGet, apiPut, apiPost, apiDelete, apiUpload } from "../lib/api";
 type Tab = "informacion" | "redes";
 type RedSocial = { id: number; red: string; url: string; imagen_url: string; isActive: boolean };
 
-const SOCIAL_OPTIONS = ["Facebook", "Twitter", "Instagram", "YouTube", "LinkedIn", "TikTok", "Otro"];
-
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
 
 interface Props {
@@ -42,7 +40,7 @@ export function PiePagina() {
   const [tab, setTab] = useState<Tab>("informacion");
   const [footer, setFooter] = useState({ telefono: "", direccion: "", email: "", descripcion: "", horario: "" });
   const [redes, setRedes] = useState<RedSocial[]>([]);
-  const [redForm, setRedForm] = useState({ red: "Facebook", url: "", imagen_url: "", isActive: true });
+  const [redForm, setRedForm] = useState({ red: "", url: "", imagen_url: "", isActive: true });
   const [redEditingId, setRedEditingId] = useState<number | null>(null);
   const [redModalOpen, setRedModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
@@ -76,7 +74,7 @@ export function PiePagina() {
 
   // --- Redes sociales CRUD ---
   const openRedCreate = () => {
-    setRedForm({ red: "Facebook", url: "", imagen_url: "", isActive: true });
+    setRedForm({ red: "", url: "", imagen_url: "", isActive: true });
     setRedEditingId(null);
     setRedModalOpen(true);
   };
@@ -266,10 +264,9 @@ export function PiePagina() {
                 <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
                   Red social <span style={{ color: "var(--brand-red)" }}>*</span>
                 </span>
-                <select value={redForm.red} onChange={e => setRedForm(p => ({ ...p, red: e.target.value }))}
-                  className={inputCls} style={{ borderColor: "var(--brand-line)", cursor: "pointer" }}>
-                  {SOCIAL_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
-                </select>
+                <input type="text" value={redForm.red} onChange={e => setRedForm(p => ({ ...p, red: e.target.value }))}
+                  placeholder="Ej. Facebook, WhatsApp, Telegram..."
+                  className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
               </label>
 
               <label className="block">

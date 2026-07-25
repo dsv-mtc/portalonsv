@@ -18,7 +18,8 @@
   .site-footer .ft-list a { color: #fff; text-decoration: none; transition: 0.2s; }
   .site-footer .ft-list a:hover { color: var(--red); }
   
-  .site-footer .cp-area { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 24px; font-size: 14px; color: #8a96b3; font-family: "Barlow", sans-serif; }
+  .site-footer .footer-social-row { margin-top: 30px; margin-bottom: 24px; }
+  .site-footer .cp-area { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 0; padding-top: 24px; font-size: 14px; color: #8a96b3; font-family: "Barlow", sans-serif; }
   .site-footer .cp-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
   
   .site-footer .legal-links { display: flex; gap: 20px; flex-wrap: wrap; }
@@ -94,9 +95,9 @@
     </div>
 
     {{#if footerData.redesSociales.length}}
-    <div class="row">
+    <div class="row footer-social-row">
       <div class="col-12">
-        <div class="d-flex justify-content-end gap-3 flex-wrap" style="padding: 16px 0;">
+        <div class="d-flex justify-content-end flex-wrap" style="gap: 10px;">
           {{#each footerData.redesSociales}}
             {{#if isActive}}
             <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="d-inline-flex align-items-center gap-2"
@@ -107,7 +108,6 @@
               {{else}}
                 <i class="fab fa-{{lower red}}"></i>
               {{/if}}
-              {{red}}
             </a>
             {{/if}}
           {{/each}}
@@ -115,7 +115,7 @@
       </div>
     </div>
     {{/if}}
-    
+
     <div class="row">
       <div class="col-12">
         <div class="cp-area">
