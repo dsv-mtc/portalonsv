@@ -366,14 +366,14 @@ routes.get("/analitica", async (req, res) => {
 routes.get("/webinars", async (req, res) => {
 	await youtubeApi.getPlayLists();
 	const playlist = await youtubeApi.getItemsFromWebinarsPlayList();
-	res.render("pages/webinars", { playlist });
+	res.render("pages/webinars", { playlist, submenu: "webinars" });
 })
 
 routes.get("/capacitaciones", async (req, res) => {
 	const playlists = await youtubeApi.getPlayLists();
 	const playlistId = playlists.find(p => p.snippet.title.toLowerCase().includes('capacitaciones')).id;
 	const playlist = await youtubeApi.getItemsFromPlayList(playlistId);
-	res.render("pages/webinars", { playlist });
+	res.render("pages/webinars", { playlist, submenu: "capacitaciones" });
 })
 /**SRAT */
 routes.get("/srat", async (req, res) => {
@@ -390,8 +390,19 @@ routes.get("/peru-in-world", async (req, res) => {
 })
 
 /** ENTORNOS VIALES */
-routes.get("/entornos-viales", (req, res) => {
-	res.render("pages/entornos-viales");
+routes.get("/entornos-viales", async (req, res) => {
+	const lang = res.locals.lang === "en" ? "en" : "es";
+	const { data: entornos } = await mysql.getEntornosViales();
+	const tarjetas = (entornos || [])
+		.filter(e => e.activo)
+		.map(e => ({
+			badge: lang === "en" ? e.badge_en : e.badge_es,
+			titulo: lang === "en" ? e.titulo_en : e.titulo_es,
+			descripcion: lang === "en" ? e.descripcion_en : e.descripcion_es,
+			imagen_url: e.imagen_url || "",
+			orden: e.orden
+		}));
+	res.render("pages/entornos-viales", { tarjetas, lang });
 });
 
 /**PUBLICACIONES */

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate, useLocation, Link, matchPath } from "react-router-dom";
-import { LayoutDashboard, PanelBottom, BarChart3, Map, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel } from "lucide-react";
+import { LayoutDashboard, PanelBottom, BarChart3, Map, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel, LayoutGrid } from "lucide-react";
 import { cn } from "../lib/utils";
 import { OnsvLogo } from "./OnsvLogo";
 import { apiGet } from "../lib/api";
@@ -18,6 +18,7 @@ const NAV: NavItem[] = [
   { label: "Analítica", icon: LineChart, children: [{ label: "Menú", to: "/analitica" }, { label: "Submenú", to: "/analitica-submenu" }] },
   { label: "Popup", icon: Sparkles, to: "/popup" },
   { label: "Datos Abiertos", icon: Database, children: [{ label: "Datos", to: "/datos" }, { label: "Categorías", to: "/datos-categorias" }, { label: "Tipos", to: "/datos-tipos" }] },
+  { label: "Programas", icon: LayoutGrid, to: "/programas" },
   { label: "Pie de página", icon: PanelBottom, to: "/pie" },
   { label: "Usuarios", icon: Users, to: "/usuarios" },
 ];

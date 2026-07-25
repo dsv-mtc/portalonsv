@@ -2850,6 +2850,76 @@ class DataBase {
 		}
 	}
 
+	// --- Entornos Viales (Programas) ---
+	async getEntornosViales() {
+		const queryString = `
+			SELECT id, badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en,
+			       imagen_url, activo, orden, created_at
+			FROM entornos_viales
+			ORDER BY orden ASC, id ASC
+		`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results.map(r => ({ ...r, activo: r.activo === 1 })) };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener los entornos viales" };
+		}
+	}
+
+	async createEntornoVial({ badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden }) {
+		const queryString = `
+			INSERT INTO entornos_viales (badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [
+				badge_es || '', badge_en || '',
+				titulo_es || '', titulo_en || '',
+				descripcion_es || '', descripcion_en || '',
+				imagen_url || '', activo ? 1 : 0,
+				Number(orden) || 0
+			]);
+			return { success: true, data: { insertId: result.insertId } };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el entorno vial" };
+		}
+	}
+
+	async updateEntornoVial({ id, badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden }) {
+		const queryString = `
+			UPDATE entornos_viales
+			SET badge_es = ?, badge_en = ?, titulo_es = ?, titulo_en = ?, descripcion_es = ?, descripcion_en = ?,
+			    imagen_url = ?, activo = ?, orden = ?
+			WHERE id = ?
+		`;
+		try {
+			await this.query(queryString, [
+				badge_es || '', badge_en || '',
+				titulo_es || '', titulo_en || '',
+				descripcion_es || '', descripcion_en || '',
+				imagen_url || '', activo ? 1 : 0,
+				Number(orden) || 0, id
+			]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el entorno vial" };
+		}
+	}
+
+	async deleteEntornoVial(id) {
+		const queryString = `DELETE FROM entornos_viales WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el entorno vial" };
+		}
+	}
+
 }
 
 module.exports = DataBase;

@@ -107,7 +107,7 @@ export function PublicacionesRevistas() {
 
   return (
     <>
-      <PageHeader title="Revistas — Publicaciones" eyebrow="Publicaciones" />
+      <PageHeader title="Revistas" eyebrow="Publicaciones" />
 
       <style>{`
         .revista-img { width:40px; height:40px; object-fit:contain; border-radius:6px; display:block; transition:transform .25s ease; }
@@ -115,6 +115,7 @@ export function PublicacionesRevistas() {
         .pag-btn-t { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: #1d3557; font-weight: 700; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .3s ease; }
         .pag-btn-t:hover { border-color: #C8102E; color: #C8102E; }
         .pag-btn-t.active { background: #C8102E; color: #fff; border-color: transparent; }
+        .table-wrap { overflow: visible; }
       `}</style>
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
 
@@ -140,7 +141,7 @@ export function PublicacionesRevistas() {
       {tab === "publicaciones" && (
         <>
           <div className="rounded-2xl border border-[color:var(--brand-line)] bg-white p-5" style={{ boxShadow: "var(--shadow-brand)" }}>
-            <div style={{ overflowX: "auto" }}>
+            <div className="table-wrap">
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
                 <thead>
                   <tr style={{ borderBottom: "2px solid var(--brand-line)" }}>

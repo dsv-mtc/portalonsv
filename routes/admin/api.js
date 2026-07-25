@@ -133,6 +133,25 @@ const uploadRevistaMw = multer({
   }
 }).single('file');
 
+// --- Upload middleware para entornos viales (Programas) ---
+const entornosAssetsDir = path.join(__dirname, '../../public/assets/entornos');
+if (!fs.existsSync(entornosAssetsDir)) fs.mkdirSync(entornosAssetsDir, { recursive: true });
+
+const uploadEntornoMw = multer({
+  storage: multer.diskStorage({
+    destination: entornosAssetsDir,
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname).toLowerCase() || '.png';
+      cb(null, `entorno_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
+
 // --- Upload middleware para redes sociales ---
 const redesAssetsDir = path.join(__dirname, '../../public/assets/redes');
 if (!fs.existsSync(redesAssetsDir)) fs.mkdirSync(redesAssetsDir, { recursive: true });
@@ -949,6 +968,48 @@ router.post("/redes-sociales/upload", isAuthenticated, async (req, res) => {
     uploadRedMw(req, res, (err) => {
       if (err) return res.status(400).json({ success: false, message: err.message });
       const url = `/assets/redes/${req.file.filename}`;
+      res.json({ success: true, url });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
+});
+
+// --- Programas - Entornos Viales ---
+router.get("/entornos-viales", isAuthenticated, async (req, res) => {
+  const { data: entornos } = await mysql.getEntornosViales();
+  res.json({ success: true, data: entornos });
+});
+
+router.post("/entornos-viales", isAuthenticated, async (req, res) => {
+  const { badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden } = req.body;
+  const result = await mysql.createEntornoVial({ badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden });
+  const log = await logAction('created', 'Entorno Vial', result.data?.insertId, `Se creó el entorno vial '${titulo_es || titulo_en}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/entornos-viales/:id", isAuthenticated, async (req, res) => {
+  const { badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden } = req.body;
+  const result = await mysql.updateEntornoVial({ id: Number(req.params.id), badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden });
+  const log = await logAction('updated', 'Entorno Vial', Number(req.params.id), `Se actualizó el entorno vial '${titulo_es || titulo_en}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/entornos-viales/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { data: entornos } = await mysql.getEntornosViales();
+  const name = entornos?.find(e => e.id === id)?.titulo_es || '';
+  const result = await mysql.deleteEntornoVial(id);
+  const log = await logAction('deleted', 'Entorno Vial', id, `Se eliminó el entorno vial '${name}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/entornos-viales/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadEntornoMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      const url = `/assets/entornos/${req.file.filename}`;
       res.json({ success: true, url });
     });
   } catch (error) {

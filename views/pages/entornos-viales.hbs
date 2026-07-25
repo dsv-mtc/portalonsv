@@ -7,41 +7,19 @@
 
 		<div class="entv-grid">
 
+			{{#each tarjetas}}
 			<div class="entv-card">
-				<div class="entv-ph" style="background:linear-gradient(135deg,#2E5C99,#14213D)">
-					<span class="entv-lbl">{{t lang "Corredores"}}</span>
+				<div class="entv-ph" {{#if imagen_url}}style="background-image:url('{{imagen_url}}');background-size:cover;background-position:center;"{{else}}style="background:linear-gradient(135deg,#2E5C99,#14213D)"{{/if}}>
+					<span class="entv-lbl">{{badge}}</span>
 				</div>
 				<div class="entv-body">
 					<div class="entv-dt">{{t lang "Entornos Viales"}}</div>
-					<h3>{{t lang "Corredores de alto tránsito"}}</h3>
-					<p>{{t lang "Intervención en vías de mayor siniestralidad con acciones de fiscalización, fiscalización electrónica, y mejoras de infraestructura para reducir el riesgo de todas y todos los usuarios de la vía."}}</p>
+					<h3>{{titulo}}</h3>
+					<p>{{descripcion}}</p>
 					<div class="entv-rd">{{t lang "Conocer más →"}}</div>
 				</div>
 			</div>
-
-			<div class="entv-card">
-				<div class="entv-ph" style="background:linear-gradient(135deg,#1f7a52,#14213D)">
-					<span class="entv-lbl">{{t lang "Usuarios"}}</span>
-				</div>
-				<div class="entv-body">
-					<div class="entv-dt">{{t lang "Entornos Viales"}}</div>
-					<h3>{{t lang "Protección de usuarios vulnerables"}}</h3>
-					<p>{{t lang "Peatones, ciclistas y motociclistas son los más expuestos. Se implementan pasos seguros, ciclovías, reductores de velocidad, y campañas de concientización."}}</p>
-					<div class="entv-rd">{{t lang "Conocer más →"}}</div>
-				</div>
-			</div>
-
-			<div class="entv-card">
-				<div class="entv-ph" style="background:linear-gradient(135deg,#9E0C24,#3a1116)">
-					<span class="entv-lbl">{{t lang "Ciudades"}}</span>
-				</div>
-				<div class="entv-body">
-					<div class="entv-dt">{{t lang "Entornos Viales"}}</div>
-					<h3>{{t lang "Movilidad urbana sostenible"}}</h3>
-					<p>{{t lang "Entornos que reducen emisiones y riesgo, priorizando al peatón y al transporte público en zonas urbanas."}}</p>
-					<div class="entv-rd">{{t lang "Conocer más →"}}</div>
-				</div>
-			</div>
+			{{/each}}
 
 		</div>
 	</div>
