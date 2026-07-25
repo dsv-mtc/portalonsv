@@ -402,7 +402,7 @@ routes.get("/entornos-viales", async (req, res) => {
 			imagen_url: e.imagen_url || "",
 			orden: e.orden
 		}));
-	res.render("pages/entornos-viales", { tarjetas, lang });
+	res.render("pages/entornos-viales", { tarjetas, lang, tieneCarrusel: tarjetas.length > 3 });
 });
 
 /**PUBLICACIONES */

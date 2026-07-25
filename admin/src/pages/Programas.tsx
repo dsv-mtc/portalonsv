@@ -128,7 +128,8 @@ export function Programas() {
       <PageHeader title="Entornos Viales" eyebrow="Programas" />
 
       <style>{`
-        .entorno-img { width:48px; height:48px; object-fit:cover; border-radius:8px; display:block; }
+        .entorno-img { width:48px; height:48px; object-fit:cover; border-radius:8px; display:block; transition:transform .25s ease; }
+        .entorno-img:hover { transform:scale(3); z-index:99999; position:relative; }
         .pag-btn-p { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: #1d3557; font-weight: 700; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .3s ease; }
         .pag-btn-p:hover { border-color: #C8102E; color: #C8102E; }
         .pag-btn-p.active { background: #C8102E; color: #fff; border-color: transparent; }

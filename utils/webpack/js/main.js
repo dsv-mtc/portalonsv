@@ -96,6 +96,20 @@ function carousel(){
 			}
 		});
 	}
+	if (document.getElementById('entornos-carousel')) {
+		$('#entornos-carousel').owlCarousel({
+			loop: true,
+			margin: 24,
+			nav: true,
+			dots: false,
+			autoplay: false,
+			responsive: {
+				0: { items: 1 },
+				600: { items: 2 },
+				1000: { items: 3 }
+			}
+		});
+	}
 }
 /**
  * @description: Función encargada de procesar la búsqueda, en las páginas de publicaciones y normas legales, la función obtiene el segmento del menú
