@@ -89,7 +89,7 @@ export function AdminLayout() {
           )}
           <button type="button" onClick={() => setMobileOpen(false)} aria-label="Cerrar menú" className="lg:hidden ml-auto w-9 h-9 rounded-lg grid place-items-center text-white/70 hover:text-white hover:bg-white/10 transition"><svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
-        <nav className="flex-1 overflow-y-hidden px-3 py-4 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5 scrollbar-auto-hide">
           {NAV.map((item) => {
             const Icon = item.icon;
             if (item.children) {
