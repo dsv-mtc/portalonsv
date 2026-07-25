@@ -128,11 +128,12 @@ export function Programas() {
       <PageHeader title="Entornos Viales" eyebrow="Programas" />
 
       <style>{`
-        .entorno-img { width:48px; height:48px; object-fit:cover; border-radius:8px; display:block; transition:transform .25s ease; }
+        .entorno-img { width:48px; height:48px; object-fit:contain; border-radius:8px; display:block; transition:transform .25s ease; }
         .entorno-img:hover { transform:scale(3); z-index:99999; position:relative; }
         .pag-btn-p { width: 42px; height: 42px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: #1d3557; font-weight: 700; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .3s ease; }
         .pag-btn-p:hover { border-color: #C8102E; color: #C8102E; }
         .pag-btn-p.active { background: #C8102E; color: #fff; border-color: transparent; }
+        .table-wrap { overflow: visible; }
       `}</style>
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
 
@@ -142,7 +143,7 @@ export function Programas() {
       </div>
 
       <div className="rounded-2xl border border-[color:var(--brand-line)] bg-white p-5" style={{ boxShadow: "var(--shadow-brand)" }}>
-        <div style={{ overflowX: "auto" }}>
+        <div className="table-wrap">
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
             <thead>
               <tr style={{ borderBottom: "2px solid var(--brand-line)" }}>

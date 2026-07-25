@@ -106,6 +106,8 @@ routes.get("/quienes-somos", async (req, res) => {
 		bg: iconData.bg,
 		titulo: contenido[compIndices[i][0]].contenido,
 		descripcion: contenido[compIndices[i][1]].contenido,
+		link: iconData.link,
+		external: iconData.external,
 	}));
 	res.render("pages/quienes-somos", {
 		contenido,
