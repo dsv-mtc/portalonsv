@@ -119,18 +119,22 @@ routes.get("/quienes-somos", async (req, res) => {
 /**NOTICIAS Y EVENTOS */
 routes.get("/comunicaciones/noticias/:page?", async (req, res) => {
 	const page = req.params.page ? req.params.page : 1;
-	const post = await apiGhost.getPosts(7, "tags,authors", "tag:noticias-eventos", "published_at DESC", page);
-	const pagination = post.meta.pagination;
+	const posts = await apiGhost.getPosts(7, "tags,authors", "tag:noticias-eventos", "published_at DESC", page);
+	const pagination = posts.meta.pagination;
 	pagination.url_page = 'comunicaciones/noticias';
+	const { data: disabledIds } = await mysql.getDisabledGhostIds('noticias');
+	const post = (posts || []).filter(p => !disabledIds.includes(p.id));
 
 	res.render("pages/comunicaciones/noticias", { post, pagination });
 })
 
 routes.get("/comunicaciones/nota-prensa/:page?", async (req, res) => {
 	const page = req.params.page ? req.params.page : 1;
-	const post = await apiGhost.getPosts(7, "tags,authors", "tag:notas-prensa", "published_at DESC", page);
-	const pagination = post.meta.pagination;
+	const posts = await apiGhost.getPosts(7, "tags,authors", "tag:notas-prensa", "published_at DESC", page);
+	const pagination = posts.meta.pagination;
 	pagination.url_page = 'comunicaciones/nota-prensa';
+	const { data: disabledIds } = await mysql.getDisabledGhostIds('notas-prensa');
+	const post = (posts || []).filter(p => !disabledIds.includes(p.id));
 
 	res.render("pages/comunicaciones/notas-prensa", { post, pagination });
 })
@@ -219,6 +223,16 @@ routes.get("/comunicaciones/:slug", async (req, res) => {
  */
 routes.get("/post/:slug", async (req, res) => {
 	const post = await apiGhost.getPost(req.params.slug);
+	if (post) {
+		const allDisabled = await Promise.all([
+			mysql.getDisabledGhostIds('noticias'),
+			mysql.getDisabledGhostIds('notas-prensa'),
+			mysql.getDisabledGhostIds('publicaciones'),
+			mysql.getDisabledGhostIds('normas-legales'),
+		]);
+		const disabledIds = allDisabled.flatMap(r => r.data || []);
+		if (disabledIds.includes(post.id)) return res.redirect('/');
+	}
 	const primary_tag = `tag:${post.primary_tag.slug}`
 	const postsRelatives = await apiGhost.getPosts(4, "tags,authors", primary_tag, "published_at DESC");
 
@@ -439,6 +453,9 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 		console.error(error)
 	}
 
+	const { data: disabledIdsPub } = await mysql.getDisabledGhostIds('publicaciones');
+	posts = (posts || []).filter(p => !disabledIdsPub.includes(p.id));
+
 	let pagination = posts.meta?.pagination ?? {};
 	pagination.url_page = 'publicaciones';
 
@@ -642,6 +659,9 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 	} catch (error) {
 		console.error(error)
 	}
+
+	const { data: disabledIdsNormas } = await mysql.getDisabledGhostIds('normas-legales');
+	posts = (posts || []).filter(p => !disabledIdsNormas.includes(p.id));
 
 	let pagination = posts.meta?.pagination ?? {};
 	pagination.url_page = 'normas-legales';
@@ -885,11 +905,18 @@ routes.post("/search", async (req, res) => {
 	const filter = req.body["filter"];
 	const featured = filter !== 'notas-prensa';
 
+	const TIPO_MAP = { 'noticias-eventos': 'noticias', 'notas-prensa': 'notas-prensa', 'publicaciones': 'publicaciones', 'normas-legales': 'normas-legales' };
 	const results = await apiGhost.getSearchPosts(`tags:${filter}`, slug);
 
 	if (results.success) {
+		const tipo = TIPO_MAP[filter];
+		let filteredPosts = results.posts;
+		if (tipo) {
+			const { data: disabledIds } = await mysql.getDisabledGhostIds(tipo);
+			filteredPosts = (results.posts || []).filter(p => !disabledIds.includes(p.id));
+		}
 		const { page, prev, next, step } = req.body;
-		const searchRendered = utils.renderNoticiasEventosTemplate({ post: results.posts, lang, keyword: req.body['search'], page, prev, next, step, featured })
+		const searchRendered = utils.renderNoticiasEventosTemplate({ post: filteredPosts, lang, keyword: req.body['search'], page, prev, next, step, featured })
 		res.send({ success: true, posts: searchRendered });
 	} else {
 		res.send({ success: false })

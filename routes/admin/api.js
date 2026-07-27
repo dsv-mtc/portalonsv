@@ -8,6 +8,8 @@ const fs = require('fs');
 const mysql = new (require("../../api/mysql"));
 mysql.setQuery();
 
+const apiGhost = new (require("../../api/ghost"));
+
 const assetsDir = path.join(__dirname, '../../public/assets');
 const uploadMw = multer({
   storage: multer.diskStorage({
@@ -1016,6 +1018,45 @@ router.post("/entornos-viales/upload", isAuthenticated, async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "Error del servidor" });
   }
+});
+
+// --- Publicaciones Estado (habilitar/deshabilitar) ---
+const GHOST_FILTERS = {
+  noticias: 'tag:noticias-eventos',
+  'notas-prensa': 'tag:notas-prensa',
+  publicaciones: 'tags:[publicaciones]',
+  'normas-legales': 'tags:[normas-legales]',
+};
+
+router.get("/publicaciones-estado", isAuthenticated, async (req, res) => {
+  const { tipo } = req.query;
+  if (!tipo || !GHOST_FILTERS[tipo]) return res.status(400).json({ success: false, message: "Tipo inválido" });
+
+  try {
+    const posts = await apiGhost.getPosts('all', 'tags,authors', GHOST_FILTERS[tipo], 'published_at DESC', 1);
+    const { data: estadoMap } = await mysql.getPublicacionesEstado(tipo);
+
+    const data = (posts || []).map(p => ({
+      id: p.id,
+      title: p.title,
+      published_at: p.published_at,
+      habilitado: estadoMap[p.id] !== 0,
+    }));
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error al obtener publicaciones" });
+  }
+});
+
+router.put("/publicaciones-estado", isAuthenticated, async (req, res) => {
+  const { ghost_id, tipo, habilitado } = req.body;
+  if (!ghost_id || !tipo) return res.status(400).json({ success: false, message: "Faltan campos" });
+
+  const result = await mysql.setPublicacionEstado(ghost_id, tipo, habilitado);
+  const log = await logAction('updated', `Publicación ${tipo}`, 0, `Se ${habilitado ? 'habilitó' : 'deshabilitó'} la publicación '${ghost_id}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 module.exports = router;

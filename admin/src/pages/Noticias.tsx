@@ -1,15 +1,5 @@
-import { PageHeader } from "../components/PageHeader";
+import { PublicacionesEstadoList } from "../components/PublicacionesEstadoList";
 
 export function Noticias() {
-  return (
-    <>
-      <PageHeader title="Noticias" eyebrow="Comunicaciones" />
-      <div className="rounded-2xl border border-[color:var(--brand-line)] bg-white p-10 text-center"
-           style={{ boxShadow: "var(--shadow-brand)" }}>
-        <p className="text-[14px]" style={{ color: "var(--brand-navy)" }}>
-          Módulo en construcción. Próximamente: activar/desactivar noticias.
-        </p>
-      </div>
-    </>
-  );
+  return <PublicacionesEstadoList tipo="noticias" title="Noticias" eyebrow="Comunicaciones" />;
 }

@@ -1,89 +1,72 @@
 const $iframe = document.getElementById('analitica')
-const $iframeContainer= document.getElementById('iframe_container')
+const $iframeContainer = document.getElementById('iframe_container')
 const $currentNavigationMenu = document.getElementById('current')
 const $currentNavigationSubmenuList = document.getElementById('submenu_list_alt')
 const $navigation = document.getElementById('nav')
 const $subnavigation = document.getElementById('subnav')
-const $footer= document.querySelector('.footer_analitica')
+const $footer = document.querySelector('.footer_analitica')
 const $menuContainer = document.querySelector('.menu-container')
 
 const $menusWrapper = document.getElementById('menus-wrapper')
-const $submenusWrapper = document.getElementById('submenus-wrapper')
+const $modal = document.getElementById('submenu-modal')
+const $modalTitle = document.getElementById('modal-title')
+const $modalBody = document.getElementById('modal-body')
+const $modalClose = document.getElementById('modal-close')
 
-$menusWrapper.addEventListener('click', evt => {
-	const $target = evt.target
-	const $menu = $target.closest('.menu')
-	if (!$menu) return
-	$currentNavigationSubmenuList.innerHTML = '';
+let loadingIframe = false
 
-	const $submenuList = document.querySelector(`[data-list-menu-target="${$menu.dataset.menuId}"]`)
-	if (!$submenuList) return
-
-	$menusWrapper.querySelectorAll('.menu.active').forEach($menu => {
-		$menu.classList.remove('active')
-	})
-	$submenusWrapper.querySelectorAll('.submenu-list:not(.d-none)').forEach($submenuList => {
-		$submenuList.classList.add('d-none')
-	})
-
-	$submenusWrapper.classList.remove('d-none')
-	$submenuList.classList.remove('d-none')
-	$menu.classList.add('active')
-
-	$currentNavigationMenu.textContent = $menu.querySelector('p').textContent
-	$currentNavigationSubmenuList.innerHTML = [...$submenuList.querySelectorAll('.submenu')].map($submenu => {
-		return `
-			<li id="subnav_${$submenu.dataset.submenuId}" data-rutabi="${$submenu.dataset.submenuRutabi}">
-				${$submenu.querySelector('.submenu-info p').textContent}
-			</li>
-		`
-	}).join('')
+document.querySelectorAll('.menu-card').forEach($card => {
+  $card.addEventListener('click', () => {
+    const menuId = $card.dataset.menuId
+    const $data = document.querySelector(`.menu-submenu-data[data-menu-id="${menuId}"]`)
+    if (!$data) return
+    $modalTitle.textContent = $data.dataset.menuDesc
+    $modalBody.innerHTML = ''
+    $data.querySelectorAll('.submenu-card').forEach($sub => {
+      $modalBody.appendChild($sub.cloneNode(true))
+    })
+    $modal.classList.remove('d-none')
+  })
 })
 
-$submenusWrapper.addEventListener('click', evt => {
-	const $target = evt.target
-	const $submenu = $target.closest('.submenu')
-	if (!$submenu) return
-
-	$submenusWrapper.querySelectorAll('.submenu.active').forEach($submenu => {
-		$submenu.classList.remove('active')
-	})
-
-	$submenu.classList.add('active')
-
-	$iframe.setAttribute('src', $submenu.dataset.submenuRutabi)
-	$iframeContainer.classList.remove('d-none')
-
-	$menuContainer.classList.add('d-none')
-
-	if ($navigation) $navigation.classList.add('d-none')
-	$subnavigation.classList.remove('d-none')
-	if ($footer) $footer.classList.add('d-none')
-
-	document.getElementById(`subnav_${$submenu.dataset.submenuId}`).classList.add('active')
-
+$modalBody.addEventListener('click', evt => {
+  const $sub = evt.target.closest('.submenu-card')
+  if (!$sub || loadingIframe) return
+  const rutabi = $sub.dataset.rutabi
+  if (!rutabi || rutabi === '#') return
+  loadingIframe = true
+  $modal.classList.add('d-none')
+  $iframe.setAttribute('src', rutabi)
+  $iframeContainer.classList.remove('d-none')
+  $menuContainer.classList.add('d-none')
+  if ($navigation) $navigation.classList.add('d-none')
+  $subnavigation.classList.remove('d-none')
+  if ($footer) $footer.classList.add('d-none')
+  const submenuName = $sub.querySelector('.submenu-card-info p').textContent
+  $currentNavigationMenu.textContent = $modalTitle.textContent
+  $currentNavigationSubmenuList.innerHTML = `<li class="active">${submenuName}</li>`
 })
 
-$currentNavigationSubmenuList.addEventListener('click', evt => {
-	const $target = evt.target
-	const $submenuNavigation = $target.closest('li')
-	if (!$submenuNavigation) return
-
-	$currentNavigationSubmenuList.querySelectorAll('li.active').forEach($submenu => {
-		$submenu.classList.remove('active')
-	})
-
-	$iframe.setAttribute('src', $submenuNavigation.dataset.rutabi)
-	$submenuNavigation.classList.add('active')
+$iframe.addEventListener('load', () => {
+  loadingIframe = false
 })
 
-const $exitIframe= document.getElementById('close-frame')
+function closeModal() {
+  $modal.classList.add('d-none')
+}
 
-$exitIframe.addEventListener('click', () => {
-	$iframe.setAttribute('src', '')
-	$iframeContainer.classList.add('d-none')
-	$menuContainer.classList.remove('d-none')
-	if ($navigation) $navigation.classList.remove('d-none')
-	$subnavigation.classList.add('d-none')
-	if ($footer) $footer.classList.remove('d-none')
+$modalClose.addEventListener('click', closeModal)
+
+$modal.addEventListener('click', evt => {
+  if (evt.target === $modal) closeModal()
+})
+
+document.getElementById('close-frame').addEventListener('click', () => {
+  $iframe.setAttribute('src', '')
+  $iframeContainer.classList.add('d-none')
+  $menuContainer.classList.remove('d-none')
+  if ($navigation) $navigation.classList.remove('d-none')
+  $subnavigation.classList.add('d-none')
+  if ($footer) $footer.classList.remove('d-none')
+  loadingIframe = false
 })

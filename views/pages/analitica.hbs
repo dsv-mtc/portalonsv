@@ -1,8 +1,7 @@
 <link rel="stylesheet" href="/css/analitica.css">
 
 <section class="analitica_container">
-  
-  <!-- BARRA SUPERIOR (Aparece cuando abres el Iframe) -->
+
   <section class="subnav d-none" id="subnav">
     <div id="close-frame">
       <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M3 11V3h8v8Zm0 10v-8h8v8Zm10-10V3h8v8Zm0 10v-8h8v8ZM5 9h4V5H5Zm10 0h4V5h-4Zm0 10h4v-4h-4ZM5 19h4v-4H5ZM15 9Zm0 6Zm-6 0Zm0-6Z"></path></svg>
@@ -13,59 +12,65 @@
     <ul id="submenu_list_alt"></ul>
   </section>
 
-  <!-- CONTENEDOR PRINCIPAL DE LA VISTA -->
   <div class="menu-container">
-    
-    <!-- ENCABEZADO IDÉNTICO AL PROTOTIPO -->
+
     <div class="analitica-header container text-left mt-4 mb-4" style="width: 100%; max-width: 1200px; padding: 0 15px;">
       <div class="events-main-title mb-3">
         <h1>ANALÍTICA DE DATOS</h1>
       </div>
-      <p class="analitica-subtitle">{{t lang "Selecciona una categoría para ver sus tableros, videos explicativos y reportes en PDF."}}</p>
+
     </div>
 
-    <!-- TARJETAS PRINCIPALES (Tu HTML original intacto) -->
     <section class="rsp-noti-sec rsp-wrap w-100">
       <div class="d-flex justify-content-center">
-        <div class="owl-carousel owl-theme" id="menus-wrapper">
+        <div class="menu-grid" id="menus-wrapper">
           {{#each menu}}
-            <article class="menu{{#if @first}} active{{/if}}" data-menu-id="{{id}}">
+            <div class="menu-card" data-menu-id="{{id}}">
               <img src="{{urlImagen}}">
               <p>{{descripcion}}</p>
-            </article>
+            </div>
           {{/each}}
         </div>
       </div>
     </section>
 
-    <!-- SUBMENÚS (Todas las categorías muestran "Dashboard Pruebas") -->
-    <section class="submenus-wrapper" id="submenus-wrapper">
-      {{#each menu}}
-        <ul class="submenu-list{{#unless @first}} d-none{{/unless}}" data-list-menu-target="{{this.id}}">
-          <li class="submenu" data-submenu-id="{{this.id}}" data-submenu-rutabi="#">
-            <div class="submenu-info">
-              <p>Dashboard Pruebas</p>
-              <img src="{{this.urlImagen}}">
+    <div class="modal-overlay d-none" id="submenu-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title"></h3>
+          <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+    </div>
+
+    {{#each menu}}
+      <div class="d-none menu-submenu-data" data-menu-id="{{id}}" data-menu-desc="{{descripcion}}">
+        {{#each submenu}}
+          <div class="submenu-card" data-rutabi="{{rutabi}}" data-linkvideo="{{linkvideo}}" data-linkpdf="{{linkpdf}}">
+            <div class="submenu-card-info">
+              <p>{{submenu}}</p>
             </div>
-            <div class="options">
-              <a target="_blank" href="#" title="ver video">
-                <svg viewBox="0 0 24 24"><path fill="currentColor" d="m9.5 16.5l7-4.5l-7-4.5ZM12 22q-2.075 0-3.9-.788q-1.825-.787-3.175-2.137q-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175q1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138q1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175q-1.35 1.35-3.175 2.137Q14.075 22 12 22Z"></path></svg>
+            <div class="submenu-card-options">
+              <a href="{{linkvideo}}" target="_blank" title="Ver video">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="m9.5 16.5 7-4.5-7-4.5ZM12 22q-2.075 0-3.9-.788-1.825-.787-3.175-2.137-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175 1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138 1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175-1.35 1.35-3.175 2.137Q14.075 22 12 22Z"/></svg>
                 <small>VER VIDEO</small>
               </a>
-              <a target="_blank" href="#" title="ver pdf">
-                <svg viewBox="0 0 256 256"><path fill="currentColor" d="M48 136a8 8 0 0 0 8-8V40h88v48a8 8 0 0 0 8 8h48v32a8 8 0 0 0 16 0V88a7.7 7.7 0 0 0-2.4-5.7l-55.9-56A8.1 8.1 0 0 0 152 24H56a16 16 0 0 0-16 16v88a8 8 0 0 0 8 8Zm112-84.7L188.7 80H160ZM64 160H48a8 8 0 0 0-8 8v48a8 8 0 0 0 16 0v-8h8a24 24 0 0 0 0-48Zm0 32h-8v-16h8a8 8 0 0 1 0 16Zm132-16v12h16a8 8 0 0 1 0 16h-16v12a8 8 0 0 1-16 0v-48a8 8 0 0 1 8-8h28a8 8 0 0 1 0 16Zm-68-16h-14a8 8 0 0 0-8 8v48a8 8 0 0 0 8 8h14a32 32 0 0 0 0-64Zm0 48h-6v-32h6a16 16 0 0 1 0 32Z"></path></svg>
+              <a href="{{linkpdf}}" target="_blank" title="Ver PDF">
+                <svg viewBox="0 0 256 256"><path fill="currentColor" d="M48 136a8 8 0 0 0 8-8V40h88v48a8 8 0 0 0 8 8h48v32a8 8 0 0 0 16 0V88a7.7 7.7 0 0 0-2.4-5.7l-55.9-56A8.1 8.1 0 0 0 152 24H56a16 16 0 0 0-16 16v88a8 8 0 0 0 8 8Zm112-84.7L188.7 80H160ZM64 160H48a8 8 0 0 0-8 8v48a8 8 0 0 0 16 0v-8h8a24 24 0 0 0 0-48Zm0 32h-8v-16h8a8 8 0 0 1 0 16Zm132-16v12h16a8 8 0 0 1 0 16h-16v12a8 8 0 0 1-16 0v-48a8 8 0 0 1 8-8h28a8 8 0 0 1 0 16Zm-68-16h-14a8 8 0 0 0-8 8v48a8 8 0 0 0 8 8h14a32 32 0 0 0 0-64Zm0 48h-6v-32h6a16 16 0 0 1 0 32Z"/></svg>
                 <small>VER PDF</small>
               </a>
             </div>
-          </li>
-        </ul>
-      {{/each}}
-    </section>
+          </div>
+        {{/each}}
+      </div>
+    {{/each}}
 
   </div>
 
   <div class="iframe_container d-none" id="iframe_container">
     <iframe id="analitica"></iframe>
   </div>
+
 </section>
 <script src="/js/analitica.js" type="module"></script>

@@ -2944,6 +2944,41 @@ class DataBase {
 		}
 	}
 
+	async getPublicacionesEstado(tipo) {
+		const queryString = `SELECT ghost_id, habilitado FROM publicaciones_estado WHERE tipo = ?`;
+		try {
+			const results = await this.query(queryString, [tipo]);
+			const map = {};
+			results.forEach(r => { map[r.ghost_id] = r.habilitado; });
+			return { success: true, data: map };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: {} };
+		}
+	}
+
+	async setPublicacionEstado(ghost_id, tipo, habilitado) {
+		const queryString = `INSERT INTO publicaciones_estado (ghost_id, tipo, habilitado) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE habilitado = VALUES(habilitado)`;
+		try {
+			await this.query(queryString, [ghost_id, tipo, habilitado ? 1 : 0]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el estado" };
+		}
+	}
+
+	async getDisabledGhostIds(tipo) {
+		const queryString = `SELECT ghost_id FROM publicaciones_estado WHERE tipo = ? AND habilitado = 0`;
+		try {
+			const results = await this.query(queryString, [tipo]);
+			return { success: true, data: results.map(r => r.ghost_id) };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
 }
 
 module.exports = DataBase;
