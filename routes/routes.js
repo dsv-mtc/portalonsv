@@ -118,23 +118,31 @@ routes.get("/quienes-somos", async (req, res) => {
 
 /**NOTICIAS Y EVENTOS */
 routes.get("/comunicaciones/noticias/:page?", async (req, res) => {
-	const page = req.params.page ? req.params.page : 1;
-	const posts = await apiGhost.getPosts(7, "tags,authors", "tag:noticias-eventos", "published_at DESC", page);
-	const pagination = posts.meta.pagination;
-	pagination.url_page = 'comunicaciones/noticias';
+	const PER_PAGE = 7;
+	const page = parseInt(req.params.page) || 1;
+	const allPosts = await apiGhost.getPosts('all', "tags,authors", "tag:noticias-eventos", "published_at DESC");
 	const { data: disabledIds } = await mysql.getDisabledGhostIds('noticias');
-	const post = (posts || []).filter(p => !disabledIds.includes(p.id));
+	const enabledPosts = (allPosts || []).filter(p => !disabledIds.includes(p.id));
+	const totalPages = Math.max(1, Math.ceil(enabledPosts.length / PER_PAGE));
+	const currentPage = Math.min(page, totalPages);
+	const start = (currentPage - 1) * PER_PAGE;
+	const post = enabledPosts.slice(start, start + PER_PAGE);
+	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/noticias' };
 
 	res.render("pages/comunicaciones/noticias", { post, pagination });
 })
 
 routes.get("/comunicaciones/nota-prensa/:page?", async (req, res) => {
-	const page = req.params.page ? req.params.page : 1;
-	const posts = await apiGhost.getPosts(7, "tags,authors", "tag:notas-prensa", "published_at DESC", page);
-	const pagination = posts.meta.pagination;
-	pagination.url_page = 'comunicaciones/nota-prensa';
+	const PER_PAGE = 6;
+	const page = parseInt(req.params.page) || 1;
+	const allPosts = await apiGhost.getPosts('all', "tags,authors", "tag:notas-prensa", "published_at DESC");
 	const { data: disabledIds } = await mysql.getDisabledGhostIds('notas-prensa');
-	const post = (posts || []).filter(p => !disabledIds.includes(p.id));
+	const enabledPosts = (allPosts || []).filter(p => !disabledIds.includes(p.id));
+	const totalPages = Math.max(1, Math.ceil(enabledPosts.length / PER_PAGE));
+	const currentPage = Math.min(page, totalPages);
+	const start = (currentPage - 1) * PER_PAGE;
+	const post = enabledPosts.slice(start, start + PER_PAGE);
+	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/nota-prensa' };
 
 	res.render("pages/comunicaciones/notas-prensa", { post, pagination });
 })
@@ -444,17 +452,13 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 		posts = await apiGhost.get().posts
 			.browse({
 				filter,
-				limit: title ? 'all' : pageSize,
+				limit: 'all',
 				include: 'tags,authors',
 				order: "published_at DESC",
-				page
 			})
 	} catch (error) {
 		console.error(error)
 	}
-
-	let pagination = posts.meta?.pagination ?? {};
-	pagination.url_page = 'publicaciones';
 
 	const { data: disabledIdsPub } = await mysql.getDisabledGhostIds('publicaciones');
 	posts = (posts || []).filter(p => !disabledIdsPub.includes(p.id));
@@ -466,31 +470,37 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 
 	const urlQuery = `?${titleQuery}${categoriaQuery}${regionQuery}${yearQuery}`.slice(0, -1);
 
-	pagination.url_query = urlQuery
-
 	if (title) {
-		const splitArray = (array, size) => {
-			const result = [];
-			for (let i = 0; i < array.length; i += size) {
-				result.push(array.slice(i, i + size));
-			}
-			return result;
-		};
-		let filteredPosts = posts.filter(post => {
+		posts = posts.filter(post => {
 			titleMatch = `${post.slug} ${post.title}`.toLowerCase().includes(title.toLowerCase())
 			return titleMatch;
 		})
-		const paginateFilteredPosts = splitArray(filteredPosts, pageSize)
-		pagination.pages = paginateFilteredPosts.length
-		pagination.limit = pageSize
-		pagination.page = page
-		pagination.total = filteredPosts.length
-		pagination.next = page < pagination.pages ? page + 1 : null
-		pagination.prev = page > 1 ? page - 1 : null
-		posts = paginateFilteredPosts[page - 1] ?? []
 	}
 
-	if (pagination.pages < page) {
+	const splitArray = (array, size) => {
+		const result = [];
+		for (let i = 0; i < array.length; i += size) {
+			result.push(array.slice(i, i + size));
+		}
+		return result;
+	};
+
+	const paginateFilteredPosts = splitArray(posts, pageSize)
+	const totalPagesPub = paginateFilteredPosts.length
+	const currentPagePub = Math.min(page, Math.max(1, totalPagesPub))
+	const pagination = {
+		page: currentPagePub,
+		pages: totalPagesPub,
+		limit: pageSize,
+		total: posts.length,
+		next: currentPagePub < totalPagesPub ? currentPagePub + 1 : null,
+		prev: currentPagePub > 1 ? currentPagePub - 1 : null,
+		url_page: 'publicaciones',
+		url_query: urlQuery,
+	}
+	posts = paginateFilteredPosts[currentPagePub - 1] ?? []
+
+	if (pagination.pages < page && page > 1) {
 		console.log({
 			message: `Redirecting from page ${page} to page ${pagination.pages}`
 		})
@@ -652,17 +662,13 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 		posts = await apiGhost.get().posts
 			.browse({
 				filter,
-				limit: title ? 'all' : pageSize,
+				limit: 'all',
 				include: 'tags,authors',
 				order: "published_at DESC",
-				page
 			})
 	} catch (error) {
 		console.error(error)
 	}
-
-	let pagination = posts.meta?.pagination ?? {};
-	pagination.url_page = 'normas-legales';
 
 	const { data: disabledIdsNormas } = await mysql.getDisabledGhostIds('normas-legales');
 	posts = (posts || []).filter(p => !disabledIdsNormas.includes(p.id));
@@ -674,31 +680,37 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 
 	const urlQuery = `?${titleQuery}${categoriaQuery}${regionQuery}${yearQuery}`.slice(0, -1);
 
-	pagination.url_query = urlQuery
-
 	if (title) {
-		const splitArray = (array, size) => {
-			const result = [];
-			for (let i = 0; i < array.length; i += size) {
-				result.push(array.slice(i, i + size));
-			}
-			return result;
-		};
-		let filteredPosts = posts.filter(post => {
+		posts = posts.filter(post => {
 			titleMatch = `${post.slug} ${post.title}`.toLowerCase().includes(title.toLowerCase())
 			return titleMatch;
 		})
-		const paginateFilteredPosts = splitArray(filteredPosts, pageSize)
-		pagination.pages = paginateFilteredPosts.length
-		pagination.limit = pageSize
-		pagination.page = page
-		pagination.total = filteredPosts.length
-		pagination.next = page < pagination.pages ? page + 1 : null
-		pagination.prev = page > 1 ? page - 1 : null
-		posts = paginateFilteredPosts[page - 1] ?? []
 	}
 
-	if (pagination.pages < page) {
+	const splitArray = (array, size) => {
+		const result = [];
+		for (let i = 0; i < array.length; i += size) {
+			result.push(array.slice(i, i + size));
+		}
+		return result;
+	};
+
+	const paginateFilteredPosts = splitArray(posts, pageSize)
+	const totalPagesNormas = paginateFilteredPosts.length
+	const currentPageNormas = Math.min(page, Math.max(1, totalPagesNormas))
+	const pagination = {
+		page: currentPageNormas,
+		pages: totalPagesNormas,
+		limit: pageSize,
+		total: posts.length,
+		next: currentPageNormas < totalPagesNormas ? currentPageNormas + 1 : null,
+		prev: currentPageNormas > 1 ? currentPageNormas - 1 : null,
+		url_page: 'normas-legales',
+		url_query: urlQuery,
+	}
+	posts = paginateFilteredPosts[currentPageNormas - 1] ?? []
+
+	if (pagination.pages < page && page > 1) {
 		console.log({
 			message: `Redirecting from page ${page} to page ${pagination.pages}`
 		})
