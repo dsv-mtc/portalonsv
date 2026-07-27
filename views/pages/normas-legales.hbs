@@ -123,15 +123,15 @@
       </style>
 
         <nav class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
-          <a href="#" class="custom-pag-btn active" aria-label="Página 1">1</a>
-          <a href="#" class="custom-pag-btn" aria-label="Página 2">2</a>
-          <a href="#" class="custom-pag-btn" aria-label="Página 3">3</a>
-          <a href="#" class="custom-pag-btn" aria-label="Página 4">4</a>
-
-          <a href="#" class="custom-pag-btn" aria-label="Siguiente página">
-            <i class="fal fa-chevron-right"></i>
-          </a>
-          <a href="#" class="custom-pag-btn" aria-label="Última página">
+          {{#each (range 1 pagination.pages)}}
+            <a href="{{page_url ../pagination.url_page this ../lang}}" class="custom-pag-btn{{#if (eq this ../pagination.page)}} active{{/if}}" aria-label="Página {{this}}">{{this}}</a>
+          {{/each}}
+          {{#if pagination.next}}
+            <a href="{{page_url pagination.url_page pagination.next lang}}" class="custom-pag-btn" aria-label="Siguiente página">
+              <i class="fal fa-chevron-right"></i>
+            </a>
+          {{/if}}
+          <a href="{{page_url pagination.url_page pagination.pages lang}}" class="custom-pag-btn" aria-label="Última página">
             <i class="fal fa-chevron-double-right"></i>
           </a>
         </nav>

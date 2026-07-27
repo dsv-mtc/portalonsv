@@ -453,11 +453,11 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 		console.error(error)
 	}
 
-	const { data: disabledIdsPub } = await mysql.getDisabledGhostIds('publicaciones');
-	posts = (posts || []).filter(p => !disabledIdsPub.includes(p.id));
-
 	let pagination = posts.meta?.pagination ?? {};
 	pagination.url_page = 'publicaciones';
+
+	const { data: disabledIdsPub } = await mysql.getDisabledGhostIds('publicaciones');
+	posts = (posts || []).filter(p => !disabledIdsPub.includes(p.id));
 
 	const categoriaQuery = categoria ? `categoria=${categoria}&` : '';
 	const regionQuery = region ? `region=${region}&` : '';
@@ -625,6 +625,7 @@ routes.get("/revistas/:page?", async (req, res) => {
 		})),
 		tema,
 		title,
+		showPagination: totalPages > 1,
 	});
 })
 
@@ -660,11 +661,11 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 		console.error(error)
 	}
 
-	const { data: disabledIdsNormas } = await mysql.getDisabledGhostIds('normas-legales');
-	posts = (posts || []).filter(p => !disabledIdsNormas.includes(p.id));
-
 	let pagination = posts.meta?.pagination ?? {};
 	pagination.url_page = 'normas-legales';
+
+	const { data: disabledIdsNormas } = await mysql.getDisabledGhostIds('normas-legales');
+	posts = (posts || []).filter(p => !disabledIdsNormas.includes(p.id));
 
 	const categoriaQuery = categoria ? `categoria=${categoria}&` : '';
 	const regionQuery = region ? `region=${region}&` : '';

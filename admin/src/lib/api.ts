@@ -11,7 +11,7 @@ export interface LogEntry {
   created_at: string;
 }
 
-export async function api<T>(path: string, options?: RequestInit): Promise<{ success: boolean; data?: T; message?: string; log?: LogEntry }> {
+export async function api<T>(path: string, options?: RequestInit): Promise<{ success: boolean; data?: T; message?: string; log?: LogEntry; pagination?: { page: number; pages: number; total: number; next: number | null; prev: number | null } }> {
   const res = await fetch(`${BASE}${path}`, {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json', ...options?.headers },

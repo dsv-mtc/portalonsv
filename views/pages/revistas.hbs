@@ -60,6 +60,7 @@
 				{{>revistas/revistas-card-body lang=../lang}}
 			{{/each}}
 
+		{{#if showPagination}}
 		  <style>
         .custom-pag-wrapper {
           gap: 8px;
@@ -112,6 +113,7 @@
             <i class="fal fa-chevron-double-right"></i>
           </a>
         </nav>
+		{{/if}}
 		{{else}}
 			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
 				{{t lang "No se encontraron resultados"}}

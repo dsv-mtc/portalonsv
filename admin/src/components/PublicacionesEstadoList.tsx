@@ -1,21 +1,27 @@
 import { useState, useEffect } from "react";
-import { ToggleLeft, ToggleRight, Loader } from "lucide-react";
+import { ToggleLeft, ToggleRight, Loader, ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "./PageHeader";
-import { apiGet, apiPut } from "../lib/api";
+import { api, apiPut } from "../lib/api";
 
 type GhostPost = { id: string; title: string; published_at: string; habilitado: boolean };
 
 export function PublicacionesEstadoList({ tipo, title, eyebrow }: { tipo: string; title: string; eyebrow: string }) {
   const [items, setItems] = useState<GhostPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
   const [toggling, setToggling] = useState<string | null>(null);
   const [msg, setMsg] = useState("");
 
-  useEffect(() => {
-    apiGet<{ data: GhostPost[] }>(`/publicaciones-estado?tipo=${tipo}`).then(d => {
-      setItems(d.data || []);
-    }).finally(() => setLoading(false));
-  }, [tipo]);
+  const fetchPage = async (p: number) => {
+    const res = await api<any>(`/publicaciones-estado?tipo=${tipo}&page=${p}`);
+    if (res.success) {
+      setItems(res.data || []);
+      setPage(res.pagination?.page || 1);
+      setPages(res.pagination?.pages || 1);
+    }
+  };
+
+  useEffect(() => { fetchPage(1); }, [tipo]);
 
   useEffect(() => {
     if (!msg) return;
@@ -33,10 +39,6 @@ export function PublicacionesEstadoList({ tipo, title, eyebrow }: { tipo: string
     setToggling(null);
   };
 
-  const activeCount = items.filter(i => i.habilitado).length;
-
-  if (loading) return <p className="text-[14px]" style={{ color: "var(--muted-foreground)" }}>Cargando...</p>;
-
   return (
     <>
       <PageHeader title={title} eyebrow={eyebrow} />
@@ -45,7 +47,7 @@ export function PublicacionesEstadoList({ tipo, title, eyebrow }: { tipo: string
       <section className="rounded-2xl border border-[color:var(--brand-line)] bg-white" style={{ boxShadow: "var(--shadow-brand)" }}>
         <header className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[color:var(--brand-line)]">
           <h3 className="text-[17px] uppercase text-[color:var(--brand-navy)] tracking-tight font-[family-name:var(--font-display)] font-bold">
-            {title} <span className="text-[13px] font-normal lowercase opacity-60">({activeCount} habilitadas de {items.length})</span>
+            {title}
           </h3>
         </header>
         <div className="p-0">
@@ -62,7 +64,7 @@ export function PublicacionesEstadoList({ tipo, title, eyebrow }: { tipo: string
                     </p>
                   </div>
                   <button onClick={() => toggle(post)} disabled={toggling === post.id}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] uppercase font-bold tracking-[0.04em] font-[family-name:var(--font-cond)] border transition cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] uppercase font-bold tracking-[0.04em] font-[family-name:var(--font-cond)] border transition cursor-pointer shrink-0"
                     style={{
                       background: post.habilitado ? "#dcfce7" : "#f1f5f9",
                       color: post.habilitado ? "#166534" : "#475569",
@@ -76,6 +78,23 @@ export function PublicacionesEstadoList({ tipo, title, eyebrow }: { tipo: string
             </div>
           )}
         </div>
+        {pages > 1 && (
+          <div className="flex items-center justify-center gap-3 px-5 py-4 border-t border-[color:var(--brand-line)]">
+            <button onClick={() => fetchPage(page - 1)} disabled={page <= 1}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold uppercase tracking-[0.04em] font-[family-name:var(--font-cond)] border transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
+              <ChevronLeft className="w-3.5 h-3.5" /> Anterior
+            </button>
+            <span className="text-[12px] font-semibold" style={{ color: "var(--muted-foreground)" }}>
+              Página {page} de {pages}
+            </span>
+            <button onClick={() => fetchPage(page + 1)} disabled={page >= pages}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold uppercase tracking-[0.04em] font-[family-name:var(--font-cond)] border transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
+              Siguiente <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
       </section>
     </>
   );

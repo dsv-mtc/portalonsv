@@ -560,6 +560,7 @@ hbs2.registerHelper({
 	parseRegion: parseRegion,
 	lower: str => (str || '').toLowerCase(),
 	eq: (a, b) => a === b,
+	range: (start, end) => [...Array(end - start + 1).keys()].map(i => i + start),
 })
 
 

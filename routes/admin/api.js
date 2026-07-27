@@ -1029,11 +1029,14 @@ const GHOST_FILTERS = {
 };
 
 router.get("/publicaciones-estado", isAuthenticated, async (req, res) => {
-  const { tipo } = req.query;
+  const { tipo, page } = req.query;
   if (!tipo || !GHOST_FILTERS[tipo]) return res.status(400).json({ success: false, message: "Tipo inválido" });
 
+  const pageNum = Math.max(1, parseInt(page) || 1);
+
   try {
-    const posts = await apiGhost.getPosts('all', 'tags,authors', GHOST_FILTERS[tipo], 'published_at DESC', 1);
+    const posts = await apiGhost.getPosts(10, 'tags,authors', GHOST_FILTERS[tipo], 'published_at DESC', pageNum);
+    const pagination = posts.meta?.pagination || {};
     const { data: estadoMap } = await mysql.getPublicacionesEstado(tipo);
 
     const data = (posts || []).map(p => ({
@@ -1043,7 +1046,7 @@ router.get("/publicaciones-estado", isAuthenticated, async (req, res) => {
       habilitado: estadoMap[p.id] !== 0,
     }));
 
-    res.json({ success: true, data });
+    res.json({ success: true, data, pagination: { page: pagination.page, pages: pagination.pages, total: pagination.total, next: pagination.next, prev: pagination.prev } });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Error al obtener publicaciones" });
