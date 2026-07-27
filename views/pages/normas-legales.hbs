@@ -123,8 +123,12 @@
       </style>
 
         <nav class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
-          {{#each (range 1 pagination.pages)}}
-            <a href="{{page_url ../pagination.url_page this ../lang}}" class="custom-pag-btn{{#if (eq this ../pagination.page)}} active{{/if}}" aria-label="Página {{this}}">{{this}}</a>
+          {{#each pagination.pages_list}}
+            {{#if (eq this '...')}}
+              <span class="custom-pag-btn" style="cursor:default;border:none;">…</span>
+            {{else}}
+              <a href="{{page_url ../pagination.url_page this ../lang}}" class="custom-pag-btn{{#if (eq this ../pagination.page)}} active{{/if}}" aria-label="Página {{this}}">{{this}}</a>
+            {{/if}}
           {{/each}}
           {{#if pagination.next}}
             <a href="{{page_url pagination.url_page pagination.next lang}}" class="custom-pag-btn" aria-label="Siguiente página">

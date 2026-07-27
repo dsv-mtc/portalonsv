@@ -5,6 +5,19 @@ import { api, apiPut } from "../lib/api";
 
 type GhostPost = { id: string; title: string; published_at: string; habilitado: boolean };
 
+function getPageNumbers(current: number, total: number, delta = 3): (number | string)[] {
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+  const result: (number | string)[] = [];
+  const left = Math.max(2, current - delta);
+  const right = Math.min(total - 1, current + delta);
+  result.push(1);
+  if (left > 2) result.push('...');
+  for (let i = left; i <= right; i++) result.push(i);
+  if (right < total - 1) result.push('...');
+  result.push(total);
+  return result;
+}
+
 export function PublicacionesEstadoList({ tipo, title, eyebrow }: { tipo: string; title: string; eyebrow: string }) {
   const [items, setItems] = useState<GhostPost[]>([]);
   const [page, setPage] = useState(1);
@@ -89,10 +102,14 @@ export function PublicacionesEstadoList({ tipo, title, eyebrow }: { tipo: string
           <div className="mt-6 flex justify-center items-center gap-1.5">
             <button type="button" aria-label="Primera página" onClick={() => fetchPage(1)} disabled={page <= 1} className="pag-btn-t"><ChevronsLeft className="w-4 h-4" /></button>
             <button type="button" aria-label="Página anterior" onClick={() => fetchPage(page - 1)} disabled={page <= 1} className="pag-btn-t"><ChevronLeft className="w-4 h-4" /></button>
-            {Array.from({ length: pages }, (_, i) => i + 1).map(p => (
-              <button key={p} type="button" aria-label={`Página ${p}`} onClick={() => fetchPage(p)}
-                className={`pag-btn-t${p === page ? " active" : ""}`}>{p}</button>
-            ))}
+            {getPageNumbers(page, pages).map((p, idx) => (
+               typeof p === 'string' ? (
+                 <span key={`ellipsis-${idx}`} className="pag-btn-t" style={{cursor:'default',border:'none'}}>…</span>
+               ) : (
+                 <button key={p} type="button" aria-label={`Página ${p}`} onClick={() => fetchPage(p)}
+                   className={`pag-btn-t${p === page ? " active" : ""}`}>{p}</button>
+               )
+             ))}
             <button type="button" aria-label="Página siguiente" onClick={() => fetchPage(page + 1)} disabled={page >= pages} className="pag-btn-t"><ChevronRight className="w-4 h-4" /></button>
             <button type="button" aria-label="Última página" onClick={() => fetchPage(pages)} disabled={page >= pages} className="pag-btn-t"><ChevronsRight className="w-4 h-4" /></button>
           </div>

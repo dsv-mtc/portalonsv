@@ -76,7 +76,7 @@
 
       <div class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
         {{#if pagination}}
-          {{#each (paginate pagination.page pagination.pages)}}
+          {{#each pagination.pages_list}}
             {{#if (eq this '...')}}
               <span class="custom-pag-btn" style="cursor:default;border:none;">…</span>
             {{else}}

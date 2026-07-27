@@ -527,30 +527,22 @@ var hbs = exphbs.create({
 		parseIcon: parseIcon,
 		parseRegion: parseRegion,
 		lower: str => (str || '').toLowerCase(),
-		eq: (a, b) => a === b,
-		gt: (a, b) => a > b,
-		range: (start, end) => [...Array(end - start + 1).keys()].map(i => i + start),
-		paginate: (current, total, delta = 2) => {
-			if (total <= 1) return [1];
-			const range = [];
-			const left = Math.max(2, current - delta);
-			const right = Math.min(total - 1, current + delta);
-			if (left > 2) range.push('...');
-			for (let i = left; i <= right; i++) range.push(i);
-			if (right < total - 1) range.push('...');
-			return [1, ...range, total];
-		},
-		paginate: (current, total, delta = 2) => {
-			if (total <= 1) return [1];
-			const range = [];
-			const left = Math.max(2, current - delta);
-			const right = Math.min(total - 1, current + delta);
-			if (left > 2) range.push('...');
-			for (let i = left; i <= right; i++) range.push(i);
-			if (right < total - 1) range.push('...');
-			return [1, ...range, total];
-		},
-	}
+	eq: (a, b) => a === b,
+	gt: (a, b) => a > b,
+	range: (start, end) => [...Array(end - start + 1).keys()].map(i => i + start),
+	paginate: (current, total, delta = 3) => {
+		if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+		const range = [];
+		const left  = Math.max(2, current - delta);
+		const right = Math.min(total - 1, current + delta);
+		range.push(1);
+		if (left > 2) range.push('...');
+		for (let i = left; i <= right; i++) range.push(i);
+		if (right < total - 1) range.push('...');
+		range.push(total);
+		return range;
+	},
+}
 });
 
 var hbs2 = handlebars.create()
@@ -581,6 +573,18 @@ hbs2.registerHelper({
 	lower: str => (str || '').toLowerCase(),
 	eq: (a, b) => a === b,
 	range: (start, end) => [...Array(end - start + 1).keys()].map(i => i + start),
+	paginate: (current, total, delta = 3) => {
+		if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+		const range = [];
+		const left  = Math.max(2, current - delta);
+		const right = Math.min(total - 1, current + delta);
+		range.push(1);
+		if (left > 2) range.push('...');
+		for (let i = left; i <= right; i++) range.push(i);
+		if (right < total - 1) range.push('...');
+		range.push(total);
+		return range;
+	},
 })
 
 

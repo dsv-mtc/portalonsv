@@ -17,6 +17,19 @@ mysql.setQuery();
 
 require('dotenv').config();
 
+function getPageNumbers(current, total, delta = 3) {
+	if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+	const result = [];
+	const left  = Math.max(2, current - delta);
+	const right = Math.min(total - 1, current + delta);
+	result.push(1);
+	if (left > 2) result.push('...');
+	for (let i = left; i <= right; i++) result.push(i);
+	if (right < total - 1) result.push('...');
+	result.push(total);
+	return result;
+}
+
 const revistasData = require("../data/revistas.json");
 
 const COMPONENTES_ICONS = [
@@ -131,7 +144,7 @@ routes.get("/comunicaciones/noticias/:page?", async (req, res) => {
 	const currentPage = Math.min(page, totalPages);
 	const start = (currentPage - 1) * PER_PAGE;
 	const post = enabledPosts.slice(start, start + PER_PAGE);
-	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/noticias' };
+	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/noticias', pages_list: getPageNumbers(currentPage, totalPages) };
 	const hasResults = post.length > 0;
 
 	res.render("pages/comunicaciones/noticias", { post, pagination, title, hasResults });
@@ -151,7 +164,7 @@ routes.get("/comunicaciones/nota-prensa/:page?", async (req, res) => {
 	const currentPage = Math.min(page, totalPages);
 	const start = (currentPage - 1) * PER_PAGE;
 	const post = enabledPosts.slice(start, start + PER_PAGE);
-	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/nota-prensa' };
+	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/nota-prensa', pages_list: getPageNumbers(currentPage, totalPages) };
 	const hasResults = post.length > 0;
 
 	res.render("pages/comunicaciones/notas-prensa", { post, pagination, title, hasResults });
@@ -507,6 +520,7 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 		prev: currentPagePub > 1 ? currentPagePub - 1 : null,
 		url_page: 'publicaciones',
 		url_query: urlQuery,
+		pages_list: getPageNumbers(currentPagePub, totalPagesPub),
 	}
 	posts = paginateFilteredPosts[currentPagePub - 1] ?? []
 
@@ -717,6 +731,7 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 		prev: currentPageNormas > 1 ? currentPageNormas - 1 : null,
 		url_page: 'normas-legales',
 		url_query: urlQuery,
+		pages_list: getPageNumbers(currentPageNormas, totalPagesNormas),
 	}
 	posts = paginateFilteredPosts[currentPageNormas - 1] ?? []
 
