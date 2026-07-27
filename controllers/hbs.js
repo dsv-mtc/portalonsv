@@ -321,11 +321,11 @@ function endpointPostParse(url, lang) {
 	const pattern = process.env.URL_PATH_API3
 
 	if (lang == "es") {
-		return url.replace(pattern, `${process.env.URL_PATH_POSTS}/post`);
+		return url.replace(pattern, `/post`);
 	}
 
 	if (lang == "en") {
-		return url.replace(pattern, `${process.env.URL_PATH_POSTS}/en/post`);
+		return url.replace(pattern, `/en/post`);
 	}
 
 
