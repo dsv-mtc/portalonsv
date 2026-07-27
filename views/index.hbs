@@ -5,6 +5,22 @@
   .sec-head .more { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 13px; color: var(--blue-2); display: inline-flex; align-items: center; gap: 7px; background: none; border:none; padding: 0; cursor: pointer; transition: .2s; }
   .sec-head .more:hover { color: var(--red); gap: 11px; text-decoration: none; }
 
+  .sec-head .more.srat-btn {
+    background: #C8102E;
+    color: #fff;
+    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+  .sec-head .more.srat-btn:hover {
+    background: #a00d24;
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200,16,46,0.3);
+  }
+
   .hero { position: relative; background: var(--navy); overflow: hidden; }
   .slides.carousel-inner { height: clamp(420px,56vh,560px); }
   .hero .slide.carousel-item { height: 100%; border:none; }
@@ -175,7 +191,7 @@
         <div class="eyebrow">{{t lang "Panorama nacional"}}</div>
         <h2 class="sec-title">{{t lang "Datos de siniestralidad"}}</h2>
       </div>
-      <a class="more" href="#">{{t lang "Analítica completa →"}}</a>
+      <a class="more" href="/analitica">{{t lang "Analítica completa →"}}</a>
     </div>
 
     <div class="kpi-grid">
@@ -417,27 +433,7 @@
   .feed .vu-list::-webkit-scrollbar { width: 6px; }
   .feed .vu-list::-webkit-scrollbar-thumb { background: #c7cfdd; border-radius: 6px; }
 
-  .feed .feed-footer-link {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    background: var(--mist);
-    border-top: 1px solid var(--line);
-    font-family: "Barlow Semi Condensed", sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    font-size: 13px;
-    color: var(--blue-2);
-    text-decoration: none;
-    transition: color .2s;
-  }
-  .feed .feed-footer-link:hover {
-    color: var(--red);
-    text-decoration: none;
-  }
+
 
   .social-box-modern { border: 1px solid var(--line); border-radius: 16px !important; overflow: hidden; box-shadow: var(--shadow); background: #fff; }
   .social_section_tabs { background: #fafbfd; border-bottom: 1px solid var(--line); display: flex; }
@@ -458,7 +454,7 @@
         <div class="eyebrow">{{t lang "Georreferencia"}}</div>
         <h2 class="sec-title">{{t lang "Mapa de siniestros viales"}}</h2>
       </div>
-      <a class="more" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">{{t lang 'ver'}} {{t lang "SRAT Completo →"}}</a>
+      <a class="more srat-btn" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">{{t lang 'ver'}} {{t lang "SRAT Completo →"}}</a>
     </div>
 
     <div class="row">
@@ -479,10 +475,7 @@
               {{>index/accident lang=../lang}}
             {{/each}}
           </div>
-          <a href="/registros-accidentes" class="feed-footer-link">
-            {{t lang "Ver todos los siniestros"}}
-            <span aria-hidden="true">→</span>
-          </a>
+
         </div>
       </div>
     </div>
