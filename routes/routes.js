@@ -625,7 +625,7 @@ routes.get("/revistas/:page?", async (req, res) => {
 		})),
 		tema,
 		title,
-		showPagination: totalPages > 1,
+		totalPages,
 	});
 })
 

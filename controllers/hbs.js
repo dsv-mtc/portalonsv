@@ -300,20 +300,18 @@ function assets(pathImg) {
 }
 //Usado solo en la paginación
 function page_url(url_page, index, lang) {
-	const url = process.env.URL_PATH
 	if (lang == "es") {
-		return `${url}/${url_page}/${index}`
+		return `/${url_page}/${index}`
 	} else {
-		return `${url}/${lang}/${url_page}/${index}`
+		return `/${lang}/${url_page}/${index}`
 	}
 
 }
 function page_url_search(url_page, index, lang, keyword) {
-	const url = process.env.URL_PATH
 	if (lang == "es") {
-		return `${url}/${url_page}/${index}?keyword=${keyword}`
+		return `/${url_page}/${index}?keyword=${keyword}`
 	} else {
-		return `${url}/${lang}/${url_page}/${index}?keyword=${keyword}`
+		return `/${lang}/${url_page}/${index}?keyword=${keyword}`
 	}
 }
 
@@ -530,6 +528,8 @@ var hbs = exphbs.create({
 		parseRegion: parseRegion,
 		lower: str => (str || '').toLowerCase(),
 		eq: (a, b) => a === b,
+		gt: (a, b) => a > b,
+		range: (start, end) => [...Array(end - start + 1).keys()].map(i => i + start),
 	}
 });
 

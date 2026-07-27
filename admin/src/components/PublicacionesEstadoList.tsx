@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ToggleLeft, ToggleRight, Loader, ChevronLeft, ChevronRight } from "lucide-react";
+import { ToggleLeft, ToggleRight, Loader, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { PageHeader } from "./PageHeader";
 import { api, apiPut } from "../lib/api";
 
@@ -78,21 +78,23 @@ export function PublicacionesEstadoList({ tipo, title, eyebrow }: { tipo: string
             </div>
           )}
         </div>
+        <style>{`
+          .pag-btn-t { width:42px; height:42px; border-radius:10px; border:1px solid transparent; background:transparent; color:#1d3557; font-weight:700; font-size:17px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:all .3s ease; }
+          .pag-btn-t:hover { border-color:#C8102E; color:#C8102E; }
+          .pag-btn-t.active { background:#C8102E; color:#fff; border-color:transparent; }
+          .pag-btn-t:disabled { opacity:0.3; cursor:not-allowed; }
+          .pag-btn-t:disabled:hover { border-color:transparent; color:#1d3557; }
+        `}</style>
         {pages > 1 && (
-          <div className="flex items-center justify-center gap-3 px-5 py-4 border-t border-[color:var(--brand-line)]">
-            <button onClick={() => fetchPage(page - 1)} disabled={page <= 1}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold uppercase tracking-[0.04em] font-[family-name:var(--font-cond)] border transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
-              <ChevronLeft className="w-3.5 h-3.5" /> Anterior
-            </button>
-            <span className="text-[12px] font-semibold" style={{ color: "var(--muted-foreground)" }}>
-              Página {page} de {pages}
-            </span>
-            <button onClick={() => fetchPage(page + 1)} disabled={page >= pages}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold uppercase tracking-[0.04em] font-[family-name:var(--font-cond)] border transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
-              Siguiente <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+          <div className="mt-6 flex justify-center items-center gap-1.5">
+            <button type="button" aria-label="Primera página" onClick={() => fetchPage(1)} disabled={page <= 1} className="pag-btn-t"><ChevronsLeft className="w-4 h-4" /></button>
+            <button type="button" aria-label="Página anterior" onClick={() => fetchPage(page - 1)} disabled={page <= 1} className="pag-btn-t"><ChevronLeft className="w-4 h-4" /></button>
+            {Array.from({ length: pages }, (_, i) => i + 1).map(p => (
+              <button key={p} type="button" aria-label={`Página ${p}`} onClick={() => fetchPage(p)}
+                className={`pag-btn-t${p === page ? " active" : ""}`}>{p}</button>
+            ))}
+            <button type="button" aria-label="Página siguiente" onClick={() => fetchPage(page + 1)} disabled={page >= pages} className="pag-btn-t"><ChevronRight className="w-4 h-4" /></button>
+            <button type="button" aria-label="Última página" onClick={() => fetchPage(pages)} disabled={page >= pages} className="pag-btn-t"><ChevronsRight className="w-4 h-4" /></button>
           </div>
         )}
       </section>
