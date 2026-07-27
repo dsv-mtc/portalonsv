@@ -530,6 +530,26 @@ var hbs = exphbs.create({
 		eq: (a, b) => a === b,
 		gt: (a, b) => a > b,
 		range: (start, end) => [...Array(end - start + 1).keys()].map(i => i + start),
+		paginate: (current, total, delta = 2) => {
+			if (total <= 1) return [1];
+			const range = [];
+			const left = Math.max(2, current - delta);
+			const right = Math.min(total - 1, current + delta);
+			if (left > 2) range.push('...');
+			for (let i = left; i <= right; i++) range.push(i);
+			if (right < total - 1) range.push('...');
+			return [1, ...range, total];
+		},
+		paginate: (current, total, delta = 2) => {
+			if (total <= 1) return [1];
+			const range = [];
+			const left = Math.max(2, current - delta);
+			const right = Math.min(total - 1, current + delta);
+			if (left > 2) range.push('...');
+			for (let i = left; i <= right; i++) range.push(i);
+			if (right < total - 1) range.push('...');
+			return [1, ...range, total];
+		},
 	}
 });
 

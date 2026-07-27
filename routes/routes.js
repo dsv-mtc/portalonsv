@@ -119,32 +119,42 @@ routes.get("/quienes-somos", async (req, res) => {
 /**NOTICIAS Y EVENTOS */
 routes.get("/comunicaciones/noticias/:page?", async (req, res) => {
 	const PER_PAGE = 7;
+	const { title } = req.query;
 	const page = parseInt(req.params.page) || 1;
 	const allPosts = await apiGhost.getPosts('all', "tags,authors", "tag:noticias-eventos", "published_at DESC");
 	const { data: disabledIds } = await mysql.getDisabledGhostIds('noticias');
-	const enabledPosts = (allPosts || []).filter(p => !disabledIds.includes(p.id));
+	let enabledPosts = (allPosts || []).filter(p => !disabledIds.includes(p.id));
+	if (title) {
+		enabledPosts = enabledPosts.filter(p => `${p.slug} ${p.title}`.toLowerCase().includes(title.toLowerCase()));
+	}
 	const totalPages = Math.max(1, Math.ceil(enabledPosts.length / PER_PAGE));
 	const currentPage = Math.min(page, totalPages);
 	const start = (currentPage - 1) * PER_PAGE;
 	const post = enabledPosts.slice(start, start + PER_PAGE);
 	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/noticias' };
+	const hasResults = post.length > 0;
 
-	res.render("pages/comunicaciones/noticias", { post, pagination });
+	res.render("pages/comunicaciones/noticias", { post, pagination, title, hasResults });
 })
 
 routes.get("/comunicaciones/nota-prensa/:page?", async (req, res) => {
 	const PER_PAGE = 6;
+	const { title } = req.query;
 	const page = parseInt(req.params.page) || 1;
 	const allPosts = await apiGhost.getPosts('all', "tags,authors", "tag:notas-prensa", "published_at DESC");
 	const { data: disabledIds } = await mysql.getDisabledGhostIds('notas-prensa');
-	const enabledPosts = (allPosts || []).filter(p => !disabledIds.includes(p.id));
+	let enabledPosts = (allPosts || []).filter(p => !disabledIds.includes(p.id));
+	if (title) {
+		enabledPosts = enabledPosts.filter(p => `${p.slug} ${p.title}`.toLowerCase().includes(title.toLowerCase()));
+	}
 	const totalPages = Math.max(1, Math.ceil(enabledPosts.length / PER_PAGE));
 	const currentPage = Math.min(page, totalPages);
 	const start = (currentPage - 1) * PER_PAGE;
 	const post = enabledPosts.slice(start, start + PER_PAGE);
 	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/nota-prensa' };
+	const hasResults = post.length > 0;
 
-	res.render("pages/comunicaciones/notas-prensa", { post, pagination });
+	res.render("pages/comunicaciones/notas-prensa", { post, pagination, title, hasResults });
 })
 
 routes.get("/comunicaciones/:slug", async (req, res) => {

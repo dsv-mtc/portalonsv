@@ -7,18 +7,15 @@
         </div>
       </div>
       <div class="col-md-5 ml-auto">
-        <div class="input-group">
-          <input type="text" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" >
+        <form method="GET" class="input-group">
+          <input type="text" name="title" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" value="{{title}}">
           <div class="input-group-append">
-            <span id="search-button" class="input-group-text search-input">
+            <button type="submit" id="search-button" class="input-group-text search-input">
               <i class="fal fa-search"></i>
-            </span>
+            </button>
           </div>
-        </div>
+        </form>
       </div>
-    </div>
-    <div id="search-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
-      {{t lang "no-results"}}
     </div>
     <div class="row" id="default">
       {{#each post}}
@@ -79,8 +76,12 @@
 
       <div class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
         {{#if pagination}}
-          {{#each (range 1 pagination.pages)}}
-            <a href="{{page_url ../pagination.url_page this ../lang}}" class="custom-pag-btn{{#if (eq this ../pagination.page)}} active{{/if}}" aria-label="Página {{this}}">{{this}}</a>
+          {{#each (paginate pagination.page pagination.pages)}}
+            {{#if (eq this '...')}}
+              <span class="custom-pag-btn" style="cursor:default;border:none;">…</span>
+            {{else}}
+              <a href="{{page_url ../pagination.url_page this ../lang}}" class="custom-pag-btn{{#if (eq this ../pagination.page)}} active{{/if}}" aria-label="Página {{this}}">{{this}}</a>
+            {{/if}}
           {{/each}}
           {{#if pagination.next}}
             <a href="{{page_url pagination.url_page pagination.next lang}}" class="custom-pag-btn" aria-label="Siguiente página">
