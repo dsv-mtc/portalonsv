@@ -246,8 +246,8 @@ router.get("/cifras", isAuthenticated, async (req, res) => {
 });
 
 router.put("/cifras", isAuthenticated, async (req, res) => {
-  const { lesionados, accidentados, fallecidos, mensaje1, mensaje2 } = req.body;
-  const result = await mysql.updateCifras({ lesionados, accidentados, fallecidos, mensaje1, mensaje2 });
+  const { lesionados, accidentados, fallecidos, mensaje1, mensaje2, fuente_siniestro, porcentaje_siniestro, fuente_lesiones, porcentaje_lesiones, fuente_muertes, porcentaje_muertes } = req.body;
+  const result = await mysql.updateCifras({ lesionados, accidentados, fallecidos, mensaje1, mensaje2, fuente_siniestro, porcentaje_siniestro, fuente_lesiones, porcentaje_lesiones, fuente_muertes, porcentaje_muertes });
   const log = await logAction('updated', 'Cifras', 1, `Se actualizaron las cifras`, req);
   res.json({ ...result, log: log || undefined });
 });

@@ -5,14 +5,26 @@ import { Panel, BrandButton } from "../components/UIBits";
 import { apiGet, apiPut } from "../lib/api";
 
 export function Cifras() {
-  const [form, setForm] = useState({ lesionados: "", accidentados: "", fallecidos: "", mensaje1: "", mensaje2: "" });
+  const [form, setForm] = useState({
+    lesionados: "", accidentados: "", fallecidos: "",
+    mensaje1: "", mensaje2: "",
+    fuente_siniestro: "", porcentaje_siniestro: "",
+    fuente_lesiones: "", porcentaje_lesiones: "",
+    fuente_muertes: "", porcentaje_muertes: "",
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    apiGet<{ lesionados: string; accidentados: string; fallecidos: string; mensaje1: string; mensaje2: string }>("/cifras").then(d => {
-      setForm({ lesionados: d.lesionados ?? "", accidentados: d.accidentados ?? "", fallecidos: d.fallecidos ?? "", mensaje1: d.mensaje1 ?? "", mensaje2: d.mensaje2 ?? "" });
+    apiGet<any>("/cifras").then(d => {
+      setForm({
+        lesionados: d.lesionados ?? "", accidentados: d.accidentados ?? "", fallecidos: d.fallecidos ?? "",
+        mensaje1: d.mensaje1 ?? "", mensaje2: d.mensaje2 ?? "",
+        fuente_siniestro: d.fuente_siniestro ?? "", porcentaje_siniestro: d.porcentaje_siniestro ?? "",
+        fuente_lesiones: d.fuente_lesiones ?? "", porcentaje_lesiones: d.porcentaje_lesiones ?? "",
+        fuente_muertes: d.fuente_muertes ?? "", porcentaje_muertes: d.porcentaje_muertes ?? "",
+      });
     }).finally(() => setLoading(false));
   }, []);
 
@@ -30,12 +42,14 @@ export function Cifras() {
     setSaving(false);
   };
 
+  const set = (key: string, val: string) => setForm(p => ({ ...p, [key]: val }));
+
   if (loading) return <p className="text-[14px]" style={{ color: "var(--muted-foreground)" }}>Cargando...</p>;
 
   const NUMS = [
-    { name: "accidentados", label: "Siniestros", value: form.accidentados, color: "#1597B8", icon: AlertTriangle },
-    { name: "lesionados", label: "Lesiones", value: form.lesionados, color: "#F4B41A", icon: Heart },
-    { name: "fallecidos", label: "Muertes", value: form.fallecidos, color: "#C8102E", icon: Skull },
+    { name: "accidentados", label: "Siniestros", value: form.accidentados, color: "#1597B8", icon: AlertTriangle, fuenteField: "fuente_siniestro", pctField: "porcentaje_siniestro" },
+    { name: "lesionados", label: "Lesiones", value: form.lesionados, color: "#F4B41A", icon: Heart, fuenteField: "fuente_lesiones", pctField: "porcentaje_lesiones" },
+    { name: "fallecidos", label: "Muertes", value: form.fallecidos, color: "#C8102E", icon: Skull, fuenteField: "fuente_muertes", pctField: "porcentaje_muertes" },
   ];
 
   return (
@@ -53,9 +67,20 @@ export function Cifras() {
                     <div className="w-9 h-9 rounded-lg grid place-items-center" style={{ background: `color-mix(in srgb, ${f.color} 12%, #fff)`, color: f.color }}><Icon className="w-4 h-4" /></div>
                     <label className="text-[11px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>{f.label} <span style={{ color: "var(--brand-red)" }}>*</span></label>
                   </div>
-                  <input name={f.name} type="number" min={0} step={1} required pattern="\d+" value={form[f.name as keyof typeof form]} onChange={e => { const v = e.target.value; setForm(p => ({ ...p, [f.name]: v })); }}
+                  <input name={f.name} type="number" min={0} step={1} required pattern="\d+" value={form[f.name as keyof typeof form]} onChange={e => set(f.name, e.target.value)}
                     className="w-full h-12 rounded-lg border-2 px-3 text-[24px] font-extrabold outline-none font-[family-name:var(--font-display)]" style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }} />
-                  <span className="text-[10.5px] mt-1 inline-block" style={{ color: "var(--muted-foreground)" }}>Solo números enteros</span>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <label className="block">
+                      <span className="text-[10px] uppercase tracking-[0.05em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>Fuente</span>
+                      <input name={f.fuenteField} maxLength={200} value={(form as any)[f.fuenteField]} onChange={e => set(f.fuenteField, e.target.value)}
+                        className="mt-0.5 w-full h-8 rounded-md border-2 px-2 text-[12px] outline-none" style={{ borderColor: "var(--brand-line)" }} />
+                    </label>
+                    <label className="block">
+                      <span className="text-[10px] uppercase tracking-[0.05em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>%</span>
+                      <input name={f.pctField} maxLength={100} value={(form as any)[f.pctField]} onChange={e => set(f.pctField, e.target.value)}
+                        className="mt-0.5 w-full h-8 rounded-md border-2 px-2 text-[12px] outline-none" style={{ borderColor: "var(--brand-line)" }} />
+                    </label>
+                  </div>
                 </div>
               );
             })}
@@ -66,7 +91,7 @@ export function Cifras() {
             {[{ name: "mensaje1", label: "1° Mensaje" }, { name: "mensaje2", label: "2° Mensaje" }].map(m => (
               <label key={m.name} className="block">
                 <span className="text-[11px] uppercase tracking-[0.08em] font-bold flex items-center gap-1.5 font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}><MessageSquare className="w-3.5 h-3.5" /> {m.label} <span style={{ color: "var(--brand-red)" }}>*</span></span>
-                <input name={m.name} required maxLength={200} value={form[m.name as keyof typeof form]} onChange={e => { const v = e.target.value; setForm(p => ({ ...p, [m.name]: v })); }}
+                <input name={m.name} required maxLength={200} value={form[m.name as keyof typeof form]} onChange={e => set(m.name, e.target.value)}
                   className="mt-1 w-full h-11 rounded-lg border-2 px-3 text-[14.5px] outline-none" style={{ borderColor: "var(--brand-line)" }} />
                 <span className="text-[10.5px] mt-1 inline-block" style={{ color: "var(--muted-foreground)" }}>Máx. 200 caracteres</span>
               </label>

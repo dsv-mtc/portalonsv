@@ -566,7 +566,13 @@ class DataBase {
 				accidente, 
 				fallecido, 
 				mensaje1,
-				mensaje2
+				mensaje2,
+				fuente_siniestro,
+				porcentaje_siniestro,
+				fuente_lesiones,
+				porcentaje_lesiones,
+				fuente_muertes,
+				porcentaje_muertes
 			FROM parametro
 		`;
 		try {
@@ -579,6 +585,12 @@ class DataBase {
 					fallecidos: results[0].fallecido,
 					mensaje1: results[0].mensaje1,
 					mensaje2: results[0].mensaje2,
+					fuente_siniestro: results[0].fuente_siniestro,
+					porcentaje_siniestro: results[0].porcentaje_siniestro,
+					fuente_lesiones: results[0].fuente_lesiones,
+					porcentaje_lesiones: results[0].porcentaje_lesiones,
+					fuente_muertes: results[0].fuente_muertes,
+					porcentaje_muertes: results[0].porcentaje_muertes,
 				}
 			}
 		} catch (error) {
@@ -595,7 +607,13 @@ class DataBase {
 		accidentados,
 		fallecidos,
 		mensaje1,
-		mensaje2
+		mensaje2,
+		fuente_siniestro,
+		porcentaje_siniestro,
+		fuente_lesiones,
+		porcentaje_lesiones,
+		fuente_muertes,
+		porcentaje_muertes
 	}) {
 		const queryString = `
 			UPDATE parametro 
@@ -604,7 +622,13 @@ class DataBase {
 					accidente=${accidentados}, 
 					fallecido=${fallecidos},
 					mensaje1='${mensaje1}',
-					mensaje2='${mensaje2}'
+					mensaje2='${mensaje2}',
+					fuente_siniestro='${fuente_siniestro}',
+					porcentaje_siniestro='${porcentaje_siniestro}',
+					fuente_lesiones='${fuente_lesiones}',
+					porcentaje_lesiones='${porcentaje_lesiones}',
+					fuente_muertes='${fuente_muertes}',
+					porcentaje_muertes='${porcentaje_muertes}'
     `;
 		try {
 			const result = await this.query(queryString);
