@@ -450,8 +450,7 @@ router.post("/regiones/:id/upload", isAuthenticated, async (req, res) => {
     req.regionName = region.value;
     uploadMw(req, res, async (err) => {
       if (err) return res.status(400).json({ success: false, message: err.message || "Error al subir" });
-      const stats = fs.statSync(req.file.path);
-      const version = Math.floor(stats.mtimeMs / 1000);
+      const version = Date.now();
       const imageUrl = `/assets/${req.file.filename}?v=${version}`;
       await mysql.updateRegiones({
         id: Number(req.params.id),

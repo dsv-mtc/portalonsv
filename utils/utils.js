@@ -155,29 +155,79 @@ const extractDepartmentFromText = (text, regiones) => {
 }
 
 const serviceMap = async (region, dataGhost) => {
-	let data = { regionData: {}, template: '' }
-	let condicion = region;
-	if (condicion === 'san-martin') region = 'SAN MARTIN';
-	if (condicion === 'la-libertad') region = 'LA LIBERTAD';
-	region = deleteDiacritics(region).toUpperCase();
-	try {
-		const { data: regionRow } = await mysqlClient.getRegion(region);
-		if (regionRow) {
-			data.regionData = {
-				REGION: regionRow.value,
-				NOMBRE: regionRow.nombreEncargado,
-				TELEFONO: regionRow.celularEncargado,
-				'E-MAIL': regionRow.correoEncargado,
-				WEBSITE: regionRow.pageLink,
-				imageUrl: regionRow.imageUrl,
-				slug: regionRow.slug
-			};
-		}
-	} catch (error) {
-		console.error(error);
-	}
-	data.template = renderCarouselRegions(dataGhost);
-	return data;
+    let data = { regionData: {}, template: '' }
+    if (!region) return data;
+
+    let originalRegion = region;
+    let cleanText = deleteDiacritics(originalRegion).toLowerCase().trim().replace(/\s+/g, '-');
+    let upperVersion = deleteDiacritics(originalRegion).toUpperCase().trim();
+
+    let regionRow = null;
+    let isSanMartin = cleanText.includes('san-martin') || cleanText.includes('san martin') || cleanText.includes('san-martín');
+
+    try {
+        let keysToTry = [originalRegion, cleanText, upperVersion];
+        
+        if (isSanMartin) {
+            keysToTry = ['san-martin', 'san martin', 'San Martín', 'San Martin', 'SAN MARTIN', 'SAN MARTÍN', originalRegion];
+        }
+
+        for (let key of keysToTry) {
+            let res = await mysqlClient.getRegion(key);
+            if (res && res.data) {
+                regionRow = res.data;
+                break;
+            }
+        }
+    } catch (error) {
+        console.error("Error en serviceMap:", error);
+    }
+
+    // Respaldo de seguridad estricto para San Martín si la BD no lo devuelve
+    if (!regionRow && isSanMartin) {
+        regionRow = {
+            value: 'San Martín',
+            nombreEncargado: 'No disponible',
+            celularEncargado: 'No disponible',
+            correoEncargado: 'No disponible',
+            pageLink: '#',
+            imageUrl: '/assets/san martin.png',
+            slug: 'san-martin'
+        };
+    }
+
+    // Manejo correcto de la imagen (respetando el espacio tal como La Libertad)
+    let imageUrl = '';
+    if (isSanMartin) {
+        imageUrl = `/assets/san martin.png`;
+    } else if (regionRow && regionRow.imageUrl) {
+        imageUrl = regionRow.imageUrl.trim().replace(/ /g, '%20');
+    } else {
+        imageUrl = `/assets/${cleanText}.png`;
+    }
+
+    // Se mantiene la ruta intacta pero se rompe la caché del navegador con un timestamp
+    const versionBuster = Date.now();
+    const baseUrl = imageUrl.split('?')[0];
+    imageUrl = `${baseUrl}?v=${versionBuster}`;
+
+    let regionName = regionRow ? regionRow.value : originalRegion;
+    if (isSanMartin) {
+        regionName = 'San Martín';
+    }
+
+    data.regionData = {
+        REGION: regionName,
+        NOMBRE: regionRow ? regionRow.nombreEncargado : 'No disponible',
+        TELEFONO: regionRow ? regionRow.celularEncargado : 'No disponible',
+        'E-MAIL': regionRow ? regionRow.correoEncargado : 'No disponible',
+        WEBSITE: regionRow ? regionRow.pageLink : '#',
+        imageUrl: imageUrl,
+        slug: regionRow ? regionRow.slug : cleanText
+    };
+    
+    data.template = renderCarouselRegions(dataGhost);
+    return data;
 }
 
 const renderCarouselRegions = (data) => {
