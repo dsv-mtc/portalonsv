@@ -389,7 +389,11 @@ const getImagesFiles = async (prefixName) => {
 	const imagesRequest = imageFilesName.filter(filename => {
 		if (filename.match(prefixName)) return filename
 	})
-	return imagesRequest;
+	const imagesWithVersion = await Promise.all(imagesRequest.map(async (filename) => {
+		const { mtimeMs } = await fs.promises.stat(path.join(__dirname, `../public/assets/${filename}`));
+		return `${filename}?v=${Math.floor(mtimeMs)}`;
+	}))
+	return imagesWithVersion;
 }
 
 
