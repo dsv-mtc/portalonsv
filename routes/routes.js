@@ -17,6 +17,10 @@ mysql.setQuery();
 
 require('dotenv').config();
 
+function slugify(texto) {
+	return (texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 function getPageNumbers(current, total, delta = 3) {
 	if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
 	const result = [];
@@ -64,6 +68,14 @@ routes.use(async (req, res, next) => {
 	else {
 		res.locals.lang = "es"
 	}
+	const { data: entornosViales } = await mysql.getEntornosViales();
+	res.locals.programas = (entornosViales || [])
+		.filter(e => e.activo)
+		.map(e => {
+			const titulo = res.locals.lang === "en" ? (e.titulo_en || e.titulo_es) : e.titulo_es;
+			const slug = slugify(titulo);
+			return { id: e.id, titulo, slug, url: `/programas/${slug}` };
+		});
 	if (!res.locals.enabledFooter) {
 		res.locals.enabledFooter = true;
 	}
@@ -379,48 +391,18 @@ routes.post("/services-map", async (req, res) => {
 
 /**ANALÍTICA */
 routes.get("/analitica", async (req, res) => {
-	const menu = [
-		{ 
-			id: 1, 
-			descripcion: "Estadística de siniestralidad", 
-			urlImagen: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-8"/></svg>'
-		},
-		{ 
-			id: 2, 
-			descripcion: "Concesionarias", 
-			urlImagen: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>'
-		},
-		{ 
-			id: 3, 
-			descripcion: "Capacitación a conductores", 
-			urlImagen: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>'
-		},
-		{ 
-			id: 4, 
-			descripcion: "Entornos viales", 
-			urlImagen: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>'
-		},
-		{ 
-			id: 5, 
-			descripcion: "Registro de víctimas", 
-			urlImagen: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
-		},
-		{ 
-			id: 6, 
-			descripcion: "Visor SRAT", 
-			urlImagen: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>'
-		},
-	];
-
-	let fullMenu = menu;
+	let fullMenu = [];
 	try {
-		const { data: submenu } = await mysql.getSubmenuActivos();
+		const [{ data: menu }, { data: submenu }] = await Promise.all([
+			mysql.getMenuActivos(),
+			mysql.getSubmenuActivos()
+		]);
 		fullMenu = menu.map((m) => ({
 			...m,
 			submenu: submenu.filter((sub) => sub.menu_id === m.id)
 		}));
 	} catch (e) {
-		fullMenu = menu.map((m) => ({ ...m, submenu: [] }));
+		fullMenu = [];
 	}
 
 	res.render("pages/analitica", {
@@ -469,6 +451,18 @@ routes.get("/entornos-viales", async (req, res) => {
 			orden: e.orden
 		}));
 	res.render("pages/entornos-viales", { tarjetas, lang, tieneCarrusel: tarjetas.length > 3 });
+});
+
+/** PROGRAMAS (página individual de cada programa creado en el admin) */
+routes.get("/programas/:slug", async (req, res) => {
+	const lang = res.locals.lang === "en" ? "en" : "es";
+	const { data: entornos } = await mysql.getEntornosViales();
+	const programa = (entornos || []).find(e => e.activo && slugify(lang === "en" ? (e.titulo_en || e.titulo_es) : e.titulo_es) === req.params.slug);
+	if (!programa) return res.status(404).redirect('/');
+	res.render("pages/programa", {
+		lang,
+		titulo: lang === "en" ? (programa.titulo_en || programa.titulo_es) : programa.titulo_es
+	});
 });
 
 /**PUBLICACIONES */

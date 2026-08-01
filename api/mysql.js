@@ -955,17 +955,16 @@ class DataBase {
 				create_time,
 				update_time
 			)
-			VALUES (
-				'${descripcion}',
-				${urlImagen?.trim() === '' ? null : `'${urlImagen.trim()}'`},
-				${observacion ? `'${observacion.trim()}'` : null},
-				${estaActivo ? 1 : 0},
-				CURRENT_TIMESTAMP,
-				CURRENT_TIMESTAMP
-			)
+			VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		`;
+		const values = [
+			descripcion,
+			urlImagen?.trim() === '' ? null : urlImagen?.trim(),
+			observacion ? observacion.trim() : null,
+			estaActivo ? 1 : 0
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, values);
 			return {
 				success: true,
 				data: result,
@@ -990,14 +989,21 @@ class DataBase {
 		const queryString = `
 			UPDATE menu
 				SET 
-					descripcion='${descripcion}',
-					urlImagen=${urlImagen?.trim() === '' ? null : `'${urlImagen.trim()}'`},
-					observacion=${observacion ? `'${observacion.trim()}'` : null},
-					estaActivo=${estaActivo ? 1 : 0},
+					descripcion=?,
+					urlImagen=?,
+					observacion=?,
+					estaActivo=?,
 					update_time=CURRENT_TIMESTAMP
-				WHERE id=${id}`;
+				WHERE id=?`;
+		const values = [
+			descripcion,
+			urlImagen?.trim() === '' ? null : urlImagen?.trim(),
+			observacion ? observacion.trim() : null,
+			estaActivo ? 1 : 0,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, values);
 			return {
 				success: true,
 				data: result,
@@ -1013,9 +1019,9 @@ class DataBase {
 	}
 
 	async deleteMenu(id) {
-		const queryString = `DELETE FROM menu WHERE id=${id}`;
+		const queryString = `DELETE FROM menu WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1130,19 +1136,28 @@ class DataBase {
 					estado
 				) 
 			VALUES (
-				'${descripcion}', 
+				?, 
 				CURRENT_TIMESTAMP, 
 				CURRENT_TIMESTAMP, 
-				${menu_id}, 
-				'${rutabi}', 
-				'${linkvideo}', 
-				'${linkpdf}',
-				'${imagenpath}',
-				${estado ? 1 : 0}
+				?, 
+				?, 
+				?, 
+				?,
+				?,
+				?
 			)
 		`;
+		const values = [
+			descripcion,
+			Number(menu_id),
+			rutabi,
+			linkvideo,
+			linkpdf,
+			imagenpath,
+			estado ? 1 : 0
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, values);
 			return {
 				success: true,
 				data: result,
@@ -1170,17 +1185,27 @@ class DataBase {
 		const queryString = `
 			UPDATE submenu
 				SET 
-					descripcion='${descripcion}',
+					descripcion=?,
 					update_time=CURRENT_TIMESTAMP,
-					menu_id=${menu_id}, 
-					rutabi='${rutabi}', 
-					linkvideo='${linkvideo}', 
-					linkpdf='${linkpdf}',
-					imagen='${imagenpath}',
-					estado=${estado ? 1 : 0}
-				WHERE id=${id}`;
+					menu_id=?, 
+					rutabi=?, 
+					linkvideo=?, 
+					linkpdf=?,
+					imagen=?,
+					estado=?
+				WHERE id=?`;
+		const values = [
+			descripcion,
+			Number(menu_id),
+			rutabi,
+			linkvideo,
+			linkpdf,
+			imagenpath,
+			estado ? 1 : 0,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, values);
 			return {
 				success: true,
 				data: result,
@@ -1196,9 +1221,9 @@ class DataBase {
 	}
 
 	async deleteSubmenu(id) {
-		const queryString = `DELETE FROM submenu WHERE id=${id}`;
+		const queryString = `DELETE FROM submenu WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,

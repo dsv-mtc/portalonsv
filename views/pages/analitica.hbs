@@ -26,7 +26,9 @@
         <div class="menu-grid" id="menus-wrapper">
           {{#each menu}}
             <div class="menu-card" data-menu-id="{{id}}">
-              <img src="{{urlImagen}}">
+              {{#if urlImagen}}
+                <img src="{{urlImagen}}" alt="">
+              {{/if}}
               <p>{{descripcion}}</p>
             </div>
           {{/each}}

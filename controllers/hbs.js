@@ -61,7 +61,7 @@ function getMenuSelected(url_selected, label) {
 	}
 }
 
-function createMenu(menuList, secondary_navigation, url_selected) {
+function createMenu(menuList, secondary_navigation, url_selected, programas) {
 	let htmlMenu = "";
 
 	function findGhost(label) {
@@ -193,16 +193,18 @@ function createMenu(menuList, secondary_navigation, url_selected) {
 		: findGhostCI('Regiones') || findGhostCI('regiones') || findGhostCI('regions') || findGhostCI('Regions');
 	if (regionGhost) htmlMenu += renderGhostItem(regionGhost);
 
-	// 8. Programas (hardcoded dropdown)
+	// 8. Programas (dropdown)
 	var progLabel = secondary_navigation ? 'Programs' : 'Programas';
-	var progItemLabel = secondary_navigation ? 'Road Environments' : 'Entornos viales';
 	var victimLabel = secondary_navigation ? 'Victim Support' : 'Orientación a víctimas';
-	var progActive = url_selected.includes('entornos-viales') || url_selected.includes('road-environments') ? 'add-color' : '';
+	var progActive = url_selected.includes('/programas/') ? 'add-color' : '';
+	var progItems = (programas || []).map(function (p) {
+		return { label: p.titulo, url: p.url };
+	});
 	htmlMenu += `
 		<li class="nav-item nav-special ${progActive} dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${progLabel}</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="/entornos-viales">${progItemLabel}</a>
+				${progItems.map(renderDropdownItem).join('')}
 				<a class="dropdown-item" href="https://dsv-mtc.github.io/orientacion-victimas/" target="_blank">${victimLabel}</a>
 			</div>
 		</li>`;
