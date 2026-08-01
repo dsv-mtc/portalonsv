@@ -201,7 +201,7 @@ export function Comunicaciones() {
 
   return (
     <>
-      <PageHeader title="Comunicaciones — Eventos" eyebrow="Agenda" />
+      <PageHeader title="Eventos" eyebrow="Agenda" />
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
 
       <div className="mb-5 flex items-center justify-between gap-3 flex-wrap">
@@ -251,7 +251,7 @@ export function Comunicaciones() {
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
                 <thead>
                   <tr style={{ borderBottom: "2px solid var(--brand-line)" }}>
-                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 90 }}>Tipo Evento</th>
+                    <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 90 }}>Tipo</th>
                     <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 130 }}>Evento</th>
                     <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 100 }}>Organizador</th>
                     <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, color: "var(--brand-navy)", fontSize: 10, textTransform: "uppercase", fontFamily: "var(--font-cond)", letterSpacing: "0.06em", width: 80 }}>Lugar</th>
@@ -268,13 +268,12 @@ export function Comunicaciones() {
                     const tc = tipoStyle(ev.tipoEvento);
                     return (
                       <tr key={ev.id} style={{ borderBottom: "1px solid var(--brand-line)" }}>
-                        <td style={{ padding: "8px 6px" }}>
+                        <td style={{ padding: "8px 6px", cursor: "pointer" }} onClick={() => setViewingEvent(ev)} title="Ver detalle">
                           <span style={{ display: "inline-block", padding: "1px 6px", borderRadius: 999, fontSize: 9, fontWeight: 700, fontFamily: "var(--font-cond)", textTransform: "uppercase", letterSpacing: "0.04em", background: tc.bg, color: tc.text }}>
                             {ev.tipoEvento || `Tipo #${ev.idTipoEvento}`}
                           </span>
                         </td>
-                        <td style={{ padding: "8px 6px", fontWeight: 600, color: "var(--brand-navy)", cursor: "pointer", maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} onClick={() => setViewingEvent(ev)}
-                          title="Ver detalle">{ev.title}</td>
+                        <td style={{ padding: "8px 6px", fontWeight: 600, color: "var(--brand-navy)", maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{ev.title}</td>
                         <td style={{ padding: "8px 6px", color: "var(--brand-navy)", maxWidth: 100, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={ev.organizedBy}>{ev.organizedBy}</td>
                         <td style={{ padding: "8px 6px", color: "var(--brand-navy)" }}>{ev.place || "—"}</td>
                         <td style={{ padding: "8px 6px", color: "var(--brand-navy)", maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={ev.direccion}>{ev.direccion || "—"}</td>

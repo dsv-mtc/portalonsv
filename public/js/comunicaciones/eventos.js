@@ -59,9 +59,7 @@ function handleFilterButtons($domCalendar, $calendar) {
     const { filter } = $button.dataset
     const idTipoEvento = ID_TIPO_EVENTO[filter]
 
-    const viewEventos = idTipoEvento === 0 
-      ? allEventos 
-      : allEventos.filter(evento => evento.idTipoEvento === idTipoEvento)
+    const viewEventos = allEventos.filter(evento => evento.idTipoEvento === 2)
 
     const viewNearEventos = idTipoEvento === 0
       ? allNearEventos.slice(0, 5)
@@ -134,7 +132,7 @@ function handleFilterButtons($domCalendar, $calendar) {
 }
 
 function pageFilteredEventos ($calendar) {
-  const filteredEventos = JSON.parse($calendar.dataset.filteredEventos)
+  const filteredEventos = (JSON.parse($calendar.dataset.filteredEventos) || []).filter(evento => evento.idTipoEvento === 2)
 
   const parsedEventos = filteredEventos.map(evento => ({
     title: evento.title,
