@@ -17,6 +17,7 @@ export function Regiones() {
   const [form, setForm] = useState<Partial<Region>>({});
   const [uploadedPreview, setUploadedPreview] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [failedImgIds, setFailedImgIds] = useState<Record<number, boolean>>({});
   const [filterId, setFilterId] = useState<number | "">("");
 
   const filtered = useMemo(
@@ -154,13 +155,17 @@ export function Regiones() {
                   <Td>{r.celularEncargado || <NullValue />}</Td>
                   <Td style={{ maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.correoEncargado || <NullValue />}</Td>
                   <Td>
-                    <img className="region-img"
-                      src={r.imageUrl
-                        ? r.imageUrl
-                        : `/assets/${r.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}.png${r._imgVersion ? `?t=${r._imgVersion}` : ""}`}
-                      alt={r.value}
-                      onError={e => { const el = e.currentTarget; el.onerror = null; el.style.display = "none"; el.insertAdjacentHTML("afterend", `<span style="color:var(--muted-foreground);font-size:12px">—</span>`); }}
-                    />
+                    {failedImgIds[r.id] ? (
+                      <span style={{ color: "var(--muted-foreground)", fontSize: "12px" }}>—</span>
+                    ) : (
+                      <img className="region-img"
+                        src={r.imageUrl
+                          ? r.imageUrl
+                          : `/assets/${r.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}.png${r._imgVersion ? `?t=${r._imgVersion}` : ""}`}
+                        alt={r.value}
+                        onError={() => setFailedImgIds(prev => ({ ...prev, [r.id]: true }))}
+                      />
+                    )}
                   </Td>
                   <Td>
                     <button type="button" onClick={() => openEdit(r)}
@@ -247,8 +252,9 @@ export function Regiones() {
                     if (r.success) {
                       setUploadedPreview(r.imageUrl || "");
                       setAllRegiones(prev => prev.map(x =>
-                        x.id === editId ? { ...x, imageUrl: r.imageUrl || x.imageUrl } : x
+                        x.id === editId ? { ...x, imageUrl: r.imageUrl || x.imageUrl, _imgVersion: undefined } : x
                       ));
+                      setFailedImgIds(prev => ({ ...prev, [editId]: false }));
                     }
                   } catch (err) {
                     /* error silencioso al subir */
