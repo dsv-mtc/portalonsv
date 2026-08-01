@@ -469,6 +469,31 @@ router.post("/regiones/:id/upload", isAuthenticated, async (req, res) => {
   }
 });
 
+router.delete("/regiones/:id/image", isAuthenticated, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { data: all } = await mysql.getRegiones({ paginate: false });
+    const region = all.find(r => r.id === id);
+    if (!region) return res.status(404).json({ success: false, message: "Región no encontrada" });
+    const normalized = region.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const filePath = path.join(assetsDir, `${normalized}.png`);
+    await fs.promises.unlink(filePath).catch(() => {});
+    await mysql.updateRegiones({
+      id,
+      nombreEncargado: region.nombreEncargado,
+      celularEncargado: region.celularEncargado,
+      correoEncargado: region.correoEncargado,
+      imageUrl: '',
+      pageLink: region.pageLink
+    });
+    const log = await logAction('deleted', 'Región', id, `Se eliminó la imagen de la región de ${region.value}`, req);
+    res.json({ success: true, message: "Imagen eliminada", imageUrl: '', log: log || undefined });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
+});
+
 // --- Analítica - Menú ---
 router.get("/analitica-menu", isAuthenticated, async (req, res) => {
   const { data: menu } = await mysql.getMenu();

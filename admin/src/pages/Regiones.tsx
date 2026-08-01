@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { Pencil, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, X } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { Panel, BrandButton } from "../components/UIBits";
-import { apiGet, apiPut, apiUpload } from "../lib/api";
+import { apiGet, apiPut, apiUpload, apiDelete } from "../lib/api";
 
 const PAGE_SIZE = 5;
 
@@ -263,7 +263,19 @@ export function Regiones() {
                     <img src={uploadedPreview} alt="Vista previa"
                       className="w-20 h-20 object-contain rounded-lg border-2 bg-white"
                       style={{ borderColor: "var(--brand-line)" }} />
-                    <button type="button" onClick={() => setUploadedPreview("")}
+                    <button type="button" onClick={async () => {
+                      if (editId === null) return;
+                      try {
+                        const r = await apiDelete(`/regiones/${editId}/image`);
+                        if (r.success) {
+                          setUploadedPreview("");
+                          setAllRegiones(prev => prev.map(x => x.id === editId ? { ...x, imageUrl: "" } : x));
+                          setMsg(r.message || "Imagen eliminada");
+                        }
+                      } catch (err) {
+                        /* error silencioso al quitar */
+                      }
+                    }}
                       className="text-[12px] font-semibold hover:underline"
                       style={{ color: "#C8102E" }}>
                       Quitar imagen

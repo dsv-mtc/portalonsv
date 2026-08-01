@@ -333,7 +333,6 @@ function updateRegionName(regionId){
 function setImage(region, imageUrl){
 	const imgRegion = document.getElementById('img-region');
 	if(!imgRegion) return;
-	const fallback = '/assets/escudo.jpg';
 	const normalized = (region || 'Lima').toLowerCase()
 		.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 	const primary = imageUrl
@@ -342,7 +341,7 @@ function setImage(region, imageUrl){
 	const timeStamp = new Date().getTime();
 	const [base] = primary.split('?');
 	const urlConCacheBuster = `${base}?v=${timeStamp}`;
-	imgRegion.innerHTML = `<img src="${urlConCacheBuster}" alt="${region || 'Lima'}" onerror="this.onerror=null;this.src='${fallback}'">`;
+	imgRegion.innerHTML = `<img src="${urlConCacheBuster}" alt="${region || 'Lima'}" onerror="this.onerror=null;this.style.display='none'">`;
 }
 /**
  * @description: Función encargada de desplegar el modal de suscripción al portal; valida el campo de correo y envía el mismo para 
