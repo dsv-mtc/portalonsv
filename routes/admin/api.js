@@ -1022,32 +1022,32 @@ router.post("/redes-sociales/upload", isAuthenticated, async (req, res) => {
   }
 });
 
-// --- Programas - Entornos Viales ---
-router.get("/entornos-viales", isAuthenticated, async (req, res) => {
-  const { data: entornos } = await mysql.getEntornosViales();
-  res.json({ success: true, data: entornos });
+// --- Programas ---
+router.get("/programas", isAuthenticated, async (req, res) => {
+  const { data: programas } = await mysql.getProgramas();
+  res.json({ success: true, data: programas });
 });
 
-router.post("/entornos-viales", isAuthenticated, async (req, res) => {
-  const { badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden } = req.body;
-  const result = await mysql.createEntornoVial({ badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden });
-  const log = await logAction('created', 'Entorno Vial', result.data?.insertId, `Se creó el entorno vial '${titulo_es || titulo_en}'`, req);
+router.post("/programas", isAuthenticated, async (req, res) => {
+  const { codigo, nombre, descripcion, estaActivo } = req.body;
+  const result = await mysql.createPrograma({ codigo, nombre, descripcion, estaActivo });
+  const log = await logAction('created', 'Programa', result.data?.insertId, `Se creó el programa '${nombre}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 
-router.put("/entornos-viales/:id", isAuthenticated, async (req, res) => {
-  const { badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden } = req.body;
-  const result = await mysql.updateEntornoVial({ id: Number(req.params.id), badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden });
-  const log = await logAction('updated', 'Entorno Vial', Number(req.params.id), `Se actualizó el entorno vial '${titulo_es || titulo_en}'`, req);
+router.put("/programas/:id", isAuthenticated, async (req, res) => {
+  const { codigo, nombre, descripcion, estaActivo } = req.body;
+  const result = await mysql.updatePrograma({ id: Number(req.params.id), codigo, nombre, descripcion, estaActivo });
+  const log = await logAction('updated', 'Programa', Number(req.params.id), `Se actualizó el programa '${nombre}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 
-router.delete("/entornos-viales/:id", isAuthenticated, async (req, res) => {
+router.delete("/programas/:id", isAuthenticated, async (req, res) => {
   const id = Number(req.params.id);
-  const { data: entornos } = await mysql.getEntornosViales();
-  const name = entornos?.find(e => e.id === id)?.titulo_es || '';
-  const result = await mysql.deleteEntornoVial(id);
-  const log = await logAction('deleted', 'Entorno Vial', id, `Se eliminó el entorno vial '${name}'`, req);
+  const { data: programas } = await mysql.getProgramas();
+  const name = programas?.find(p => p.id === id)?.nombre || '';
+  const result = await mysql.deletePrograma(id);
+  const log = await logAction('deleted', 'Programa', id, `Se eliminó el programa '${name}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 

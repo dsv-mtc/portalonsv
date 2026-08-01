@@ -2919,73 +2919,63 @@ class DataBase {
 		}
 	}
 
-	// --- Entornos Viales (Programas) ---
-	async getEntornosViales() {
+	// --- Programas (antes Entornos Viales) ---
+	async getProgramas() {
 		const queryString = `
-			SELECT id, badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en,
-			       imagen_url, activo, orden, created_at
-			FROM entornos_viales
-			ORDER BY orden ASC, id ASC
+			SELECT id, codigo, nombre, descripcion, estaActivo
+			FROM programa
+			ORDER BY id ASC
 		`;
 		try {
 			const results = await this.query(queryString);
-			return { success: true, data: results.map(r => ({ ...r, activo: r.activo === 1 })) };
+			return { success: true, data: results.map(r => ({ ...r, activo: r.estaActivo === 1 })) };
 		} catch (error) {
 			console.error(error);
-			return { success: false, message: "No se pudieron obtener los entornos viales" };
+			return { success: false, message: "No se pudieron obtener los programas" };
 		}
 	}
 
-	async createEntornoVial({ badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden }) {
+	async createPrograma({ codigo, nombre, descripcion, estaActivo }) {
 		const queryString = `
-			INSERT INTO entornos_viales (badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+			INSERT INTO programa (codigo, nombre, descripcion, estaActivo, fechaRegistro, fechaActualizacion)
+			VALUES (?, ?, ?, ?, NOW(), NOW())
 		`;
 		try {
 			const result = await this.query(queryString, [
-				badge_es || '', badge_en || '',
-				titulo_es || '', titulo_en || '',
-				descripcion_es || '', descripcion_en || '',
-				imagen_url || '', activo ? 1 : 0,
-				Number(orden) || 0
+				codigo || '', nombre || '', descripcion || '', estaActivo ? 1 : 0
 			]);
 			return { success: true, data: { insertId: result.insertId } };
 		} catch (error) {
 			console.error(error);
-			return { success: false, message: "No se pudo crear el entorno vial" };
+			return { success: false, message: "No se pudo crear el programa" };
 		}
 	}
 
-	async updateEntornoVial({ id, badge_es, badge_en, titulo_es, titulo_en, descripcion_es, descripcion_en, imagen_url, activo, orden }) {
+	async updatePrograma({ id, codigo, nombre, descripcion, estaActivo }) {
 		const queryString = `
-			UPDATE entornos_viales
-			SET badge_es = ?, badge_en = ?, titulo_es = ?, titulo_en = ?, descripcion_es = ?, descripcion_en = ?,
-			    imagen_url = ?, activo = ?, orden = ?
+			UPDATE programa
+			SET codigo = ?, nombre = ?, descripcion = ?, estaActivo = ?, fechaActualizacion = NOW()
 			WHERE id = ?
 		`;
 		try {
 			await this.query(queryString, [
-				badge_es || '', badge_en || '',
-				titulo_es || '', titulo_en || '',
-				descripcion_es || '', descripcion_en || '',
-				imagen_url || '', activo ? 1 : 0,
-				Number(orden) || 0, id
+				codigo || '', nombre || '', descripcion || '', estaActivo ? 1 : 0, id
 			]);
 			return { success: true };
 		} catch (error) {
 			console.error(error);
-			return { success: false, message: "No se pudo actualizar el entorno vial" };
+			return { success: false, message: "No se pudo actualizar el programa" };
 		}
 	}
 
-	async deleteEntornoVial(id) {
-		const queryString = `DELETE FROM entornos_viales WHERE id = ?`;
+	async deletePrograma(id) {
+		const queryString = `DELETE FROM programa WHERE id = ?`;
 		try {
 			await this.query(queryString, [id]);
 			return { success: true };
 		} catch (error) {
 			console.error(error);
-			return { success: false, message: "No se pudo eliminar el entorno vial" };
+			return { success: false, message: "No se pudo eliminar el programa" };
 		}
 	}
 

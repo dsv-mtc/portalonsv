@@ -68,13 +68,13 @@ routes.use(async (req, res, next) => {
 	else {
 		res.locals.lang = "es"
 	}
-	const { data: entornosViales } = await mysql.getEntornosViales();
-	res.locals.programas = (entornosViales || [])
-		.filter(e => e.activo)
-		.map(e => {
-			const titulo = res.locals.lang === "en" ? (e.titulo_en || e.titulo_es) : e.titulo_es;
+	const { data: programasList } = await mysql.getProgramas();
+	res.locals.programas = (programasList || [])
+		.filter(p => p.estaActivo)
+		.map(p => {
+			const titulo = p.nombre;
 			const slug = slugify(titulo);
-			return { id: e.id, titulo, slug, url: `/programas/${slug}` };
+			return { id: p.id, titulo, slug, url: `/programas/${slug}` };
 		});
 	if (!res.locals.enabledFooter) {
 		res.locals.enabledFooter = true;
@@ -439,29 +439,28 @@ routes.get("/peru-in-world", async (req, res) => {
 
 /** ENTORNOS VIALES */
 routes.get("/entornos-viales", async (req, res) => {
-	const lang = res.locals.lang === "en" ? "en" : "es";
-	const { data: entornos } = await mysql.getEntornosViales();
-	const tarjetas = (entornos || [])
-		.filter(e => e.activo)
-		.map(e => ({
-			badge: lang === "en" ? e.badge_en : e.badge_es,
-			titulo: lang === "en" ? e.titulo_en : e.titulo_es,
-			descripcion: lang === "en" ? e.descripcion_en : e.descripcion_es,
-			imagen_url: e.imagen_url || "",
-			orden: e.orden
+	const { data: programas } = await mysql.getProgramas();
+	const tarjetas = (programas || [])
+		.filter(p => p.estaActivo)
+		.map(p => ({
+			badge: p.codigo || "",
+			titulo: p.nombre,
+			descripcion: p.descripcion || "",
+			imagen_url: "",
+			orden: p.id
 		}));
-	res.render("pages/entornos-viales", { tarjetas, lang, tieneCarrusel: tarjetas.length > 3 });
+	res.render("pages/entornos-viales", { tarjetas, lang: res.locals.lang, tieneCarrusel: tarjetas.length > 3 });
 });
 
 /** PROGRAMAS (página individual de cada programa creado en el admin) */
 routes.get("/programas/:slug", async (req, res) => {
 	const lang = res.locals.lang === "en" ? "en" : "es";
-	const { data: entornos } = await mysql.getEntornosViales();
-	const programa = (entornos || []).find(e => e.activo && slugify(lang === "en" ? (e.titulo_en || e.titulo_es) : e.titulo_es) === req.params.slug);
+	const { data: programas } = await mysql.getProgramas();
+	const programa = (programas || []).find(p => p.estaActivo && slugify(p.nombre) === req.params.slug);
 	if (!programa) return res.status(404).redirect('/');
 	res.render("pages/programa", {
 		lang,
-		titulo: lang === "en" ? (programa.titulo_en || programa.titulo_es) : programa.titulo_es
+		titulo: programa.nombre
 	});
 });
 
