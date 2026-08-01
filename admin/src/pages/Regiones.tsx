@@ -269,7 +269,7 @@ export function Regiones() {
                         const r = await apiDelete(`/regiones/${editId}/image`);
                         if (r.success) {
                           setUploadedPreview("");
-                          setAllRegiones(prev => prev.map(x => x.id === editId ? { ...x, imageUrl: "" } : x));
+                          setAllRegiones(prev => prev.map(x => x.id === editId ? { ...x, imageUrl: "", _imgVersion: Date.now() } : x));
                           setMsg(r.message || "Imagen eliminada");
                         }
                       } catch (err) {
