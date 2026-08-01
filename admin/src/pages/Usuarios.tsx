@@ -287,14 +287,14 @@ export function Usuarios() {
                 <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
                   Email <span style={{ color: "var(--brand-red)" }}>*</span>
                 </span>
-                <input type="email" value={userForm.user} onChange={e => setUserForm(p => ({ ...p, user: e.target.value }))}
+                <input type="email" autoComplete="off" value={userForm.user} onChange={e => setUserForm(p => ({ ...p, user: e.target.value }))}
                   className={inputCls} style={{ borderColor: "var(--brand-line)" }} />
               </label>
               <label className="block" style={{ marginBottom: 14 }}>
                 <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
                   Contraseña {userEditingId === null && <span style={{ color: "var(--brand-red)" }}>*</span>}
                 </span>
-                <input type="password" value={userForm.password} onChange={e => setUserForm(p => ({ ...p, password: e.target.value }))}
+                <input type="password" autoComplete="new-password" value={userForm.password} onChange={e => setUserForm(p => ({ ...p, password: e.target.value }))}
                   className={inputCls} style={{ borderColor: "var(--brand-line)" }}
                   placeholder={userEditingId !== null ? "Dejar vacío para no cambiar" : ""} />
               </label>

@@ -84,16 +84,25 @@ routes.get("/", async (req, res) => {
 	const { data: cifras } = await mysql.getCifras();
 	const { data: contenido } = await mysql.getContenidoQuienesSomos(res.locals.secondary_navigation);
 
+	let compLinks = contenido;
+	if (res.locals.secondary_navigation) {
+		const { data: esContenido } = await mysql.getContenidoQuienesSomos(false);
+		compLinks = esContenido;
+	}
+
 	const compIndices = [[5,6],[7,8],[9,10],[11,12],[25,26],[27,28],[29,30],[31,32],[33,34]];
-	const componentesCards = COMPONENTES_ICONS.map((iconData, i) => ({
-		icon: iconData.icon,
-		color: iconData.color,
-		bg: iconData.bg,
-		link: iconData.link,
-		external: iconData.external,
-		titulo: contenido[compIndices[i][0]].contenido,
-		descripcion: contenido[compIndices[i][1]].contenido,
-	}));
+	const componentesCards = COMPONENTES_ICONS.map((iconData, i) => {
+		const link = compLinks[35 + i]?.contenido || iconData.link;
+		return {
+			icon: iconData.icon,
+			color: iconData.color,
+			bg: iconData.bg,
+			link,
+			external: /^https?:\/\//.test(link),
+			titulo: contenido[compIndices[i][0]].contenido,
+			descripcion: contenido[compIndices[i][1]].contenido,
+		};
+	});
 
 	const popupData = await mysql.getPopup()
 
@@ -112,16 +121,26 @@ routes.get("/", async (req, res) => {
 
 routes.get("/quienes-somos", async (req, res) => {
 	const { data: contenido } = await mysql.getContenidoQuienesSomos(res.locals.secondary_navigation)
+
+	let compLinks = contenido;
+	if (res.locals.secondary_navigation) {
+		const { data: esContenido } = await mysql.getContenidoQuienesSomos(false);
+		compLinks = esContenido;
+	}
+
 	const compIndices = [[5,6],[7,8],[9,10],[11,12],[25,26],[27,28],[29,30],[31,32],[33,34]];
-	const componentesCards = COMPONENTES_ICONS.map((iconData, i) => ({
-		icon: iconData.icon,
-		color: iconData.color,
-		bg: iconData.bg,
-		titulo: contenido[compIndices[i][0]].contenido,
-		descripcion: contenido[compIndices[i][1]].contenido,
-		link: iconData.link,
-		external: iconData.external,
-	}));
+	const componentesCards = COMPONENTES_ICONS.map((iconData, i) => {
+		const link = compLinks[35 + i]?.contenido || iconData.link;
+		return {
+			icon: iconData.icon,
+			color: iconData.color,
+			bg: iconData.bg,
+			titulo: contenido[compIndices[i][0]].contenido,
+			descripcion: contenido[compIndices[i][1]].contenido,
+			link,
+			external: /^https?:\/\//.test(link),
+		};
+	});
 	res.render("pages/quienes-somos", {
 		contenido,
 		componentesCards,

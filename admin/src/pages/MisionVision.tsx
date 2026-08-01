@@ -33,22 +33,31 @@ const FIELDS: Record<Lang, FieldDef[]> = {
     { key: "comp_titulo", label: "Componentes tecnológicos — Título", max: 2000 },
     { key: "comp1_titulo", label: "COMP 1 — Título", max: 2000 },
     { key: "comp1_desc", label: "COMP 1 — Descripción", max: 2000 },
+    { key: "comp1_link", label: "COMP 1 — Enlace / Ruta", max: 500 },
     { key: "comp2_titulo", label: "COMP 2 — Título", max: 2000 },
     { key: "comp2_desc", label: "COMP 2 — Descripción", max: 2000 },
+    { key: "comp2_link", label: "COMP 2 — Enlace / Ruta", max: 500 },
     { key: "comp3_titulo", label: "COMP 3 — Título", max: 2000 },
     { key: "comp3_desc", label: "COMP 3 — Descripción", max: 2000 },
+    { key: "comp3_link", label: "COMP 3 — Enlace / Ruta", max: 500 },
     { key: "comp4_titulo", label: "COMP 4 — Título", max: 2000 },
     { key: "comp4_desc", label: "COMP 4 — Descripción", max: 2000 },
+    { key: "comp4_link", label: "COMP 4 — Enlace / Ruta", max: 500 },
     { key: "comp5_titulo", label: "COMP 5 — Título", max: 2000 },
     { key: "comp5_desc", label: "COMP 5 — Descripción", max: 2000 },
+    { key: "comp5_link", label: "COMP 5 — Enlace / Ruta", max: 500 },
     { key: "comp6_titulo", label: "COMP 6 — Título", max: 2000 },
     { key: "comp6_desc", label: "COMP 6 — Descripción", max: 2000 },
+    { key: "comp6_link", label: "COMP 6 — Enlace / Ruta", max: 500 },
     { key: "comp7_titulo", label: "COMP 7 — Título", max: 2000 },
     { key: "comp7_desc", label: "COMP 7 — Descripción", max: 2000 },
+    { key: "comp7_link", label: "COMP 7 — Enlace / Ruta", max: 500 },
     { key: "comp8_titulo", label: "COMP 8 — Título", max: 2000 },
     { key: "comp8_desc", label: "COMP 8 — Descripción", max: 2000 },
+    { key: "comp8_link", label: "COMP 8 — Enlace / Ruta", max: 500 },
     { key: "comp9_titulo", label: "COMP 9 — Título", max: 2000 },
     { key: "comp9_desc", label: "COMP 9 — Descripción", max: 2000 },
+    { key: "comp9_link", label: "COMP 9 — Enlace / Ruta", max: 500 },
   ],
   en: [
     { key: "descripcion", label: "ONSV Definition", max: 10000 },
@@ -95,15 +104,15 @@ const initForm = (): Record<Lang, FormData> => ({
   es: {
     descripcion: "", mision: "", vision: "",
     comp_titulo: "",
-    comp1_titulo: "", comp1_desc: "",
-    comp2_titulo: "", comp2_desc: "",
-    comp3_titulo: "", comp3_desc: "",
-    comp4_titulo: "", comp4_desc: "",
-    comp5_titulo: "", comp5_desc: "",
-    comp6_titulo: "", comp6_desc: "",
-    comp7_titulo: "", comp7_desc: "",
-    comp8_titulo: "", comp8_desc: "",
-    comp9_titulo: "", comp9_desc: "",
+    comp1_titulo: "", comp1_desc: "", comp1_link: "",
+    comp2_titulo: "", comp2_desc: "", comp2_link: "",
+    comp3_titulo: "", comp3_desc: "", comp3_link: "",
+    comp4_titulo: "", comp4_desc: "", comp4_link: "",
+    comp5_titulo: "", comp5_desc: "", comp5_link: "",
+    comp6_titulo: "", comp6_desc: "", comp6_link: "",
+    comp7_titulo: "", comp7_desc: "", comp7_link: "",
+    comp8_titulo: "", comp8_desc: "", comp8_link: "",
+    comp9_titulo: "", comp9_desc: "", comp9_link: "",
     val_intro: "",
     val1_titulo: "", val1_desc: "",
     val2_titulo: "", val2_desc: "",
@@ -173,9 +182,44 @@ export function MisionVision() {
           <div className="space-y-5">
             {fields.map((f, idx) => {
               const next = fields[idx + 1];
+              const link = fields[idx + 2];
               const isPaired = /^[a-z]+[1-9]_titulo$/.test(f.key) && next && next.key === f.key.replace('_titulo', '_desc');
+              const isComponent = /^comp[1-9]_titulo$/.test(f.key) && link && link.key === f.key.replace('_titulo', '_link');
 
-              if (/^[a-z]+[1-9]_desc$/.test(f.key)) return null;
+              if (/^[a-z]+[1-9]_(desc|link)$/.test(f.key)) return null;
+
+              if (isComponent) {
+                return (
+                  <div key={f.key} className="space-y-4">
+                    <div className="grid sm:grid-cols-[1fr_1.5fr] gap-4">
+                      <label className="block">
+                        <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
+                          {f.label} <span className="text-[color:var(--brand-red)]">*</span>
+                        </span>
+                        <textarea required maxLength={f.max} value={form[lang][f.key] ?? ""}
+                          onChange={e => setForm(p => ({ ...p, [lang]: { ...p[lang], [f.key]: e.target.value } }))}
+                          className="mt-1 w-full h-[50px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-1 text-[14.5px] leading-none resize-none overflow-y-auto" />
+                      </label>
+                      <label className="block">
+                        <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
+                          {link!.label}
+                        </span>
+                        <input type="text" placeholder="https://..." maxLength={link!.max} value={form[lang][link!.key] ?? ""}
+                          onChange={e => setForm(p => ({ ...p, [lang]: { ...p[lang], [link!.key]: e.target.value } }))}
+                          className="mt-1 w-full h-[50px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none px-3 text-[14.5px]" />
+                      </label>
+                    </div>
+                    <label className="block">
+                      <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold" style={{ fontFamily: "var(--font-cond)" }}>
+                        {next!.label} <span className="text-[color:var(--brand-red)]">*</span>
+                      </span>
+                      <textarea required maxLength={next!.max} value={form[lang][next!.key] ?? ""}
+                        onChange={e => setForm(p => ({ ...p, [lang]: { ...p[lang], [next!.key]: e.target.value } }))}
+                        className="mt-1 w-full h-[50px] rounded-lg border-2 border-[color:var(--brand-line)] focus:border-[color:var(--brand-navy)] outline-none p-1 text-[14.5px] leading-none resize-none overflow-y-auto" />
+                    </label>
+                  </div>
+                );
+              }
 
               if (isPaired) {
                 return (
