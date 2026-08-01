@@ -669,6 +669,21 @@ routes.get("/revistas/:page?", async (req, res) => {
 	const currentPage = Math.min(page, Math.max(totalPages, 1));
 	const revistasPagina = pages[currentPage - 1] || [];
 
+	const qs = [];
+	if (title) qs.push(`title=${encodeURIComponent(title)}`);
+	if (tema) qs.push(`tema=${encodeURIComponent(tema)}`);
+	const pagination = {
+		page: currentPage,
+		pages: totalPages,
+		total: revistasFiltradas.length,
+		limit: pageSize,
+		next: currentPage < totalPages ? currentPage + 1 : null,
+		prev: currentPage > 1 ? currentPage - 1 : null,
+		url_page: 'revistas',
+		pages_list: getPageNumbers(currentPage, totalPages),
+		url_query: qs.length ? `?${qs.join('&')}` : '',
+	};
+
 	res.render("pages/revistas", {
 		revistas: revistasPagina.map(r => ({ ...r, title: r.titulo, image: r.imagen_url, pdf: r.pdf_url })),
 		hasResults: revistasPagina.length > 0,
@@ -679,6 +694,7 @@ routes.get("/revistas/:page?", async (req, res) => {
 		tema,
 		title,
 		totalPages,
+		pagination,
 	});
 })
 

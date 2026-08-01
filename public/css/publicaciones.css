@@ -133,7 +133,12 @@
 	white-space: nowrap;
 }
 
-.revista-card .card-img { object-fit: contain; background: #f1f4f9; }
+.revista-card .card-img {
+	object-fit: contain;
+	background: #f1f4f9;
+	height: auto;
+	aspect-ratio: 3 / 4;
+}
 
 .revista-card .card-content {
 	justify-content: flex-start;
