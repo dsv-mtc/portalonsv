@@ -256,6 +256,13 @@ router.put("/cifras", isAuthenticated, async (req, res) => {
 
 // --- Misión y Visión ---
 router.get("/mision-vision", isAuthenticated, async (req, res) => {
+  const COMPONENTES_DEFAULT_LINKS = [
+    "https://aulavirtual.mtc.gob.pe/seguridadvial/",
+    "/analitica", "/analitica", "/", "/datosabiertos",
+    "#", "#", "#",
+    "https://sratma.mtc.gob.pe/SRATMA/mapa/",
+  ];
+  const dfl = (i) => { const l = COMPONENTES_DEFAULT_LINKS[i]; return l && l !== "#" ? l : ""; };
   const [{ data: enData }, { data: esData }] = await Promise.all([
     mysql.getContenidoQuienesSomos(true),
     mysql.getContenidoQuienesSomos(false)
@@ -324,15 +331,15 @@ router.get("/mision-vision", isAuthenticated, async (req, res) => {
         comp8_desc: esData[32].contenido,
         comp9_titulo: esData[33].contenido,
         comp9_desc: esData[34].contenido,
-        comp1_link: esData[35].contenido,
-        comp2_link: esData[36].contenido,
-        comp3_link: esData[37].contenido,
-        comp4_link: esData[38].contenido,
-        comp5_link: esData[39].contenido,
-        comp6_link: esData[40].contenido,
-        comp7_link: esData[41].contenido,
-        comp8_link: esData[42].contenido,
-        comp9_link: esData[43].contenido,
+        comp1_link: esData[35].contenido || dfl(0),
+        comp2_link: esData[36].contenido || dfl(1),
+        comp3_link: esData[37].contenido || dfl(2),
+        comp4_link: esData[38].contenido || dfl(3),
+        comp5_link: esData[39].contenido || dfl(4),
+        comp6_link: esData[40].contenido || dfl(5),
+        comp7_link: esData[41].contenido || dfl(6),
+        comp8_link: esData[42].contenido || dfl(7),
+        comp9_link: esData[43].contenido || dfl(8),
         val1_titulo: esData[13].contenido,
         val1_desc: esData[14].contenido,
         val2_titulo: esData[15].contenido,
