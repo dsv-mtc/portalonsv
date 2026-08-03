@@ -624,11 +624,10 @@ routes.get("/revistas/:page?", async (req, res) => {
 	const { data: allRevistas } = await mysql.getRevistas();
 	const revistasActivas = (allRevistas || []).filter(r => r.esta_activo);
 
-	const temasUnicos = [...new Set(revistasActivas.map(r => r.tema).filter(Boolean))];
-	const temasDisponibles = temasUnicos.map(t => ({
-		name: t,
-		slug: t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-")
-	}));
+	const { data: tiposRevista } = await mysql.getTiposRevista();
+	const temasDisponibles = (tiposRevista || [])
+		.filter(t => t.isActive)
+		.map(t => ({ id: t.id, name: t.value, slug: slugify(t.value) }));
 
 	let revistasFiltradas = [...revistasActivas];
 
@@ -641,11 +640,7 @@ routes.get("/revistas/:page?", async (req, res) => {
 	if (tema) {
 		const temaSeleccionado = temasDisponibles.find(t => t.slug === tema);
 		if (temaSeleccionado) {
-			revistasFiltradas = revistasFiltradas.filter(r => {
-				const rTemaSlug = (r.tema || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-				const filterSlug = temaSeleccionado.slug.toLowerCase();
-				return rTemaSlug === filterSlug;
-			});
+			revistasFiltradas = revistasFiltradas.filter(r => r.idTemaRevista === temaSeleccionado.id);
 		}
 	}
 

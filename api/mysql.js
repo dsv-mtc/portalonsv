@@ -1708,6 +1708,7 @@ class DataBase {
 	}
 
 	async getRegion(name) {
+		const slug = (name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 		let query = `
 			SELECT
 				r.id,
@@ -1719,8 +1720,9 @@ class DataBase {
 				r.imageUrl,
 				r.pageLink
 			FROM regiones r
-			WHERE r.value LIKE '${name}'
+			WHERE r.value LIKE '${name}' OR r.slug = '${slug}'
 			ORDER BY r.slug ASC
+			LIMIT 1
 		`
 
 		query = query.replace(/\s+/g, ' ').trim()
