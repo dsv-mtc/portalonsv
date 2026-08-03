@@ -901,7 +901,8 @@ routes.get("/datosabiertos/:page?", async (req, res) => {
 		pages,
 		next: (page + 1) > pages ? null : (page + 1),
 		prev: (page - 1) < 1 ? null : (page - 1),
-		url_page: 'datosabiertos'
+		url_page: 'datosabiertos',
+		pages_list: getPageNumbers(page, pages)
     }
 
     const { data: datosAbiertos, success } = await mysql.getDatosAbiertos({

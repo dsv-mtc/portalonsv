@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Plus, Trash2, Pencil, Upload, X, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { BrandButton, Chip } from "../components/UIBits";
@@ -30,6 +30,8 @@ function initForm(): FormData {
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
 const selectCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
 
+interface Pagination { page: number; pages: number; total: number }
+
 export function DatosAbiertos() {
   const [datos, setDatos] = useState<Dato[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -40,6 +42,7 @@ export function DatosAbiertos() {
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<Pagination>({ page: 1, pages: 1, total: 0 });
   const [filterTitulo, setFilterTitulo] = useState("");
   const [filterCategoria, setFilterCategoria] = useState<number | "">("");
   const fileExcelRef = useRef<HTMLInputElement>(null);
@@ -47,27 +50,32 @@ export function DatosAbiertos() {
   const fileCsvRef = useRef<HTMLInputElement>(null);
   const fileShapeRef = useRef<HTMLInputElement>(null);
 
-  const PER_PAGE = 5;
-
-  const filtered = useMemo(() => {
-    return datos.filter(d => {
-      if (filterTitulo && !d.titulo.toLowerCase().includes(filterTitulo.toLowerCase())) return false;
-      if (filterCategoria && d.idCategoria !== filterCategoria) return false;
-      return true;
-    });
-  }, [datos, filterTitulo, filterCategoria]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  const currentPage = Math.min(page, totalPages);
-  const paginatedItems = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
-
-  const load = () => {
-    setPage(1);
-    apiGet<{ datos: Dato[]; categorias: Categoria[]; tipos: Tipo[] }>("/datos-abiertos")
-      .then(d => { setDatos(d.datos || []); setCategorias(d.categorias || []); setTipos(d.tipos || []); })
+  const load = (targetPage: number, titulo = filterTitulo, categoria = filterCategoria) => {
+    const params = new URLSearchParams();
+    params.set("page", String(targetPage));
+    if (titulo) params.set("searchedTitulo", titulo);
+    if (categoria) params.set("searchedCategoria", String(categoria));
+    apiGet<{ datos: Dato[]; categorias: Categoria[]; tipos: Tipo[]; pagination: Pagination }>(`/datos-abiertos?${params.toString()}`)
+      .then(d => {
+        setDatos(d.datos || []);
+        setCategorias(d.categorias || []);
+        setTipos(d.tipos || []);
+        setPagination(d.pagination || { page: targetPage, pages: 1, total: 0 });
+        setPage(targetPage);
+      })
       .catch(() => {});
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(1); }, []);
+
+  const skipFirstFilter = useRef(true);
+  useEffect(() => {
+    if (skipFirstFilter.current) {
+      skipFirstFilter.current = false;
+      return;
+    }
+    const t = setTimeout(() => load(1), 350);
+    return () => clearTimeout(t);
+  }, [filterTitulo, filterCategoria]);
 
   useEffect(() => {
     if (!msg) return;
@@ -133,7 +141,7 @@ export function DatosAbiertos() {
     setModalOpen(false);
     setForm(initForm());
     setEditingId(null);
-    load();
+    load(page);
   };
 
   const handleDelete = async () => {
@@ -142,7 +150,14 @@ export function DatosAbiertos() {
     setConfirmDelete(null);
     await apiDelete(`/datos-abiertos/${id}`);
     setMsg("Eliminado");
-    load();
+    const lastPage = pagination.pages;
+    const reloadPage = pagination.page > 1 && pagination.page === lastPage && pagination.total % 5 === 1 ? pagination.page - 1 : pagination.page;
+    load(reloadPage);
+  };
+
+  const goToPage = (target: number) => {
+    if (target < 1 || target > pagination.pages) return;
+    load(target);
   };
 
   const pagBtn = (label: React.ReactNode, active: boolean, onClick: () => void, ariaLabel: string) => (
@@ -158,7 +173,7 @@ export function DatosAbiertos() {
     <>
       <PageHeader title="Datos Abiertos" eyebrow="Publicación de datos" actions={
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Chip color="cyan">{filtered.length} / {datos.length}</Chip>
+          <Chip color="cyan">{pagination.total} registros</Chip>
           <BrandButton onClick={openCreate}><Plus className="w-4 h-4" /> Agregar</BrandButton>
         </div>
       } />
@@ -176,11 +191,11 @@ export function DatosAbiertos() {
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginBottom: 12 }}>
         <input type="text" placeholder="Buscar título..." value={filterTitulo}
-          onChange={e => { setFilterTitulo(e.target.value); setPage(1); }}
+          onChange={e => { setFilterTitulo(e.target.value); }}
           className="h-10 w-52 rounded-lg border-2 px-3 text-[13px] outline-none bg-white"
           style={{ borderColor: "var(--brand-line)" }} />
         <select value={filterCategoria}
-          onChange={e => { setFilterCategoria(e.target.value ? Number(e.target.value) : ""); setPage(1); }}
+          onChange={e => { setFilterCategoria(e.target.value ? Number(e.target.value) : ""); }}
           className="h-10 rounded-lg border-2 px-3 text-[13px] outline-none bg-white"
           style={{ borderColor: "var(--brand-line)" }}>
           <option value="">Todas las categorías</option>
@@ -207,7 +222,7 @@ export function DatosAbiertos() {
             </tr>
           </thead>
           <tbody>
-            {paginatedItems.map(item => (
+            {datos.map(item => (
               <tr key={item.id} style={{ borderBottom: "1px solid var(--brand-line)" }}>
                 <td style={{ padding: "10px 8px", fontWeight: 600, color: "var(--brand-navy)", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={item.titulo}>{item.titulo}</td>
                 <td style={{ padding: "10px 8px", color: "var(--brand-navy)", maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={item.autor}>{item.autor}</td>
@@ -261,13 +276,13 @@ export function DatosAbiertos() {
         </table>
       </div>
 
-      {totalPages > 1 && (
+      {pagination.pages > 1 && (
         <div className="mt-6 flex justify-center items-center gap-1.5">
-          {pagBtn(<ChevronsLeft className="w-4 h-4" />, false, () => setPage(1), "Primera página")}
-          {pagBtn(<ChevronLeft className="w-4 h-4" />, false, () => setPage(p => Math.max(1, p - 1)), "Página anterior")}
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => pagBtn(p, p === currentPage, () => setPage(p), `Página ${p}`))}
-          {pagBtn(<ChevronRight className="w-4 h-4" />, false, () => setPage(p => Math.min(totalPages, p + 1)), "Página siguiente")}
-          {pagBtn(<ChevronsRight className="w-4 h-4" />, false, () => setPage(totalPages), "Última página")}
+          {pagBtn(<ChevronsLeft className="w-4 h-4" />, false, () => goToPage(1), "Primera página")}
+          {pagBtn(<ChevronLeft className="w-4 h-4" />, false, () => goToPage(pagination.page - 1), "Página anterior")}
+          {Array.from({ length: pagination.pages }, (_, i) => i + 1).map(p => pagBtn(p, p === pagination.page, () => goToPage(p), `Página ${p}`))}
+          {pagBtn(<ChevronRight className="w-4 h-4" />, false, () => goToPage(pagination.page + 1), "Página siguiente")}
+          {pagBtn(<ChevronsRight className="w-4 h-4" />, false, () => goToPage(pagination.pages), "Última página")}
         </div>
       )}
 

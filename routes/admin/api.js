@@ -742,7 +742,7 @@ router.post("/comunicaciones-revistas/upload", isAuthenticated, async (req, res)
 // --- Datos Abiertos ---
 router.get("/datos-abiertos", isAuthenticated, async (req, res) => {
   const page = Number(req.query.page) || 1;
-  const pageSize = 6;
+  const pageSize = 5;
   const conditions = {};
   if (req.query.searchedTitulo) conditions.title = req.query.searchedTitulo;
   if (req.query.searchedDescripcion) conditions.description = req.query.searchedDescripcion;
