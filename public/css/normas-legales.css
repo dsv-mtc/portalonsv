@@ -69,7 +69,7 @@
 	object-fit: cover;
 }
 
-.new-card .card-img { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid #e2e8f0; }
+.new-card .card-img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: contain; background: #f1f4f9; border-bottom: 1px solid #e2e8f0; }
 .new-card .card-content { padding: 16px 20px 20px; display: flex; flex-direction: column; flex: 1; text-align: left; }
 .new-card .card-meta { font-family: "Barlow Semi Condensed", sans-serif; font-weight: bold; font-size: 12px; color: #0355a3; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; display: flex; align-items: center; flex-wrap: nowrap; white-space: nowrap; }
 .new-card .card-region { margin-left: 12px; white-space: nowrap; }

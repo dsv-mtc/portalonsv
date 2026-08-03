@@ -544,26 +544,44 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 		return
 	}
 
-	const [allTags, { data: regiones }] = await Promise.all([
-		await apiGhost.getTags("tags", "all"),
-		await mysql.getRegiones()
-	])
+	const { data: regiones } = await mysql.getRegiones();
+
+	let seccionPosts = [];
+	try {
+		seccionPosts = await apiGhost.get().posts.browse({
+			filter: "tags:[publicaciones]",
+			limit: 'all',
+			include: 'tags',
+			order: "published_at DESC",
+		});
+	} catch (error) {
+		console.error(error);
+	}
+	seccionPosts = (seccionPosts || []).filter(p => !disabledIdsPub.includes(p.id));
 
 	const isYearRegExp = /^\d{4}$/;
+	const seccionTagMap = new Map();
+	seccionPosts.forEach(post => {
+		(post.tags || []).forEach(tag => {
+			if (!seccionTagMap.has(tag.slug)) seccionTagMap.set(tag.slug, tag);
+		});
+	});
 
-	const filteredTags = allTags
-		.filter(tag => !(isYearRegExp.test(tag.slug) || regiones.some(r => r.slug === tag.slug)))
+	const filteredTags = [...seccionTagMap.values()]
+		.filter(tag => !(isYearRegExp.test(tag.slug) || regiones.some(r => r.slug === tag.slug) || tag.slug === 'publicaciones'))
 		.map(tag => ({
 			name: utils.capitalizeNameRecursive(tag.name),
 			slug: tag.slug,
 			estaSeleccionado: tag.slug === categoria
-		}))
+		}));
 
-	const years = allTags.filter(tag => (/^\d{4}$/.test(tag.slug))).map(tag => ({
-		name: tag.name,
-		slug: tag.slug,
-		estaSeleccionado: tag.slug === year
-	}))
+	const years = [...seccionTagMap.values()]
+		.filter(tag => isYearRegExp.test(tag.slug))
+		.map(tag => ({
+			name: tag.name,
+			slug: tag.slug,
+			estaSeleccionado: tag.slug === year
+		}));
 
 	const tags = utils.filterTags(posts);
 
@@ -766,26 +784,44 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 		return
 	}
 
-	const [allTags, { data: regiones }] = await Promise.all([
-		await apiGhost.getTags("tags", "all"),
-		await mysql.getRegiones()
-	])
+	const { data: regiones } = await mysql.getRegiones();
+
+	let seccionPosts = [];
+	try {
+		seccionPosts = await apiGhost.get().posts.browse({
+			filter: "tags:[normas-legales]",
+			limit: 'all',
+			include: 'tags',
+			order: "published_at DESC",
+		});
+	} catch (error) {
+		console.error(error);
+	}
+	seccionPosts = (seccionPosts || []).filter(p => !disabledIdsNormas.includes(p.id));
 
 	const isYearRegExp = /^\d{4}$/;
+	const seccionTagMap = new Map();
+	seccionPosts.forEach(post => {
+		(post.tags || []).forEach(tag => {
+			if (!seccionTagMap.has(tag.slug)) seccionTagMap.set(tag.slug, tag);
+		});
+	});
 
-	const filteredTags = allTags
-		.filter(tag => !(isYearRegExp.test(tag.slug) || regiones.some(r => r.slug === tag.slug)))
+	const filteredTags = [...seccionTagMap.values()]
+		.filter(tag => !(isYearRegExp.test(tag.slug) || regiones.some(r => r.slug === tag.slug) || tag.slug === 'normas-legales'))
 		.map(tag => ({
 			name: utils.capitalizeNameRecursive(tag.name),
 			slug: tag.slug,
 			estaSeleccionado: tag.slug === categoria
-		}))
+		}));
 
-	const years = allTags.filter(tag => (/^\d{4}$/.test(tag.slug))).map(tag => ({
-		name: tag.name,
-		slug: tag.slug,
-		estaSeleccionado: tag.slug === year
-	}))
+	const years = [...seccionTagMap.values()]
+		.filter(tag => isYearRegExp.test(tag.slug))
+		.map(tag => ({
+			name: tag.name,
+			slug: tag.slug,
+			estaSeleccionado: tag.slug === year
+		}));
 
 	const tags = utils.filterTags(posts);
 
