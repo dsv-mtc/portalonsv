@@ -12,8 +12,72 @@ const $modal = document.getElementById('submenu-modal')
 const $modalTitle = document.getElementById('modal-title')
 const $modalBody = document.getElementById('modal-body')
 const $modalClose = document.getElementById('modal-close')
+const $menusPagination = document.getElementById('menus-pagination')
 
 let loadingIframe = false
+
+const MENUS_PER_PAGE = 6
+const $allMenuCards = Array.from(document.querySelectorAll('.menu-card'))
+const totalMenuPages = Math.max(1, Math.ceil($allMenuCards.length / MENUS_PER_PAGE))
+let currentMenuPage = 1
+
+function showMenusPage(page) {
+  const start = (page - 1) * MENUS_PER_PAGE
+  const end = start + MENUS_PER_PAGE
+  $allMenuCards.forEach(($card, index) => {
+    $card.style.display = index >= start && index < end ? '' : 'none'
+  })
+}
+
+function renderMenusPagination() {
+  $menusPagination.innerHTML = ''
+
+  const prevBtn = document.createElement('button')
+  prevBtn.className = 'menu-page-btn'
+  prevBtn.disabled = currentMenuPage === 1
+  prevBtn.setAttribute('aria-label', 'Página anterior')
+  prevBtn.innerHTML = '<i class="fal fa-chevron-left"></i>'
+  prevBtn.addEventListener('click', () => goToMenusPage(currentMenuPage - 1))
+  $menusPagination.appendChild(prevBtn)
+
+  for (let i = 1; i <= totalMenuPages; i++) {
+    const pageBtn = document.createElement('button')
+    pageBtn.className = 'menu-page-btn'
+    if (i === currentMenuPage) pageBtn.classList.add('active')
+    pageBtn.textContent = i
+    pageBtn.setAttribute('aria-label', `Página ${i}`)
+    pageBtn.addEventListener('click', () => goToMenusPage(i))
+    $menusPagination.appendChild(pageBtn)
+  }
+
+  const nextBtn = document.createElement('button')
+  nextBtn.className = 'menu-page-btn'
+  nextBtn.disabled = currentMenuPage === totalMenuPages
+  nextBtn.setAttribute('aria-label', 'Siguiente página')
+  nextBtn.innerHTML = '<i class="fal fa-chevron-right"></i>'
+  nextBtn.addEventListener('click', () => goToMenusPage(currentMenuPage + 1))
+  $menusPagination.appendChild(nextBtn)
+}
+
+function goToMenusPage(page) {
+  if (page < 1 || page > totalMenuPages) return
+  currentMenuPage = page
+  showMenusPage(page)
+  renderMenusPagination()
+}
+
+function initMenusPagination() {
+  if ($allMenuCards.length === 0) return
+  if (totalMenuPages <= 1) {
+    $menusPagination.classList.add('d-none')
+    showMenusPage(1)
+    return
+  }
+  $menusPagination.classList.remove('d-none')
+  goToMenusPage(1)
+}
+
+initMenusPagination()
 
 document.querySelectorAll('.menu-card').forEach($card => {
   $card.addEventListener('click', () => {
