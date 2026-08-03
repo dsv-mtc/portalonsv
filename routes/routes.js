@@ -90,7 +90,8 @@ routes.get("/", async (req, res) => {
 	const accidents = await utils.getAccidents();
 	const post2 = await apiGhost.getPosts(3, "tags", "tags: [noticias-eventos]");
 	const post3 = await apiGhost.getPosts(3, "tags,authors", "tags:[publicaciones]", "published_at DESC");
-	const banners = await utils.getImagesFiles('banner');
+	const { data: bannersData } = await mysql.getBanners();
+	const banners = (bannersData || []).map(b => b.archivo.replace(/^\/assets\//, ''));
 	const modalinfo = await apiGhost.getModalPosts();
 
 	const { data: cifras } = await mysql.getCifras();

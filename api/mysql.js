@@ -3016,6 +3016,53 @@ class DataBase {
 		}
 	}
 
+	// --- Banners ---
+	async getBanners() {
+		const queryString = `SELECT id, posicion, archivo FROM banners ORDER BY posicion ASC`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener los banners" };
+		}
+	}
+
+	async updateBannerOrder(items) {
+		const queryString = `UPDATE banners SET posicion = ? WHERE id = ?`;
+		try {
+			for (const { id, posicion } of items) {
+				await this.query(queryString, [posicion, id]);
+			}
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el orden" };
+		}
+	}
+
+	async updateBannerArchivo(id, archivo) {
+		const queryString = `UPDATE banners SET archivo = ? WHERE id = ?`;
+		try {
+			await this.query(queryString, [archivo, id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el banner" };
+		}
+	}
+
+	async getAllBanners() {
+		const queryString = `SELECT id, posicion, archivo FROM banners ORDER BY posicion ASC`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
 }
 
 module.exports = DataBase;

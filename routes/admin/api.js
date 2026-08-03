@@ -1106,4 +1106,38 @@ router.put("/publicaciones-estado", isAuthenticated, async (req, res) => {
   res.json({ ...result, log: log || undefined });
 });
 
+// --- Banners ---
+const bannersAssetsDir = path.join(__dirname, '../../public/assets');
+const bannersUpload = multer({ dest: bannersAssetsDir });
+
+router.get("/banners", isAuthenticated, async (req, res) => {
+  const result = await mysql.getBanners();
+  res.json(result);
+});
+
+router.put("/banners/order", isAuthenticated, async (req, res) => {
+  const { orden } = req.body; // [{ id, posicion }, ...]
+  if (!Array.isArray(orden) || orden.length === 0) {
+    return res.status(400).json({ success: false, message: "Orden inválido" });
+  }
+  const result = await mysql.updateBannerOrder(orden);
+  const log = await logAction('updated', 'Banners', 0, 'Se actualizó el orden de los banners', req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/banners/upload/:id", isAuthenticated, bannersUpload.single('file'), async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id || !req.file) {
+    return res.status(400).json({ success: false, message: "Faltan parámetros" });
+  }
+  const ext = path.extname(req.file.originalname) || '.png';
+  const filename = `banner_${id}_${Date.now()}${ext}`;
+  const destPath = path.join(bannersAssetsDir, filename);
+  fs.renameSync(req.file.path, destPath);
+  const archivo = `/assets/${filename}`;
+  const result = await mysql.updateBannerArchivo(id, archivo);
+  const log = await logAction('updated', 'Banner', id, `Se actualizó la imagen del banner`, req);
+  res.json({ ...result, archivo, log: log || undefined });
+});
+
 module.exports = router;

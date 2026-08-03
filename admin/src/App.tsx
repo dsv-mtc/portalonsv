@@ -20,6 +20,7 @@ import { DatosAbiertosCategorias } from "./pages/DatosAbiertosCategorias";
 import { DatosAbiertosTipos } from "./pages/DatosAbiertosTipos";
 import { Usuarios } from "./pages/Usuarios";
 import { Programas } from "./pages/Programas";
+import { Banners } from "./pages/Banners";
 
 export default function App() {
   return (
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="datos-tipos" element={<DatosAbiertosTipos />} />
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="programas" element={<Programas />} />
+          <Route path="banners" element={<Banners />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
