@@ -11,3 +11,5 @@ public/estaticos/
 AGENTS.md
 .env
 .gitignore
+# Artefactos de despliegue
+*.tar
