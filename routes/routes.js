@@ -91,7 +91,23 @@ routes.get("/", async (req, res) => {
 	const post2 = await apiGhost.getPosts(3, "tags", "tags: [noticias-eventos]");
 	const post3 = await apiGhost.getPosts(3, "tags,authors", "tags:[publicaciones]", "published_at DESC");
 	const { data: bannersData } = await mysql.getBanners();
-	const banners = (bannersData || []).map(b => b.archivo.replace(/^\/assets\//, ''));
+	const lang = res.locals.secondary_navigation ? 'en' : 'es';
+	const langFields = {
+		es: { kicker: 'kicker_es', titulo: 'titulo_es', parrafo: 'parrafo_es', btn1_label: 'btn1_label_es', btn2_label: 'btn2_label_es' },
+		en: { kicker: 'kicker_en', titulo: 'titulo_en', parrafo: 'parrafo_en', btn1_label: 'btn1_label_en', btn2_label: 'btn2_label_en' },
+	}[lang];
+	const banners = (bannersData || []).map(b => ({
+		archivo: b.archivo,
+		kicker:     b[langFields.kicker],
+		titulo:     b[langFields.titulo],
+		parrafo:    b[langFields.parrafo],
+		btn1_label: b[langFields.btn1_label],
+		btn1_href:  b.btn1_href,
+		btn1_externo: /^https?:\/\//.test(b.btn1_href || ''),
+		btn2_label: b[langFields.btn2_label],
+		btn2_href:  b.btn2_href,
+		btn2_externo: /^https?:\/\//.test(b.btn2_href || ''),
+	}));
 	const modalinfo = await apiGhost.getModalPosts();
 
 	const { data: cifras } = await mysql.getCifras();

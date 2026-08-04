@@ -1110,8 +1110,29 @@ router.put("/publicaciones-estado", isAuthenticated, async (req, res) => {
 const bannersAssetsDir = path.join(__dirname, '../../public/assets');
 const bannersUpload = multer({ dest: bannersAssetsDir });
 
+// Transforma <em>palabra</em> <-> *palabra* para edición bilingüe del admin.
+const emToAsterisk = (s) => (s == null ? '' : String(s).replace(/<em>(.*?)<\/em>/g, '*$1*'));
+const asteriskToEm = (s) => (s == null ? null : String(s).replace(/\*([^*]+?)\*/g, '<em>$1</em>'));
+
+const BANNER_TEXT_FIELDS = [
+  'kicker_es', 'kicker_en',
+  'titulo_es', 'titulo_en',
+  'parrafo_es', 'parrafo_en',
+  'btn1_label_es', 'btn1_label_en',
+  'btn2_label_es', 'btn2_label_en'
+];
+
 router.get("/banners", isAuthenticated, async (req, res) => {
   const result = await mysql.getBanners();
+  if (result.success && Array.isArray(result.data)) {
+    result.data = result.data.map(b => {
+      const out = { ...b };
+      for (const f of BANNER_TEXT_FIELDS) {
+        if (out[f] != null) out[f] = emToAsterisk(out[f]);
+      }
+      return out;
+    });
+  }
   res.json(result);
 });
 
@@ -1138,6 +1159,29 @@ router.post("/banners/upload/:id", isAuthenticated, bannersUpload.single('file')
   const result = await mysql.updateBannerArchivo(id, archivo);
   const log = await logAction('updated', 'Banner', id, `Se actualizó la imagen del banner`, req);
   res.json({ ...result, archivo, log: log || undefined });
+});
+
+router.put("/banners/textos/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { idioma, kicker, titulo, parrafo, btn1_label, btn1_href, btn2_label, btn2_href } = req.body || {};
+  if (!id) {
+    return res.status(400).json({ success: false, message: "ID inválido" });
+  }
+  if (idioma !== 'es' && idioma !== 'en') {
+    return res.status(400).json({ success: false, message: "Idioma inválido" });
+  }
+  const datos = {
+    kicker:    asteriskToEm(kicker),
+    titulo:    asteriskToEm(titulo),
+    parrafo:   asteriskToEm(parrafo),
+    btn1_label: asteriskToEm(btn1_label),
+    btn1_href:  (btn1_href == null ? null : String(btn1_href).trim() || null),
+    btn2_label: asteriskToEm(btn2_label),
+    btn2_href:  (btn2_href == null ? null : String(btn2_href).trim() || null),
+  };
+  const result = await mysql.updateBannerTextos(id, idioma, datos);
+  const log = await logAction('updated', 'Banner', id, `Se actualizaron los textos del banner (${idioma})`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 module.exports = router;

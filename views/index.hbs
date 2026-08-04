@@ -84,49 +84,51 @@
 <section id="heroCarousel" class="carousel slide carousel-fade hero">
   <div class="carousel-inner slides">
       <div class="carousel-item slide active">
-        <div class="bg" style="background-image: url('/assets/{{banners.[0]}}');"></div>
+        <div class="bg" style="background-image: url('{{banners.[0].archivo}}');"></div>
         <div class="veil"></div>
         
         <div class="hero-in">
           <div class="hero-card">
-            <div class="kick">{{t lang "Decenio de Acción 2021–2030"}}</div>
-            <h1>{{{t lang "Datos que salvan vidas en las vías del Perú"}}}</h1>
-            <p>{{t lang "El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre los siniestros viales para fortalecer las políticas de prevención."}}</p>
+            <div class="kick">{{{banners.[0].kicker}}}</div>
+            <h1>{{{banners.[0].titulo}}}</h1>
+            <p>{{{banners.[0].parrafo}}}</p>
             <div class="btns">
-              <a class="btn-hero btn-white" href="#siniestralidad">{{t lang "Ver cifras 2025 →"}}</a>
-              <a class="btn-hero btn-ghost" href="#mapa">{{t lang "Mapa de Siniestros →"}}</a>
+              <a class="btn-hero btn-white" href="{{banners.[0].btn1_href}}"{{#if banners.[0].btn1_externo}} target="_blank"{{/if}}>{{banners.[0].btn1_label}} →</a>
+              {{#if banners.[0].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[0].btn2_href}}"{{#if banners.[0].btn2_externo}} target="_blank"{{/if}}>{{banners.[0].btn2_label}} →</a>{{/if}}
             </div>
           </div>
         </div>
       </div>
 
       <div class="carousel-item slide">
-        <div class="bg" style="background-image: url('/assets/{{banners.[1]}}');"></div>
+        <div class="bg" style="background-image: url('{{banners.[1].archivo}}');"></div>
         <div class="veil"></div>
         
         <div class="hero-in">
           <div class="hero-card">
-            <div class="kick">{{t lang "Campaña vigente"}}</div>
-            <h1>{{{t lang "Entornos viales seguros"}}}</h1>
-            <p>{{t lang "Conoce las acciones para reducir la contaminación y el riesgo en corredores de alto tránsito."}}</p>
+            <div class="kick">{{{banners.[1].kicker}}}</div>
+            <h1>{{{banners.[1].titulo}}}</h1>
+            <p>{{{banners.[1].parrafo}}}</p>
             <div class="btns">
-              <a class="btn-hero btn-white" href="/publicaciones">{{t lang "Ver más →"}}</a>
+              <a class="btn-hero btn-white" href="{{banners.[1].btn1_href}}"{{#if banners.[1].btn1_externo}} target="_blank"{{/if}}>{{banners.[1].btn1_label}} →</a>
+              {{#if banners.[1].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[1].btn2_href}}"{{#if banners.[1].btn2_externo}} target="_blank"{{/if}}>{{banners.[1].btn2_label}} →</a>{{/if}}
             </div>
           </div>
         </div>
       </div>
 
       <div class="carousel-item slide">
-        <div class="bg" style="background-image: url('/assets/{{banners.[2]}}');"></div>
+        <div class="bg" style="background-image: url('{{banners.[2].archivo}}');"></div>
         <div class="veil"></div>
         
         <div class="hero-in">
           <div class="hero-card">
-            <div class="kick">{{t lang "Aplicativo"}}</div>
-            <h1>{{{t lang "SRAT · Visor de alerta de siniestros"}}}</h1>
-            <p>{{t lang "Monitoreo georreferenciado de los hechos de tránsito a nivel nacional, en tiempo cercano al real."}}</p>
+            <div class="kick">{{{banners.[2].kicker}}}</div>
+            <h1>{{{banners.[2].titulo}}}</h1>
+            <p>{{{banners.[2].parrafo}}}</p>
             <div class="btns">
-              <a class="btn-hero btn-white" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">{{t lang "Abrir visor →"}}</a>
+              <a class="btn-hero btn-white" href="{{banners.[2].btn1_href}}"{{#if banners.[2].btn1_externo}} target="_blank"{{/if}}>{{banners.[2].btn1_label}} →</a>
+              {{#if banners.[2].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[2].btn2_href}}"{{#if banners.[2].btn2_externo}} target="_blank"{{/if}}>{{banners.[2].btn2_label}} →</a>{{/if}}
             </div>
           </div>
         </div>
