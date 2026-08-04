@@ -472,6 +472,12 @@ routes.get("/entornos-viales", async (req, res) => {
 /** PROGRAMAS (página individual de cada programa creado en el admin) */
 routes.get("/programas/:slug", async (req, res) => {
 	const lang = res.locals.lang === "en" ? "en" : "es";
+
+	// Rama especial: página dedicada de Orientación a Víctimas (no proviene de la tabla programa)
+	if (req.params.slug === "orientacion-victimas") {
+		return res.render("pages/programa-orientacion-victimas", { lang });
+	}
+
 	const { data: programas } = await mysql.getProgramas();
 	const programa = (programas || []).find(p => p.estaActivo && slugify(p.nombre) === req.params.slug);
 	if (!programa) return res.status(404).redirect('/');

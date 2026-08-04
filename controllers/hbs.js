@@ -197,6 +197,7 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 	var progLabel = secondary_navigation ? 'Programs' : 'Programas';
 	var victimLabel = secondary_navigation ? 'Victim Support' : 'Orientación a víctimas';
 	var progActive = url_selected.includes('/programas/') ? 'add-color' : '';
+	var victimHref = secondary_navigation ? '/en/programas/orientacion-victimas' : '/programas/orientacion-victimas';
 	var progItems = (programas || []).map(function (p) {
 		return { label: p.titulo, url: p.url };
 	});
@@ -205,7 +206,7 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${progLabel}</a>
 			<div class="dropdown-menu">
 				${progItems.map(renderDropdownItem).join('')}
-				<a class="dropdown-item" href="https://dsv-mtc.github.io/orientacion-victimas/" target="_blank">${victimLabel}</a>
+				<a class="dropdown-item" href="${victimHref}" target="_self">${victimLabel}</a>
 			</div>
 		</li>`;
 
