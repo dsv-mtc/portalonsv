@@ -8,14 +8,6 @@
 .events-main-title::before { content:""; width:6px; height:24px; background:#c8102e; border-radius:3px; flex-shrink:0; }
 .events-main-title h1 { margin:0; font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:clamp(29px,2vw,29px) !important; text-transform:uppercase; letter-spacing:.03em; color:#14213D; line-height:1.1; white-space:nowrap; }
 
-.filter-buttons { display: flex; gap: 10px; flex-wrap: nowrap; flex-shrink: 0;}
-.btn-filter { border:none; padding:8px 16px; border-radius:100px; font-family:"Barlow Semi Condensed",sans-serif; font-weight:700; font-size:12.5px; text-transform:uppercase; letter-spacing:.03em; color:#fff; opacity:.4; transition:.18s; cursor:pointer; }
-.btn-filter.active { opacity:1 !important; box-shadow:0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08); }
-.btn-filter[disabled] { opacity:1 !important; cursor:default; }
-.all-button { background: #b96470; } 
-.campaign-button { background: #f9d57b; color: #162645; } 
-.event-button { background: #1f61ac; } 
-.interview-button { background: #658f6c; } 
 
 .events-sidebar { background: #f4f6f9; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; }
 .sidebar-title { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 18px; color: #162645; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 0.02em; }
