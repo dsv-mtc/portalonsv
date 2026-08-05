@@ -696,6 +696,10 @@
 
   @media(max-width: 991px) { .yt-list { width: 100%; border-left: none; border-top: 1px solid var(--line); } }
   @media(max-width: 767px) { .sc-body { min-height: auto; } .x-profile-card { min-height: auto; } .yt-main { min-height: 220px; min-width: auto; } .sc-tabs { gap: 6px; } .sc-tab { width: 36px; height: 36px; } }
+
+  .yt-main iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 3; }
+  .yt-main .yt-empty { color: #fff; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 16px; z-index: 2; text-align: center; padding: 20px; }
+  .yt-item .thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
 </style>
 
 <section class="social-sec" id="comunidad">
@@ -785,31 +789,48 @@
           
           <div class="yt-body">
             <div class="yt-main">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-              <div class="yt-title">{{t lang "Campaña: Si tomas, no manejes"}}</div>
+              {{#if youtubeTopVideos.[0]}}
+                <iframe
+                  src="https://www.youtube.com/embed/{{youtubeTopVideos.[0].video}}"
+                  title="{{youtubeTopVideos.[0].title}}"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+              {{else}}
+                <div class="yt-empty">{{t lang "Próximamente"}}</div>
+              {{/if}}
             </div>
             
             <div class="yt-list">
-              <div class="yt-item active">
-                <div class="thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-                <div class="info">
-                  <div class="title">{{t lang "Campaña: Si tomas, no manejes"}}</div>
-                  <div class="desc">{{t lang "Educación vial · Spot"}}</div>
+              {{#each youtubeTopVideos}}
+                <div class="yt-item{{#if @first}} active{{/if}}" data-video="{{video}}" data-title="{{title}}">
+                  <div class="thumb">
+                    {{#if thumbnail}}
+                      <img src="{{thumbnail}}" alt="{{title}}" loading="lazy">
+                    {{else}}
+                      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    {{/if}}
+                  </div>
+                  <div class="info">
+                    <div class="title">{{title}}</div>
+                    <div class="desc">{{t lang "ONSV · MTC"}}</div>
+                  </div>
                 </div>
-              </div>
-              <div class="yt-item">
-                <div class="thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-                <div class="info">
-                  <div class="title">{{t lang "El MTC y la Seguridad Vial"}}</div>
-                  <div class="desc">{{t lang "Institucional · Video"}}</div>
+              {{/each}}
+              {{#unless youtubeTopVideos.length}}
+                <div class="yt-item">
+                  <div class="thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                  <div class="info">
+                    <div class="title">{{t lang "Próximamente"}}</div>
+                    <div class="desc">{{t lang "ONSV · MTC"}}</div>
+                  </div>
                 </div>
-              </div>
+              {{/unless}}
             </div>
           </div>
           
           <div class="sc-footer">
             <p>{{t lang "Selecciona y reproduce los videos del Observatorio."}}</p>
-            <a href="#" target="_blank" class="btn-yt">{{t lang "VER EN YOUTUBE"}}</a>
+            <a href="https://www.youtube.com/@observatorionacionaldesegu8980" target="_blank" class="btn-yt">{{t lang "VER EN YOUTUBE"}}</a>
           </div>
           
         </div>
@@ -877,14 +898,17 @@
 
     var ytCard = document.querySelector(".social-sec .col-lg-8 .sc-card");
     var ytItems = ytCard.querySelectorAll(".yt-item");
-    var ytTitle = ytCard.querySelector(".yt-title");
+    var ytMain = ytCard.querySelector(".yt-main");
     ytItems.forEach(function (item) {
       item.addEventListener("click", function () {
         ytItems.forEach(function (i) { i.classList.remove("active"); });
         this.classList.add("active");
-        var titleEl = this.querySelector(".title");
-        if (titleEl && ytTitle) {
-          ytTitle.textContent = titleEl.textContent;
+        var videoId = this.getAttribute("data-video");
+        var title = this.getAttribute("data-title") || "";
+        var iframe = ytMain.querySelector("iframe");
+        if (iframe && videoId) {
+          iframe.src = "https://www.youtube.com/embed/" + videoId;
+          iframe.title = title;
         }
       });
     });

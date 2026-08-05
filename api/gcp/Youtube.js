@@ -47,6 +47,32 @@ class Webinars {
 		return videoIdsList;
 	}
 
+	/**
+	 * @description Retorna los videos más vistos del canal (orden descendente por viewCount).
+	 *              Usa search.list con order=viewCount sobre el channelId configurado.
+	 *              Costo de cuota: 100 unidades por llamada.
+	 * @param {number} limit - Cantidad de videos a retornar (por defecto 5).
+	 */
+	async getTopVideos (limit = 5) {
+		const res = await youtube.search.list({
+			part: 'snippet',
+			channelId: process.env.ID_CHANNEL_YOUTUBE_PROD,
+			order: 'viewCount',
+			type: 'video',
+			maxResults: limit
+		});
+		return (res.data.items || []).map(item => {
+			const thumb = (item.snippet.thumbnails && (item.snippet.thumbnails.medium || item.snippet.thumbnails.default || item.snippet.thumbnails.high)) || {};
+			return {
+				video: item.id.videoId,
+				title: item.snippet.title,
+				description: item.snippet.description,
+				thumbnail: thumb.url || '',
+				publishedAt: item.snippet.publishedAt
+			};
+		});
+	}
+
 }
 
 module.exports = Webinars;

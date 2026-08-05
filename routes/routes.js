@@ -135,6 +135,13 @@ routes.get("/", async (req, res) => {
 
 	const popupData = await mysql.getPopup()
 
+	let youtubeTopVideos = [];
+	try {
+		youtubeTopVideos = await youtubeApi.getTopVideos(5);
+	} catch (e) {
+		console.error("YouTube top videos:", e.message);
+	}
+
 	res.render("index", {
 		post3,
 		post2,
@@ -144,7 +151,8 @@ routes.get("/", async (req, res) => {
 		...cifras,
 		componentesCards,
 		popup: popupData.data,
-		popupStatus: JSON.stringify(popupData.data.estado)
+		popupStatus: JSON.stringify(popupData.data.estado),
+		youtubeTopVideos
 	});
 })
 
