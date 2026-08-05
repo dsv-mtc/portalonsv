@@ -14742,6 +14742,9 @@ border: 1px solid #a2a2a2;
    2) Sidebar hamburguesa abre a la izquierda
    ============================================================ */
 @media screen and (max-width: 991px) {
+    .logo-container .d-flex.flex-row-reverse {
+        justify-content: flex-end;
+    }
     .logo-container .d-flex.flex-row-reverse > .navbar {
         width: 35%;
         justify-content: center;

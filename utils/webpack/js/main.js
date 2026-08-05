@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 	openDataForm();
 	fileSelectedName()
 	getMapFromForm();
+	closeNavbarOnOutsideClick();
 })
 /**
  * @description: Función auxiliar utilizada en los post para el retorno al menú inmediato desde donde se originó su llamada
@@ -417,5 +418,28 @@ function fileSelectedName(){
 	$(".custom-file-input").on("change", function() {
 		var fileName = $(this).val().split("\\").pop();
 		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+	});
+}
+
+/**
+ * @description Cierra el menú hamburguesa (#navbarResponsive) al hacer clic fuera de él
+ *              y al redimensionar el viewport a >=992px (p.ej. al rotar a PC).
+ *              Usa el toggler nativo de Bootstrap para colapsar.
+ */
+function closeNavbarOnOutsideClick(){
+	var navbarCollapse = document.getElementById('navbarResponsive');
+	var toggler = document.querySelector('#mainNav .navbar-toggler');
+	if(!navbarCollapse || !toggler) return;
+	document.addEventListener('click', function(e){
+		if(navbarCollapse.classList.contains('show')){
+			if(!navbarCollapse.contains(e.target) && !toggler.contains(e.target)){
+				toggler.click();
+			}
+		}
+	});
+	window.addEventListener('resize', function(){
+		if(window.innerWidth >= 992 && navbarCollapse.classList.contains('show')){
+			toggler.click();
+		}
 	});
 }
