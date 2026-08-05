@@ -79,6 +79,70 @@ function initMenusPagination() {
 
 initMenusPagination()
 
+// Paginación de submenús dentro del modal
+const SUBMENUS_PER_PAGE = 6
+const $submenusPagination = document.getElementById('submenus-pagination')
+let currentSubmenuPage = 1
+let totalSubmenuPages = 1
+let $currentSubmenuCards = []
+
+function showSubmenusPage(page) {
+  const start = (page - 1) * SUBMENUS_PER_PAGE
+  const end = start + SUBMENUS_PER_PAGE
+  $currentSubmenuCards.forEach(($card, index) => {
+    $card.style.display = index >= start && index < end ? '' : 'none'
+  })
+}
+
+function renderSubmenusPagination() {
+  $submenusPagination.innerHTML = ''
+
+  const prevBtn = document.createElement('button')
+  prevBtn.className = 'menu-page-btn'
+  prevBtn.disabled = currentSubmenuPage === 1
+  prevBtn.setAttribute('aria-label', 'Página anterior')
+  prevBtn.innerHTML = '<i class="fal fa-chevron-left"></i>'
+  prevBtn.addEventListener('click', () => goToSubmenusPage(currentSubmenuPage - 1))
+  $submenusPagination.appendChild(prevBtn)
+
+  for (let i = 1; i <= totalSubmenuPages; i++) {
+    const pageBtn = document.createElement('button')
+    pageBtn.className = 'menu-page-btn'
+    if (i === currentSubmenuPage) pageBtn.classList.add('active')
+    pageBtn.textContent = i
+    pageBtn.setAttribute('aria-label', `Página ${i}`)
+    pageBtn.addEventListener('click', () => goToSubmenusPage(i))
+    $submenusPagination.appendChild(pageBtn)
+  }
+
+  const nextBtn = document.createElement('button')
+  nextBtn.className = 'menu-page-btn'
+  nextBtn.disabled = currentSubmenuPage === totalSubmenuPages
+  nextBtn.setAttribute('aria-label', 'Siguiente página')
+  nextBtn.innerHTML = '<i class="fal fa-chevron-right"></i>'
+  nextBtn.addEventListener('click', () => goToSubmenusPage(currentSubmenuPage + 1))
+  $submenusPagination.appendChild(nextBtn)
+}
+
+function goToSubmenusPage(page) {
+  if (page < 1 || page > totalSubmenuPages) return
+  currentSubmenuPage = page
+  showSubmenusPage(page)
+  renderSubmenusPagination()
+}
+
+function initSubmenusPagination(cards) {
+  $currentSubmenuCards = cards
+  totalSubmenuPages = Math.max(1, Math.ceil(cards.length / SUBMENUS_PER_PAGE))
+  if (totalSubmenuPages <= 1) {
+    $submenusPagination.classList.add('d-none')
+    showSubmenusPage(1)
+    return
+  }
+  $submenusPagination.classList.remove('d-none')
+  goToSubmenusPage(1)
+}
+
 document.querySelectorAll('.menu-card').forEach($card => {
   $card.addEventListener('click', () => {
     const menuId = $card.dataset.menuId
@@ -86,10 +150,14 @@ document.querySelectorAll('.menu-card').forEach($card => {
     if (!$data) return
     $modalTitle.textContent = $data.dataset.menuDesc
     $modalBody.innerHTML = ''
+    const $clonedSubs = []
     $data.querySelectorAll('.submenu-card').forEach($sub => {
-      $modalBody.appendChild($sub.cloneNode(true))
+      const $clone = $sub.cloneNode(true)
+      $modalBody.appendChild($clone)
+      $clonedSubs.push($clone)
     })
     $modal.classList.remove('d-none')
+    initSubmenusPagination($clonedSubs)
   })
 })
 
