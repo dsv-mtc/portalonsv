@@ -57,7 +57,7 @@
 							{{t lang "Consejo Regional de Seguridad Vial"}}
 						</h3>
 						<span
-							style="display: block; text-align: left; color: white; margin-left: 2px; font-weight: bold; font-size: 2rem;"
+							style="display: block; text-align: left; color: white; margin-left: 2px; font-weight: bold; font-size: clamp(1.25rem, 4vw, 2rem);"
 							id="region-name"
 							class="crsv-region"
 						></span>
@@ -138,14 +138,23 @@ function showRegionLabel(regionId){
     }
 }
 
+// Region currently selected — used to reposition the label on viewport changes (resize/scroll)
+var currentRegionId = 'Lima';
+function repositionCurrentLabel(){
+    if(currentRegionId){
+        showRegionLabel(currentRegionId);
+    }
+}
+
 // Listener para el select de departamentos
 const selectRegion = document.getElementById('select-region');
-if(selectRegion){
+    if(selectRegion){
     selectRegion.addEventListener('change', function(e){
         const opt = e.target.options[e.target.selectedIndex];
         const pathId = opt.getAttribute('data-map') || opt.value;
         const pathElement = document.getElementById(pathId);
         if(pathElement){
+            currentRegionId = pathId;
             setTimeout(()=>{
                 updateRegionName(opt.value);
                 showRegionLabel(pathId);
@@ -153,6 +162,10 @@ if(selectRegion){
         }
     });
 }
+
+// Reposicionar label al redimensionar o hacer scroll (getBoundingClientRect cambia)
+window.addEventListener('resize', repositionCurrentLabel);
+window.addEventListener('scroll', repositionCurrentLabel, { passive: true });
 
 // Usar delegación de eventos en el contenedor del mapa
 document.querySelector('.gmap_canvas').addEventListener('click', function(e){
@@ -172,6 +185,7 @@ window.addEventListener('load', function(){
             updateRegionName('Lima');
             const limaPath = document.getElementById('Lima');
             if(limaPath){
+                currentRegionId = 'Lima';
                 showRegionLabel('Lima');
             }
         }, 300);

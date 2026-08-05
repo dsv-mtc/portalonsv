@@ -59,48 +59,62 @@
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
+    /* --- Header top: logos horizontales + EN|ES debajo a la derecha --- */
     .logo img {
         width: 200px;
     }
     .logo-sm img {
-        width: 120px;
+        width: 95px;
         position: relative;
-        top: 8px;
+        top: 0;
     }
     .logo-sm {
-        margin-left: 200px;
-        margin-top: -20px;
+        margin-left: 0;
+        margin-top: 0;
+        text-align: right;
     }
     .navbar-brand-text {
-        transform: translateX(-80px) translateY(8px);
+        transform: none;
     }
     .logo-icon-img {
         height: 42px;
+        margin-left: 6px;
+    }
+    .logo-text {
+        margin-left: 10px;
     }
     .logo-text-title {
         font-size: 18px;
     }
     .logo-text-subtitle {
-        font-size: 10px;
+        font-size: 9px;
+        letter-spacing: 1px;
     }
     .logo-container .col-md-6:first-child {
-        margin-left: -40px;
+        margin-left: 0;
+        padding-left: 14px;
     }
     .logo-container .col-md-6:last-child {
-        margin-left: 30px;
+        margin-left: 0;
+        padding-right: 14px;
     }
     .logo-container .logo-sm {
-        transform: translateX(-20px);
+        transform: none;
     }
     .logo-container .d-flex.flex-row-reverse {
-        transform: translateX(-20px);
+        transform: none;
+        position: static;
+        justify-content: flex-end;
+        padding-right: 14px;
+        margin-top: -8px;
+        top: 0;
     }
     i.fal.fa-bars {
         color: #fff;
     }
     #mainNav .container {
-        justify-content: center;
-        padding: 10px 0 10px 0;
+        justify-content: flex-start;
+        padding: 8px 14px;
     }
     .rsp-ban-desc h1 {
         line-height: 24px;
@@ -151,32 +165,36 @@
 }
 
 @media screen and (max-width: 767px) {
+    /* --- Header top: logos horizontales (más pequeños) + EN|ES debajo a la derecha --- */
     .logo img {
-        width: 165px;
+        width: 150px;
+    }
+    .logo-icon-img {
+        height: 34px;
+        margin-left: 4px;
+    }
+    .logo-text {
+        margin-left: 8px;
+    }
+    .logo-text-title {
+        font-size: 14px;
+    }
+    .logo-text-subtitle {
+        font-size: 7px;
+        letter-spacing: 0.5px;
+    }
+    .navbar-brand-text {
+        transform: none;
     }
     .logo-sm img {
-        width: 80px;
-        top: 10px;
+        width: 75px;
+        position: relative;
+        top: 0;
     }
     .logo-sm {
         margin-left: 0;
         margin-top: 0;
-    }
-    .navbar-brand-text {
-        transform: translateX(-80px) translateY(15px);
-    }
-    .logo-icon-img {
-        height: 36px;
-        margin-left: 8px;
-    }
-    .logo-text-title {
-        font-size: 16px;
-    }
-    .logo-text-subtitle {
-        font-size: 9px;
-    }
-    .logo-text {
-        margin-left: 8px;
+        text-align: right;
     }
     .logo-container .row .col-8 {
         flex: 0 0 65%;
@@ -188,22 +206,22 @@
     }
     .logo-container .row .col-md-6:first-child {
         margin-left: 0;
-        padding-left: 25px;
+        padding-left: 8px;
     }
     .logo-container .row .col-md-6:last-child {
         margin-left: 0;
-        padding-right: 25px;
+        padding-right: 8px;
         padding-left: 0;
     }
     .logo-container .row .col-4 .logo-sm {
-        transform: translateX(-20px);
+        transform: none;
     }
     body .logo-container .d-flex.flex-row-reverse {
-        transform: translateX(-20px);
+        transform: none;
         position: static;
-        justify-content: center;
-        padding-right: 0;
-        padding-top: 5px;
+        justify-content: flex-end;
+        padding-right: 8px;
+        padding-top: 6px;
         top: 0;
     }
     .rsp-ban-desc {
@@ -373,3 +391,74 @@
     .orv-paso-copy{gap:10px}
     .orv-paso-num{width:28px;height:28px;font-size:13px}
 }
+
+/* ============================================================
+   PAGINACIÓN (.custom-pag-btn) — responsive global
+   Afecta a: noticias, notas-prensa, publicaciones,
+             normas-legales, datos-abiertos, revistas
+   ============================================================ */
+
+/* ---- Mobile <768 ---- */
+@media screen and (max-width: 767px) {
+    .custom-pag-wrapper {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .custom-pag-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+    .custom-pag-btn i {
+        font-size: 16px;
+    }
+}
+
+/* ---- Mobile pequeño <425 ---- */
+@media screen and (max-width: 425px) {
+    .custom-pag-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+    .custom-pag-btn i {
+        font-size: 14px;
+    }
+}
+
+/* ============================================================
+   Ajustes puntuales (<992):
+   1) EN|ES alineado bajo el logo gob.pe
+   2) Sidebar hamburguesa abre a la izquierda
+   ============================================================ */
+@media screen and (max-width: 991px) {
+    .logo-container .d-flex.flex-row-reverse > .navbar {
+        width: 35%;
+        justify-content: center;
+    }
+    #mainNav {
+        position: relative;
+    }
+    #navbarResponsive.collapse.navbar-collapse {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #3C4250;
+        width: 280px;
+        min-height: calc(100vh - 100%);
+        padding: 16px 0;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+    #navbarResponsive .navbar-nav.nav-rsp {
+        flex-direction: column;
+        width: 100%;
+        padding-left: 0;
+    }
+    #navbarResponsive .nav-rsp .nav-link {
+        padding: 14px 20px;
+        white-space: normal;
+    }
+}
+
