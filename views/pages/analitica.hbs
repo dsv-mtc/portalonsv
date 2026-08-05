@@ -51,6 +51,9 @@
       <div class="d-none menu-submenu-data" data-menu-id="{{id}}" data-menu-desc="{{descripcion}}">
         {{#each submenu}}
           <div class="submenu-card" data-rutabi="{{rutabi}}" data-linkvideo="{{linkvideo}}" data-linkpdf="{{linkpdf}}">
+            {{#if imagen}}
+              <img src="{{imagen}}" alt="{{submenu}}">
+            {{/if}}
             <div class="submenu-card-info">
               <p>{{submenu}}</p>
             </div>

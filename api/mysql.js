@@ -1061,7 +1061,7 @@ class DataBase {
 				data: results.map(s => ({
 					...s,
 					menuEstaActivo: s.menuEstaActivo === 1,
-					imagen: s.imagen || 'No existe',
+					imagen: s.imagen || null,
 					estado: s.estado === 1
 				}))
 			}
@@ -1100,7 +1100,7 @@ class DataBase {
 				data: results.map(s => ({
 					...s,
 					menuEstaActivo: s.menuEstaActivo === 1,
-					imagen: s.imagen || 'No existe',
+					imagen: s.imagen || null,
 					estado: s.estado === 1
 				}))
 			}
