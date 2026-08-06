@@ -482,7 +482,7 @@ routes.get("/programas/:slug", async (req, res) => {
 	const lang = res.locals.lang === "en" ? "en" : "es";
 
 	// Rama especial: página dedicada de Orientación a Víctimas (no proviene de la tabla programa)
-	if (req.params.slug === "orientacion-victimas") {
+	if (req.params.slug === "orientacion-victimas" || req.params.slug === "orientacion-a-victimas") {
 		return res.render("pages/programa-orientacion-victimas", { lang });
 	}
 
@@ -1074,6 +1074,10 @@ routes.get('/sitemap', async (req, res) => {
 
 // REDIRECCIÓN DE ERRORES
 routes.use((req, res) => {
+	const hasFileExtension = /\.[a-z0-9]{2,5}($|\?)/i.test(req.path);
+	if (hasFileExtension) {
+		return res.status(404).json({ success: false, message: 'Archivo no disponible' });
+	}
 	res.status(404).redirect('/');
 })
 
