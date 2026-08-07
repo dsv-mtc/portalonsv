@@ -74,7 +74,8 @@ routes.use(async (req, res, next) => {
 		.map(p => {
 			const titulo = p.nombre;
 			const slug = slugify(titulo);
-			return { id: p.id, titulo, slug, url: `/programas/${slug}` };
+			const url = (p.enlace && p.enlace.trim()) ? p.enlace.trim() : `/programas/${slug}`;
+			return { id: p.id, titulo, slug, url };
 		});
 	if (!res.locals.enabledFooter) {
 		res.locals.enabledFooter = true;
@@ -470,7 +471,7 @@ routes.get("/entornos-viales", async (req, res) => {
 		.map(p => ({
 			badge: p.codigo || "",
 			titulo: p.nombre,
-			descripcion: p.descripcion || "",
+			descripcion: "",
 			imagen_url: "",
 			orden: p.id
 		}));

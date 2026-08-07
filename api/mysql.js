@@ -2924,7 +2924,7 @@ class DataBase {
 	// --- Programas (antes Entornos Viales) ---
 	async getProgramas() {
 		const queryString = `
-			SELECT id, codigo, nombre, descripcion, estaActivo
+			SELECT id, codigo, nombre, enlace, estaActivo
 			FROM programa
 			ORDER BY id ASC
 		`;
@@ -2937,14 +2937,14 @@ class DataBase {
 		}
 	}
 
-	async createPrograma({ codigo, nombre, descripcion, estaActivo }) {
+	async createPrograma({ codigo, nombre, enlace, estaActivo }) {
 		const queryString = `
-			INSERT INTO programa (codigo, nombre, descripcion, estaActivo, fechaRegistro, fechaActualizacion)
+			INSERT INTO programa (codigo, nombre, enlace, estaActivo, fechaRegistro, fechaActualizacion)
 			VALUES (?, ?, ?, ?, NOW(), NOW())
 		`;
 		try {
 			const result = await this.query(queryString, [
-				codigo || '', nombre || '', descripcion || '', estaActivo ? 1 : 0
+				codigo || '', nombre || '', enlace || '', estaActivo ? 1 : 0
 			]);
 			return { success: true, data: { insertId: result.insertId } };
 		} catch (error) {
@@ -2953,15 +2953,15 @@ class DataBase {
 		}
 	}
 
-	async updatePrograma({ id, codigo, nombre, descripcion, estaActivo }) {
+	async updatePrograma({ id, codigo, nombre, enlace, estaActivo }) {
 		const queryString = `
 			UPDATE programa
-			SET codigo = ?, nombre = ?, descripcion = ?, estaActivo = ?, fechaActualizacion = NOW()
+			SET codigo = ?, nombre = ?, enlace = ?, estaActivo = ?, fechaActualizacion = NOW()
 			WHERE id = ?
 		`;
 		try {
 			await this.query(queryString, [
-				codigo || '', nombre || '', descripcion || '', estaActivo ? 1 : 0, id
+				codigo || '', nombre || '', enlace || '', estaActivo ? 1 : 0, id
 			]);
 			return { success: true };
 		} catch (error) {

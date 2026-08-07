@@ -4,7 +4,7 @@ const $currentNavigationMenu = document.getElementById('current')
 const $currentNavigationSubmenuList = document.getElementById('submenu_list_alt')
 const $navigation = document.getElementById('nav')
 const $subnavigation = document.getElementById('subnav')
-const $footer = document.querySelector('.footer_analitica')
+const $footer = document.querySelector('#footer.site-footer, .footer_analitica')
 const $menuContainer = document.querySelector('.menu-container')
 
 const $menusWrapper = document.getElementById('menus-wrapper')

@@ -9,23 +9,22 @@ type Programa = {
   id: number;
   codigo: string;
   nombre: string;
-  descripcion: string;
+  enlace: string;
   activo: boolean;
 };
 
 type FormData = {
   codigo: string;
   nombre: string;
-  descripcion: string;
+  enlace: string;
   estaActivo: boolean;
 };
 
 function initForm(): FormData {
-  return { codigo: "", nombre: "", descripcion: "", estaActivo: true };
+  return { codigo: "", nombre: "", enlace: "", estaActivo: true };
 }
 
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
-const taCls = "mt-1 w-full rounded-lg border-2 px-3 py-2 text-[13px] outline-none bg-white resize-y";
 
 function slugify(text: string): string {
   return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 20);
@@ -64,7 +63,7 @@ export function Programas() {
     setForm({
       codigo: item.codigo || "",
       nombre: item.nombre,
-      descripcion: item.descripcion || "",
+      enlace: item.enlace || "",
       estaActivo: item.activo
     });
     setEditingId(item.id);
@@ -198,10 +197,10 @@ export function Programas() {
 
               <label className="block">
                 <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
-                  Descripción
+                  Enlace web
                 </span>
-                <textarea value={form.descripcion} onChange={e => setForm(p => ({ ...p, descripcion: e.target.value }))}
-                  className={taCls} style={{ borderColor: "var(--brand-line)", minHeight: 70 }} placeholder="Descripción del programa" />
+                <input type="url" value={form.enlace} onChange={e => setForm(p => ({ ...p, enlace: e.target.value }))}
+                  className={inputCls} style={{ borderColor: "var(--brand-line)" }} placeholder="https://..." />
               </label>
 
               <div className="flex items-end gap-2">

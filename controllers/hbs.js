@@ -80,7 +80,9 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 
 	function renderDropdownItem(i) {
 		var cls = 'dropdown-item' + (i.wrap ? ' dropdown-item-wrap' : '');
-		return '<a class="' + cls + '" href="' + i.url + '">' + i.label + '</a>';
+		var external = /^https?:\/\//i.test(i.url || '');
+		var t = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+		return '<a class="' + cls + '" href="' + i.url + '"' + t + '>' + i.label + '</a>';
 	}
 
 	// 1. Home icon (always first, sin dropdown)

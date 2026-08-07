@@ -208,6 +208,7 @@
 
 footer.footer_analitica { padding: 25px !important; display: flex; align-items: center; justify-content: space-between; color: #fff; border-top: 1px solid rgba(0, 0, 0, .2); }
 .iframe_container:not(.d-none) + footer.footer_analitica { display: none; }
+body:has(.iframe_container:not(.d-none)) #footer.site-footer { display: none !important; }
 
 @media (max-width: 768px) {
   .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }

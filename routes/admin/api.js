@@ -1029,15 +1029,15 @@ router.get("/programas", isAuthenticated, async (req, res) => {
 });
 
 router.post("/programas", isAuthenticated, async (req, res) => {
-  const { codigo, nombre, descripcion, estaActivo } = req.body;
-  const result = await mysql.createPrograma({ codigo, nombre, descripcion, estaActivo });
+  const { codigo, nombre, enlace, estaActivo } = req.body;
+  const result = await mysql.createPrograma({ codigo, nombre, enlace, estaActivo });
   const log = await logAction('created', 'Programa', result.data?.insertId, `Se creó el programa '${nombre}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 
 router.put("/programas/:id", isAuthenticated, async (req, res) => {
-  const { codigo, nombre, descripcion, estaActivo } = req.body;
-  const result = await mysql.updatePrograma({ id: Number(req.params.id), codigo, nombre, descripcion, estaActivo });
+  const { codigo, nombre, enlace, estaActivo } = req.body;
+  const result = await mysql.updatePrograma({ id: Number(req.params.id), codigo, nombre, enlace, estaActivo });
   const log = await logAction('updated', 'Programa', Number(req.params.id), `Se actualizó el programa '${nombre}'`, req);
   res.json({ ...result, log: log || undefined });
 });
