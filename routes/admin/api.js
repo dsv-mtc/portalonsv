@@ -256,13 +256,6 @@ router.put("/cifras", isAuthenticated, async (req, res) => {
 
 // --- Misión y Visión ---
 router.get("/mision-vision", isAuthenticated, async (req, res) => {
-  const COMPONENTES_DEFAULT_LINKS = [
-    "https://aulavirtual.mtc.gob.pe/seguridadvial/",
-    "/analitica", "/analitica", "/", "/datosabiertos",
-    "#", "#", "#",
-    "https://sratma.mtc.gob.pe/SRATMA/mapa/",
-  ];
-  const dfl = (i) => { const l = COMPONENTES_DEFAULT_LINKS[i]; return l && l !== "#" ? l : ""; };
   const [{ data: enData }, { data: esData }] = await Promise.all([
     mysql.getContenidoQuienesSomos(true),
     mysql.getContenidoQuienesSomos(false)
@@ -276,24 +269,6 @@ router.get("/mision-vision", isAuthenticated, async (req, res) => {
         vision: enData[2].contenido,
         comp_titulo: enData[3].contenido,
         val_intro: enData[4].contenido,
-        comp1_titulo: enData[5].contenido,
-        comp1_desc: enData[6].contenido,
-        comp2_titulo: enData[7].contenido,
-        comp2_desc: enData[8].contenido,
-        comp3_titulo: enData[9].contenido,
-        comp3_desc: enData[10].contenido,
-        comp4_titulo: enData[11].contenido,
-        comp4_desc: enData[12].contenido,
-        comp5_titulo: enData[25].contenido,
-        comp5_desc: enData[26].contenido,
-        comp6_titulo: enData[27].contenido,
-        comp6_desc: enData[28].contenido,
-        comp7_titulo: enData[29].contenido,
-        comp7_desc: enData[30].contenido,
-        comp8_titulo: enData[31].contenido,
-        comp8_desc: enData[32].contenido,
-        comp9_titulo: enData[33].contenido,
-        comp9_desc: enData[34].contenido,
         val1_titulo: enData[13].contenido,
         val1_desc: enData[14].contenido,
         val2_titulo: enData[15].contenido,
@@ -313,33 +288,6 @@ router.get("/mision-vision", isAuthenticated, async (req, res) => {
         vision: esData[2].contenido,
         comp_titulo: esData[3].contenido,
         val_intro: esData[4].contenido,
-        comp1_titulo: esData[5].contenido,
-        comp1_desc: esData[6].contenido,
-        comp2_titulo: esData[7].contenido,
-        comp2_desc: esData[8].contenido,
-        comp3_titulo: esData[9].contenido,
-        comp3_desc: esData[10].contenido,
-        comp4_titulo: esData[11].contenido,
-        comp4_desc: esData[12].contenido,
-        comp5_titulo: esData[25].contenido,
-        comp5_desc: esData[26].contenido,
-        comp6_titulo: esData[27].contenido,
-        comp6_desc: esData[28].contenido,
-        comp7_titulo: esData[29].contenido,
-        comp7_desc: esData[30].contenido,
-        comp8_titulo: esData[31].contenido,
-        comp8_desc: esData[32].contenido,
-        comp9_titulo: esData[33].contenido,
-        comp9_desc: esData[34].contenido,
-        comp1_link: esData[35].contenido || dfl(0),
-        comp2_link: esData[36].contenido || dfl(1),
-        comp3_link: esData[37].contenido || dfl(2),
-        comp4_link: esData[38].contenido || dfl(3),
-        comp5_link: esData[39].contenido || dfl(4),
-        comp6_link: esData[40].contenido || dfl(5),
-        comp7_link: esData[41].contenido || dfl(6),
-        comp8_link: esData[42].contenido || dfl(7),
-        comp9_link: esData[43].contenido || dfl(8),
         val1_titulo: esData[13].contenido,
         val1_desc: esData[14].contenido,
         val2_titulo: esData[15].contenido,
@@ -363,6 +311,38 @@ router.put("/mision-vision", isAuthenticated, async (req, res) => {
   const r2 = await mysql.updateMisionVision(false, es);
   const log = await logAction('updated', 'Misión/Visión', 1, `Se actualizó Misión y Visión`, req);
   res.json({ success: r1.success && r2.success, message: "Actualizado", log: log || undefined });
+});
+
+// --- Componentes tecnológicos ---
+router.get("/componentes", isAuthenticated, async (req, res) => {
+  const { idioma } = req.query;
+  const { data: componentes } = await mysql.getComponentesTecnologicos(idioma);
+  res.json({ success: true, data: componentes });
+});
+
+router.post("/componentes", isAuthenticated, async (req, res) => {
+  const { idioma, titulo, descripcion, link } = req.body;
+  const result = await mysql.createComponenteTecnologico({ idioma, titulo, descripcion, link });
+  const log = await logAction('created', 'Componente', result.data?.insertId, `Se creó el componente tecnológico '${titulo || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/componentes/:id", isAuthenticated, async (req, res) => {
+  const { titulo, descripcion, link } = req.body;
+  const result = await mysql.updateComponenteTecnologico(req.params.id, { titulo, descripcion, link });
+  const log = await logAction('updated', 'Componente', Number(req.params.id), `Se actualizó el componente tecnológico '${titulo || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/componentes/:id", isAuthenticated, async (req, res) => {
+  const { data: componentesEs } = await mysql.getComponentesTecnologicos('ES');
+  const { data: componentesEn } = await mysql.getComponentesTecnologicos('EN');
+  const all = [...(componentesEs || []), ...(componentesEn || [])];
+  const comp = all.find(c => c.id === Number(req.params.id));
+  const compName = comp?.titulo || '';
+  const result = await mysql.deleteComponenteTecnologico(req.params.id);
+  const log = await logAction('deleted', 'Componente', Number(req.params.id), `Se eliminó el componente tecnológico '${compName}'`, req);
+  res.json({ ...result, log: log || undefined });
 });
 
 // --- Popup ---

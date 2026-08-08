@@ -74,7 +74,7 @@ routes.use(async (req, res, next) => {
 		.map(p => {
 			const titulo = p.nombre;
 			const slug = slugify(titulo);
-			const url = (p.enlace && p.enlace.trim()) ? p.enlace.trim() : `/programas/${slug}`;
+			const url = (p.enlace && p.enlace.trim()) ? p.enlace.trim() : '#';
 			return { id: p.id, titulo, slug, url };
 		});
 	if (!res.locals.enabledFooter) {
@@ -114,23 +114,18 @@ routes.get("/", async (req, res) => {
 	const { data: cifras } = await mysql.getCifras();
 	const { data: contenido } = await mysql.getContenidoQuienesSomos(res.locals.secondary_navigation);
 
-	let compLinks = contenido;
-	if (res.locals.secondary_navigation) {
-		const { data: esContenido } = await mysql.getContenidoQuienesSomos(false);
-		compLinks = esContenido;
-	}
-
-	const compIndices = [[5,6],[7,8],[9,10],[11,12],[25,26],[27,28],[29,30],[31,32],[33,34]];
-	const componentesCards = COMPONENTES_ICONS.map((iconData, i) => {
-		const link = compLinks[35 + i]?.contenido || iconData.link;
+	const { data: componentesRaw } = await mysql.getComponentesTecnologicos(res.locals.secondary_navigation);
+	const componentesCards = (componentesRaw || []).map((c, i) => {
+		const fb = COMPONENTES_ICONS[i % COMPONENTES_ICONS.length];
+		const link = c.link || fb.link;
 		return {
-			icon: iconData.icon,
-			color: iconData.color,
-			bg: iconData.bg,
+			icon: c.icon || fb.icon,
+			color: fb.color,
+			bg: fb.bg,
 			link,
 			external: /^https?:\/\//.test(link),
-			titulo: contenido[compIndices[i][0]].contenido,
-			descripcion: contenido[compIndices[i][1]].contenido,
+			titulo: c.titulo,
+			descripcion: c.descripcion,
 		};
 	});
 
@@ -160,21 +155,16 @@ routes.get("/", async (req, res) => {
 routes.get("/quienes-somos", async (req, res) => {
 	const { data: contenido } = await mysql.getContenidoQuienesSomos(res.locals.secondary_navigation)
 
-	let compLinks = contenido;
-	if (res.locals.secondary_navigation) {
-		const { data: esContenido } = await mysql.getContenidoQuienesSomos(false);
-		compLinks = esContenido;
-	}
-
-	const compIndices = [[5,6],[7,8],[9,10],[11,12],[25,26],[27,28],[29,30],[31,32],[33,34]];
-	const componentesCards = COMPONENTES_ICONS.map((iconData, i) => {
-		const link = compLinks[35 + i]?.contenido || iconData.link;
+	const { data: componentesRaw } = await mysql.getComponentesTecnologicos(res.locals.secondary_navigation);
+	const componentesCards = (componentesRaw || []).map((c, i) => {
+		const fb = COMPONENTES_ICONS[i % COMPONENTES_ICONS.length];
+		const link = c.link || fb.link;
 		return {
-			icon: iconData.icon,
-			color: iconData.color,
-			bg: iconData.bg,
-			titulo: contenido[compIndices[i][0]].contenido,
-			descripcion: contenido[compIndices[i][1]].contenido,
+			icon: c.icon || fb.icon,
+			color: fb.color,
+			bg: fb.bg,
+			titulo: c.titulo,
+			descripcion: c.descripcion,
 			link,
 			external: /^https?:\/\//.test(link),
 		};
@@ -487,13 +477,8 @@ routes.get("/programas/:slug", async (req, res) => {
 		return res.render("pages/programa-orientacion-victimas", { lang });
 	}
 
-	const { data: programas } = await mysql.getProgramas();
-	const programa = (programas || []).find(p => p.estaActivo && slugify(p.nombre) === req.params.slug);
-	if (!programa) return res.status(404).redirect('/');
-	res.render("pages/programa", {
-		lang,
-		titulo: programa.nombre
-	});
+	// Los demás programas se gestionan por enlace en el admin; no tienen página individual
+	return res.status(404).redirect('/');
 });
 
 /**PUBLICACIONES */

@@ -780,13 +780,6 @@ class DataBase {
 		const {
 			descripcion, mision, vision,
 			comp_titulo, val_intro,
-			comp1_titulo, comp1_desc, comp2_titulo, comp2_desc,
-			comp3_titulo, comp3_desc, comp4_titulo, comp4_desc,
-			comp5_titulo, comp5_desc, comp6_titulo, comp6_desc,
-			comp7_titulo, comp7_desc, comp8_titulo, comp8_desc,
-			comp9_titulo, comp9_desc,
-			comp1_link, comp2_link, comp3_link, comp4_link,
-			comp5_link, comp6_link, comp7_link, comp8_link, comp9_link,
 			val1_titulo, val1_desc, val2_titulo, val2_desc,
 			val3_titulo, val3_desc, val4_titulo, val4_desc,
 			val5_titulo, val5_desc, val6_titulo, val6_desc
@@ -799,14 +792,6 @@ class DataBase {
                     seccion3='${vision}',
                     seccion4='${comp_titulo}',
                     seccion5='${val_intro}',
-                    seccion6='${comp1_titulo}',
-                    seccion7='${comp1_desc}',
-                    seccion8='${comp2_titulo}',
-                    seccion9='${comp2_desc}',
-                    seccion10='${comp3_titulo}',
-                    seccion11='${comp3_desc}',
-                    seccion12='${comp4_titulo}',
-                    seccion13='${comp4_desc}',
                     seccion14='${val1_titulo}',
                     seccion15='${val1_desc}',
                     seccion16='${val2_titulo}',
@@ -818,26 +803,7 @@ class DataBase {
                     seccion22='${val5_titulo}',
                     seccion23='${val5_desc}',
                     seccion24='${val6_titulo}',
-                    seccion25='${val6_desc}',
-                    seccion26='${comp5_titulo}',
-                    seccion27='${comp5_desc}',
-                    seccion28='${comp6_titulo}',
-                    seccion29='${comp6_desc}',
-                    seccion30='${comp7_titulo}',
-                    seccion31='${comp7_desc}',
-                    seccion32='${comp8_titulo}',
-                    seccion33='${comp8_desc}',
-                    seccion34='${comp9_titulo}',
-                    seccion35='${comp9_desc}',
-                    seccion36='${comp1_link || ''}',
-                    seccion37='${comp2_link || ''}',
-                    seccion38='${comp3_link || ''}',
-                    seccion39='${comp4_link || ''}',
-                    seccion40='${comp5_link || ''}',
-                    seccion41='${comp6_link || ''}',
-                    seccion42='${comp7_link || ''}',
-                    seccion43='${comp8_link || ''}',
-                    seccion44='${comp9_link || ''}'
+                    seccion25='${val6_desc}'
             WHERE idioma LIKE '${idioma}'`;
 		try {
 			const result = await this.query(queryString);
@@ -3090,6 +3056,62 @@ class DataBase {
 		} catch (error) {
 			console.error(error);
 			return { success: false, data: [] };
+		}
+	}
+
+	async getComponentesTecnologicos(idioma) {
+		const lang = idioma && String(idioma).toUpperCase() === 'EN' ? 'EN' : 'ES';
+		const queryString = `SELECT id, idioma, orden, titulo, descripcion, link, icon, external FROM componentes_tecnologicos WHERE idioma = ? ORDER BY orden ASC, id ASC`;
+		try {
+			const results = await this.query(queryString, [lang]);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	async createComponenteTecnologico({ idioma, titulo = '', descripcion = '', link = '' }) {
+		const lang = idioma && String(idioma).toUpperCase() === 'EN' ? 'EN' : 'ES';
+		const external = /^https?:\/\//.test(link || '') ? 1 : 0;
+		const queryString = `
+			INSERT INTO componentes_tecnologicos (idioma, orden, titulo, descripcion, link, external)
+			SELECT ?, COALESCE(MAX(orden), 0) + 1, ?, ?, ?, ?
+			FROM componentes_tecnologicos WHERE idioma = ?
+		`;
+		try {
+			const result = await this.query(queryString, [lang, titulo, descripcion, link, external, lang]);
+			return { success: true, data: result, message: "Se creó el componente tecnológico" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el componente tecnológico" };
+		}
+	}
+
+	async updateComponenteTecnologico(id, { titulo, descripcion, link }) {
+		const external = /^https?:\/\//.test(link || '') ? 1 : 0;
+		const queryString = `
+			UPDATE componentes_tecnologicos
+			SET titulo = ?, descripcion = ?, link = ?, external = ?
+			WHERE id = ?
+		`;
+		try {
+			const result = await this.query(queryString, [titulo, descripcion, link, external, id]);
+			return { success: true, data: result, message: "Se actualizó el componente tecnológico" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el componente tecnológico" };
+		}
+	}
+
+	async deleteComponenteTecnologico(id) {
+		const queryString = `DELETE FROM componentes_tecnologicos WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [id]);
+			return { success: true, data: result, message: "Se eliminó el componente tecnológico" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el componente tecnológico" };
 		}
 	}
 
