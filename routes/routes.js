@@ -21,6 +21,28 @@ function slugify(texto) {
 	return (texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function extractVideoId(url) {
+	if (!url) return null;
+	const m = String(url).match(/(?:youtu\.be\/|watch\?v=|embed\/|shorts\/)([\w-]{11})/);
+	return m ? m[1] : null;
+}
+
+function mapYoutubeVideos(videos, { withThumb } = {}) {
+	return (videos || []).map(v => {
+		const videoId = extractVideoId(v.video_url);
+		const mapped = {
+			video: videoId,
+			title: v.titulo,
+			description: v.descripcion
+		};
+		if (withThumb) {
+			mapped.thumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : '';
+			mapped.publishedAt = v.create_time;
+		}
+		return mapped;
+	});
+}
+
 function getPageNumbers(current, total, delta = 3) {
 	if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
 	const result = [];
@@ -133,7 +155,8 @@ routes.get("/", async (req, res) => {
 
 	let youtubeTopVideos = [];
 	try {
-		youtubeTopVideos = await youtubeApi.getTopVideos(5);
+		const { data: videos } = await mysql.getYoutubeVideos('home');
+		youtubeTopVideos = mapYoutubeVideos(videos, { withThumb: true });
 	} catch (e) {
 		console.error("YouTube top videos:", e.message);
 	}
@@ -428,15 +451,24 @@ routes.get("/analitica", async (req, res) => {
 
 /**WEBINARS */
 routes.get("/webinars", async (req, res) => {
-	await youtubeApi.getPlayLists();
-	const playlist = await youtubeApi.getItemsFromWebinarsPlayList();
+	let playlist = [];
+	try {
+		const { data: videos } = await mysql.getYoutubeVideos('webinars');
+		playlist = mapYoutubeVideos(videos);
+	} catch (e) {
+		console.error("YouTube webinars:", e.message);
+	}
 	res.render("pages/webinars", { playlist, submenu: "webinars" });
 })
 
 routes.get("/capacitaciones", async (req, res) => {
-	const playlists = await youtubeApi.getPlayLists();
-	const playlistId = playlists.find(p => p.snippet.title.toLowerCase().includes('capacitaciones')).id;
-	const playlist = await youtubeApi.getItemsFromPlayList(playlistId);
+	let playlist = [];
+	try {
+		const { data: videos } = await mysql.getYoutubeVideos('capacitaciones');
+		playlist = mapYoutubeVideos(videos);
+	} catch (e) {
+		console.error("YouTube capacitaciones:", e.message);
+	}
 	res.render("pages/webinars", { playlist, submenu: "capacitaciones" });
 })
 /**SRAT */

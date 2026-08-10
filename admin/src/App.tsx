@@ -21,6 +21,7 @@ import { DatosAbiertosTipos } from "./pages/DatosAbiertosTipos";
 import { Usuarios } from "./pages/Usuarios";
 import { Programas } from "./pages/Programas";
 import { Banners } from "./pages/Banners";
+import { YoutubeVideos } from "./pages/YoutubeVideos";
 
 export default function App() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="programas" element={<Programas />} />
           <Route path="banners" element={<Banners />} />
+          <Route path="youtube" element={<YoutubeVideos />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

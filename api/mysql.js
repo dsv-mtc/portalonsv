@@ -1253,6 +1253,120 @@ class DataBase {
 		}
 	}
 
+	// --- YouTube Videos (administrables desde el panel) ---
+	async getYoutubeVideos(seccion) {
+		const queryString = `
+			SELECT id, seccion, titulo, descripcion, video_url, create_time, update_time
+			FROM youtube_videos
+			WHERE seccion = ?
+			ORDER BY id ASC`;
+		try {
+			const result = await this.query(queryString, [seccion]);
+			return {
+				success: true,
+				data: result,
+				message: "Obtener videos de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo obtener los videos de YouTube",
+				data: []
+			}
+		}
+	}
+
+	async getYoutubeVideoById(id) {
+		const queryString = `
+			SELECT id, seccion, titulo, descripcion, video_url, create_time, update_time
+			FROM youtube_videos
+			WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [id]);
+			return {
+				success: true,
+				data: result[0],
+				message: "Obtener video de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo obtener el video de YouTube"
+			}
+		}
+	}
+
+	async createYoutubeVideo({ seccion, titulo, descripcion, video_url }) {
+		const safeTitulo = String(titulo || '').replace(/'/g, "''");
+		const safeDescripcion = String(descripcion || '').replace(/'/g, "''");
+		const safeUrl = String(video_url || '').replace(/'/g, "''");
+		const safeSeccion = String(seccion || '').replace(/'/g, "''");
+		const queryString = `
+			INSERT INTO youtube_videos (seccion, titulo, descripcion, video_url)
+			VALUES ('${safeSeccion}', '${safeTitulo}', '${safeDescripcion}', '${safeUrl}')`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: { insertId: result.insertId },
+				message: "Se creó el video de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo crear el video de YouTube"
+			}
+		}
+	}
+
+	async updateYoutubeVideo({ id, titulo, descripcion, video_url }) {
+		const safeTitulo = String(titulo || '').replace(/'/g, "''");
+		const safeDescripcion = String(descripcion || '').replace(/'/g, "''");
+		const safeUrl = String(video_url || '').replace(/'/g, "''");
+		const queryString = `
+			UPDATE youtube_videos
+			SET titulo = '${safeTitulo}',
+				descripcion = '${safeDescripcion}',
+				video_url = '${safeUrl}',
+				update_time = CURRENT_TIMESTAMP
+			WHERE id = ${Number(id)}`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: result,
+				message: "Se actualizó el video de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo actualizar el video de YouTube"
+			}
+		}
+	}
+
+	async deleteYoutubeVideo(id) {
+		const queryString = `DELETE FROM youtube_videos WHERE id = ${Number(id)}`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: result,
+				message: "Se eliminó el video de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo eliminar el video de YouTube"
+			}
+		}
+	}
+
 	async getDatosAbiertosPages({ pageLength, conditions }) {
 		let whereConditions = ''
 		if (conditions) {

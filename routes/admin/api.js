@@ -1002,6 +1002,50 @@ router.post("/redes-sociales/upload", isAuthenticated, async (req, res) => {
   }
 });
 
+// --- YouTube Videos (administrables desde el panel) ---
+const YOUTUBE_SECCIONES = ['home', 'webinars', 'capacitaciones'];
+
+router.get("/youtube-videos", isAuthenticated, async (req, res) => {
+  const seccion = req.query.seccion || 'home';
+  if (!YOUTUBE_SECCIONES.includes(seccion)) {
+    return res.status(400).json({ success: false, message: "Sección inválida" });
+  }
+  const { data: videos } = await mysql.getYoutubeVideos(seccion);
+  res.json({ success: true, data: videos });
+});
+
+router.post("/youtube-videos", isAuthenticated, async (req, res) => {
+  const { seccion, titulo, descripcion, video_url } = req.body;
+  if (!YOUTUBE_SECCIONES.includes(seccion)) {
+    return res.status(400).json({ success: false, message: "Sección inválida" });
+  }
+  if (!titulo || !video_url) {
+    return res.status(400).json({ success: false, message: "Título y URL del video son obligatorios" });
+  }
+  const result = await mysql.createYoutubeVideo({ seccion, titulo, descripcion, video_url });
+  const log = await logAction('created', 'YouTube Video', result.data?.insertId, `Se creó el video de YouTube '${titulo}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/youtube-videos/:id", isAuthenticated, async (req, res) => {
+  const { titulo, descripcion, video_url } = req.body;
+  if (!titulo || !video_url) {
+    return res.status(400).json({ success: false, message: "Título y URL del video son obligatorios" });
+  }
+  const { data: existing } = await mysql.getYoutubeVideoById(Number(req.params.id));
+  const result = await mysql.updateYoutubeVideo({ id: req.params.id, titulo, descripcion, video_url });
+  const log = await logAction('updated', 'YouTube Video', Number(req.params.id), `Se actualizó el video de YouTube '${existing?.titulo || titulo}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/youtube-videos/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { data: video } = await mysql.getYoutubeVideoById(id);
+  const result = await mysql.deleteYoutubeVideo(id);
+  const log = await logAction('deleted', 'YouTube Video', id, `Se eliminó el video de YouTube '${video?.titulo || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
 // --- Programas ---
 router.get("/programas", isAuthenticated, async (req, res) => {
   const { data: programas } = await mysql.getProgramas();
