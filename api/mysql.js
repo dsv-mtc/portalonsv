@@ -1301,7 +1301,7 @@ class DataBase {
 		`;
 
 		const query = queryString.replace(/\s+/g, ' ')
-		console.log(query)
+		//console.log(query)
 		try {
 			const results = await this.query(query);
 			return {
