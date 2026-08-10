@@ -376,5 +376,13 @@
       const target = document.querySelector(`.sidebar-link[data-tab="${hash}"]`);
       if (target) target.click();
     })();
+
+    // Escuchar cambios de hash para actualizar sidebar (navegación interna via dropdown)
+    window.addEventListener('hashchange', function() {
+      const hash = window.location.hash.replace('#', '');
+      if (!hash) return;
+      const target = document.querySelector(`.sidebar-link[data-tab="${hash}"]`);
+      if (target) target.click();
+    });
   });
 </script>

@@ -151,3 +151,23 @@
 	</nav>
 </section>
 <!--================ End header top Area =================-->
+
+<script>
+document.addEventListener('click', function(e) {
+  var item = e.target.closest('.dropdown-item[href*="#"]');
+  if (item) {
+    var dropdown = item.closest('.dropdown');
+    if (dropdown) {
+      var toggle = dropdown.querySelector('[data-toggle="dropdown"]');
+      if (toggle) {
+        if (window.bootstrap && bootstrap.Dropdown) {
+          var bs = bootstrap.Dropdown.getInstance(toggle) || new bootstrap.Dropdown(toggle);
+          bs.hide();
+        } else if (window.$ && $.fn.dropdown) {
+          $(toggle).dropdown('hide');
+        }
+      }
+    }
+  }
+});
+</script>

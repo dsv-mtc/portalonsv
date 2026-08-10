@@ -32,8 +32,8 @@
   .hero-in { position: absolute; inset:0; z-index: 2; width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: flex-end; }
   .hero-card { max-width: 480px; text-align: left; margin-right: 60px; }
   .hero .kick { color: var(--amber); font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .2em; font-size: 14px; margin-bottom: 14px; opacity: 0; animation: rise .7s .15s forwards; }
-  .hero h1 { color: #fff; font-family: "Barlow Condensed", sans-serif; font-size: clamp(26px,3.4vw,42px); line-height: 1.04; font-weight: 700; margin: 0; opacity: 0; animation: rise .7s .3s forwards; }
-  .hero h1 em { color: var(--red); font-style: normal; }
+  .hero h2 { color: #fff; font-family: "Barlow Condensed", sans-serif; font-size: clamp(26px,3.4vw,42px); line-height: 1.04; font-weight: 700; margin: 0; opacity: 0; animation: rise .7s .3s forwards; }
+  .hero h2 em { color: var(--red); font-style: normal; }
   .hero p { color: #e7ecf6; font-family: "Barlow", sans-serif; font-size: clamp(15px,1.7vw,17px); max-width: 440px; margin-top: 16px; opacity: 0; animation: rise .7s .45s forwards; }
   
   .hero .btns { margin-top: 28px; display: flex; gap: 14px; flex-wrap: wrap; opacity: 0; animation: rise .7s .6s forwards; }
@@ -90,7 +90,7 @@
         <div class="hero-in">
           <div class="hero-card">
             <div class="kick">{{{banners.[0].kicker}}}</div>
-            <h1>{{{banners.[0].titulo}}}</h1>
+            <h2>{{{banners.[0].titulo}}}</h2>
             <p>{{{banners.[0].parrafo}}}</p>
             <div class="btns">
               <a class="btn-hero btn-white" href="{{banners.[0].btn1_href}}"{{#if banners.[0].btn1_externo}} target="_blank"{{/if}}>{{banners.[0].btn1_label}} →</a>
@@ -107,7 +107,7 @@
         <div class="hero-in">
           <div class="hero-card">
             <div class="kick">{{{banners.[1].kicker}}}</div>
-            <h1>{{{banners.[1].titulo}}}</h1>
+            <h2>{{{banners.[1].titulo}}}</h2>
             <p>{{{banners.[1].parrafo}}}</p>
             <div class="btns">
               <a class="btn-hero btn-white" href="{{banners.[1].btn1_href}}"{{#if banners.[1].btn1_externo}} target="_blank"{{/if}}>{{banners.[1].btn1_label}} →</a>
@@ -124,7 +124,7 @@
         <div class="hero-in">
           <div class="hero-card">
             <div class="kick">{{{banners.[2].kicker}}}</div>
-            <h1>{{{banners.[2].titulo}}}</h1>
+            <h2>{{{banners.[2].titulo}}}</h2>
             <p>{{{banners.[2].parrafo}}}</p>
             <div class="btns">
               <a class="btn-hero btn-white" href="{{banners.[2].btn1_href}}"{{#if banners.[2].btn1_externo}} target="_blank"{{/if}}>{{banners.[2].btn1_label}} →</a>
@@ -144,6 +144,8 @@
   </ol>
 </section>
 <!-- End banner section -->
+
+<h1 class="sr-only">Observatorio Nacional de Seguridad Vial — Sistematización, análisis y difusión de información sobre siniestros viales en el Perú</h1>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {

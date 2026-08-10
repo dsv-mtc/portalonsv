@@ -73,7 +73,6 @@ const COMPONENTES_ICONS = [
 routes.use(async (req, res, next) => {
 	res.locals.settings = await apiGhost.getSettings();
 	res.locals.titlesPosts = await apiGhost.getLastFivePostsTitleAndUrl();
-	res.locals.seoMetas = await seo.setMetaTags(req.originalUrl);
 	const footerData = await mysql.getFooterData();
 	const { data: redesSociales } = await mysql.getRedesSociales();
 	res.locals.url_selected = req.originalUrl;
@@ -90,6 +89,11 @@ routes.use(async (req, res, next) => {
 	else {
 		res.locals.lang = "es"
 	}
+	res.locals.seoMetas = await seo.setMetaTags(req.originalUrl, {
+		lang: res.locals.lang,
+		settings: res.locals.settings,
+		footerData: res.locals.footerData
+	});
 	const { data: programasList } = await mysql.getProgramas();
 	res.locals.programas = (programasList || [])
 		.filter(p => p.estaActivo)
@@ -260,6 +264,12 @@ routes.get("/comunicaciones/:slug", async (req, res) => {
 	if (isId) {
 		const { data: evento } = await mysql.getComunication(slug);
 
+		res.locals.seoMetas = await seo.setMetaTags(req.originalUrl, {
+			lang: res.locals.lang,
+			settings: res.locals.settings,
+			footerData: res.locals.footerData,
+			evento
+		});
 		res.render("pages/comunicaciones/evento", {
 			evento
 		});
@@ -323,6 +333,7 @@ routes.get("/comunicaciones/:slug", async (req, res) => {
  * @description: Retorna el post con el contenido de noticias relacionadas en función del tag primario del post
  */
 routes.get("/post/:slug", async (req, res) => {
+	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	const post = await apiGhost.getPost(req.params.slug);
 	if (post) {
 		const allDisabled = await Promise.all([
@@ -376,6 +387,13 @@ routes.get("/post/:slug", async (req, res) => {
 
 		}
 	}
+
+	res.locals.seoMetas = await seo.setMetaTags(req.originalUrl, {
+		lang: res.locals.lang,
+		settings: res.locals.settings,
+		footerData: res.locals.footerData,
+		post
+	});
 
 	res.render("pages/post", {
 		post: {
@@ -451,6 +469,7 @@ routes.get("/analitica", async (req, res) => {
 
 /**WEBINARS */
 routes.get("/webinars", async (req, res) => {
+	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	let playlist = [];
 	try {
 		const { data: videos } = await mysql.getYoutubeVideos('webinars');
@@ -462,6 +481,7 @@ routes.get("/webinars", async (req, res) => {
 })
 
 routes.get("/capacitaciones", async (req, res) => {
+	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	let playlist = [];
 	try {
 		const { data: videos } = await mysql.getYoutubeVideos('capacitaciones');
@@ -515,6 +535,7 @@ routes.get("/programas/:slug", async (req, res) => {
 
 /**PUBLICACIONES */
 routes.get("/publicaciones/:page?", async (req, res) => {
+	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	const pageSize = 6;
 	const {
 		year,
@@ -681,6 +702,7 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 
 /**REVISTAS */
 routes.get("/revistas/:page?", async (req, res) => {
+	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	const pageSize = 6;
 	const {
 		tema,
@@ -755,6 +777,7 @@ routes.get("/revistas/:page?", async (req, res) => {
 
 /**NORMAS LEGALES */
 routes.get("/normas-legales/:page?", async (req, res) => {
+	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	const pageSize = 6;
 	const {
 		year,
@@ -951,6 +974,7 @@ routes.get("/aulavirtual", async (req, res) => {
 
 /** BÚSQUEDA POR TAGS */
 routes.get("/tag/:tag/:page?", async (req, res) => {
+	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	const tag = req.params.tag;
 	const page = req.params.page ? req.params.page : 1;
 	const filter = `tags:[${tag}]`;
@@ -969,6 +993,7 @@ routes.get("/feed", async (req, res) => {
 
 /* ZONA DE DATOS ABIERTOS */
 routes.get("/datosabiertos/:page?", async (req, res) => {
+	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	const page = req.params.page ? Number(req.params.page) : 1;
 	const pageLength = 5
 	const { data: pages } = await mysql.getDatosAbiertosPages({
@@ -1046,6 +1071,63 @@ routes.use("/consejo-regional", consejoRegionalRoutes);
 /* FIN DE ZONA DE DATOS ABIERTOS */
 
 /****SEARCH **/
+routes.get("/buscar", async (req, res) => {
+	const q = (req.query.q || "").toString().trim();
+	const lang = res.locals.lang;
+	let results = [];
+	let query = q;
+
+	if (q.length >= 2) {
+		try {
+			const TIPO_MAP = { 'noticias-eventos': 'noticias', 'notas-prensa': 'notas-prensa', 'publicaciones': 'publicaciones', 'normas-legales': 'normas-legales' };
+			const ghostResults = await apiGhost.getSearchPosts('tags:-hash-noindex', q);
+			if (ghostResults.success) {
+				results = results.concat((ghostResults.posts || []).map(p => ({
+					tipo: 'post',
+					titulo: p.title,
+					descripcion: p.custom_excerpt || p.excerpt || '',
+					url: p.url ? p.url.replace(process.env.URL_PATH_API || 'http://www.onsv.gob.pe', '/post') : '/post/' + p.slug,
+					slug: p.slug,
+					fecha: p.published_at,
+					imagen: p.feature_image || ''
+				})));
+			}
+		} catch (e) {
+			console.error("buscar ghost:", e.message);
+		}
+		try {
+			const { data: eventos } = await mysql.getComunications({ pageSize: 500, conditions: { isActive: true } });
+			const ql = q.toLowerCase();
+			const eventosMatch = (eventos || []).filter(e =>
+				(`${e.title} ${e.shortDescription || ''} ${e.description || ''}`).toLowerCase().includes(ql)
+			).map(e => ({
+				tipo: 'evento',
+				titulo: e.title,
+				descripcion: e.shortDescription || e.description || '',
+				url: '/comunicaciones/' + e.id,
+				slug: String(e.id),
+				fecha: e.startTime,
+				imagen: e.imageUrl || ''
+			}));
+			results = results.concat(eventosMatch);
+		} catch (e) {
+			console.error("buscar eventos:", e.message);
+		}
+	}
+
+	res.locals.seoMetas = await seo.setMetaTags(req.originalUrl, {
+		lang: res.locals.lang,
+		settings: res.locals.settings,
+		footerData: res.locals.footerData
+	});
+
+	res.render("pages/buscar", {
+		query,
+		results,
+		total: results.length
+	});
+})
+
 routes.post("/search", async (req, res) => {
 	const slug = req.body["search"];
 	const lang = req.body["lang"];
@@ -1083,9 +1165,9 @@ routes.post("/subscribe", async (req, res) => {
 })
 
 //SITEMAP
-routes.get('/sitemap', async (req, res) => {
-	const sitemap = seo.createSiteMapV2();
-	res.set('Content-Type', 'application/xhtml+xml');
+routes.get(['/sitemap', '/sitemap.xml'], async (req, res) => {
+	const sitemap = await seo.createSiteMapV2({ mysql });
+	res.set('Content-Type', 'application/xml; charset=utf-8');
 	res.status(200).send(sitemap);
 })
 

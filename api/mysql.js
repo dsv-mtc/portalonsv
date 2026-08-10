@@ -146,17 +146,20 @@ class DataBase {
 		conditions
 	}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} rurp.id = ${conditions.id} `
+				whereConditions += `${prefix} rurp.id = ? `
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 			if (conditions.userId) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} u.id = ${conditions.userId}`
+				whereConditions += `${prefix} u.id = ?`
+				params.push(Number(conditions.userId))
 				isFirstCondition = false
 			}
 		}
@@ -183,7 +186,7 @@ class DataBase {
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 
 			const users = results
 				.reduce((acc, r) => {
@@ -223,17 +226,20 @@ class DataBase {
 	}) {
 		const roleQuery = `
 			INSERT INTO user_role (value)
-			VALUES ('${value}');
+			VALUES (?);
 		`
 		try {
-			const {insertId} = await this.query(roleQuery);
+			const {insertId} = await this.query(roleQuery, [value]);
 
+			const placeholders = permissionIds.map(() => '(?, ?)').join(',');
+			const values = [];
+			permissionIds.forEach(p => { values.push(Number(p), insertId); });
 			const permissionsQuery = `
 				INSERT INTO rel_user_role_permission (permissionId, roleId)
-				VALUES ${permissionIds.map(p => `(${p}, ${insertId})`).join(',')}
+				VALUES ${placeholders}
 			`;
 			
-			await this.query(permissionsQuery);
+			await this.query(permissionsQuery, values);
 			return {
 				success: true,
 				message: "Se creó el rol"
@@ -254,23 +260,26 @@ class DataBase {
 		permissionIds
 	}) {
 		const removeRolPermissionsQuery = `
-			DELETE FROM rel_user_role_permission WHERE roleId=${id}
+			DELETE FROM rel_user_role_permission WHERE roleId=?
 		`
 
+		const placeholders = permissionIds.map(() => '(?, ?)').join(',');
+		const values = [];
+		permissionIds.forEach(p => { values.push(Number(p), Number(id)); });
 		const createRolPermissionQuery = `
 			INSERT INTO rel_user_role_permission (permissionId, roleId)
-			VALUES ${permissionIds.map(p => `(${p}, ${id})`).join(',')}
+			VALUES ${placeholders}
 		`
 
 		const updateRoleQuery = `
-			UPDATE user_role SET value='${value}' WHERE id=${id}
+			UPDATE user_role SET value=? WHERE id=?
 		`
 
 		try {
-			await this.query(removeRolPermissionsQuery)
+			await this.query(removeRolPermissionsQuery, [Number(id)])
 			await Promise.all([
-				this.query(createRolPermissionQuery),
-				this.query(updateRoleQuery),
+				this.query(createRolPermissionQuery, values),
+				this.query(updateRoleQuery, [value, Number(id)]),
 			]);
 
 			return {
@@ -287,9 +296,9 @@ class DataBase {
 	}
 
 	async deleteRole(id) {
-		const queryString = `DELETE FROM user_role WHERE id=${id}`;
+		const queryString = `DELETE FROM user_role WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -306,8 +315,8 @@ class DataBase {
 
 	async getUserByEmail(user) {
 		try {
-			const queryString = `SELECT * FROM ${process.env.USER_TABLE} WHERE user="${user}" `;
-			let result = await this.query(queryString)
+			const queryString = `SELECT * FROM ${process.env.USER_TABLE} WHERE user= ? `;
+			let result = await this.query(queryString, [user])
 			if (result.length > 0) {
 				return { success: true, data: result[0] }
 			} else {
@@ -333,9 +342,9 @@ class DataBase {
 					ur.value role
 				FROM ${process.env.USER_TABLE} u
 				JOIN user_role ur ON ur.id = u.idUserRole
-				WHERE u.id=${id}
+				WHERE u.id = ?
 			`;
-			let result = await this.query(queryString)
+			let result = await this.query(queryString, [Number(id)])
 			if (result.length > 0) {
 				return { success: true, data: result[0] }
 			} else {
@@ -383,14 +392,14 @@ class DataBase {
 		estaActivo
 	}) {
 		try {
-			const passwordEncrypted = crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY);
+			const passwordEncrypted = crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY).toString();
 			const queryString = `
 				INSERT INTO ${process.env.USER_TABLE} 
 					(user, password, idUserRole, estaActivo) 
 				VALUES 
-					("${email}","${passwordEncrypted}", ${roleId}, ${estaActivo ? 1 : 0})
+					(?, ?, ?, ?)
 			`
-			const result = await this.query(queryString)
+			const result = await this.query(queryString, [email, passwordEncrypted, Number(roleId), estaActivo ? 1 : 0])
 			return {
 				success: true,
 				data: result,
@@ -414,19 +423,30 @@ class DataBase {
 		estaActivo
 	}) {
 		const passwordEncrypted = password
-			? crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY)
+			? crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY).toString()
 			: undefined;
-		const queryString = `
-			UPDATE ${process.env.USER_TABLE} 
-				SET
-					user='${email}',
-					${password ? `password='${passwordEncrypted}',` : ''}
-					idUserRole=${roleId},
-					estaActivo=${estaActivo ? 1 : 0}
-				WHERE id=${id}
-		`;
 		try {
-			const result = await this.query(queryString);
+			let result;
+			if (passwordEncrypted) {
+				const queryString = `
+					UPDATE ${process.env.USER_TABLE} 
+						SET
+							user=?,
+							password=?,
+							idUserRole=?,
+							estaActivo=?
+						WHERE id=?`;
+				result = await this.query(queryString, [email, passwordEncrypted, Number(roleId), estaActivo ? 1 : 0, Number(id)]);
+			} else {
+				const queryString = `
+					UPDATE ${process.env.USER_TABLE} 
+						SET
+							user=?,
+							idUserRole=?,
+							estaActivo=?
+						WHERE id=?`;
+				result = await this.query(queryString, [email, Number(roleId), estaActivo ? 1 : 0, Number(id)]);
+			}
 			return {
 				success: true,
 				data: result,
@@ -443,9 +463,9 @@ class DataBase {
 	}
 
 	async deleteUser(id) {
-		const queryString = `DELETE FROM ${process.env.USER_TABLE} WHERE id=${id}`;
+		const queryString = `DELETE FROM ${process.env.USER_TABLE} WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -475,9 +495,9 @@ class DataBase {
 	}
 
 	getDocumentsByTitle = async (title) => {
-		const queryString = `SELECT * FROM ${process.env.DOCUMENTS_TABLE} WHERE  category1='${title}' OR category2='${title}' OR category3='${title}' `;
+		const queryString = `SELECT * FROM ${process.env.DOCUMENTS_TABLE} WHERE category1=? OR category2=? OR category3=?`;
 		try {
-			const results = await this.query(queryString);
+			const results = await this.query(queryString, [title, title, title]);
 			return { success: true, data: results }
 		} catch (error) {
 			console.error(error);
@@ -488,15 +508,11 @@ class DataBase {
 	saveDocument = async (data) => {
 		try {
 			const date = moment().format('DD/MM/YYYY');
-			//const {title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile} = data;
 			const { title, author, description, category1, type, excelfile, pdffile, csvfile } = data;
-			// const queryString=`INSERT INTO ${process.env.DOCUMENTS_TABLE} 
-			//     (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile) 
-			//     VALUES ("${title}","${author}","${description}","${category1}","${category2}","${category3}","${type}","${excelfile}","${pdffile}","${csvfile}")`
 			const queryString = `INSERT INTO ${process.env.DOCUMENTS_TABLE} 
                 (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile,fecha) 
-                VALUES ("${title}","${author}","${description}","${category1}","0","0","${type}","${excelfile}","${pdffile}","${csvfile}","${date}")`
-			await this.query(queryString);
+                VALUES (?, ?, ?, ?, "0", "0", ?, ?, ?, ?, ?)`
+			await this.query(queryString, [title, author, description, category1, type, excelfile, pdffile, csvfile, date]);
 			return { success: true, message: "El documento ha sido guardado" }
 		} catch (error) {
 			console.error(error);
@@ -618,20 +634,21 @@ class DataBase {
 		const queryString = `
 			UPDATE parametro 
 				SET 
-					lesionado=${lesionados}, 
-					accidente=${accidentados}, 
-					fallecido=${fallecidos},
-					mensaje1='${mensaje1}',
-					mensaje2='${mensaje2}',
-					fuente_siniestro='${fuente_siniestro}',
-					porcentaje_siniestro='${porcentaje_siniestro}',
-					fuente_lesiones='${fuente_lesiones}',
-					porcentaje_lesiones='${porcentaje_lesiones}',
-					fuente_muertes='${fuente_muertes}',
-					porcentaje_muertes='${porcentaje_muertes}'
+					lesionado=?, 
+					accidente=?, 
+					fallecido=?,
+					mensaje1=?,
+					mensaje2=?,
+					fuente_siniestro=?,
+					porcentaje_siniestro=?,
+					fuente_lesiones=?,
+					porcentaje_lesiones=?,
+					fuente_muertes=?,
+					porcentaje_muertes=?
     `;
+		const params = [Number(lesionados), Number(accidentados), Number(fallecidos), mensaje1, mensaje2, fuente_siniestro, porcentaje_siniestro, fuente_lesiones, porcentaje_lesiones, fuente_muertes, porcentaje_muertes];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -687,14 +704,14 @@ class DataBase {
 		const queryString = `
 			UPDATE footer 
 				SET 
-					telefono='${telefono}',
-					email='${email}',
-					direccion='${direccion}',
-					descripcion='${descripcion}',
-					horario='${horario}'
+					telefono=?,
+					email=?,
+					direccion=?,
+					descripcion=?,
+					horario=?
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [telefono, email, direccion, descripcion, horario]);
 			return {
 				success: true,
 				data: result,
@@ -713,9 +730,9 @@ class DataBase {
 
 	async getContenidoQuienesSomos(secondary_navigation) {
 		const idioma = secondary_navigation ? 'EN' : 'ES';
-		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4, seccion5, seccion6, seccion7, seccion8, seccion9, seccion10, seccion11, seccion12, seccion13, seccion14, seccion15, seccion16, seccion17, seccion18, seccion19, seccion20, seccion21, seccion22, seccion23, seccion24, seccion25, seccion26, seccion27, seccion28, seccion29, seccion30, seccion31, seccion32, seccion33, seccion34, seccion35, seccion36, seccion37, seccion38, seccion39, seccion40, seccion41, seccion42, seccion43, seccion44 FROM pagina WHERE idioma like '${idioma}'`;
+		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4, seccion5, seccion6, seccion7, seccion8, seccion9, seccion10, seccion11, seccion12, seccion13, seccion14, seccion15, seccion16, seccion17, seccion18, seccion19, seccion20, seccion21, seccion22, seccion23, seccion24, seccion25, seccion26, seccion27, seccion28, seccion29, seccion30, seccion31, seccion32, seccion33, seccion34, seccion35, seccion36, seccion37, seccion38, seccion39, seccion40, seccion41, seccion42, seccion43, seccion44 FROM pagina WHERE idioma LIKE ?`;
 		try {
-			const results = await this.query(queryString);
+			const results = await this.query(queryString, [idioma]);
 			const r = results[0];
 			return {
 				success: true,
@@ -787,26 +804,30 @@ class DataBase {
 		const queryString = `
             UPDATE pagina
                 SET
-                    seccion1='${descripcion}',
-                    seccion2='${mision}',
-                    seccion3='${vision}',
-                    seccion4='${comp_titulo}',
-                    seccion5='${val_intro}',
-                    seccion14='${val1_titulo}',
-                    seccion15='${val1_desc}',
-                    seccion16='${val2_titulo}',
-                    seccion17='${val2_desc}',
-                    seccion18='${val3_titulo}',
-                    seccion19='${val3_desc}',
-                    seccion20='${val4_titulo}',
-                    seccion21='${val4_desc}',
-                    seccion22='${val5_titulo}',
-                    seccion23='${val5_desc}',
-                    seccion24='${val6_titulo}',
-                    seccion25='${val6_desc}'
-            WHERE idioma LIKE '${idioma}'`;
+                    seccion1=?,
+                    seccion2=?,
+                    seccion3=?,
+                    seccion4=?,
+                    seccion5=?,
+                    seccion14=?,
+                    seccion15=?,
+                    seccion16=?,
+                    seccion17=?,
+                    seccion18=?,
+                    seccion19=?,
+                    seccion20=?,
+                    seccion21=?,
+                    seccion22=?,
+                    seccion23=?,
+                    seccion24=?,
+                    seccion25=?
+            WHERE idioma LIKE ?`;
+		const params = [descripcion, mision, vision, comp_titulo, val_intro,
+			val1_titulo, val1_desc, val2_titulo, val2_desc,
+			val3_titulo, val3_desc, val4_titulo, val4_desc,
+			val5_titulo, val5_desc, val6_titulo, val6_desc, idioma];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -1231,14 +1252,14 @@ class DataBase {
 
 	async updatePopup({ imagen, estado, enlace }) {
 		const queryString = `
-      		UPDATE popup 
+       		UPDATE popup 
           	SET 
-              imagen='${imagen}', 
-              estado='${estado}',
-              enlace='${enlace}',
+              imagen=?, 
+              estado=?,
+              enlace=?,
               update_time=CURRENT_TIMESTAMP`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [imagen, estado ? 1 : 0, enlace]);
 			return {
 				success: true,
 				data: result[0],
@@ -1299,15 +1320,11 @@ class DataBase {
 	}
 
 	async createYoutubeVideo({ seccion, titulo, descripcion, video_url }) {
-		const safeTitulo = String(titulo || '').replace(/'/g, "''");
-		const safeDescripcion = String(descripcion || '').replace(/'/g, "''");
-		const safeUrl = String(video_url || '').replace(/'/g, "''");
-		const safeSeccion = String(seccion || '').replace(/'/g, "''");
 		const queryString = `
 			INSERT INTO youtube_videos (seccion, titulo, descripcion, video_url)
-			VALUES ('${safeSeccion}', '${safeTitulo}', '${safeDescripcion}', '${safeUrl}')`;
+			VALUES (?, ?, ?, ?)`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [seccion, titulo, descripcion || '', video_url]);
 			return {
 				success: true,
 				data: { insertId: result.insertId },
@@ -1323,18 +1340,15 @@ class DataBase {
 	}
 
 	async updateYoutubeVideo({ id, titulo, descripcion, video_url }) {
-		const safeTitulo = String(titulo || '').replace(/'/g, "''");
-		const safeDescripcion = String(descripcion || '').replace(/'/g, "''");
-		const safeUrl = String(video_url || '').replace(/'/g, "''");
 		const queryString = `
 			UPDATE youtube_videos
-			SET titulo = '${safeTitulo}',
-				descripcion = '${safeDescripcion}',
-				video_url = '${safeUrl}',
+			SET titulo = ?,
+				descripcion = ?,
+				video_url = ?,
 				update_time = CURRENT_TIMESTAMP
-			WHERE id = ${Number(id)}`;
+			WHERE id = ?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [titulo, descripcion || '', video_url, Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1350,9 +1364,9 @@ class DataBase {
 	}
 
 	async deleteYoutubeVideo(id) {
-		const queryString = `DELETE FROM youtube_videos WHERE id = ${Number(id)}`;
+		const queryString = `DELETE FROM youtube_videos WHERE id = ?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1369,35 +1383,43 @@ class DataBase {
 
 	async getDatosAbiertosPages({ pageLength, conditions }) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.id = ${conditions.id} `
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.id = ? `
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 			if (conditions.idCategoria) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idCategoria = ${conditions.idCategoria}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idCategoria = ?`
+				params.push(Number(conditions.idCategoria))
 				isFirstCondition = false
 			}
 			if (conditions.idTipo) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idTipo = ${conditions.idTipo}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idTipo = ?`
+				params.push(Number(conditions.idTipo))
 				isFirstCondition = false
 			}
 			if (conditions.title) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.title LIKE '%${conditions.title}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.title LIKE ?`
+				params.push(`%${conditions.title}%`)
 				isFirstCondition = false
 			}
 			if (conditions.description) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE '%${conditions.description}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE ?`
+				params.push(`%${conditions.description}%`)
 				isFirstCondition = false
 			}
 		if (conditions.fecha) {
-			whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE '${conditions.fecha}%'`
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE ?`
+			params.push(`${conditions.fecha}%`)
 			isFirstCondition = false
 		}
 		if (conditions.estaActivo !== undefined) {
-			whereConditions += `${isFirstCondition ? '' : unionCondition} f.estaActivo = ${conditions.estaActivo}`
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.estaActivo = ?`
+			params.push(conditions.estaActivo ? 1 : 0)
 			isFirstCondition = false
 		}
 	}
@@ -1417,7 +1439,7 @@ class DataBase {
 		const query = queryString.replace(/\s+/g, ' ')
 		//console.log(query)
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				dataLength: results[0].pages,
@@ -1439,35 +1461,43 @@ class DataBase {
 			pageLength: 5
 		}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.id = ${conditions.id} `
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.id = ? `
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 			if (conditions.idCategoria) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idCategoria = ${conditions.idCategoria}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idCategoria = ?`
+				params.push(Number(conditions.idCategoria))
 				isFirstCondition = false
 			}
 			if (conditions.idTipo) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idTipo = ${conditions.idTipo}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idTipo = ?`
+				params.push(Number(conditions.idTipo))
 				isFirstCondition = false
 			}
 			if (conditions.title) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.title LIKE '%${conditions.title}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.title LIKE ?`
+				params.push(`%${conditions.title}%`)
 				isFirstCondition = false
 			}
 			if (conditions.description) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE '%${conditions.description}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE ?`
+				params.push(`%${conditions.description}%`)
 				isFirstCondition = false
 			}
 		if (conditions.fecha) {
-			whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE '${conditions.fecha}%'`
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE ?`
+			params.push(`${conditions.fecha}%`)
 			isFirstCondition = false
 		}
 		if (conditions.estaActivo !== undefined) {
-			whereConditions += `${isFirstCondition ? '' : unionCondition} f.estaActivo = ${conditions.estaActivo}`
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.estaActivo = ?`
+			params.push(conditions.estaActivo ? 1 : 0)
 			isFirstCondition = false
 		}
 	}
@@ -1503,13 +1533,14 @@ class DataBase {
 		const offsetData = (page - 1) * pageLength
 
 		if (paginate) {
-			query += `LIMIT ${pageLength} OFFSET ${offsetData}`
+			query += `LIMIT ? OFFSET ?`
+			params.push(Number(pageLength), Number(offsetData))
 		}
 
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				data: results.map(res => ({
@@ -1800,7 +1831,7 @@ class DataBase {
 				r.imageUrl,
 				r.pageLink
 			FROM regiones r
-			WHERE r.value LIKE '${name}' OR r.slug = '${slug}'
+			WHERE r.value LIKE ? OR r.slug = ?
 			ORDER BY r.slug ASC
 			LIMIT 1
 		`
@@ -1808,7 +1839,7 @@ class DataBase {
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, [name, slug]);
 			return {
 				success: true,
 				data: results[0]
@@ -1824,11 +1855,13 @@ class DataBase {
 
 	async getRegionesMeta({ pageSize, conditions }) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} r.id = ${conditions.id}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} r.id = ?`
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 		}
@@ -1846,7 +1879,7 @@ class DataBase {
 		const query = queryString.replace(/\s+/g, ' ')
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				amount: results[0].amount,
@@ -1868,11 +1901,13 @@ class DataBase {
 			pageSize: 5
 		}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} r.id = ${conditions.id}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} r.id = ?`
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 		}
@@ -1899,13 +1934,14 @@ class DataBase {
 		const offsetData = (page - 1) * pageSize
 
 		if (paginate) {
-			query += `LIMIT ${pageSize} OFFSET ${offsetData}`
+			query += `LIMIT ? OFFSET ?`
+			params.push(Number(pageSize), Number(offsetData))
 		}
 
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				data: results
@@ -1930,15 +1966,21 @@ class DataBase {
 		const queryString = `
 			UPDATE regiones 
 				SET
-					nombreEncargado=${nombreEncargado ? `'${nombreEncargado}'` : 'null'},
-					celularEncargado=${celularEncargado ? `'${celularEncargado}'` : 'null'},
-					correoEncargado=${correoEncargado ? `'${correoEncargado}'` : 'null'},
-					imageUrl='${imageUrl}',
-					pageLink=${pageLink ? `'${pageLink}'` : 'null'}
-				WHERE id=${id}
-		`;
+					nombreEncargado=?,
+					celularEncargado=?,
+					correoEncargado=?,
+					imageUrl=?,
+					pageLink=?
+				WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [
+				nombreEncargado ? String(nombreEncargado) : null,
+				celularEncargado ? String(celularEncargado) : null,
+				correoEncargado ? String(correoEncargado) : null,
+				imageUrl ? String(imageUrl) : null,
+				pageLink ? String(pageLink) : null,
+				Number(id)
+			]);
 			return {
 				success: true,
 				data: result,
@@ -2012,10 +2054,10 @@ class DataBase {
 	}) {
 		const queryString = `
 			INSERT INTO tipo ( value, estaActivo )
-			VALUES ( '${value}', ${estaActivo ? 1 : 0} )
+			VALUES ( ?, ? )
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, estaActivo ? 1 : 0]);
 			return {
 				success: true,
 				data: result,
@@ -2030,7 +2072,7 @@ class DataBase {
 		}
 	}
 
-	async updateTipo({
+async updateTipo({
 		id,
 		value,
 		estaActivo
@@ -2038,12 +2080,11 @@ class DataBase {
 		const queryString = `
 			UPDATE tipo 
 				SET
-					value='${value}',
-					estaActivo=${estaActivo ? 1 : 0}
-				WHERE id=${id}
-		`;
+					value = ?,
+					estaActivo = ?
+				WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, estaActivo ? 1 : 0, Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2059,9 +2100,9 @@ class DataBase {
 	}
 
 	async deleteTipo(id) {
-		const queryString = `DELETE FROM tipo WHERE id=${id}`;
+		const queryString = `DELETE FROM tipo WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2099,10 +2140,10 @@ class DataBase {
 				e.isActive
 			FROM evento e
 			LEFT JOIN tipo_evento te ON te.id = e.idTipoEvento
-			WHERE e.id = ${id};
+			WHERE e.id = ?;
 		`;
 		try {
-			const results = await this.query(queryString);
+			const results = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: results.map(evento => ({
@@ -2129,23 +2170,28 @@ class DataBase {
 
 	async getComunicationsMeta({ pageSize, conditions }) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.idTipoEvento) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} e.idTipoEvento = ${conditions.idTipoEvento}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} e.idTipoEvento = ?`
+				params.push(Number(conditions.idTipoEvento))
 				isFirstCondition = false
 			}
 			if (conditions.title) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} e.title LIKE '%${conditions.title}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} e.title LIKE ?`
+				params.push(`%${conditions.title}%`)
 				isFirstCondition = false
 			}
 			if (conditions.startDate) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.startTime) >= '${conditions.startDate}'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.startTime) >= ?`
+				params.push(conditions.startDate)
 				isFirstCondition = false
 			}
 			if (conditions.endDate) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= '${conditions.endDate}'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= ?`
+				params.push(conditions.endDate)
 				isFirstCondition = false
 			}
 			if (conditions.nearest) {
@@ -2171,7 +2217,7 @@ class DataBase {
 		const query = queryString.replace(/\s+/g, ' ')
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				amount: results[0].amount,
@@ -2193,23 +2239,28 @@ class DataBase {
 			pageSize: 5
 		}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.idTipoEvento) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} e.idTipoEvento = ${conditions.idTipoEvento}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} e.idTipoEvento = ?`
+				params.push(Number(conditions.idTipoEvento))
 				isFirstCondition = false
 			}
 			if (conditions.title) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} e.title LIKE '%${conditions.title}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} e.title LIKE ?`
+				params.push(`%${conditions.title}%`)
 				isFirstCondition = false
 			}
 			if (conditions.startDate) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.startTime) >= '${conditions.startDate}'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.startTime) >= ?`
+				params.push(conditions.startDate)
 				isFirstCondition = false
 			}
 			if (conditions.endDate) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= '${conditions.endDate}'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= ?`
+				params.push(conditions.endDate)
 				isFirstCondition = false
 			}
 			if (conditions.nearest) {
@@ -2256,13 +2307,14 @@ class DataBase {
 		const offsetData = (page - 1) * pageSize
 
 		if (paginate) {
-			query += `LIMIT ${pageSize} OFFSET ${offsetData}`
+			query += `LIMIT ? OFFSET ?`
+			params.push(Number(pageSize), Number(offsetData))
 		}
 
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				data: results.map(evento => ({
@@ -2587,22 +2639,26 @@ class DataBase {
 		conditions
 	}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} pr.id = ${conditions.id} `
+				whereConditions += `${prefix} pr.id = ? `
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 			if (conditions.idAutor) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} pr.authorId = ${conditions.idAutor}`
+				whereConditions += `${prefix} pr.authorId = ?`
+				params.push(Number(conditions.idAutor))
 				isFirstCondition = false
 			}
 			if (conditions.idRegion) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} pr.regionId = ${conditions.idRegion}`
+				whereConditions += `${prefix} pr.regionId = ?`
+				params.push(Number(conditions.idRegion))
 				isFirstCondition = false
 			}
 		}
@@ -2634,7 +2690,7 @@ class DataBase {
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				data: results.map(pr => ({
@@ -2680,19 +2736,22 @@ class DataBase {
 				isActive
 			)
 			VALUES (
-				'${titulo.trim()}',
-				'${descripcion.trim()}',
-				${idRegion},
-				${idAutor},
-				${pdfFileUrl ? `'${pdfFileUrl}'`.trim() : 'null'},
-				${excelFileUrl ? `'${excelFileUrl}'`.trim() : 'null'},
-				${csvFileUrl ? `'${csvFileUrl}'`.trim() : 'null'},
-				'${fechaCreacion}',
-				${estaActivo ? 1 : 0}
+				?, ?, ?, ?, ?, ?, ?, ?, ?
 			)
 		`;
+		const params = [
+			titulo?.trim() || '',
+			descripcion?.trim() || '',
+			Number(idRegion),
+			Number(idAutor),
+			pdfFileUrl ? String(pdfFileUrl).trim() : null,
+			excelFileUrl ? String(excelFileUrl).trim() : null,
+			csvFileUrl ? String(csvFileUrl).trim() : null,
+			fechaCreacion,
+			estaActivo ? 1 : 0
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -2722,19 +2781,30 @@ class DataBase {
 		const queryString = `
 			UPDATE plan_regional 
 				SET
-					title='${titulo.trim()}',
-					description='${descripcion.trim()}',
-					regionId=${idRegion},
-					authorId=${idAutor},
-					pdfFileUrl=${pdfFileUrl ? `'${pdfFileUrl}'`.trim() : 'null'},
-					excelFileUrl=${excelFileUrl ? `'${excelFileUrl}'`.trim() : 'null'},
-					csvFileUrl=${csvFileUrl ? `'${csvFileUrl}'`.trim() : 'null'},
-					creationDate='${fechaCreacion}',
-					isActive=${estaActivo ? 1 : 0}
-				WHERE id=${id}
-		`;
+					title=?,
+					description=?,
+					regionId=?,
+					authorId=?,
+					pdfFileUrl=?,
+					excelFileUrl=?,
+					csvFileUrl=?,
+					creationDate=?,
+					isActive=?
+				WHERE id=?`;
+		const params = [
+			titulo?.trim() || '',
+			descripcion?.trim() || '',
+			Number(idRegion),
+			Number(idAutor),
+			pdfFileUrl ? String(pdfFileUrl).trim() : null,
+			excelFileUrl ? String(excelFileUrl).trim() : null,
+			csvFileUrl ? String(csvFileUrl).trim() : null,
+			fechaCreacion,
+			estaActivo ? 1 : 0,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -2750,9 +2820,9 @@ class DataBase {
 	}
 
 	async deletePlanRegional(id) {
-		const queryString = `DELETE FROM plan_regional WHERE id=${id}`;
+		const queryString = `DELETE FROM plan_regional WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,

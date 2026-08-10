@@ -1,0 +1,60 @@
+# robots.txt — ONSV (Observatorio Nacional de Seguridad Vial)
+# Permitido el acceso a buscadores y asistentes de IA generativa.
+
+User-agent: *
+Allow: /
+Disallow: /administrador
+Disallow: /consejo-regional
+Disallow: /api
+Disallow: /search
+Disallow: /subscribe
+Disallow: /services-map
+Disallow: /region/
+Disallow: /srat
+Disallow: /peru-in-world
+Disallow: /aulavirtual
+
+# Asistentes de IA generativa — permitidos (definido por el área de contenidos).
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: DeepSeekBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+Sitemap: https://www.onsv.gob.pe/sitemap.xml

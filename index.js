@@ -81,6 +81,25 @@ if (process.env.STRATEGY_MODE === 'ON_PREMISE') {
 
 app.use(flash());
 //reference:https://expressjs.com/es/4x/api.html#express.static
+app.use(helmet({
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            imgSrc: ["'self'", 'data:', 'https:'],
+            scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.googletagmanager.com', 'https://connect.facebook.net', 'https://kit.fontawesome.com', 'https://cdn.jsdelivr.net'],
+            styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+            fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
+            frameSrc: ["'self'", 'https://www.youtube.com', 'https://sratma.mtc.gob.pe', 'https://aulavirtual.mtc.gob.pe', 'https://extranet.who.int', 'https://www.google.com', 'https://maps.googleapis.com', 'https://www.facebook.com'],
+            connectSrc: ["'self'"],
+            objectSrc: ["'none'"],
+            baseUri: ["'self'"],
+            formAction: ["'self'"]
+        }
+    },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    crossOriginOpenerPolicy: { policy: 'unsafe-none' }
+}));
 app.use(express.static(path.join(__dirname, "/public"), {
     etag: true,
     maxAge: '30 days',
