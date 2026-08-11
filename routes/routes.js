@@ -57,6 +57,34 @@ function getPageNumbers(current, total, delta = 3) {
 	return result;
 }
 
+function paginatePlaylist(playlist, pageParam, urlPage) {
+	const pageLength = 5;
+	const page = pageParam ? Number(pageParam) : 1;
+	if (!playlist || playlist.length < pageLength) {
+		return { playlist, pagination: null };
+	}
+	const splitArray = (arr, n) => {
+		const r = [];
+		for (let i = 0; i < arr.length; i += n) r.push(arr.slice(i, i + n));
+		return r;
+	};
+	const pages = splitArray(playlist, pageLength);
+	const totalPages = pages.length;
+	const current = Math.min(page, Math.max(1, totalPages));
+	const pagination = {
+		page: current,
+		pages: totalPages,
+		next: current < totalPages ? current + 1 : null,
+		prev: current > 1 ? current - 1 : null,
+		url_page: urlPage,
+		pages_list: getPageNumbers(current, totalPages)
+	};
+	if (page > totalPages && page > 1) {
+		return { redirect: `/${urlPage}/${totalPages}`, pagination, playlist: pages[totalPages - 1] ?? [] };
+	}
+	return { playlist: pages[current - 1] ?? [], pagination };
+}
+
 const revistasData = require("../data/revistas.json");
 
 const COMPONENTES_ICONS = [
@@ -469,7 +497,7 @@ routes.get("/analitica", async (req, res) => {
 })
 
 /**WEBINARS */
-routes.get("/webinars", async (req, res) => {
+routes.get("/webinars/:page?", async (req, res) => {
 	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	let playlist = [];
 	try {
@@ -478,10 +506,12 @@ routes.get("/webinars", async (req, res) => {
 	} catch (e) {
 		console.error("YouTube webinars:", e.message);
 	}
-	res.render("pages/webinars", { playlist, submenu: "webinars" });
+	const result = paginatePlaylist(playlist, req.params.page, 'webinars');
+	if (result.redirect) { res.redirect(result.redirect); return; }
+	res.render("pages/webinars", { playlist: result.playlist, submenu: "webinars", pagination: result.pagination });
 })
 
-routes.get("/capacitaciones", async (req, res) => {
+routes.get("/capacitaciones/:page?", async (req, res) => {
 	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	let playlist = [];
 	try {
@@ -490,7 +520,9 @@ routes.get("/capacitaciones", async (req, res) => {
 	} catch (e) {
 		console.error("YouTube capacitaciones:", e.message);
 	}
-	res.render("pages/webinars", { playlist, submenu: "capacitaciones" });
+	const result = paginatePlaylist(playlist, req.params.page, 'capacitaciones');
+	if (result.redirect) { res.redirect(result.redirect); return; }
+	res.render("pages/webinars", { playlist: result.playlist, submenu: "capacitaciones", pagination: result.pagination });
 })
 /**SRAT */
 routes.get("/srat", async (req, res) => {

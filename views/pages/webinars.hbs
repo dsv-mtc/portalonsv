@@ -29,4 +29,10 @@
 			</div>
 		</div>
 	{{/each}}
+
+	{{#if pagination}}
+		<div class="d-flex justify-content-center mt-4 mb-4">
+			{{>pagination pag=pagination}}
+		</div>
+	{{/if}}
 </div>

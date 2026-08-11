@@ -58,7 +58,9 @@ export function Dashboard() {
         <h2 className="text-[clamp(28px,3.4vw,44px)] uppercase leading-[0.98] max-w-2xl font-[family-name:var(--font-display)] font-extrabold">¡Bienvenido al Panel de <em className="not-italic" style={{ color: "var(--brand-amber)" }}>Control Administrativo</em>!</h2>
         <p className="mt-4 max-w-xl text-white/70 text-[15px]">Todo lo que publiques aquí se refleja en tiempo real en el portal público del Observatorio Nacional de Seguridad Vial.</p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <BrandButton variant="red"><ArrowUpRight className="w-4 h-4" /> Ver portal en vivo</BrandButton>
+          <a href="/" target="_blank" rel="noopener noreferrer">
+            <BrandButton variant="red"><ArrowUpRight className="w-4 h-4" /> Ver portal en vivo</BrandButton>
+          </a>
         </div>
       </section>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
