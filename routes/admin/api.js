@@ -202,7 +202,7 @@ function isAuthenticated(req, res, next) {
   const userId = criptoUtils.decryptUserId(userIdEncrypted);
   mysql.getUserById(userId).then(({ data: user }) => {
     if (!user || user.role.toLowerCase() !== 'administrador') {
-      req.logOut();
+      req.logOut(() => {});
       return res.status(403).json({ success: false, message: "No autorizado" });
     }
     req.adminUser = user;
@@ -245,8 +245,10 @@ router.get("/auth/fail", (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  req.logOut();
-  res.json({ success: true, message: "Sesión cerrada" });
+  req.logOut(function (err) {
+    if (err) return res.status(500).json({ success: false, message: "Error al cerrar sesión" });
+    res.json({ success: true, message: "Sesión cerrada" });
+  });
 });
 
 // --- Footer ---

@@ -22,8 +22,10 @@ router.post("/login", loginLimiter, passport.authenticate('local-login', {
 }))
 
 router.get("/logout", (req, res) => {
-	req.logOut();
-	res.redirect("/administrador/login")
+	req.logOut(function (err) {
+		if (err) return res.status(500).send("Error al cerrar sesión");
+		res.redirect("/administrador/login")
+	});
 })
 
 // Serve SPA static assets (JS, CSS, images) only if authenticated
@@ -44,9 +46,11 @@ async function isAuthenticated(req, res, next) {
 	try {
 		const { data: user } = await mysql.getUserById(userId);
 		if (user.role.toLowerCase() === 'administrador') return next()
-		req.logOut();
-		req.flash('login', 'Usuario o clave incorrecto')
-		res.redirect('/administrador/login');
+		req.logOut(function (err) {
+			if (err) console.log(err);
+			req.flash('login', 'Usuario o clave incorrecto')
+			res.redirect('/administrador/login');
+		});
 		return;
 	} catch (error) {
 		console.log(error);

@@ -35,8 +35,10 @@ router.post("/login", loginLimiter, passport.authenticate('local-login', {
 }))
 
 router.get("/logout", (req, res) => {
-	req.logOut();
-	res.redirect("/consejo-regional/login")
+	req.logOut(function (err) {
+		if (err) return res.status(500).send("Error al cerrar sesión");
+		res.redirect("/consejo-regional/login")
+	});
 })
 
 router.get('/planes-regionales', isAuthenticated, permissionChecker, async (req, res) => {
@@ -264,8 +266,10 @@ async function permissionChecker(req, res, next) {
 		req.permissions = user.permissions
 		return next()
 	}
-	req.logOut();
-	res.redirect('/consejo-regional/login');
+	req.logOut(function (err) {
+		if (err) console.log(err);
+		res.redirect('/consejo-regional/login');
+	});
 }
 
 
