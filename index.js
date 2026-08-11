@@ -106,12 +106,12 @@ const cspDirectives = {
     imgSrc: ["'self'", 'data:', 'https:'],
     // NOTA: se mantiene 'unsafe-inline' en scriptSrc porque las vistas usan
     // scripts inline (gtag, carruseles). Quitarlo requiere migrar esos scripts.
-    scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.googletagmanager.com', 'https://connect.facebook.net', 'https://kit.fontawesome.com', 'https://cdn.jsdelivr.net'],
+    scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.googletagmanager.com', 'https://connect.facebook.net', 'https://kit.fontawesome.com', 'https://cdn.jsdelivr.net', 'https://platform.twitter.com'],
     styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
     fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
-    frameSrc: ["'self'", 'https://www.youtube.com', 'https://sratma.mtc.gob.pe', 'https://aulavirtual.mtc.gob.pe', 'https://extranet.who.int', 'https://www.google.com', 'https://maps.googleapis.com', 'https://www.facebook.com'],
+    frameSrc: ["'self'", 'https://www.youtube.com', 'https://sratma.mtc.gob.pe', 'https://aulavirtual.mtc.gob.pe', 'https://extranet.who.int', 'https://www.google.com', 'https://maps.googleapis.com', 'https://www.facebook.com', 'https://platform.twitter.com', 'https://syndication.twitter.com', 'https://cdn.syndication.twimg.com'],
     frameAncestors: ["'self'"],
-    connectSrc: ["'self'"],
+    connectSrc: ["'self'", 'https://api.twitter.com', 'https://platform.twitter.com', 'https://syndication.twitter.com', 'https://cdn.syndication.twimg.com'],
     objectSrc: ["'none'"],
     baseUri: ["'self'"],
     formAction: ["'self'"]
