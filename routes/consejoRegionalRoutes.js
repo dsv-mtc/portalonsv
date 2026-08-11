@@ -4,6 +4,7 @@ const criptoUtils = require("../utils/criptoUtils");
 const customUploader = require("../controllers/customMulter");
 const { Permission } = require('../controllers/permission');
 const { pageAuthorize } = require('../utils/rest');
+const { loginLimiter } = require('../controllers/rateLimit');
 
 const mysql = new (require("../api/mysql"));
 mysql.setQuery();
@@ -27,7 +28,7 @@ router.get("/login", isNotAuthenticated, (req, res) => {
 	res.render("pages/consejo-regional/login", { info_login });
 })
 
-router.post("/login", passport.authenticate('local-login', {
+router.post("/login", loginLimiter, passport.authenticate('local-login', {
 	successRedirect: "/consejo-regional",
 	failureRedirect: "/consejo-regional/login",
 	passReqToCallback: true

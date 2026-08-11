@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const criptoUtils = require("../../utils/criptoUtils");
 const path = require('path');
+const { loginLimiter } = require("../../controllers/rateLimit");
 
 const mysql = new (require("../../api/mysql"));
 mysql.setQuery();
@@ -14,7 +15,7 @@ router.get("/login", isNotAuthenticated, (req, res) => {
 	res.render("pages/administrador-login", { info_login });
 })
 
-router.post("/login", passport.authenticate('local-login', {
+router.post("/login", loginLimiter, passport.authenticate('local-login', {
 	successRedirect: "/administrador",
 	failureRedirect: "/administrador/login",
 	passReqToCallback: true

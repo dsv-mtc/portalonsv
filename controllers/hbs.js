@@ -40,25 +40,49 @@ function ifCond(v1, v2, options) {
  * @returns 
  */
 function getMenuSelected(url_selected, label) {
-	if (url_selected == '/') {
-		if (label === 'inicio') {
-			return 'add-color';
-		}
-		return '';
-	} else {
-		let segments = url_selected.split('/');
-		let getLabel = segments[1] === 'en' ? segments[2] : segments[1];
-		if (getLabel === label) {
-			return 'add-color';
-		} else {
-			let afterLabel = '';
-			if (label == 'noticias y eventos') afterLabel = "noticias-eventos";
-			if (label == 'normas legales') afterLabel = "normas-legales";
-			if (getLabel === afterLabel) {
-				return 'add-color';
-			}
-		}
-	}
+    if (url_selected === '/' || url_selected === '/en/' || url_selected === '/en') {
+        if (label && label.toLowerCase() === 'inicio') return 'add-color';
+        return '';
+    }
+
+    const segments = url_selected.split('/');
+    const slug = (segments[1] === 'en' ? segments[2] : segments[1] || '').toLowerCase();
+
+    const normalized = (label || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-')
+        .trim();
+
+    const LABEL_TO_SLUG = {
+        'laws': 'normas-legales',
+        'legal-standards': 'normas-legales',
+        'normas-legales': 'normas-legales',
+        'regions': 'regiones',
+        'regiones': 'regiones',
+        'news-and-events': 'noticias-eventos',
+        'noticias-y-eventos': 'noticias-eventos',
+        'analytics': 'analitica',
+        'analitica': 'analitica',
+        'publications': 'publicaciones',
+        'publicaciones': 'publicaciones',
+        'journals': 'revistas',
+        'revistas': 'revistas',
+        'news': 'comunicaciones',
+        'noticias': 'comunicaciones',
+        'events': 'comunicaciones',
+        'eventos': 'comunicaciones',
+        'contact': 'contacto',
+        'contacto': 'contacto',
+        'who-we-are': 'quienes-somos',
+        'quienes-somos': 'quienes-somos',
+        'inicio': 'inicio',
+        'home': 'inicio',
+    };
+
+    const expectedSlug = LABEL_TO_SLUG[normalized] || normalized;
+    return slug === expectedSlug ? 'add-color' : '';
 }
 
 function createMenu(menuList, secondary_navigation, url_selected, programas) {

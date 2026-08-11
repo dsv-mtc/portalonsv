@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const logger = require('../controllers/logger');
+const { formLimiter } = require('../controllers/rateLimit');
 
 const GAS_WEBHOOK_URL = process.env.GAS_ORV_WEBHOOK_URL;
 
@@ -8,7 +9,7 @@ if (!GAS_WEBHOOK_URL) {
     logger.warn('GAS_ORV_WEBHOOK_URL no está configurado en .env');
 }
 
-router.post('/orv-form', async (req, res) => {
+router.post('/orv-form', formLimiter, async (req, res) => {
     if (!GAS_WEBHOOK_URL) {
         return res.status(500).json({ success: false, message: 'Servicio no configurado' });
     }

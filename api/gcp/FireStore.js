@@ -1,8 +1,11 @@
 const { Firestore} = require('@google-cloud/firestore');
 require('dotenv').config();
 const crypto=require("crypto-js");
+const bcrypt=require("bcryptjs");
 const logger= require("../../controllers/logger");
 const moment=require('moment');
+const BCRYPT_ROUNDS = 10;
+const isBcryptHash = (hash) => typeof hash === 'string' && /^\$2[ayb]\$\d{2}\$/.test(hash);
 
 class CloudFirestore{ 
     constructor(){
@@ -39,11 +42,34 @@ class CloudFirestore{
     }
 
     comparePassword=async (passIn,passSaved)=>{
-        const passwordDecrypted=crypto.AES.decrypt(passSaved,process.env.CRYPTO_SECRET_KEY).toString(crypto.enc.Utf8);
-        if(passIn == passwordDecrypted){
-            return true;
+        try {
+            if (isBcryptHash(passSaved)) {
+                const ok = await bcrypt.compare(passIn || '', passSaved);
+                return { ok, rehash: false };
+            }
+            const passwordDecrypted=crypto.AES.decrypt(passSaved,process.env.CRYPTO_SECRET_KEY).toString(crypto.enc.Utf8);
+            const ok = passIn == passwordDecrypted;
+            return { ok, rehash: ok };
+        } catch (error) {
+            logger.error(error);
+            return { ok: false, rehash: false };
         }
-        return false;
+    }
+    /**
+     * @description: Migra el password de un usuario a bcrypt (rehash-on-login).
+     */
+    rehashPassword=async (userId,password)=>{
+        try {
+            const passwordHash = await bcrypt.hash(password || '', BCRYPT_ROUNDS);
+            const snapshot=await this.collection.where('id','==',userId.toString()).get();
+            if(snapshot.docs.length>0){
+                await snapshot.docs[0].ref.update({ password: passwordHash });
+            }
+            return { success: true };
+        } catch (error) {
+            logger.error(error);
+            return { success: false };
+        }
     }
     /**
      * @description: Usado para guardar usuario
@@ -53,11 +79,11 @@ class CloudFirestore{
      */
     saveUser=async (email,password)=>{
         try {
-            const passwordEncrypted=crypto.AES.encrypt(password,process.env.CRYPTO_SECRET_KEY);
+            const passwordHash=await bcrypt.hash(password || '', BCRYPT_ROUNDS);
             const docToSend={
                 id:'1',
                 email:email,
-                password:passwordEncrypted.toString()
+                password:passwordHash
             }
             await this.getUserById();
             if(this.doc){

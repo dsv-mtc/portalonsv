@@ -3,6 +3,9 @@ node_modules
 app.yaml
 ignore-templates
 utils/keys/pruebasfiisuni-3cd345507254.json
+utils/keys/
+*.pem
+cookies.txt
 docs/*
 
 status.json

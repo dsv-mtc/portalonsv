@@ -1,11 +1,13 @@
 const mysql = require("mysql2");
 const dotenv = require("dotenv");
 const crypto = require("crypto-js");
+const bcrypt = require("bcryptjs");
 const moment = require('moment');
 dotenv.config();
 const util = require("util");
 const logger = require('../controllers/logger');
-const MySQLStore = require('express-mysql-session');
+const BCRYPT_ROUNDS = 10;
+const isBcryptHash = (hash) => typeof hash === 'string' && /^\$2[ayb]\$\d{2}\$/.test(hash);
 const dataConnection = {
 	host: process.env.DATABASE_HOST,
 	user: process.env.DATABASE_USER,
@@ -392,14 +394,14 @@ class DataBase {
 		estaActivo
 	}) {
 		try {
-			const passwordEncrypted = crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY).toString();
+			const passwordHash = await bcrypt.hash(password || '', BCRYPT_ROUNDS);
 			const queryString = `
 				INSERT INTO ${process.env.USER_TABLE} 
 					(user, password, idUserRole, estaActivo) 
 				VALUES 
 					(?, ?, ?, ?)
 			`
-			const result = await this.query(queryString, [email, passwordEncrypted, Number(roleId), estaActivo ? 1 : 0])
+			const result = await this.query(queryString, [email, passwordHash, Number(roleId), estaActivo ? 1 : 0])
 			return {
 				success: true,
 				data: result,
@@ -422,12 +424,20 @@ class DataBase {
 		roleId,
 		estaActivo
 	}) {
-		const passwordEncrypted = password
-			? crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY).toString()
-			: undefined;
+		let passwordHash;
+		try {
+			passwordHash = password
+				? await bcrypt.hash(password, BCRYPT_ROUNDS)
+				: undefined;
+		} catch (error) {
+			return {
+				success: false,
+				message: "No se pudo actualizar el usuario"
+			}
+		}
 		try {
 			let result;
-			if (passwordEncrypted) {
+			if (passwordHash) {
 				const queryString = `
 					UPDATE ${process.env.USER_TABLE} 
 						SET
@@ -436,7 +446,7 @@ class DataBase {
 							idUserRole=?,
 							estaActivo=?
 						WHERE id=?`;
-				result = await this.query(queryString, [email, passwordEncrypted, Number(roleId), estaActivo ? 1 : 0, Number(id)]);
+				result = await this.query(queryString, [email, passwordHash, Number(roleId), estaActivo ? 1 : 0, Number(id)]);
 			} else {
 				const queryString = `
 					UPDATE ${process.env.USER_TABLE} 
@@ -481,17 +491,40 @@ class DataBase {
 	}
 
 	/**
-	 * @description: Compara el password ingresado con el password guardado en tabla
+	 * @description: Compara el password ingresado con el password guardado en tabla.
+	 * Soporta hashes bcrypt (nuevos) y cifrados AES legacy (migración transparente).
 	 * @param {string} passIn: Password ingresado 
 	 * @param {string} passSaved: Password guardado en tabla
-	 * @returns 
+	 * @returns {Promise<{ok: boolean, rehash: boolean}>} ok: credencial válida; rehash: hay que migrar a bcrypt
 	 */
-	comparePassword = (passIn, passSaved) => {
-		const passwordDecrypted = crypto.AES.decrypt(passSaved, process.env.CRYPTO_SECRET_KEY).toString(crypto.enc.Utf8);
-		if (passIn == passwordDecrypted) {
-			return true;
+	comparePassword = async (passIn, passSaved) => {
+		try {
+			if (isBcryptHash(passSaved)) {
+				const ok = await bcrypt.compare(passIn || '', passSaved);
+				return { ok, rehash: false };
+			}
+			// Hash legacy AES: comparar en claro y marcar para rehasheo
+			const passwordDecrypted = crypto.AES.decrypt(passSaved, process.env.CRYPTO_SECRET_KEY).toString(crypto.enc.Utf8);
+			const ok = passIn == passwordDecrypted;
+			return { ok, rehash: ok };
+		} catch (error) {
+			console.error(error);
+			return { ok: false, rehash: false };
 		}
-		return false;
+	}
+
+	/**
+	 * @description: Migra el password de un usuario a bcrypt (rehash-on-login).
+	 */
+	rehashPassword = async (id, password) => {
+		try {
+			const passwordHash = await bcrypt.hash(password || '', BCRYPT_ROUNDS);
+			await this.query(`UPDATE ${process.env.USER_TABLE} SET password=? WHERE id=?`, [passwordHash, Number(id)]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false };
+		}
 	}
 
 	getDocumentsByTitle = async (title) => {
@@ -524,7 +557,7 @@ class DataBase {
 	//doc: https://www.cleverclouds.im/es/blog/2018/06/guardar-la-sesi%C3%B3n-en-mysql-para-el-framework-express-en-node
 
 	sessionStore(session) {
-		MySQLStore(session);
+		const MySQLStore = require('express-mysql-session')(session);
 		let sessionStoreVar = new MySQLStore(dataConnection);
 		return sessionStoreVar;
 	}
@@ -1597,21 +1630,24 @@ class DataBase {
 					fecha
 				)
 			VALUES (
-				'${titulo}', 
-				'${autor}', 
-				'${descripcion}', 
-				${idCategoria}, 
-				${idTipo}, 
-				'${excelfilepath}', 
-				'${pdffilepath}', 
-				'${csvfilepath}', 
-				'${shapefilepath}',
-				${estaActivo ? 1 : 0},
-				'${fecha}' 
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 			)
 		`;
+		const params = [
+			titulo,
+			autor,
+			descripcion,
+			Number(idCategoria),
+			Number(idTipo),
+			excelfilepath,
+			pdffilepath,
+			csvfilepath,
+			shapefilepath,
+			estaActivo ? 1 : 0,
+			fecha
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -1643,21 +1679,35 @@ class DataBase {
 		const queryString = `
 			UPDATE files 
 				SET
-					title='${titulo}',
-					author='${autor}',
-					description='${descripcion}',
-					idCategoria=${idCategoria},
-					idTipo=${idTipo},
-					excelfile='${excelfilepath}',
-					pdffile='${pdffilepath}',
-					csvfile='${csvfilepath}',
-					shapefile='${shapefilepath}',
-					estaActivo=${estaActivo ? 1 : 0},
-					fecha='${fecha}'
-				WHERE id=${id}
+					title=?,
+					author=?,
+					description=?,
+					idCategoria=?,
+					idTipo=?,
+					excelfile=?,
+					pdffile=?,
+					csvfile=?,
+					shapefile=?,
+					estaActivo=?,
+					fecha=?
+				WHERE id=?
 		`;
+		const params = [
+			titulo,
+			autor,
+			descripcion,
+			Number(idCategoria),
+			Number(idTipo),
+			excelfilepath,
+			pdffilepath,
+			csvfilepath,
+			shapefilepath,
+			estaActivo ? 1 : 0,
+			fecha,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -1673,9 +1723,9 @@ class DataBase {
 	}
 
 	async deleteDatosAbiertos(id) {
-		const queryString = `DELETE FROM files WHERE id=${id}`;
+		const queryString = `DELETE FROM files WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1752,10 +1802,10 @@ class DataBase {
 	}) {
 		const queryString = `
 			INSERT INTO categoria ( value, icon, estaActivo )
-			VALUES ( '${value}', '${icon}',${estaActivo ? 1 : 0} )
+			VALUES ( ?, ?, ? )
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, icon, estaActivo ? 1 : 0]);
 			return {
 				success: true,
 				data: result,
@@ -1779,13 +1829,13 @@ class DataBase {
 		const queryString = `
 			UPDATE categoria 
 				SET
-					value='${value}',
-					icon='${icon}',
-					estaActivo=${estaActivo ? 1 : 0}
-				WHERE id=${id}
+					value=?,
+					icon=?,
+					estaActivo=?
+				WHERE id=?
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, icon, estaActivo ? 1 : 0, Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1801,9 +1851,9 @@ class DataBase {
 	}
 
 	async deleteCategoria(id) {
-		const queryString = `DELETE FROM categoria WHERE id=${id}`;
+		const queryString = `DELETE FROM categoria WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2382,27 +2432,32 @@ async updateTipo({
 				isActive
 			)
 			VALUES ( 
-				'${title}',
-				${idTipoEvento},
-				'${organizedBy}',
-				${place ? `'${place}'` : 'null'},
-				${shortDescription ? `'${shortDescription}'` : 'null'},
-				${description ? `'${description}'` : 'null'},
-				'${startDay} ${startTime}',
-				${endDay ? `'${endDay}${endTime ? ` ${endTime}` : ''}'` : 'null'},
-				${price ? price : 'null'},
-				${imageUrl ? `'${imageUrl}'` : 'null'},
-				${direccion ? `'${direccion}'` : 'null'},
-				${reunionLink ? `'${reunionLink}'` : 'null'},
-				${facebookLink ? `'${facebookLink}'` : 'null'},
-				${youtubeLink ? `'${youtubeLink}'` : 'null'},
-				${twitterLink ? `'${twitterLink}'` : 'null'},
-				${anotherLink ? `'${anotherLink}'` : 'null'},
-				${isActive ? 1 : 0}
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 			)
 		`;
+		const startTimeValue = startDay ? `${startDay} ${startTime ?? ''}`.trim() : null;
+		const endTimeValue = endDay ? `${endDay}${endTime ? ` ${endTime}` : ''}` : null;
+		const params = [
+			title,
+			Number(idTipoEvento),
+			organizedBy,
+			place || null,
+			shortDescription || null,
+			description || null,
+			startTimeValue,
+			endTimeValue,
+			price || null,
+			imageUrl || null,
+			direccion || null,
+			reunionLink || null,
+			facebookLink || null,
+			youtubeLink || null,
+			twitterLink || null,
+			anotherLink || null,
+			isActive ? 1 : 0
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -2442,27 +2497,49 @@ async updateTipo({
 		const queryString = `
 			UPDATE evento 
 				SET
-					title = '${title}',
-					idTipoEvento = ${idTipoEvento},
-					organizedBy = '${organizedBy}',
-					place = ${place ? `'${place}'` : 'null'},
-					shortDescription = ${shortDescription ? `'${shortDescription}'` : 'null'},
-					description = ${description ? `'${description}'` : 'null'},
-					startTime = '${startDay} ${startTime}',
-					endTime = ${(endDay && endDay !== 'Invalid date') ? `'${endDay}${endTime ? ` ${endTime}` : ''}'` : 'null'},
-					price = ${price ? price : 'null'},
-					imageUrl = ${imageUrl ? `'${imageUrl}'` : 'null'},
-					direccion = ${direccion ? `'${direccion}'` : 'null'},
-					reunionLink = ${reunionLink ? `'${reunionLink}'` : 'null'},
-					facebookLink = ${facebookLink ? `'${facebookLink}'` : 'null'},
-					youtubeLink = ${youtubeLink ? `'${youtubeLink}'` : 'null'},
-					twitterLink = ${twitterLink ? `'${twitterLink}'` : 'null'},
-					anotherLink = ${anotherLink ? `'${anotherLink}'` : 'null'},
-					isActive = ${isActive ? 1 : 0}
-				WHERE id=${id}
+					title = ?,
+					idTipoEvento = ?,
+					organizedBy = ?,
+					place = ?,
+					shortDescription = ?,
+					description = ?,
+					startTime = ?,
+					endTime = ?,
+					price = ?,
+					imageUrl = ?,
+					direccion = ?,
+					reunionLink = ?,
+					facebookLink = ?,
+					youtubeLink = ?,
+					twitterLink = ?,
+					anotherLink = ?,
+					isActive = ?
+				WHERE id=?
 		`;
+		const startTimeValue = startDay ? `${startDay} ${startTime ?? ''}`.trim() : null;
+		const endTimeValue = (endDay && endDay !== 'Invalid date') ? `${endDay}${endTime ? ` ${endTime}` : ''}` : null;
+		const params = [
+			title,
+			Number(idTipoEvento),
+			organizedBy,
+			place || null,
+			shortDescription || null,
+			description || null,
+			startTimeValue,
+			endTimeValue,
+			price || null,
+			imageUrl || null,
+			direccion || null,
+			reunionLink || null,
+			facebookLink || null,
+			youtubeLink || null,
+			twitterLink || null,
+			anotherLink || null,
+			isActive ? 1 : 0,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -2478,9 +2555,9 @@ async updateTipo({
 	}
 
 	async deleteComunication(id) {
-		const queryString = `DELETE FROM evento WHERE id=${id}`;
+		const queryString = `DELETE FROM evento WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2559,12 +2636,12 @@ async updateTipo({
 					isActive
 				) 
 			VALUES (
-				'${value}',
-				${isActive ? 1 : 0}
+				?,
+				?
 			)
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, isActive ? 1 : 0]);
 			return {
 				success: true,
 				data: result,
@@ -2587,11 +2664,11 @@ async updateTipo({
 		const queryString = `
 			UPDATE tipo_evento
 				SET
-					value = '${value}',
-					isActive = ${isActive ? 1 : 0}
-				WHERE id=${id}`;
+					value = ?,
+					isActive = ?
+				WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, isActive ? 1 : 0, Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2607,9 +2684,9 @@ async updateTipo({
 	}
 
 	async deleteTipoEvento(id) {
-		const queryString = `DELETE FROM tipo_evento WHERE id=${id}`;
+		const queryString = `DELETE FROM tipo_evento WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,

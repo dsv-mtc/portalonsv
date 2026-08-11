@@ -7,6 +7,7 @@ const apiGhost = new (require("../api/ghost"));
 const utils = require("../utils/utils");
 const moment = require("moment");
 const seo = require("../controllers/seo");
+const { formLimiter } = require("../controllers/rateLimit");
 
 const feedController = new (require("../controllers/feed"));
 const youtubeApi = new (require("../api/gcp/Youtube"));
@@ -948,7 +949,7 @@ routes.get("/contacto", async (req, res) => {
 	res.render("pages/contacto", { info: info });
 })
 
-routes.post("/contacto", async (req, res) => {
+routes.post("/contacto", formLimiter, async (req, res) => {
 	const form = req.body;
 	//existe validación desde el backend
 	const response = await utils.sendEmail(form);
@@ -1153,7 +1154,7 @@ routes.post("/search", async (req, res) => {
 })
 
 //SusCripción
-routes.post("/subscribe", async (req, res) => {
+routes.post("/subscribe", formLimiter, async (req, res) => {
 	const form = req.body;
 	const response = await utils.subscribeUser(form);
 	if (response.success) {

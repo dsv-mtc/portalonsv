@@ -2,9 +2,10 @@ const GhostContentApi = require("@tryghost/content-api");
 const { readingTime, tags } = require("@tryghost/helpers");
 const utils = require("../utils/utils");
 const MiniSearch = require("minisearch");
+require('dotenv').config();
 const api = new GhostContentApi({
-	url: "https://www.onsv.gob.pe:5000",
-	key: "a20fd9a819b97254868897c806",
+	url: process.env.GHOST_URL || "https://www.onsv.gob.pe:5000",
+	key: process.env.GHOST_CONTENT_KEY,
 	version: "v3"
 })
 class GhostApi {

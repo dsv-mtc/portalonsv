@@ -1,7 +1,8 @@
 const mysql = require('mysql');
 const util = require('util');
+require('dotenv').config();
 const conn = mysql.createConnection({
-  host: 'localhost', user: 'root', password: '%Xlr8-1997$', database: 'onsv'
+  host: process.env.DATABASE_HOST || 'localhost', user: process.env.DATABASE_USER || 'root', password: process.env.DATABASE_PASSWORD || '', database: process.env.DATABASE_NAME || 'onsv'
 });
 const query = util.promisify(conn.query).bind(conn);
 (async () => {

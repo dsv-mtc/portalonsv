@@ -4,6 +4,7 @@ const criptoUtils = require("../../utils/criptoUtils");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { loginLimiter } = require("../../controllers/rateLimit");
 
 const mysql = new (require("../../api/mysql"));
 mysql.setQuery();
@@ -11,6 +12,28 @@ mysql.setQuery();
 const apiGhost = new (require("../../api/ghost"));
 
 const assetsDir = path.join(__dirname, '../../public/assets');
+
+// --- Filtros seguros de subida (anti XSS por archivos ejecutables) ---
+const ALLOWED_IMAGE_EXTS = /\.(png|jpe?g|gif|webp)$/i;
+const ALLOWED_DOC_EXTS = /\.(pdf|csv|xls|xlsx|zip|shp|dbf|prj|shx)$/i;
+const DANGEROUS_MIME = /^(text\/html|text\/javascript|application\/javascript|application\/xhtml\+xml|image\/svg\+xml|application\/xml)$/i;
+
+function safeImageFilter(_req, file, cb) {
+  const ext = path.extname(file.originalname || '');
+  if (ALLOWED_IMAGE_EXTS.test(ext) && !DANGEROUS_MIME.test(file.mimetype || '')) {
+    return cb(null, true);
+  }
+  cb(new Error('Solo se permiten imágenes PNG, JPG, GIF o WebP'));
+}
+
+function safeDocFilter(_req, file, cb) {
+  const ext = path.extname(file.originalname || '');
+  if (ALLOWED_DOC_EXTS.test(ext) && !DANGEROUS_MIME.test(file.mimetype || '')) {
+    return cb(null, true);
+  }
+  cb(new Error('Solo se permiten documentos (PDF, CSV, Excel, ZIP o shapefile)'));
+}
+
 const uploadMw = multer({
   storage: multer.diskStorage({
     destination: assetsDir,
@@ -92,9 +115,7 @@ const uploadDatosMw = multer({
     }
   }),
   limits: { fileSize: 50 * 1024 * 1024 },
-  fileFilter(_req, file, cb) {
-    return cb(null, true);
-  }
+  fileFilter: safeDocFilter
 }).single('file');
 
 const categoriaAssetsDir = path.join(__dirname, '../../public/assets/categoria');
@@ -209,7 +230,7 @@ router.get("/logs/recent", isAuthenticated, async (req, res) => {
   res.json(result);
 });
 
-router.post("/login", passport.authenticate('local-login', {
+router.post("/login", loginLimiter, passport.authenticate('local-login', {
   successRedirect: "/administrador/api/auth/success",
   failureRedirect: "/administrador/api/auth/fail",
   passReqToCallback: true
@@ -1132,7 +1153,11 @@ router.put("/publicaciones-estado", isAuthenticated, async (req, res) => {
 
 // --- Banners ---
 const bannersAssetsDir = path.join(__dirname, '../../public/assets');
-const bannersUpload = multer({ dest: bannersAssetsDir });
+const bannersUpload = multer({
+  dest: bannersAssetsDir,
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: safeImageFilter
+});
 
 // Transforma <em>palabra</em> <-> *palabra* para edición bilingüe del admin.
 const emToAsterisk = (s) => (s == null ? '' : String(s).replace(/<em>(.*?)<\/em>/g, '*$1*'));

@@ -48,9 +48,19 @@ app.engine("hbs", hbs.engine);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 
+// --- Configuración de seguridad ---
+const isProduction = process.env.NODE_ENV === 'production' || process.env.STRATEGY_MODE === 'GCP';
+// Detrás de proxy (App Engine, load balancer): usa la IP real del cliente
+app.set('trust proxy', 1);
+
+// Fail-fast: un secreto de sesión débil permite forjar cookies
+if (!process.env.SECRET_APPLICATION || process.env.SECRET_APPLICATION.length < 32) {
+    throw new Error('SECRET_APPLICATION debe tener al menos 32 caracteres. Define una clave fuerte en el archivo .env');
+}
+
 
 //Usos
-app.use(morgan("dev"));
+app.use(morgan(isProduction ? "combined" : "dev"));
 //app.use(helmet());
 app.use(cookieParser(process.env.SECRET_APPLICATION))
 //Eliminar en producción
@@ -58,7 +68,12 @@ if (process.env.STRATEGY_MODE === 'GCP') {
     app.use(session({
         secret: process.env.SECRET_APPLICATION,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: 'lax'
+        }
     }));
     app.use(passport.initialize());
     app.use(passport.session());
@@ -70,9 +85,14 @@ if (process.env.STRATEGY_MODE === 'ON_PREMISE') {
     app.use(session({
         secret: process.env.SECRET_APPLICATION,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         store: mysqlClient.sessionStore(session),
-        cookie: { maxAge: 1000 * 60 * 60 * 24 }
+        cookie: {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: 'lax',
+            maxAge: 1000 * 60 * 60 * 24
+        }
     }));
     app.use(passport.initialize());
     app.use(passport.session());
@@ -81,22 +101,27 @@ if (process.env.STRATEGY_MODE === 'ON_PREMISE') {
 
 app.use(flash());
 //reference:https://expressjs.com/es/4x/api.html#express.static
+const cspDirectives = {
+    defaultSrc: ["'self'"],
+    imgSrc: ["'self'", 'data:', 'https:'],
+    // NOTA: se mantiene 'unsafe-inline' en scriptSrc porque las vistas usan
+    // scripts inline (gtag, carruseles). Quitarlo requiere migrar esos scripts.
+    scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.googletagmanager.com', 'https://connect.facebook.net', 'https://kit.fontawesome.com', 'https://cdn.jsdelivr.net'],
+    styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+    fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
+    frameSrc: ["'self'", 'https://www.youtube.com', 'https://sratma.mtc.gob.pe', 'https://aulavirtual.mtc.gob.pe', 'https://extranet.who.int', 'https://www.google.com', 'https://maps.googleapis.com', 'https://www.facebook.com'],
+    frameAncestors: ["'self'"],
+    connectSrc: ["'self'"],
+    objectSrc: ["'none'"],
+    baseUri: ["'self'"],
+    formAction: ["'self'"]
+};
+if (isProduction) {
+    cspDirectives.upgradeInsecureRequests = [];
+}
 app.use(helmet({
     hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            imgSrc: ["'self'", 'data:', 'https:'],
-            scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.googletagmanager.com', 'https://connect.facebook.net', 'https://kit.fontawesome.com', 'https://cdn.jsdelivr.net'],
-            styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-            fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
-            frameSrc: ["'self'", 'https://www.youtube.com', 'https://sratma.mtc.gob.pe', 'https://aulavirtual.mtc.gob.pe', 'https://extranet.who.int', 'https://www.google.com', 'https://maps.googleapis.com', 'https://www.facebook.com'],
-            connectSrc: ["'self'"],
-            objectSrc: ["'none'"],
-            baseUri: ["'self'"],
-            formAction: ["'self'"]
-        }
-    },
+    contentSecurityPolicy: { directives: cspDirectives },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     crossOriginOpenerPolicy: { policy: 'unsafe-none' }
 }));
@@ -110,15 +135,22 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(routes);
 
+// Manejador central de errores (sin exponer stack traces ni detalles internos)
+app.use((err, req, res, next) => {
+    console.error(err);
+    if (req.path.startsWith('/administrador/api')) {
+        return res.status(err.status || 500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    if (req.path.startsWith('/api/')) {
+        return res.status(err.status || 500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.status(err.status || 500).send('Error interno del servidor');
+});
+
 //cronjob
 
 app.listen(process.env.PORT || 3000, async () => {
     //campaigns.sendingNewsLetter()
     //console.log(await campaigns._renderCampaign());
-    //await firestore.saveUser('elpadredelcordero@gmail.com','123456');
-    /*Correr el script una única vez para generar el usuario admin en On-Premise */
-    // mysqlClient.setQuery();
-    // mysqlClient.saveUser('onsv@mtc.gob.pe','mtclima2022*');
-    // mysqlClient.saveUser('consejero-regional@mtc.gob.pe','test2023,', 2);
     logger.debug(`La aplicación se inició con éxito y a la escucha en el puerto ${process.env.PORT || 3000}`)
 })
