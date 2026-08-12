@@ -12,7 +12,70 @@ document.addEventListener('DOMContentLoaded',()=>{
 	fileSelectedName()
 	getMapFromForm();
 	closeNavbarOnOutsideClick();
+	pageFx();
 })
+
+/**
+ * @description Capa de transiciones suaves globales (opt-in, sin dependencias).
+ *  - Fade-in del <body> al cargar
+ *  - Reveal on scroll via IntersectionObserver sobre elementos con [data-fx]
+ *  - Fade-out antes de navegar (links internos) + restauración bfcache
+ * Respeta prefers-reduced-motion (el CSS neutraliza todo; aca no hacemos nada extra).
+ */
+function pageFx(){
+  var body = document.body;
+  if(!body) return;
+
+  // 1) Fade-in al cargar
+  if(body.classList.contains('fx-boot')){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ body.classList.add('fx-in'); });
+    });
+  }
+
+  // 2) Reveal on scroll opt-in
+  var fxEl = document.querySelectorAll('[data-fx]');
+  if(fxEl.length && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add('fx-in');
+          io.unobserve(en.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+    fxEl.forEach(function(el){ io.observe(el); });
+  }
+
+  // 3) Fade-out antes de navegar (links internos del portal)
+  document.addEventListener('click', function(e){
+    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a) return;
+    if(a.target === '_blank' || a.hasAttribute('download') || a.dataset.fxSkip !== undefined) return;
+    var href = a.getAttribute('href');
+    if(!href) return;
+    if(href.charAt(0) === '#' || /^(mailto:|tel:|javascript:)/i.test(href)) return;
+    var url;
+    try { url = new URL(href, location.href); } catch(_) { return; }
+    if(url.origin !== location.origin) return;
+    var p = url.pathname;
+    if(p.indexOf('/secciones-admin') === 0 || p.indexOf('/aulavirtual') === 0 || p.indexOf('/srat') === 0 || p.indexOf('/peru-in-world') === 0) return;
+    // Misma página + solo hash → dejar al navegador
+    if(url.pathname === location.pathname && url.hash) return;
+    e.preventDefault();
+    body.classList.add('fx-out');
+    setTimeout(function(){ location.href = url.href; }, 100);
+  });
+
+  // 4) bfcache (volver con back/forward): forzar body visible
+  window.addEventListener('pageshow', function(ev){
+    if(ev.persisted){
+      body.classList.remove('fx-out');
+      body.classList.add('fx-in');
+    }
+  });
+}
 /**
  * @description: Función auxiliar utilizada en los post para el retorno al menú inmediato desde donde se originó su llamada
  */
