@@ -127,7 +127,7 @@ app.use(helmet({
 }));
 app.use(express.static(path.join(__dirname, "/public"), {
     etag: true,
-    maxAge: '30 days',
+    maxAge: '1 hour',
     redirect: true,
 }));
 app.use(express.json());

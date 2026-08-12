@@ -190,7 +190,7 @@
 
 <section class="kpis" id="siniestralidad">
   <div class="container wrap">
-    <div class="sec-head">
+    <div class="sec-head fx-fade">
       <div>
         <div class="eyebrow">{{t lang "Panorama nacional"}}</div>
         <h2 class="sec-title">{{t lang "Datos de siniestralidad"}}</h2>
@@ -198,22 +198,22 @@
       <a class="more" href="/analitica">{{t lang "Analítica completa →"}}</a>
     </div>
 
-    <div class="kpi-grid">
-      <div class="kpi" style="--c:#C8102E">
+    <div class="kpi-grid fx-stagger">
+      <div class="kpi fx-hide" style="--c:#C8102E">
         <span class="kpi-badge">{{t lang "Siniestros"}}</span>
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 16.5v.5"/></svg></div>
         <div class="num" id="val-accidentados">{{accidentados}}</div>
         <div class="stats-variation">{{fuente_siniestro}} · <span class="red-text">{{porcentaje_siniestro}}</span></div>
       </div>
       
-      <div class="kpi" style="--c:#F2A900">
+      <div class="kpi fx-hide" style="--c:#F2A900">
         <span class="kpi-badge">{{t lang "Lesiones"}}</span>
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
         <div class="num" id="val-lesionados">{{lesionados}}</div>
         <div class="stats-variation">{{fuente_lesiones}} · <span class="red-text">{{porcentaje_lesiones}}</span></div>
       </div>
       
-      <div class="kpi" style="--c:#14213D">
+      <div class="kpi fx-hide" style="--c:#14213D">
         <span class="kpi-badge">{{t lang "Muertes"}}</span>
         <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z"/><circle cx="12" cy="11" r="2.4"/></svg></div>
         <div class="num" id="val-fallecidos">{{fallecidos}}</div>
@@ -307,7 +307,7 @@
 
 <section class="tech" id="tech">
   <div class="container wrap">
-    <div class="sec-head">
+    <div class="sec-head fx-fade">
       <div>
         <div class="eyebrow">{{t lang "Aplicaciones e Información"}}</div>
         <h2 class="sec-title">{{t lang "Componentes tecnológicos"}}</h2>
@@ -319,7 +319,7 @@
       <div class="tech-viewport">
         <div class="tech-track-native" id="techTrackNative">
           {{#each componentesCards}}
-          <a class="tcard" href="{{link}}" {{#if external}}target="_blank"{{/if}}>
+          <a class="tcard fx-hide" href="{{link}}" {{#if external}}target="_blank"{{/if}}>
             <div class="ic"><svg viewBox="0 0 24 24">{{{icon}}}</svg></div>
             <h3>{{titulo}}</h3>
             <p>{{descripcion}}</p>
@@ -421,7 +421,7 @@
 <section class="rsp-vu-sec" id="mapa" style="padding: 46px 0; scroll-margin-top: 20px;">
   <div class="container wrap">
     
-    <div class="sec-head">
+    <div class="sec-head fx-fade">
       <div>
         <div class="eyebrow">{{t lang "Georreferencia"}}</div>
         <h2 class="sec-title">{{t lang "Mapa de siniestros viales"}}</h2>
@@ -581,10 +581,10 @@
 
 <section class="promo-sec" id="recursos">
   <div class="container wrap">
-    <div class="row" style="transform: translateY(30px);">
+    <div class="row fx-stagger" style="transform: translateY(30px);">
       
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <div class="promo-card" style="background-image: url('/img/fondo-educacion.png');">
+        <div class="promo-card fx-hide" style="background-image: url('/img/fondo-educacion.png');">
           <div class="promo-overlay"></div>
           
           <div class="promo-content">
@@ -597,7 +597,7 @@
       </div>
       
       <div class="col-lg-6">
-        <div class="promo-card" style="background-image: url('/img/fondo-revista.png');">
+        <div class="promo-card fx-hide" style="background-image: url('/img/fondo-revista.png');">
           <div class="promo-overlay"></div>
           
           <div class="promo-content">
@@ -643,6 +643,11 @@
     z-index: 2;
   }
   .sc-panel[data-panel="fb"] .fb-page > blockquote { display: none; }
+  .sc-panel[data-panel="fb"] .fb-page > span,
+  .sc-panel[data-panel="fb"] .fb-page iframe {
+    width: 100% !important;
+    min-width: 0;
+  }
   .sc-panel[data-panel="x"] { padding: 0; }
 
   .yt-icon { width: 42px; height: 42px; background: #FF0000; border-radius: 10px; display: grid; place-items: center; }
@@ -707,7 +712,7 @@
 <section class="social-sec" id="comunidad">
   <div class="container wrap">
     
-    <div class="sec-head d-flex justify-content-between">
+    <div class="sec-head d-flex justify-content-between fx-fade">
       <div>
         <div class="eyebrow">{{t lang "Comunidad"}}</div>
         <h2 class="sec-title">{{t lang "Síguenos en redes sociales"}}</h2>
@@ -717,9 +722,9 @@
       </div>
     </div>
     
-    <div class="row">
+    <div class="row fx-stagger">
       <div class="col-lg-4 mb-4 mb-lg-0">
-        <div class="sc-card">
+        <div class="sc-card fx-hide">
           
           <div class="sc-header">
             <div class="sc-tabs">
@@ -738,7 +743,7 @@
           
           <div class="sc-body">
             <div class="sc-panel active" data-panel="fb">
-              <div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-height="500" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
+              <div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-width="500" data-tabs="timeline" data-height="500" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
             </div>
             <div class="sc-panel" data-panel="x" style="display:none;">
               <div class="x-profile-card">
@@ -777,7 +782,7 @@
       </div>
       
       <div class="col-lg-8">
-        <div class="sc-card">
+        <div class="sc-card fx-hide">
           
           <div class="sc-header">
             <div class="yt-icon">
@@ -898,6 +903,13 @@
       });
     });
 
+    function fbReparse() {
+      var fp = document.querySelector('.sc-panel[data-panel="fb"]');
+      if (window.FB && FB.XFBML && fp && fp.offsetParent !== null) FB.XFBML.parse(fp);
+    }
+    window.addEventListener('resize', fbReparse);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTimeout(fbReparse, 300); });
+
     var ytCard = document.querySelector(".social-sec .col-lg-8 .sc-card");
     var ytItems = ytCard.querySelectorAll(".yt-item");
     var ytMain = ytCard.querySelector(".yt-main");
@@ -980,7 +992,7 @@
 <section class="news-sec" id="noticias">
   <div class="container wrap">
     
-    <div class="sec-head">
+    <div class="sec-head fx-fade">
       <div>
         <div class="eyebrow">{{t lang "Comunicación"}}</div>
         <h2 class="sec-title">{{t lang "Resumen de Noticias"}}</h2>
@@ -988,7 +1000,7 @@
       <a class="more" href="/comunicaciones/noticias/">{{t lang "Ver más"}} →</a>
     </div>
 
-    <div class="row">
+    <div class="row fx-stagger">
       {{#each post2}}
         {{>index/noticias-eventos-card lang=../lang }}
       {{/each}}
@@ -1000,7 +1012,7 @@
 <section class="pubs-sec" id="publicaciones">
   <div class="container wrap">
     
-    <div class="sec-head">
+    <div class="sec-head fx-fade">
       <div>
         <div class="eyebrow">{{t lang "Conocimiento"}}</div>
         <h2 class="sec-title">{{t lang "ultimas publicaciones"}}</h2>
@@ -1008,7 +1020,7 @@
       <a class="more" href="/publicaciones/">{{t lang "Ver más"}} →</a>
     </div>
 
-    <div class="row ultimas-publicaciones">
+    <div class="row ultimas-publicaciones fx-stagger">
       {{#each post3}}
         {{>index/post-card lang=../lang }}
       {{/each}}
@@ -1085,7 +1097,7 @@
 
 <div class="container">
   <section class="logos-container rsp-noti-sec rsp-wrap" style="padding: 0">
-    <div class="sec-head col-12 mt-4 mb-5" style="padding: 0;">
+    <div class="sec-head col-12 mt-4 mb-5 fx-fade" style="padding: 0;">
       <div>
         <div class="eyebrow">{{t lang "Trabajo articulado"}}</div>
         <h2 class="sec-title">{{t lang "Instituciones aliadas"}}</h2>
