@@ -189,7 +189,7 @@ routes.get("/", async (req, res) => {
 	let youtubeTopVideos = [];
 	try {
 		const { data: videos } = await mysql.getYoutubeVideos('home');
-		youtubeTopVideos = mapYoutubeVideos(videos, { withThumb: true });
+		youtubeTopVideos = mapYoutubeVideos(videos || [], { withThumb: true });
 	} catch (e) {
 		console.error("YouTube top videos:", e.message);
 	}

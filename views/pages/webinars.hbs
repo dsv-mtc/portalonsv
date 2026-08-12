@@ -31,8 +31,30 @@
 	{{/each}}
 
 	{{#if pagination}}
-		<div class="d-flex justify-content-center mt-4 mb-4">
-			{{>pagination pag=pagination}}
-		</div>
+		<style>
+		.custom-pag-wrapper { gap: 8px; }
+		.custom-pag-btn { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:17px; border:1px solid transparent; background:transparent; color:#1d3557; transition:all .3s ease; text-decoration:none; cursor:pointer; }
+		.custom-pag-btn:hover { background-color:transparent; color:#C8102E; border:1px solid #C8102E; }
+		.custom-pag-btn.active { background-color:#C8102E; color:white; box-shadow:0 1px 2px 0 rgba(0,0,0,.05); }
+		.custom-pag-btn.active:hover { background-color:#C8102E; color:white; border:1px solid transparent; }
+		.custom-pag-btn i { font-size:20px; }
+		</style>
+		<nav class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
+			{{#each pagination.pages_list}}
+				{{#if (eq this '...')}}
+					<span class="custom-pag-btn" style="cursor:default;border:none;">…</span>
+				{{else}}
+					<a href="{{page_url ../pagination.url_page this ../lang}}" class="custom-pag-btn{{#if (eq this ../pagination.page)}} active{{/if}}" aria-label="Página {{this}}">{{this}}</a>
+				{{/if}}
+			{{/each}}
+			{{#if pagination.next}}
+				<a href="{{page_url pagination.url_page pagination.next lang}}" class="custom-pag-btn" aria-label="Siguiente página">
+					<i class="fal fa-chevron-right"></i>
+				</a>
+			{{/if}}
+			<a href="{{page_url pagination.url_page pagination.pages lang}}" class="custom-pag-btn" aria-label="Última página">
+				<i class="fal fa-chevron-double-right"></i>
+			</a>
+		</nav>
 	{{/if}}
 </div>

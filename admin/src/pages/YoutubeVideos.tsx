@@ -106,11 +106,18 @@ export function YoutubeVideos() {
       descripcion: seccion === "home" ? "" : form.descripcion.trim(),
       video_url: form.video_url.trim(),
     };
+    let result;
     if (editingId !== null) {
-      await apiPut(`/youtube-videos/${editingId}`, payload);
+      result = await apiPut(`/youtube-videos/${editingId}`, payload);
       setMsg("Video actualizado");
     } else {
-      await apiPost("/youtube-videos", { ...payload, seccion });
+      result = await apiPost("/youtube-videos", { ...payload, seccion });
+    }
+    if (!result.success) {
+      setMsg(result.message || "No se pudo guardar el video");
+      return;
+    }
+    if (editingId === null) {
       setMsg("Video creado");
     }
     setModalOpen(false);
@@ -152,7 +159,9 @@ export function YoutubeVideos() {
 
       <div className="mb-5 flex items-center justify-end gap-3 flex-wrap">
         <Chip color="cyan">{items.length} video(s)</Chip>
-        <BrandButton onClick={openCreate}><Plus className="w-4 h-4" /> Agregar</BrandButton>
+        <BrandButton onClick={openCreate}>
+          <Plus className="w-4 h-4" /> Agregar
+        </BrandButton>
       </div>
 
       <div className="rounded-2xl border border-[color:var(--brand-line)] bg-white p-5" style={{ boxShadow: "var(--shadow-brand)" }}>

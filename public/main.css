@@ -13879,6 +13879,12 @@ border: 1px solid #a2a2a2;
 .programa-card .wbn-title,.programa-card .wbn-desc,.programa-card .wbn-yt{transform:translateZ(8px)}
 .programa-card .wbn-thumb-wrap{border-radius:0;box-shadow:none}
 .programa-card.wbn-row{border-bottom:none;padding:0}
+.yt-list{max-height:312px;overflow-y:auto;scrollbar-width:none;scrollbar-color:transparent transparent}
+.yt-list::-webkit-scrollbar{width:0;height:0}
+.yt-list:hover,.yt-list:focus-within{scrollbar-width:thin;scrollbar-color:#b8c3d4 transparent}
+.yt-list:hover::-webkit-scrollbar,.yt-list:focus-within::-webkit-scrollbar{width:8px;height:8px}
+.yt-list:hover::-webkit-scrollbar-track,.yt-list:focus-within::-webkit-scrollbar-track{background:transparent}
+.yt-list:hover::-webkit-scrollbar-thumb,.yt-list:focus-within::-webkit-scrollbar-thumb{background:#b8c3d4;border-radius:8px}
 
 .wbn-title{font-family:"Roboto Condensed",sans-serif;font-size:21px;color:#14213D;text-transform:uppercase;line-height:1.15;font-weight:700}
 .wbn-desc{font-size:14px;color:#5c6273;max-width:680px}
