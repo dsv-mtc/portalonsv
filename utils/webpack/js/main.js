@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded',()=>{
 	console.log('webpack - iniciado');
+	pageFx();
 	validationForm();
 	carousel();
 	back();
@@ -12,7 +13,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 	fileSelectedName()
 	getMapFromForm();
 	closeNavbarOnOutsideClick();
-	pageFx();
 })
 
 /**
@@ -47,28 +47,7 @@ function pageFx(){
     fxEl.forEach(function(el){ io.observe(el); });
   }
 
-  // 3) Fade-out antes de navegar (links internos del portal)
-  document.addEventListener('click', function(e){
-    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    var a = e.target.closest ? e.target.closest('a[href]') : null;
-    if(!a) return;
-    if(a.target === '_blank' || a.hasAttribute('download') || a.dataset.fxSkip !== undefined) return;
-    var href = a.getAttribute('href');
-    if(!href) return;
-    if(href.charAt(0) === '#' || /^(mailto:|tel:|javascript:)/i.test(href)) return;
-    var url;
-    try { url = new URL(href, location.href); } catch(_) { return; }
-    if(url.origin !== location.origin) return;
-    var p = url.pathname;
-    if(p.indexOf('/secciones-admin') === 0 || p.indexOf('/aulavirtual') === 0 || p.indexOf('/srat') === 0 || p.indexOf('/peru-in-world') === 0) return;
-    // Misma página + solo hash → dejar al navegador
-    if(url.pathname === location.pathname && url.hash) return;
-    e.preventDefault();
-    body.classList.add('fx-out');
-    setTimeout(function(){ location.href = url.href; }, 100);
-  });
-
-  // 4) bfcache (volver con back/forward): forzar body visible
+  // 3) bfcache (volver con back/forward): forzar body visible
   window.addEventListener('pageshow', function(ev){
     if(ev.persisted){
       body.classList.remove('fx-out');
