@@ -226,7 +226,7 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 	var progLabel = secondary_navigation ? 'Programs' : 'Programas';
 	var progActive = url_selected.includes('/programas/') ? 'add-color' : '';
 	var progItems = (programas || []).map(function (p) {
-		return { label: p.titulo, url: p.url };
+		return { label: p.titulo, url: '/programas/' + p.slug };
 	});
 	htmlMenu += `
 		<li class="nav-item nav-special ${progActive} dropdown">

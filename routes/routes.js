@@ -130,7 +130,7 @@ routes.use(async (req, res, next) => {
 			const titulo = p.nombre;
 			const slug = slugify(titulo);
 			const url = (p.enlace && p.enlace.trim()) ? p.enlace.trim() : '#';
-			return { id: p.id, titulo, slug, url };
+			return { id: p.id, titulo, slug, url, descripcion: p.descripcion || '', imagen: p.imagen || '' };
 		});
 	if (!res.locals.enabledFooter) {
 		res.locals.enabledFooter = true;
@@ -556,14 +556,24 @@ routes.get("/entornos-viales", async (req, res) => {
 /** PROGRAMAS (página individual de cada programa creado en el admin) */
 routes.get("/programas/:slug", async (req, res) => {
 	const lang = res.locals.lang === "en" ? "en" : "es";
-
-	// Rama especial: página dedicada de Orientación a Víctimas (no proviene de la tabla programa)
-	if (req.params.slug === "orientacion-victimas" || req.params.slug === "orientacion-a-victimas") {
+	if (req.params.slug === "orientacion-victimas") {
 		return res.render("pages/programa-orientacion-victimas", { lang });
 	}
 
-	// Los demás programas se gestionan por enlace en el admin; no tienen página individual
-	return res.status(404).redirect('/');
+	const { data: programas } = await mysql.getProgramas();
+	const programa = (programas || []).find(p => p.estaActivo && slugify(p.nombre) === req.params.slug);
+
+	if (!programa) return res.status(404).redirect('/');
+
+	return res.render("pages/programa", {
+		lang,
+		titulo: programa.nombre,
+		descripcion: programa.descripcion || '',
+		imagen: programa.imagen || '',
+		enlace: String(programa.codigo || '').toLowerCase() === 'orientacion-victimas'
+			? '/programas/orientacion-victimas'
+			: programa.enlace || ''
+	});
 });
 
 /**PUBLICACIONES */

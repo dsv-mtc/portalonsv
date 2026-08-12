@@ -3151,7 +3151,7 @@ async updateTipo({
 	// --- Programas (antes Entornos Viales) ---
 	async getProgramas() {
 		const queryString = `
-			SELECT id, codigo, nombre, enlace, estaActivo
+			SELECT id, codigo, nombre, descripcion, enlace, imagen, estaActivo
 			FROM programa
 			ORDER BY id ASC
 		`;
@@ -3164,14 +3164,14 @@ async updateTipo({
 		}
 	}
 
-	async createPrograma({ codigo, nombre, enlace, estaActivo }) {
+	async createPrograma({ codigo, nombre, descripcion, enlace, imagen, estaActivo }) {
 		const queryString = `
-			INSERT INTO programa (codigo, nombre, enlace, estaActivo, fechaRegistro, fechaActualizacion)
-			VALUES (?, ?, ?, ?, NOW(), NOW())
+			INSERT INTO programa (codigo, nombre, descripcion, enlace, imagen, estaActivo, fechaRegistro, fechaActualizacion)
+			VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())
 		`;
 		try {
 			const result = await this.query(queryString, [
-				codigo || '', nombre || '', enlace || '', estaActivo ? 1 : 0
+				codigo || '', nombre || '', descripcion || '', enlace || '', imagen || '', estaActivo ? 1 : 0
 			]);
 			return { success: true, data: { insertId: result.insertId } };
 		} catch (error) {
@@ -3180,15 +3180,15 @@ async updateTipo({
 		}
 	}
 
-	async updatePrograma({ id, codigo, nombre, enlace, estaActivo }) {
+	async updatePrograma({ id, codigo, nombre, descripcion, enlace, imagen, estaActivo }) {
 		const queryString = `
 			UPDATE programa
-			SET codigo = ?, nombre = ?, enlace = ?, estaActivo = ?, fechaActualizacion = NOW()
+			SET codigo = ?, nombre = ?, descripcion = ?, enlace = ?, imagen = ?, estaActivo = ?, fechaActualizacion = NOW()
 			WHERE id = ?
 		`;
 		try {
 			await this.query(queryString, [
-				codigo || '', nombre || '', enlace || '', estaActivo ? 1 : 0, id
+				codigo || '', nombre || '', descripcion || '', enlace || '', imagen || '', estaActivo ? 1 : 0, id
 			]);
 			return { success: true };
 		} catch (error) {

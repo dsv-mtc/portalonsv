@@ -175,6 +175,25 @@ const uploadEntornoMw = multer({
   }
 }).single('image');
 
+// --- Upload middleware para imágenes de programas ---
+const programasAssetsDir = path.join(__dirname, '../../public/assets/programas');
+if (!fs.existsSync(programasAssetsDir)) fs.mkdirSync(programasAssetsDir, { recursive: true });
+
+const uploadProgramaMw = multer({
+  storage: multer.diskStorage({
+    destination: programasAssetsDir,
+    filename(_req, file, cb) {
+      const ext = path.extname(file.originalname).toLowerCase() || '.png';
+      cb(null, `programa_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
+
 // --- Upload middleware para redes sociales ---
 const redesAssetsDir = path.join(__dirname, '../../public/assets/redes');
 if (!fs.existsSync(redesAssetsDir)) fs.mkdirSync(redesAssetsDir, { recursive: true });
@@ -1076,15 +1095,15 @@ router.get("/programas", isAuthenticated, async (req, res) => {
 });
 
 router.post("/programas", isAuthenticated, async (req, res) => {
-  const { codigo, nombre, enlace, estaActivo } = req.body;
-  const result = await mysql.createPrograma({ codigo, nombre, enlace, estaActivo });
+  const { codigo, nombre, descripcion, enlace, imagen, estaActivo } = req.body;
+  const result = await mysql.createPrograma({ codigo, nombre, descripcion, enlace, imagen, estaActivo });
   const log = await logAction('created', 'Programa', result.data?.insertId, `Se creó el programa '${nombre}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 
 router.put("/programas/:id", isAuthenticated, async (req, res) => {
-  const { codigo, nombre, enlace, estaActivo } = req.body;
-  const result = await mysql.updatePrograma({ id: Number(req.params.id), codigo, nombre, enlace, estaActivo });
+  const { codigo, nombre, descripcion, enlace, imagen, estaActivo } = req.body;
+  const result = await mysql.updatePrograma({ id: Number(req.params.id), codigo, nombre, descripcion, enlace, imagen, estaActivo });
   const log = await logAction('updated', 'Programa', Number(req.params.id), `Se actualizó el programa '${nombre}'`, req);
   res.json({ ...result, log: log || undefined });
 });
@@ -1096,6 +1115,19 @@ router.delete("/programas/:id", isAuthenticated, async (req, res) => {
   const result = await mysql.deletePrograma(id);
   const log = await logAction('deleted', 'Programa', id, `Se eliminó el programa '${name}'`, req);
   res.json({ ...result, log: log || undefined });
+});
+
+router.post("/programas/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadProgramaMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      if (!req.file) return res.status(400).json({ success: false, message: "Selecciona una imagen" });
+      res.json({ success: true, url: `/assets/programas/${req.file.filename}` });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
 });
 
 router.post("/entornos-viales/upload", isAuthenticated, async (req, res) => {
