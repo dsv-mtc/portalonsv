@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate, useLocation, Link, matchPath } from "react-router-dom";
-import { LayoutDashboard, PanelBottom, BarChart3, Map, Image as ImageIcon, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel, LayoutGrid, MonitorPlay, GraduationCap, Zap } from "lucide-react";
+import { LayoutDashboard, PanelBottom, BarChart3, Map, Image as ImageIcon, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel, LayoutGrid, MonitorPlay, GraduationCap, Zap, Navigation } from "lucide-react";
 import { cn } from "../lib/utils";
 import { OnsvLogo } from "./OnsvLogo";
 import { apiGet } from "../lib/api";
@@ -9,6 +9,7 @@ type NavItem = { label: string; icon: React.ComponentType<{ className?: string }
 
 const NAV: NavItem[] = [
   { label: "Inicio", icon: LayoutDashboard, to: "/" },
+  { label: "Menú del sitio", icon: Navigation, to: "/menu-sitio" },
   { label: "Banners", icon: ImageIcon, to: "/banners" },
   { label: "Accesos Rápidos", icon: Zap, to: "/accesos-rapidos" },
   { label: "YouTube", icon: MonitorPlay, to: "/youtube" },

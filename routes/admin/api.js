@@ -1362,4 +1362,46 @@ router.put("/banners/textos/:id", isAuthenticated, async (req, res) => {
   res.json({ ...result, log: log || undefined });
 });
 
+// --- Subitems del navbar (menu_subitems) ---
+const MENU_SECCIONES = ['quienes-somos', 'comunicaciones', 'publicaciones', 'educacion-vial', 'aplicaciones', 'normas-legales'];
+
+router.get("/menu-subitems", isAuthenticated, async (req, res) => {
+  const { data: items } = await mysql.getMenuSubitems();
+  res.json({ success: true, data: items });
+});
+
+router.post("/menu-subitems", isAuthenticated, async (req, res) => {
+  const { seccion, label_es, label_en, url, external, isActive } = req.body || {};
+  if (!MENU_SECCIONES.includes(seccion)) {
+    return res.status(400).json({ success: false, message: "Sección no permitida" });
+  }
+  const result = await mysql.createMenuSubitem({ seccion, label_es, label_en, url, external, isActive });
+  const log = await logAction('created', 'Subitem menú', result.data?.insertId, `Se creó el subitem '${label_es || label_en || ''}' en ${seccion}`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/menu-subitems/:id", isAuthenticated, async (req, res) => {
+  const { label_es, label_en, url, external, isActive } = req.body || {};
+  const result = await mysql.updateMenuSubitem(Number(req.params.id), { label_es, label_en, url, external, isActive });
+  const log = await logAction('updated', 'Subitem menú', Number(req.params.id), `Se actualizó el subitem del menú`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/menu-subitems/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const result = await mysql.deleteMenuSubitem(id);
+  const log = await logAction('deleted', 'Subitem menú', id, `Se eliminó un subitem del menú`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/menu-subitems/order", isAuthenticated, async (req, res) => {
+  const { orden } = req.body || {};
+  if (!Array.isArray(orden) || orden.length === 0) {
+    return res.status(400).json({ success: false, message: "Orden inválido" });
+  }
+  const result = await mysql.reorderMenuSubitems(orden);
+  const log = await logAction('updated', 'Subitem menú', 0, 'Se actualizó el orden del menú', req);
+  res.json({ ...result, log: log || undefined });
+});
+
 module.exports = router;

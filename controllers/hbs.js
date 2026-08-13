@@ -85,7 +85,7 @@ function getMenuSelected(url_selected, label) {
     return slug === expectedSlug ? 'add-color' : '';
 }
 
-function createMenu(menuList, secondary_navigation, url_selected, programas) {
+function createMenu(menuList, secondary_navigation, url_selected, programas, menuSubitems) {
 	let htmlMenu = "";
 
 	function findGhost(label) {
@@ -107,9 +107,39 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 		if (!i.url || i.url === '#') {
 			return '<span class="' + cls + '" aria-disabled="true">' + i.label + '</span>';
 		}
-		var external = /^https?:\/\//i.test(i.url || '');
+		var external = (i.external === true || i.external === 1) || /^https?:\/\//i.test(i.url || '');
 		var t = external ? ' target="_blank" rel="noopener noreferrer"' : '';
 		return '<a class="' + cls + '" href="' + i.url + '"' + t + '>' + i.label + '</a>';
+	}
+
+	function renderSectionDropdown(seccion, label, activeCls) {
+		var items = (menuSubitems || [])
+			.filter(function (m) { return m.seccion === seccion && m.isActive; })
+			.sort(function (a, b) { return (a.orden || 0) - (b.orden || 0); })
+			.map(function (m) {
+				var url = m.url || '#';
+				if (secondary_navigation && url.charAt(0) === '/' && !/^\/en\//.test(url) && !/^https?:/i.test(url)) {
+					url = '/en' + url;
+				}
+				return renderDropdownItem({
+					label: secondary_navigation ? (m.label_en || m.label_es || '') : (m.label_es || m.label_en || ''),
+					url: url,
+					wrap: true,
+					external: m.external
+				});
+			});
+		if (items.length === 0) return '';
+		return '<li class="nav-item nav-special ' + activeCls + ' dropdown">' +
+			'<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + label + '</a>' +
+			'<div class="dropdown-menu">' + items.join('') + '</div>' +
+			'</li>';
+	}
+
+	function prefixedInternalUrl(url) {
+		if (secondary_navigation && url && url.charAt(0) === '/' && !/^\/en\//.test(url) && !/^https?:/i.test(url)) {
+			return '/en' + url;
+		}
+		return url;
 	}
 
 	// 1. Home icon (always first, sin dropdown)
@@ -123,69 +153,22 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 			</a>
 		</li>`;
 
-	// 2. Quiénes somos (hardcoded dropdown)
+	// 2. Quiénes somos (desde BD)
 	var qsLabel = secondary_navigation ? 'Who we are' : 'Quiénes somos';
 	var qsActive = url_selected === '/quienes-somos' || url_selected === '/en/quienes-somos' ? 'add-color' : '';
-	var qsItems = secondary_navigation
-		? [
-			{ label: 'Who we are?', url: '/en/quienes-somos#quienes-somos' },
-			{ label: 'Mission', url: '/en/quienes-somos#mision' },
-			{ label: 'Vision', url: '/en/quienes-somos#vision' },
-			{ label: 'Values', url: '/en/quienes-somos#valores' },
-			{ label: 'Tech Components', url: '/en/quienes-somos#componentes', wrap: true }
-		]
-		: [
-			{ label: '¿Quienes somos?', url: '/quienes-somos#quienes-somos' },
-			{ label: 'Misión', url: '/quienes-somos#mision' },
-			{ label: 'Visión', url: '/quienes-somos#vision' },
-			{ label: 'Valores', url: '/quienes-somos#valores' },
-			{ label: 'Componentes Tecnológicos', url: '/quienes-somos#componentes', wrap: true }
-		];
-	htmlMenu += `
-		<li class="nav-item nav-special ${qsActive} dropdown">
-			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${qsLabel}</a>
-			<div class="dropdown-menu">${qsItems.map(renderDropdownItem).join('')}</div>
-		</li>`;
+	htmlMenu += renderSectionDropdown('quienes-somos', qsLabel, qsActive);
 
-	// 3. Comunicaciones (hardcoded dropdown)
+	// 3. Comunicaciones (desde BD)
 	var commLabel = secondary_navigation ? 'Communications' : 'Comunicaciones';
 	var commActive = url_selected.startsWith('/comunicaciones/') || url_selected.startsWith('/en/comunicaciones/') ? 'add-color' : '';
-	var commItems = secondary_navigation
-		? [
-			{ label: 'News', url: '/en/comunicaciones/noticias' },
-			{ label: 'Press release', url: '/en/comunicaciones/nota-prensa' },
-			{ label: 'Events', url: '/en/comunicaciones/eventos' }
-		]
-		: [
-			{ label: 'Noticias', url: '/comunicaciones/noticias' },
-			{ label: 'Nota de prensa', url: '/comunicaciones/nota-prensa' },
-			{ label: 'Eventos', url: '/comunicaciones/eventos' }
-		];
-	htmlMenu += `
-		<li class="nav-item nav-special ${commActive} dropdown">
-			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${commLabel}</a>
-			<div class="dropdown-menu">${commItems.map(renderDropdownItem).join('')}</div>
-		</li>`;
+	htmlMenu += renderSectionDropdown('comunicaciones', commLabel, commActive);
 
-	// 4. Publicaciones (dropdown)
+	// 4. Publicaciones (desde BD)
 	var pubLabel = secondary_navigation ? 'Publications' : 'Publicaciones';
 	var pubActive = url_selected === '/publicaciones' || url_selected.startsWith('/publicaciones/') || url_selected === '/revistas' || url_selected.startsWith('/revistas/') || url_selected === '/en/publicaciones' || url_selected.startsWith('/en/publicaciones/') || url_selected === '/en/revistas' || url_selected.startsWith('/en/revistas/') ? 'add-color' : '';
-	var pubItems = secondary_navigation
-		? [
-			{ label: 'Publications', url: '/en/publicaciones' },
-			{ label: 'Journals', url: '/en/revistas' }
-		]
-		: [
-			{ label: 'Publicaciones', url: '/publicaciones' },
-			{ label: 'Revistas', url: '/revistas' }
-		];
-	htmlMenu += `
-		<li class="nav-item nav-special ${pubActive} dropdown">
-			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${pubLabel}</a>
-			<div class="dropdown-menu">${pubItems.map(renderDropdownItem).join('')}</div>
-		</li>`;
+	htmlMenu += renderSectionDropdown('publicaciones', pubLabel, pubActive);
 
-	// 5. Aplicaciones (hardcoded dropdown)
+	// 5. Aplicaciones (hardcoded dropdown + subitems BD)
 	var appGhost = findGhost('analítica') || findGhost('analytics');
 	var sratGhost = findGhost('srat');
 	var appLabel = secondary_navigation ? 'Applications' : 'Aplicaciones';
@@ -200,6 +183,21 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 		url_selected === '/en/srat' || url_selected === '/en/srat/' ||
 		url_selected === '/en/datosabiertos' || url_selected.startsWith('/en/datosabiertos/'))
 		? 'add-color' : '';
+	var appSubItems = (menuSubitems || [])
+		.filter(function (m) { return m.seccion === 'aplicaciones' && m.isActive; })
+		.sort(function (a, b) { return (a.orden || 0) - (b.orden || 0); })
+		.map(function (m) {
+			var url = m.url || '#';
+			if (secondary_navigation && url.charAt(0) === '/' && !/^\/en\//.test(url) && !/^https?:/i.test(url)) {
+				url = '/en' + url;
+			}
+			return renderDropdownItem({
+				label: secondary_navigation ? (m.label_en || m.label_es || '') : (m.label_es || m.label_en || ''),
+				url: url,
+				wrap: true,
+				external: m.external
+			});
+		});
 	htmlMenu += `
 		<li class="nav-item nav-special ${appActive} dropdown">
 			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${appLabel}</a>
@@ -207,14 +205,23 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 				<a class="dropdown-item" href="${appGhost ? appGhost.url : '#'}" target="${appGhost ? setTarget(appGhost.label) : '_self'}">${appLabelItem}</a>
 				<a class="dropdown-item" href="${sratUrl}" target="${sratTarget}">${sratLabelItem}</a>
 				<a class="dropdown-item" href="/datosabiertos" target="_self">${secondary_navigation ? 'Open Data' : 'Datos abiertos'}</a>
+				${appSubItems.join('')}
 			</div>
 		</li>`;
 
-	// 6. Normas legales (Ghost)
+	// 6. Normas legales (Ghost como item unico; si hay subitems BD, se muestran como dropdown)
 	var normasGhost = secondary_navigation
 		? findGhostCI('laws') || findGhostCI('Normas legales') || findGhostCI('normas legales')
 		: findGhostCI('Normas legales') || findGhostCI('normas legales') || findGhostCI('laws');
-	if (normasGhost) htmlMenu += renderGhostItem(normasGhost);
+	var normasActive = (url_selected === '/normas-legales' || url_selected.startsWith('/normas-legales/') ||
+		url_selected === '/en/normas-legales' || url_selected.startsWith('/en/normas-legales/'))
+		? 'add-color' : '';
+	var normasDropdown = renderSectionDropdown('normas-legales', secondary_navigation ? 'Legal Standards' : 'Normas legales', normasActive);
+	if (normasDropdown) {
+		htmlMenu += normasDropdown;
+	} else if (normasGhost) {
+		htmlMenu += renderGhostItem(normasGhost);
+	}
 
 	// 7. Regiones (Ghost)
 	var regionGhost = secondary_navigation
@@ -237,30 +244,9 @@ function createMenu(menuList, secondary_navigation, url_selected, programas) {
 			</div>
 		</li>`;
 
-	// 10. Educación Vial (dropdown)
-	if (secondary_navigation) {
-		htmlMenu += `
-			<li class="nav-item nav-special ${getMenuSelected2(url_selected)} dropdown">
-				<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Road Education</a>
-				<div class="dropdown-menu">
-					<a class="dropdown-item" href="/en/webinars" target="_self">Webinars</a>
-					<a class="dropdown-item" href="/en/capacitaciones" target="_self">Trainings</a>
-					<a class="dropdown-item" href="/en/peru-in-world" target="_blank">PERU-IN-world</a>
-					<a class="dropdown-item" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">Virtual Room</a>
-				</div>
-			</li>`;
-	} else {
-		htmlMenu += `
-			<li class="nav-item nav-special ${getMenuSelected2(url_selected)} dropdown">
-				<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Educación Vial</a>
-				<div class="dropdown-menu">
-					<a class="dropdown-item" href="/webinars" target="_self">Webinars</a>
-					<a class="dropdown-item" href="/capacitaciones" target="_self">Capacitaciones</a>
-					<a class="dropdown-item" href="/peru-in-world" target="_blank">peru-in-world</a>
-					<a class="dropdown-item" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">Aula Virtual</a>
-				</div>
-			</li>`;
-	}
+	// 10. Educación Vial (desde BD)
+	var eduLabel = secondary_navigation ? 'Road Education' : 'Educación Vial';
+	htmlMenu += renderSectionDropdown('educacion-vial', eduLabel, getMenuSelected2(url_selected));
 
 	// Resto de items Ghost no incluidos arriba
 	var skip = ['inicio', 'home', 'analítica', 'analytics', 'noticias y eventos', 'news and events', 'srat', 'peru-in-world', 'PERU-IN-world', 'contacto', 'contact', 'Publicaciones', 'publicaciones', 'Publications', 'publications', 'Normas legales', 'normas legales', 'Legal Standards', 'legal standards', 'laws', 'Regiones', 'regiones', 'Regions', 'regions'];

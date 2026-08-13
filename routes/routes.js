@@ -128,7 +128,7 @@ routes.use(async (req, res, next) => {
 		settings: res.locals.settings,
 		footerData: res.locals.footerData
 	});
-	const { data: programasList } = await mysql.getProgramas();
+const { data: programasList } = await mysql.getProgramas();
 	res.locals.programas = (programasList || [])
 		.filter(p => p.estaActivo)
 		.map(p => {
@@ -137,6 +137,8 @@ routes.use(async (req, res, next) => {
 			const url = (p.enlace && p.enlace.trim()) ? p.enlace.trim() : '#';
 			return { id: p.id, titulo, slug, url, descripcion: p.descripcion || '', imagen: p.imagen || '' };
 		});
+	const { data: menuSubitemsRaw } = await mysql.getMenuSubitems();
+	res.locals.menuSubitems = menuSubitemsRaw || [];
 	if (!res.locals.enabledFooter) {
 		res.locals.enabledFooter = true;
 	}

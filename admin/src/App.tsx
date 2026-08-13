@@ -24,6 +24,7 @@ import { Banners } from "./pages/Banners";
 import { YoutubeVideos } from "./pages/YoutubeVideos";
 import { EducacionVial } from "./pages/EducacionVial";
 import { AccesosRapidos } from "./pages/AccesosRapidos";
+import { MenuSitio } from "./pages/MenuSitio";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
+          <Route path="menu-sitio" element={<MenuSitio />} />
           <Route path="cifras" element={<Cifras />} />
           <Route path="pie" element={<PiePagina />} />
           <Route path="mision" element={<MisionVision />} />

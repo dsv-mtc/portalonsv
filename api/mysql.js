@@ -3512,6 +3512,95 @@ async updateTipo({
 		}
 	}
 
+	// --- Subitems del navbar (menu_subitems) ---
+	async getMenuSubitems() {
+		const queryString = `SELECT id, seccion, orden, label_es, label_en, url, external, isActive FROM menu_subitems ORDER BY seccion ASC, orden ASC, id ASC`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: (results || []).map(r => ({
+					id: r.id,
+					seccion: r.seccion,
+					orden: r.orden,
+					label_es: r.label_es || '',
+					label_en: r.label_en || '',
+					url: r.url || '',
+					external: r.external === 1 || r.external === '1',
+					isActive: r.isActive === 1 || r.isActive === '1'
+				}))
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	async createMenuSubitem({ seccion, label_es, label_en, url, external, isActive }) {
+		const allowed = ['quienes-somos', 'comunicaciones', 'publicaciones', 'educacion-vial', 'aplicaciones', 'normas-legales'];
+		const sec = allowed.includes(seccion) ? seccion : 'quienes-somos';
+		const queryString = `
+			INSERT INTO menu_subitems (seccion, orden, label_es, label_en, url, external, isActive)
+			SELECT ?, COALESCE(MAX(orden), 0) + 1, ?, ?, ?, ?, ?
+			FROM (SELECT orden FROM menu_subitems WHERE seccion = ?) s
+		`;
+		try {
+			const result = await this.query(queryString, [
+				sec, label_es || '', label_en || '', url || '',
+				external ? 1 : 0, isActive ? 1 : 0, sec
+			]);
+			return { success: true, data: { insertId: result.insertId }, message: "Se creó el subitem" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el subitem" };
+		}
+	}
+
+	async updateMenuSubitem(id, { label_es, label_en, url, external, isActive }) {
+		const setParts = [];
+		const params = [];
+		if (label_es !== undefined) { setParts.push('label_es = ?'); params.push(label_es || ''); }
+		if (label_en !== undefined) { setParts.push('label_en = ?'); params.push(label_en || ''); }
+		if (url !== undefined) { setParts.push('url = ?'); params.push(url || ''); }
+		if (external !== undefined) { setParts.push('external = ?'); params.push(external ? 1 : 0); }
+		if (isActive !== undefined) { setParts.push('isActive = ?'); params.push(isActive ? 1 : 0); }
+		if (setParts.length === 0) return { success: true, message: "Nada que actualizar" };
+		setParts.push('update_time = CURRENT_TIMESTAMP');
+		params.push(id);
+		const queryString = `UPDATE menu_subitems SET ${setParts.join(', ')} WHERE id = ?`;
+		try {
+			await this.query(queryString, params);
+			return { success: true, message: "Se actualizó el subitem" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el subitem" };
+		}
+	}
+
+	async deleteMenuSubitem(id) {
+		const queryString = `DELETE FROM menu_subitems WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true, message: "Se eliminó el subitem" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el subitem" };
+		}
+	}
+
+	async reorderMenuSubitems(items) {
+		const queryString = `UPDATE menu_subitems SET orden = ? WHERE id = ?`;
+		try {
+			for (const { id, orden } of items) {
+				await this.query(queryString, [orden, id]);
+			}
+			return { success: true, message: "Se actualizó el orden" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el orden" };
+		}
+	}
+
 }
 
 module.exports = DataBase;
