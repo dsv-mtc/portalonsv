@@ -194,6 +194,25 @@ const uploadProgramaMw = multer({
   }
 }).single('image');
 
+// --- Upload middleware para imágenes de accesos rápidos ---
+const accesosAssetsDir = path.join(__dirname, '../../public/assets/accesos');
+if (!fs.existsSync(accesosAssetsDir)) fs.mkdirSync(accesosAssetsDir, { recursive: true });
+
+const uploadAccesoMw = multer({
+  storage: multer.diskStorage({
+    destination: accesosAssetsDir,
+    filename(_req, file, cb) {
+      const ext = path.extname(file.originalname).toLowerCase() || '.png';
+      cb(null, `acceso_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
+
 // --- Upload middleware para redes sociales ---
 const redesAssetsDir = path.join(__dirname, '../../public/assets/redes');
 if (!fs.existsSync(redesAssetsDir)) fs.mkdirSync(redesAssetsDir, { recursive: true });
@@ -390,13 +409,44 @@ router.delete("/componentes/:id", isAuthenticated, async (req, res) => {
 // --- Popup ---
 router.get("/popup", isAuthenticated, async (req, res) => {
   const { data: popup } = await mysql.getPopup();
-  res.json({ success: true, data: { ...popup, estado: popup.estado === '1' } });
+  res.json({ success: true, data: popup });
 });
 
 router.put("/popup", isAuthenticated, async (req, res) => {
-  const { imagen, estado, enlace } = req.body;
-  const result = await mysql.updatePopup({ imagen, estado: estado ? '1' : '0', enlace });
-  const log = await logAction('updated', 'Popup', 1, `Se actualizó el popup`, req);
+  const { estado } = req.body;
+  const result = await mysql.updatePopup({ estado });
+  const log = await logAction('updated', 'Popup', 1, `Se actualizó el estado del popup`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/popup/slides", isAuthenticated, async (req, res) => {
+  const { imagen, enlace } = req.body;
+  const result = await mysql.createPopupSlide({ imagen, enlace });
+  const log = await logAction('created', 'Popup slide', result.data?.insertId, `Se creó un slide del popup`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/popup/order", isAuthenticated, async (req, res) => {
+  const { orden } = req.body;
+  if (!Array.isArray(orden) || orden.length === 0) {
+    return res.status(400).json({ success: false, message: "Orden inválido" });
+  }
+  const result = await mysql.updatePopupOrder(orden);
+  const log = await logAction('updated', 'Popup', 0, 'Se actualizó el orden de los slides del popup', req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/popup/slides/:id", isAuthenticated, async (req, res) => {
+  const { imagen, enlace } = req.body;
+  const result = await mysql.updatePopupSlide(Number(req.params.id), { imagen, enlace });
+  const log = await logAction('updated', 'Popup slide', Number(req.params.id), `Se actualizó un slide del popup`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/popup/slides/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const result = await mysql.deletePopupSlide(id);
+  const log = await logAction('deleted', 'Popup slide', id, `Se eliminó un slide del popup`, req);
   res.json({ ...result, log: log || undefined });
 });
 
@@ -1123,6 +1173,51 @@ router.post("/programas/upload", isAuthenticated, async (req, res) => {
       if (err) return res.status(400).json({ success: false, message: err.message });
       if (!req.file) return res.status(400).json({ success: false, message: "Selecciona una imagen" });
       res.json({ success: true, url: `/assets/programas/${req.file.filename}` });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
+});
+
+// --- Accesos rápidos (tarjetas bajo el mapa de siniestros viales en la home) ---
+router.get("/accesos-rapidos", isAuthenticated, async (req, res) => {
+  const { idioma } = req.query;
+  const { data: accesos } = await mysql.getAccesosRapidos(idioma);
+  res.json({ success: true, data: accesos });
+});
+
+router.post("/accesos-rapidos", isAuthenticated, async (req, res) => {
+  const { idioma, orden, eyebrow, titulo, descripcion, texto_boton, enlace_boton, imagen } = req.body;
+  const result = await mysql.createAccesoRapido({ idioma, orden, eyebrow, titulo, descripcion, texto_boton, enlace_boton, imagen });
+  const log = await logAction('created', 'Acceso rápido', result.data?.insertId, `Se creó el acceso rápido '${titulo || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/accesos-rapidos/:id", isAuthenticated, async (req, res) => {
+  const { eyebrow, titulo, descripcion, texto_boton, enlace_boton, imagen } = req.body;
+  const result = await mysql.updateAccesoRapido(Number(req.params.id), { eyebrow, titulo, descripcion, texto_boton, enlace_boton, imagen });
+  const log = await logAction('updated', 'Acceso rápido', Number(req.params.id), `Se actualizó el acceso rápido '${titulo || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/accesos-rapidos/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { data: es } = await mysql.getAccesosRapidos('ES');
+  const { data: en } = await mysql.getAccesosRapidos('EN');
+  const all = [...(es || []), ...(en || [])];
+  const acceso = all.find(a => a.id === id);
+  const result = await mysql.deleteAccesoRapido(id);
+  const log = await logAction('deleted', 'Acceso rápido', id, `Se eliminó el acceso rápido '${acceso?.titulo || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/accesos-rapidos/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadAccesoMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      if (!req.file) return res.status(400).json({ success: false, message: "Selecciona una imagen" });
+      res.json({ success: true, url: `/assets/accesos/${req.file.filename}` });
     });
   } catch (error) {
     console.error(error);

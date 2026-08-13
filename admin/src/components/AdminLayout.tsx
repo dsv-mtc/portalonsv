@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate, useLocation, Link, matchPath } from "react-router-dom";
-import { LayoutDashboard, PanelBottom, BarChart3, Map, Image as ImageIcon, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel, LayoutGrid, MonitorPlay } from "lucide-react";
+import { LayoutDashboard, PanelBottom, BarChart3, Map, Image as ImageIcon, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel, LayoutGrid, MonitorPlay, GraduationCap, Zap } from "lucide-react";
 import { cn } from "../lib/utils";
 import { OnsvLogo } from "./OnsvLogo";
 import { apiGet } from "../lib/api";
@@ -10,7 +10,9 @@ type NavItem = { label: string; icon: React.ComponentType<{ className?: string }
 const NAV: NavItem[] = [
   { label: "Inicio", icon: LayoutDashboard, to: "/" },
   { label: "Banners", icon: ImageIcon, to: "/banners" },
-  { label: "Misión — Visión", icon: Target, to: "/mision" },
+  { label: "Accesos Rápidos", icon: Zap, to: "/accesos-rapidos" },
+  { label: "YouTube", icon: MonitorPlay, to: "/youtube" },
+  { label: "Quienes Somos", icon: Target, to: "/mision" },
   { label: "Cifras", icon: BarChart3, to: "/cifras" },
   { label: "Regiones", icon: Map, to: "/regiones" },
   { label: "Comunicaciones", icon: Megaphone, children: [{ label: "Noticias", to: "/comunicaciones-noticias" }, { label: "Notas de prensa", to: "/comunicaciones-notas-prensa" }, { label: "Eventos", to: "/comunicaciones" }] },
@@ -18,9 +20,9 @@ const NAV: NavItem[] = [
   { label: "Normas Legales", icon: Gavel, to: "/normas-legales" },
   { label: "Analítica", icon: LineChart, children: [{ label: "Menú", to: "/analitica" }, { label: "Submenú", to: "/analitica-submenu" }] },
   { label: "Popup", icon: Sparkles, to: "/popup" },
-  { label: "YouTube", icon: MonitorPlay, to: "/youtube" },
   { label: "Datos Abiertos", icon: Database, children: [{ label: "Datos", to: "/datos" }, { label: "Categorías", to: "/datos-categorias" }, { label: "Tipos", to: "/datos-tipos" }] },
   { label: "Programas", icon: LayoutGrid, to: "/programas" },
+  { label: "Educación Vial", icon: GraduationCap, to: "/educacion-vial" },
   { label: "Pie de página", icon: PanelBottom, to: "/pie" },
   { label: "Usuarios", icon: Users, to: "/usuarios" },
 ];
@@ -144,7 +146,7 @@ export function AdminLayout() {
             background: "repeating-linear-gradient(45deg, #101a34, #101a34 14px, #16223f 14px, #16223f 28px)",
           }}
         >
-          Portal ONSV · <b className="text-[color:var(--brand-amber)]">Panel Administrativo</b> · MTC
+          <b className="text-[color:var(--brand-amber)]"></b>MINISTERIO DE TRANSPORTES Y COMUNICACIONES
         </div>
 
         <header className="sticky top-0 z-30 bg-white/85 backdrop-blur border-b border-[color:var(--brand-line)]">

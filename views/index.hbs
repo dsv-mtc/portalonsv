@@ -583,31 +583,20 @@
   <div class="container wrap">
     <div class="row" style="transform: translateY(30px);">
       
+      {{#each accesosRapidos}}
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <div class="promo-card" style="background-image: url('/img/fondo-educacion.png');">
+        <div class="promo-card" style="background-image: url('{{imagen}}');">
           <div class="promo-overlay"></div>
           
           <div class="promo-content">
-            <div class="eyebrow">{{t lang "Formación"}}</div>
-            <h3>{{t lang "Educación Vial"}}</h3>
-            <p>{{t lang "Webinars, capacitaciones y aula virtual para fortalecer la cultura de seguridad vial en todo el país."}}</p>
-            <a href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank" class="promo-btn">{{t lang "Ir al aula virtual"}}</a>
+            <div class="eyebrow">{{eyebrow}}</div>
+            <h3>{{titulo}}</h3>
+            <p>{{descripcion}}</p>
+            <a href="{{enlace_boton}}"{{#if external}} target="_blank"{{/if}} class="promo-btn">{{texto_boton}}</a>
           </div>
         </div>
       </div>
-      
-      <div class="col-lg-6">
-        <div class="promo-card" style="background-image: url('/img/fondo-revista.png');">
-          <div class="promo-overlay"></div>
-          
-          <div class="promo-content">
-            <div class="eyebrow">{{t lang "Publicación"}}</div>
-            <h3>{{t lang "Revista Institucional"}}</h3>
-            <p>{{t lang "Análisis, investigación y buenas prácticas de seguridad vial en una edición periódica del Observatorio."}}</p>
-            <a href="/revistas" class="promo-btn">{{t lang "Ver ediciones"}}</a>
-          </div>
-        </div>
-      </div>
+      {{/each}}
       
     </div>
   </div>

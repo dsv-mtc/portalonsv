@@ -1261,17 +1261,29 @@ class DataBase {
 	async getPopup() {
 		const queryString = `
         SELECT
+            id,
+            posicion,
             imagen,
             estado,
             enlace,
             create_time, 
             update_time 
-        FROM popup`;
+        FROM popup
+        ORDER BY posicion ASC, id ASC`;
 		try {
 			const result = await this.query(queryString);
+			const slides = (result || []).map(r => ({
+				id: r.id,
+				posicion: r.posicion,
+				imagen: r.imagen || '',
+				enlace: r.enlace || ''
+			}));
+			const estadoRes = await this.query(`SELECT COALESCE(MAX(estado), 0) AS estado FROM popup`);
+			const estadoVal = estadoRes && estadoRes[0] ? estadoRes[0].estado : 0;
+			const estado = estadoVal === 1 || estadoVal === '1';
 			return {
 				success: true,
-				data: result[0],
+				data: { estado, slides },
 				message: "Obtener el popup"
 			}
 		} catch (error) {
@@ -1283,16 +1295,14 @@ class DataBase {
 		}
 	}
 
-	async updatePopup({ imagen, estado, enlace }) {
+	async updatePopup({ estado }) {
 		const queryString = `
        		UPDATE popup 
           	SET 
-              imagen=?, 
               estado=?,
-              enlace=?,
               update_time=CURRENT_TIMESTAMP`;
 		try {
-			const result = await this.query(queryString, [imagen, estado ? 1 : 0, enlace]);
+			const result = await this.query(queryString, [estado ? 1 : 0]);
 			return {
 				success: true,
 				data: result[0],
@@ -1304,6 +1314,73 @@ class DataBase {
 				success: false,
 				message: "No se pudo actualizar el popup"
 			}
+		}
+	}
+
+	async getPopupSlides() {
+		const queryString = `SELECT id, posicion, imagen, enlace FROM popup ORDER BY posicion ASC, id ASC`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: (result || []).map(r => ({ id: r.id, posicion: r.posicion, imagen: r.imagen || '', enlace: r.enlace || '' })),
+				message: "Obtener slides del popup"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudieron obtener los slides del popup"
+			}
+		}
+	}
+
+	async createPopupSlide({ imagen, enlace }) {
+		const queryString = `
+			INSERT INTO popup (posicion, imagen, enlace)
+			VALUES ((SELECT COALESCE(MAX(posicion), 0) + 1 FROM (SELECT posicion FROM popup) p), ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [imagen || '', enlace || '']);
+			return { success: true, data: { insertId: result.insertId }, message: "Se creó el slide del popup" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el slide del popup" };
+		}
+	}
+
+	async updatePopupSlide(id, { imagen, enlace }) {
+		const queryString = `UPDATE popup SET imagen = ?, enlace = ?, update_time = CURRENT_TIMESTAMP WHERE id = ?`;
+		try {
+			await this.query(queryString, [imagen || '', enlace || '', id]);
+			return { success: true, message: "Se actualizó el slide del popup" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el slide del popup" };
+		}
+	}
+
+	async deletePopupSlide(id) {
+		const queryString = `DELETE FROM popup WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true, message: "Se eliminó el slide del popup" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el slide del popup" };
+		}
+	}
+
+	async updatePopupOrder(items) {
+		const queryString = `UPDATE popup SET posicion = ? WHERE id = ?`;
+		try {
+			for (const { id, posicion } of items) {
+				await this.query(queryString, [posicion, id]);
+			}
+			return { success: true, message: "Se actualizó el orden del popup" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el orden del popup" };
 		}
 	}
 
@@ -3373,6 +3450,65 @@ async updateTipo({
 		} catch (error) {
 			console.error(error);
 			return { success: false, message: "No se pudo eliminar el componente tecnológico" };
+		}
+	}
+
+	async getAccesosRapidos(idioma) {
+		const lang = idioma && String(idioma).toUpperCase() === 'EN' ? 'EN' : 'ES';
+		const queryString = `SELECT id, idioma, orden, eyebrow, titulo, descripcion, texto_boton, enlace_boton, external, imagen FROM accesos_rapidos WHERE idioma = ? ORDER BY orden ASC, id ASC`;
+		try {
+			const results = await this.query(queryString, [lang]);
+			return { success: true, data: results.map(r => ({ ...r, external: r.external === 1 })) };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	async createAccesoRapido({ idioma, orden, eyebrow, titulo, descripcion, texto_boton, enlace_boton, imagen }) {
+		const lang = idioma && String(idioma).toUpperCase() === 'EN' ? 'EN' : 'ES';
+		const external = /^https?:\/\//.test(enlace_boton || '') ? 1 : 0;
+		const queryString = `
+			INSERT INTO accesos_rapidos (idioma, orden, eyebrow, titulo, descripcion, texto_boton, enlace_boton, external, imagen)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [
+				lang, orden || 0, eyebrow || '', titulo || '', descripcion || '', texto_boton || '', enlace_boton || '', external, imagen || ''
+			]);
+			return { success: true, data: result, message: "Se creó el acceso rápido" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el acceso rápido" };
+		}
+	}
+
+	async updateAccesoRapido(id, { eyebrow, titulo, descripcion, texto_boton, enlace_boton, imagen }) {
+		const external = /^https?:\/\//.test(enlace_boton || '') ? 1 : 0;
+		const queryString = `
+			UPDATE accesos_rapidos
+			SET eyebrow = ?, titulo = ?, descripcion = ?, texto_boton = ?, enlace_boton = ?, external = ?, imagen = ?
+			WHERE id = ?
+		`;
+		try {
+			const result = await this.query(queryString, [
+				eyebrow || '', titulo || '', descripcion || '', texto_boton || '', enlace_boton || '', external, imagen || '', id
+			]);
+			return { success: true, data: result, message: "Se actualizó el acceso rápido" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el acceso rápido" };
+		}
+	}
+
+	async deleteAccesoRapido(id) {
+		const queryString = `DELETE FROM accesos_rapidos WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [id]);
+			return { success: true, data: result, message: "Se eliminó el acceso rápido" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el acceso rápido" };
 		}
 	}
 

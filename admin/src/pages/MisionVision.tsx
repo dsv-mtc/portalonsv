@@ -213,7 +213,7 @@ export function MisionVision() {
 
   return (
     <>
-      <PageHeader title="Misión — Visión" eyebrow="Identidad institucional (ES / EN)"
+      <PageHeader title="Quienes Somos" eyebrow="Identidad institucional (ES / EN)"
         description="Define los textos institucionales bilingües del Portal ONSV." />
 
       <div className="mb-5 inline-flex rounded-lg border-2 border-[color:var(--brand-line)] p-1 bg-white">

@@ -10,7 +10,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        {{t lang "Anuncio"}}
+        <span class="popup-modal-title">{{t lang "Anuncio"}}</span>
         <button
           type="button"
           class="close"
@@ -25,8 +25,19 @@
       <div class="modal-body">
         <div class="row campaign_modal_body">
           <div class="col-md-12">
-            <div style="width:100%;">
-              <img class="campaign_modal_img" src="{{pop.imagen}}" alt="nye" />
+            <div style="width:100%; position:relative;" class="popup-carousel" id="popup-carousel">
+              {{#each popupSlides}}
+                <div class="popup-slide{{#if @first}} active{{/if}}" data-enlace="{{enlace}}">
+                  <a href="{{enlace}}" target="_blank">
+                    <img class="campaign_modal_img" src="{{imagen}}" alt="" />
+                  </a>
+                </div>
+              {{/each}}
+
+              {{#if (gt popupSlides.length 1)}}
+                <button type="button" class="popup-arrow popup-arrow-prev" id="popup-prev" aria-label="Anterior">&#10094;</button>
+                <button type="button" class="popup-arrow popup-arrow-next" id="popup-next" aria-label="Siguiente">&#10095;</button>
+              {{/if}}
             </div>
           </div>
           <div class="col-md-12">
@@ -34,9 +45,10 @@
               <div class="nye-link-blk">
                 <div class="ny-btn">
                   <a
-                    href="{{pop.enlace}}"
+                    href="#"
                     target="_blank"
                     class="btn btn-rsp ft-bold"
+                    id="popup-link-leer-mas"
                   >
                     {{t lang "leer más"}}
                   </a>
@@ -45,25 +57,30 @@
                   <ul class="so-links">
                     <li>
                       <a
-                        href="https://www.facebook.com/sharer/sharer.php?u={{pop.enlace}}"
+                        href="{{popupSocial.facebook}}"
                         target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
                       >
                         <i class="fab fa-facebook-f"></i>
                       </a>
                     </li>
                     <li>
                       <a
-                        href="https://twitter.com/intent/tweet?text=ONSV&url={{pop.enlace}}"
+                        href="{{popupSocial.twitter}}"
                         target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Twitter"
                       >
                         <i class="fab fa-twitter"></i>
                       </a>
                     </li>
                     <li>
                       <a
-                        href="whatsapp://send?text={{pop.enlace}}"
-                        data-action="share/whatsapp/share"
-                        target="_blank"
+                        href="#"
+                        role="button"
+                        id="popup-share"
+                        aria-label="Compartir"
                       >
                         <i class="fas fa-share-alt"></i>
                       </a>
@@ -78,3 +95,90 @@
     </div>
   </div>
 </div>
+
+<style>
+  .popup-carousel { overflow: hidden; }
+  .popup-slide { display: none; width: 100%; }
+  .popup-slide.active { display: block; }
+  .popup-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(20, 33, 61, 0.75);
+    color: #fff;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s ease;
+  }
+  .popup-arrow:hover { background: #C8102E; }
+  .popup-arrow-prev { left: 10px; }
+  .popup-arrow-next { right: 10px; }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var modal = document.getElementById("campaign-modal");
+    if (!modal) return;
+
+    var slides = modal.querySelectorAll(".popup-slide");
+    if (slides.length < 1) return;
+
+    var current = 0;
+    var linkLeerMas = document.getElementById("popup-link-leer-mas");
+    var shareBtn = document.getElementById("popup-share");
+
+    function currentEnlace() {
+      var s = slides[current];
+      return s ? s.getAttribute("data-enlace") || "#" : "#";
+    }
+
+    function applyCurrent() {
+      slides.forEach(function (s, i) {
+        s.classList.toggle("active", i === current);
+      });
+      var url = currentEnlace();
+      if (linkLeerMas) linkLeerMas.href = url;
+    }
+
+    if (shareBtn) shareBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var url = currentEnlace();
+      var title = document.title || "ONSV";
+      if (navigator.share) {
+        navigator.share({ title: title, url: url }).catch(function () {});
+      } else {
+        window.open("whatsapp://send?text=" + encodeURIComponent(title + " " + url), "_blank");
+      }
+    });
+
+    var prevBtn = document.getElementById("popup-prev");
+    var nextBtn = document.getElementById("popup-next");
+    if (prevBtn) prevBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      current = (current - 1 + slides.length) % slides.length;
+      applyCurrent();
+    });
+    if (nextBtn) nextBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      current = (current + 1) % slides.length;
+      applyCurrent();
+    });
+
+    // Reinicia al abrir el modal para empezar siempre desde el primer slide
+    if (window.jQuery) {
+      jQuery(modal).on("shown.bs.modal", function () {
+        current = 0;
+        applyCurrent();
+      });
+    }
+    applyCurrent();
+  });
+</script>

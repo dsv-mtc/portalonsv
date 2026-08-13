@@ -13480,10 +13480,22 @@ footer {
     margin-top: 2vh;
 }
 
+#campaign-modal .popup-modal-title {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #14213D;
+    line-height: 1.1;
+}
+
 #campaign-modal .campaign_modal_img {
-    min-height: 200px;
-    -o-object-fit: contain;
-       object-fit: contain;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    -o-object-fit: cover;
+       object-fit: cover;
+    display: block;
 }
 
 .noticias-featured-label {

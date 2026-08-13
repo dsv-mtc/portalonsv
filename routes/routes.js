@@ -185,6 +185,14 @@ routes.get("/", async (req, res) => {
 	});
 
 	const popupData = await mysql.getPopup()
+	const popupSlides = (popupData.data && popupData.data.slides) || []
+	const popupEstado = (popupData.data && popupData.data.estado) ? 1 : 0
+	const redesPopup = res.locals.footerData.redesSociales || []
+	const redUrl = (nombre) => {
+		const r = redesPopup.find(x => String(x.red || '').toLowerCase() === nombre && x.isActive);
+		return r && r.url ? r.url : '#';
+	};
+	const popupSocial = { facebook: redUrl('facebook'), twitter: redUrl('twitter') }
 
 	let youtubeTopVideos = [];
 	try {
@@ -194,6 +202,17 @@ routes.get("/", async (req, res) => {
 		console.error("YouTube top videos:", e.message);
 	}
 
+	const { data: accesosRapidosRaw } = await mysql.getAccesosRapidos(res.locals.lang);
+	const accesosRapidos = (accesosRapidosRaw || []).map(c => ({
+		eyebrow: c.eyebrow,
+		titulo: c.titulo,
+		descripcion: c.descripcion,
+		texto_boton: c.texto_boton,
+		enlace_boton: c.enlace_boton,
+		external: c.external,
+		imagen: c.imagen,
+	}));
+
 	res.render("index", {
 		post3,
 		post2,
@@ -202,9 +221,11 @@ routes.get("/", async (req, res) => {
 		modalinfo,
 		...cifras,
 		componentesCards,
-		popup: popupData.data,
-		popupStatus: JSON.stringify(popupData.data.estado),
-		youtubeTopVideos
+		popupSlides,
+		popupSocial,
+		popupStatus: JSON.stringify(popupEstado),
+		youtubeTopVideos,
+		accesosRapidos
 	});
 })
 
