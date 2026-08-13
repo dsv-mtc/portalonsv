@@ -96,3 +96,20 @@
 		</div>                 
 	</div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".share-card-btn").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var url = btn.getAttribute("data-url") || window.location.href;
+        var title = btn.getAttribute("data-title") || document.title;
+        if (navigator.share) {
+          navigator.share({ title: title, url: url }).catch(function () {});
+        } else {
+          window.open("whatsapp://send?text=" + encodeURIComponent(title + " " + url), "_blank");
+        }
+      });
+    });
+  });
+</script>

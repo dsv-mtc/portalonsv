@@ -110,6 +110,11 @@ routes.use(async (req, res, next) => {
 		redesSociales: redesSociales || [],
 		year: new Date().getFullYear()
 	};
+	const redUrlGlobal = (nombre) => {
+		const r = (redesSociales || []).find(x => String(x.red || '').toLowerCase() === nombre && x.isActive);
+		return r && r.url ? r.url : '#';
+	};
+	res.locals.popupSocial = { facebook: redUrlGlobal('facebook'), twitter: redUrlGlobal('twitter') };
 	if (req.originalUrl.includes("/en/")) {
 		res.locals.secondary_navigation = true;
 		req.url = req.originalUrl.replace("en/", "")
@@ -271,7 +276,7 @@ routes.get("/comunicaciones/noticias/:page?", async (req, res) => {
 	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/noticias', pages_list: getPageNumbers(currentPage, totalPages) };
 	const hasResults = post.length > 0;
 
-	res.render("pages/comunicaciones/noticias", { post, pagination, title, hasResults });
+	res.render("pages/comunicaciones/noticias", { post, pagination, title, hasResults, popupSocial: res.locals.popupSocial });
 })
 
 routes.get("/comunicaciones/nota-prensa/:page?", async (req, res) => {
@@ -291,7 +296,7 @@ routes.get("/comunicaciones/nota-prensa/:page?", async (req, res) => {
 	const pagination = { page: currentPage, pages: totalPages, total: enabledPosts.length, limit: PER_PAGE, next: currentPage < totalPages ? currentPage + 1 : null, prev: currentPage > 1 ? currentPage - 1 : null, url_page: 'comunicaciones/nota-prensa', pages_list: getPageNumbers(currentPage, totalPages) };
 	const hasResults = post.length > 0;
 
-	res.render("pages/comunicaciones/notas-prensa", { post, pagination, title, hasResults });
+	res.render("pages/comunicaciones/notas-prensa", { post, pagination, title, hasResults, popupSocial: res.locals.popupSocial });
 })
 
 routes.get("/comunicaciones/:slug", async (req, res) => {

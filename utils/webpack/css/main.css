@@ -28,7 +28,13 @@ li>.dropdown-menu{
     font-weight:600;
     font-family:"Barlow Semi Condensed",sans-serif;
 }
-.pu-3-extend,.regiones-img-extend{
+.pu-3-extend{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #f1f4f9;
+}
+.regiones-img-extend{
     height: 200px;
 }
 
