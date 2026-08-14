@@ -17,6 +17,24 @@ const dataConnection = {
 
 const client = mysql.createConnection(dataConnection)
 
+function handleDisconnect() {
+        client.on('error', (err) => {
+                logger.error('Error de conexión MySQL: ' + err.message);
+                if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.fatal) {
+                        logger.info('Intentando reconectar a la base de datos...');
+                        client.connect((error) => {
+                                if (error) {
+                                        logger.error('Fallo al reconectar: ' + error.message);
+                                } else {
+                                        logger.info('Reconexión exitosa a la base de datos');
+                                }
+                        });
+                }
+        });
+}
+handleDisconnect();
+
+
 class DataBase {
 	constructor() {
 		this.query = null;
