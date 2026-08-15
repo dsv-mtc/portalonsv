@@ -11,6 +11,7 @@ const { formLimiter } = require("../controllers/rateLimit");
 
 const feedController = new (require("../controllers/feed"));
 const youtubeApi = new (require("../api/gcp/Youtube"));
+const staticRegions = require("../utils/regiones").REGIONES;
 
 
 const mysql = new (require("../api/mysql"));
@@ -42,6 +43,56 @@ function mapYoutubeVideos(videos, { withThumb } = {}) {
 		}
 		return mapped;
 	});
+}
+
+function prepareRelatedPosts(posts, regiones, currentPostId) {
+	const sectionSlugs = new Set(['noticias-eventos', 'notas-prensa', 'publicaciones', 'normas-legales']);
+	const ignoredCategorySlugs = new Set([...sectionSlugs, 'regiones']);
+	const isYear = /^\d{4}$/;
+	const regionSlugs = new Set((regiones || []).map(region => region.slug));
+	const normalizeRegion = value => (value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+	const staticRegionNames = new Map(staticRegions.map(region => [normalizeRegion(region.REGION), region.REGION]));
+
+	return (posts || [])
+		.filter(post => post.id !== currentPostId)
+		.map(post => {
+			const postTags = post.tags || [];
+			const sectionTag = postTags.find(tag => sectionSlugs.has(tag.slug));
+			const regionTag = postTags.find(tag =>
+				regionSlugs.has(tag.slug) || staticRegionNames.has(normalizeRegion(tag.name))
+			);
+			const regionData = regionTag ? regiones.find(region => region.slug === regionTag.slug) : null;
+			const categoryTag = postTags.find(tag =>
+				!ignoredCategorySlugs.has(tag.slug) &&
+				!isYear.test(tag.slug) &&
+				!regionSlugs.has(tag.slug)
+			);
+
+			post.relatedType = sectionTag ? sectionTag.slug : 'publicaciones';
+			post.categoryTag = categoryTag ? categoryTag.name : null;
+			if (!post.categoryTag && post.relatedType === 'normas-legales') {
+				post.categoryTag = 'Norma';
+			}
+			post.regionName = regionData
+				? regionData.value
+				: regionTag
+					? (staticRegionNames.get(normalizeRegion(regionTag.name)) || regionTag.name)
+					: null;
+			if (!post.regionName) {
+				post.regionName = utils.extractDepartmentFromText(post.title, regiones) ||
+					utils.extractDepartmentFromText(post.custom_excerpt || post.excerpt, regiones) ||
+					'Nacional';
+			}
+			if (normalizeRegion(post.regionName) === 'regiones') {
+				post.regionName = utils.extractDepartmentFromText(post.title, regiones) ||
+					utils.extractDepartmentFromText(post.custom_excerpt || post.excerpt, regiones) ||
+					'Regional';
+			}
+			if (post.relatedType === 'noticias-eventos' || post.relatedType === 'notas-prensa') {
+				post.categoryTag = post.regionName || 'Noticia';
+			}
+			return post;
+		});
 }
 
 function getPageNumbers(current, total, delta = 3) {
@@ -392,6 +443,7 @@ routes.get("/comunicaciones/:slug", async (req, res) => {
 routes.get("/post/:slug", async (req, res) => {
 	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	const post = await apiGhost.getPost(req.params.slug);
+	if (!post) return res.redirect('/');
 	if (post) {
 		const allDisabled = await Promise.all([
 			mysql.getDisabledGhostIds('noticias'),
@@ -402,8 +454,12 @@ routes.get("/post/:slug", async (req, res) => {
 		const disabledIds = allDisabled.flatMap(r => r.data || []);
 		if (disabledIds.includes(post.id)) return res.redirect('/');
 	}
-	const primary_tag = `tag:${post.primary_tag.slug}`
-	const postsRelatives = await apiGhost.getPosts(4, "tags,authors", primary_tag, "published_at DESC");
+	const primary_tag = post.primary_tag ? `tag:${post.primary_tag.slug}` : null;
+	const rawRelatedPosts = primary_tag
+		? await apiGhost.getPosts(5, "tags,authors", primary_tag, "published_at DESC")
+		: [];
+	const { data: regiones } = await mysql.getRegiones();
+	const postsRelatives = prepareRelatedPosts(rawRelatedPosts, regiones || [], post.id).slice(0, 4);
 
 	let html = post.html;
 

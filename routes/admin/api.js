@@ -1380,6 +1380,16 @@ router.post("/menu-subitems", isAuthenticated, async (req, res) => {
   res.json({ ...result, log: log || undefined });
 });
 
+router.put("/menu-subitems/order", isAuthenticated, async (req, res) => {
+  const { orden } = req.body || {};
+  if (!Array.isArray(orden) || orden.length === 0) {
+    return res.status(400).json({ success: false, message: "Orden inválido" });
+  }
+  const result = await mysql.reorderMenuSubitems(orden);
+  const log = await logAction('updated', 'Subitem menú', 0, 'Se actualizó el orden del menú', req);
+  res.json({ ...result, log: log || undefined });
+});
+
 router.put("/menu-subitems/:id", isAuthenticated, async (req, res) => {
   const { label_es, label_en, url, external, isActive } = req.body || {};
   const result = await mysql.updateMenuSubitem(Number(req.params.id), { label_es, label_en, url, external, isActive });
@@ -1391,16 +1401,6 @@ router.delete("/menu-subitems/:id", isAuthenticated, async (req, res) => {
   const id = Number(req.params.id);
   const result = await mysql.deleteMenuSubitem(id);
   const log = await logAction('deleted', 'Subitem menú', id, `Se eliminó un subitem del menú`, req);
-  res.json({ ...result, log: log || undefined });
-});
-
-router.put("/menu-subitems/order", isAuthenticated, async (req, res) => {
-  const { orden } = req.body || {};
-  if (!Array.isArray(orden) || orden.length === 0) {
-    return res.status(400).json({ success: false, message: "Orden inválido" });
-  }
-  const result = await mysql.reorderMenuSubitems(orden);
-  const log = await logAction('updated', 'Subitem menú', 0, 'Se actualizó el orden del menú', req);
   res.json({ ...result, log: log || undefined });
 });
 

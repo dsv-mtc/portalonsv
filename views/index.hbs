@@ -667,26 +667,22 @@
   .sc-footer .btn-yt { background: #FF0000; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; text-transform: uppercase; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; }
   .sc-footer .btn-yt:hover { background: #cc0000; }
 
-  .x-profile-card { display: flex; flex-direction: column; height: 100%; min-height: 400px; background: #fff; }
-  .x-profile-banner { position: relative; height: 90px; background: linear-gradient(120deg, #14213D 0%, #14213D 55%, #C8102E 100%); flex-shrink: 0; overflow: hidden; }
-  .x-profile-banner::after { content: ""; position: absolute; right: -20px; top: -30px; width: 140px; height: 140px; border: 14px solid rgba(255,255,255,.14); border-radius: 50%; }
-  .x-profile-avatar-wrap { width: 68px; height: 68px; border-radius: 50%; background: #000; border: 3px solid #fff; display: grid; place-items: center; margin: -34px 0 0 20px; position: relative; z-index: 2; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
-  .x-profile-avatar-wrap svg { width: 30px; height: 30px; fill: #fff; }
-  .x-profile-body { padding: 10px 20px 20px; flex: 1; display: flex; flex-direction: column; }
-  .x-profile-body h5 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 19px; color: var(--navy); text-transform: uppercase; margin: 0 0 1px 0; line-height: 1.15; }
-  .x-profile-body .handle { font-size: 13px; color: #64748b; font-weight: 500; margin-bottom: 10px; }
-  .x-profile-body .bio { font-size: 13.5px; color: #334155; line-height: 1.45; margin: 0 0 12px 0; }
-  .x-profile-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: #64748b; margin-bottom: 12px; }
-  .x-profile-meta span { display: inline-flex; align-items: center; gap: 5px; }
-  .x-profile-meta svg { width: 14px; height: 14px; fill: #64748b; flex-shrink: 0; }
-  .x-profile-meta a { color: var(--blue-2); text-decoration: none; font-weight: 600; }
-  .x-profile-meta a:hover { text-decoration: underline; }
-  .x-profile-stats { display: flex; gap: 18px; font-size: 13px; color: var(--navy); margin-bottom: 16px; }
-  .x-profile-stats strong { font-weight: 800; }
-  .x-profile-stats .stat-label { color: #64748b; font-weight: 500; }
+.x-timeline-wrap { min-height: 400px; max-height: 500px; overflow: auto; padding: 0 12px; background: #fff; }
+  .x-timeline-wrap .twitter-timeline { width: 100% !important; }
+
+  .x-fallback { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; padding: 24px; text-align: center; background: #fff; }
+  .x-fallback.active { display: flex; }
+  .x-fallback .x-fallback-icon { width: 64px; height: 64px; border-radius: 50%; background: #000; display: grid; place-items: center; margin-bottom: 16px; }
+  .x-fallback .x-fallback-icon svg { width: 32px; height: 32px; fill: #fff; }
+  .x-fallback h5 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 20px; color: var(--navy); text-transform: uppercase; margin: 0 0 4px 0; }
+  .x-fallback .x-fallback-handle { font-size: 14px; color: #64748b; font-weight: 500; margin-bottom: 10px; }
+  .x-fallback .x-fallback-bio { font-size: 13.5px; color: #334155; line-height: 1.45; margin: 0 0 18px 0; max-width: 320px; }
+  .x-fallback .x-fallback-btn { background: #000; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; font-family: "Barlow Semi Condensed", sans-serif; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+  .x-fallback .x-fallback-btn:hover { background: #222; }
+  .x-fallback .x-fallback-note { font-size: 12px; color: #94a3b8; margin-top: 12px; }
 
   @media(max-width: 991px) { .yt-list { width: 100%; border-left: none; border-top: 1px solid var(--line); } }
-  @media(max-width: 767px) { .sc-body { min-height: auto; } .x-profile-card { min-height: auto; } .yt-main { min-height: 220px; min-width: auto; } .sc-tabs { gap: 6px; } .sc-tab { width: 36px; height: 36px; } .sc-panel[data-panel="fb"] .fb-page { margin-top: -80px; } }
+  @media(max-width: 767px) { .sc-body { min-height: auto; } .x-timeline-wrap { min-height: 360px; } .yt-main { min-height: 220px; min-width: auto; } .sc-tabs { gap: 6px; } .sc-tab { width: 36px; height: 36px; } .sc-panel[data-panel="fb"] .fb-page { margin-top: -80px; } }
 
   .yt-main iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 3; }
   .yt-main .yt-empty { color: #fff; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 16px; z-index: 2; text-align: center; padding: 20px; }
@@ -729,31 +725,19 @@
             <div class="sc-panel active" data-panel="fb">
               <div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-height="500" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
             </div>
-            <div class="sc-panel" data-panel="x" style="display:none;">
-              <div class="x-profile-card">
-                <div class="x-profile-banner"></div>
-                <div class="x-profile-avatar-wrap">
-                  <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm-2 5.2a2.2 2.2 0 1 1 4.4 0 2.2 2.2 0 0 1-4.4 0zM4 21c0-4.4 3.6-7 8-7s8 2.6 8 7v.5H4V21z"/></svg>
+<div class="sc-panel" data-panel="x" style="display:none;">
+              <div class="x-timeline-wrap">
+                <a class="twitter-timeline" data-height="500" data-tweet-limit="5" data-dnt="true" data-theme="light" href="https://twitter.com/onsvPE?ref_src=twsrc%5Etfw">Publicaciones de @onsvPE</a>
+              </div>
+              <div class="x-fallback" id="xFallback">
+                <div class="x-fallback-icon">
+                  <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/></svg>
                 </div>
-                <div class="x-profile-body">
-                  <h5>{{t lang "Observatorio Nacional de Seguridad Vial"}}</h5>
-                  <div class="handle">@onsvPE</div>
-                  <p class="bio">Observatorio Nacional de Seguridad Vial entidad del Ministerio de Transportes y Comunicaciones. #CompartamosElCamino #ONSV</p>
-                  <div class="x-profile-meta">
-                    <span>
-                      <svg viewBox="0 0 24 24"><path d="M3.9 12a4.1 4.1 0 0 1 4.1-4.1h4v1.6H8a2.5 2.5 0 0 0 0 5h4V16H8A4.1 4.1 0 0 1 3.9 12zm6.1.8v-1.6h4v1.6h-4zM16 7.9h-4v1.6h4a2.5 2.5 0 0 1 0 5h-4V16h4a4.1 4.1 0 0 0 0-8.1z"/></svg>
-                      <a href="https://www.onsv.gob.pe/" target="_blank">onsv.gob.pe</a>
-                    </span>
-                    <span>
-                      <svg viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8v10H5V10h14z"/></svg>
-                      {{t lang "Se unió en enero de 2021"}}
-                    </span>
-                  </div>
-                  <div class="x-profile-stats">
-                    <span><strong>43</strong> <span class="stat-label">{{t lang "Siguiendo"}}</span></span>
-                    <span><strong>1,000</strong> <span class="stat-label">{{t lang "Seguidores"}}</span></span>
-                  </div>
-                </div>
+                <h5>{{t lang "Observatorio Nacional de Seguridad Vial"}}</h5>
+                <div class="x-fallback-handle">@onsvPE</div>
+                <p class="x-fallback-bio">{{t lang "Entidad del Ministerio de Transportes y Comunicaciones. #CompartamosElCamino #ONSV"}}</p>
+                <a href="https://x.com/onsvPE" target="_blank" rel="noopener noreferrer" class="x-fallback-btn">{{t lang "Ver publicaciones en X"}} <i class="fal fa-long-arrow-right"></i></a>
+                <p class="x-fallback-note">{{t lang "Si el feed no carga, visita nuestro perfil directamente."}}</p>
               </div>
             </div>
           </div>
@@ -842,6 +826,108 @@
     var handleEl = document.getElementById("scNetworkHandle");
     var footerLink = document.getElementById("scFooterLink");
     var footerBtn = document.getElementById("scFooterBtn");
+var xTimelineLoading = false;
+    var xFallbackTimer = null;
+
+    function showXFallback() {
+      var xPanel = scCard.querySelector('.sc-panel[data-panel="x"]');
+      var xWrap = xPanel ? xPanel.querySelector('.x-timeline-wrap') : null;
+      var xFallback = document.getElementById('xFallback');
+      var hasIframe = xWrap && xWrap.querySelector('iframe');
+      if (!hasIframe && xFallback) {
+        if (xWrap) xWrap.style.display = 'none';
+        xFallback.classList.add('active');
+      }
+    }
+
+    function checkXTimelineLoaded() {
+      var xPanel = scCard.querySelector('.sc-panel[data-panel="x"]');
+      var xWrap = xPanel ? xPanel.querySelector('.x-timeline-wrap') : null;
+      var xFallback = document.getElementById('xFallback');
+      if (!xWrap || !xFallback) return;
+      var iframe = xWrap.querySelector('iframe');
+      if (iframe) {
+        var timer = 0;
+        var checkIframeContent = setInterval(function () {
+          timer += 500;
+          var fw = iframe.offsetWidth;
+          var fh = iframe.offsetHeight;
+          if ((fw > 50 && fh > 50) || timer >= 8000) {
+            clearInterval(checkIframeContent);
+            if (fw <= 50 || fh <= 50) {
+              if (xWrap) xWrap.style.display = 'none';
+              xFallback.classList.add('active');
+            }
+          }
+        }, 500);
+      } else {
+        var fallbackTimer = 0;
+        var checkNoIframe = setInterval(function () {
+          fallbackTimer += 500;
+          if (xWrap.querySelector('iframe')) {
+            clearInterval(checkNoIframe);
+          } else if (fallbackTimer >= 6000) {
+            clearInterval(checkNoIframe);
+            if (xWrap) xWrap.style.display = 'none';
+            xFallback.classList.add('active');
+          }
+        }, 500);
+      }
+    }
+
+    function loadXTimeline() {
+      var xPanel = scCard.querySelector('.sc-panel[data-panel="x"]');
+      if (!xPanel || xTimelineLoading) return;
+      var xWrap = xPanel.querySelector('.x-timeline-wrap');
+      var xFallback = document.getElementById('xFallback');
+      if (xFallback) xFallback.classList.remove('active');
+      if (xWrap) xWrap.style.display = '';
+      if (xWrap && xWrap.querySelector('iframe')) { checkXTimelineLoaded(); return; }
+      xTimelineLoading = true;
+
+      var render = function () {
+        if (window.twttr && window.twttr.widgets) {
+          window.twttr.widgets.load(xPanel).then(function () {
+            xTimelineLoading = false;
+            checkXTimelineLoaded();
+          }).catch(function () {
+            xTimelineLoading = false;
+            showXFallback();
+          });
+        } else {
+          xTimelineLoading = false;
+          showXFallback();
+        }
+      };
+
+      if (window.twttr && window.twttr.ready) {
+        window.twttr.ready(render);
+        return;
+      }
+
+      var script = document.getElementById('x-widgets-script');
+      if (!script) {
+        script = document.createElement('script');
+        script.id = 'x-widgets-script';
+        script.async = true;
+        script.charset = 'utf-8';
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.onload = function () {
+          if (window.twttr && window.twttr.ready) window.twttr.ready(render);
+          else render();
+        };
+        script.onerror = function () {
+          xTimelineLoading = false;
+          showXFallback();
+        };
+        document.head.appendChild(script);
+      } else {
+        script.addEventListener('load', function () {
+          if (window.twttr && window.twttr.ready) window.twttr.ready(render);
+          else render();
+        }, { once: true });
+      }
+    }
 
     var isEnSocial = location.href.includes('/en/');
     var redes = {
@@ -871,6 +957,10 @@
         if (destino === "fb" && window.FB && FB.XFBML) {
           var fbPanel = scCard.querySelector('.sc-panel[data-panel="fb"]');
           if (fbPanel) FB.XFBML.parse(fbPanel);
+        }
+
+        if (destino === "x") {
+          loadXTimeline();
         }
 
         var data = redes[destino];
