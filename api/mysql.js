@@ -723,17 +723,26 @@ class DataBase {
 				descripcion,
 				horario
 			FROM footer
+			ORDER BY (seccion IS NOT NULL AND seccion <> '') ASC
+			LIMIT 1
 		`;
 		try {
 			const results = await this.query(queryString);
+			const sectionResults = await this.query(`
+				SELECT seccion, enlace
+				FROM footer
+				WHERE seccion IS NOT NULL AND seccion <> ''
+				ORDER BY seccion ASC
+			`);
 			return {
 				success: true,
 				data: {
-					telefono: results[0].telefono,
-					email: results[0].email,
-					direccion: results[0].direccion,
-					descripcion: results[0].descripcion,
-					horario: results[0].horario
+					telefono: results[0]?.telefono || '',
+					email: results[0]?.email || '',
+					direccion: results[0]?.direccion || '',
+					descripcion: results[0]?.descripcion || '',
+					horario: results[0]?.horario || '',
+					secciones: sectionResults.map(row => ({ titulo: row.seccion, enlace: row.enlace }))
 				}
 			}
 		} catch (error) {
@@ -744,41 +753,46 @@ class DataBase {
 			}
 		}
 	}
-
 	async updateFooterData({
 		telefono,
 		email,
 		direccion,
 		descripcion,
-		horario
+		horario,
+		secciones
 	}) {
-		const queryString = `
-			UPDATE footer 
-				SET 
-					telefono=?,
-					email=?,
-					direccion=?,
-					descripcion=?,
-					horario=?
-		`;
 		try {
-			const result = await this.query(queryString, [telefono, email, direccion, descripcion, horario]);
+			const result = await this.query(`
+				UPDATE footer
+				SET telefono=?, email=?, direccion=?, descripcion=?, horario=?
+				WHERE seccion IS NULL OR seccion = ''
+				LIMIT 1
+			`, [telefono, email, direccion, descripcion, horario]);
+			await this.query(`DELETE FROM footer WHERE seccion IS NOT NULL AND seccion <> ''`);
+			for (const section of (Array.isArray(secciones) ? secciones : [])) {
+				if (!section.titulo?.trim() || !section.enlace?.trim()) continue;
+				await this.query(
+					`INSERT INTO footer (seccion, enlace) VALUES (?, ?)`,
+					[section.titulo.trim(), section.enlace.trim()]
+				);
+			}
 			return {
 				success: true,
 				data: result,
 				message: "Se actualizaron los datos"
 
 			}
+
 		} catch (error) {
 			console.error(error);
 			return {
 				success: false,
 				message: "No se pudo actualizar los datos"
 			}
+
 		}
 
 	}
-
 	async getContenidoQuienesSomos(secondary_navigation) {
 		const idioma = secondary_navigation ? 'EN' : 'ES';
 		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4, seccion5, seccion6, seccion7, seccion8, seccion9, seccion10, seccion11, seccion12, seccion13, seccion14, seccion15, seccion16, seccion17, seccion18, seccion19, seccion20, seccion21, seccion22, seccion23, seccion24, seccion25, seccion26, seccion27, seccion28, seccion29, seccion30, seccion31, seccion32, seccion33, seccion34, seccion35, seccion36, seccion37, seccion38, seccion39, seccion40, seccion41, seccion42, seccion43, seccion44 FROM pagina WHERE idioma LIKE ?`;

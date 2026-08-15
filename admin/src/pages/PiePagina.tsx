@@ -7,6 +7,8 @@ import { apiGet, apiPut, apiPost, apiDelete, apiUpload } from "../lib/api";
 
 type Tab = "informacion" | "redes";
 type RedSocial = { id: number; red: string; url: string; imagen_url: string; isActive: boolean };
+type FooterSection = { titulo: string; enlace: string };
+type FooterData = { telefono: string; direccion: string; email: string; descripcion: string; horario: string; secciones: FooterSection[] };
 
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
 
@@ -38,7 +40,7 @@ const Field = ({ label, value, icon, field, onFieldChange, multiline }: Props) =
 
 export function PiePagina() {
   const [tab, setTab] = useState<Tab>("informacion");
-  const [footer, setFooter] = useState({ telefono: "", direccion: "", email: "", descripcion: "", horario: "" });
+  const [footer, setFooter] = useState<FooterData>({ telefono: "", direccion: "", email: "", descripcion: "", horario: "", secciones: [] });
   const [redes, setRedes] = useState<RedSocial[]>([]);
   const [redForm, setRedForm] = useState({ red: "", url: "", imagen_url: "", isActive: true });
   const [redEditingId, setRedEditingId] = useState<number | null>(null);
@@ -54,7 +56,7 @@ export function PiePagina() {
   const paginatedRedes = redes.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
   useEffect(() => {
-    apiGet<{ telefono: string; direccion: string; email: string; descripcion: string; horario: string }>("/footer").then(setFooter).catch(() => {});
+    apiGet<FooterData>("/footer").then(setFooter).catch(() => {});
     apiGet<RedSocial[]>("/redes-sociales").then(setRedes).catch(() => {});
   }, []);
 
@@ -65,6 +67,14 @@ export function PiePagina() {
   }, [msg]);
 
   const handleFieldChange = (field: string, value: string) => setFooter(p => ({ ...p, [field]: value }));
+
+  const updateSection = (index: number, patch: Partial<FooterSection>) => {
+    setFooter(prev => ({ ...prev, secciones: prev.secciones.map((section, i) => i === index ? { ...section, ...patch } : section) }));
+  };
+
+  const addSection = () => setFooter(prev => ({ ...prev, secciones: [...prev.secciones, { titulo: "", enlace: "" }] }));
+
+  const removeSection = (index: number) => setFooter(prev => ({ ...prev, secciones: prev.secciones.filter((_, i) => i !== index) }));
 
   const handleFooterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,6 +180,25 @@ export function PiePagina() {
               <Field label="Correo" value={footer.email} icon={<Mail className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="email" onFieldChange={handleFieldChange} />
               <Field label="Horario de atención" value={footer.horario} icon={<Clock className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="horario" onFieldChange={handleFieldChange} />
               <Field label="Descripción" value={footer.descripcion} icon={<AlignLeft className="w-4 h-4" style={{ color: "var(--brand-red)" }} />} field="descripcion" onFieldChange={handleFieldChange} multiline />
+            </div>
+            <div className="mt-6 rounded-xl border-2 p-4" style={{ borderColor: "var(--brand-line)", background: "#fbfcfe" }}>
+              <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <h3 className="text-[13px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>Secciones del footer</h3>
+                  <p className="mt-1 text-[12px]" style={{ color: "var(--muted-foreground)" }}>Administra el nombre y enlace que aparecerán en el pie de página.</p>
+                </div>
+                <BrandButton type="button" variant="outline" onClick={addSection}><Plus className="w-4 h-4" /> Agregar enlace</BrandButton>
+              </div>
+              <div className="space-y-3">
+                {footer.secciones.length === 0 && <p className="rounded-lg border border-dashed p-4 text-center text-[13px]" style={{ borderColor: "var(--brand-line)", color: "var(--muted-foreground)" }}>No hay enlaces configurados. Se mostrarán los enlaces predeterminados en el sitio.</p>}
+                {footer.secciones.map((section, index) => (
+                  <div key={index} className="grid sm:grid-cols-[1fr_1.4fr_auto] gap-3 items-end">
+                    <label className="block"><span className="text-[11px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>Nombre</span><input value={section.titulo} onChange={e => updateSection(index, { titulo: e.target.value })} placeholder="Ej. Publicaciones" className={inputCls} style={{ borderColor: "var(--brand-line)" }} /></label>
+                    <label className="block"><span className="text-[11px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>Enlace</span><div className="mt-1 flex items-center gap-2 rounded-lg border-2 h-11 px-3 bg-white" style={{ borderColor: "var(--brand-line)" }}><Link2 className="w-4 h-4" style={{ color: "var(--brand-red)" }} /><input value={section.enlace} onChange={e => updateSection(index, { enlace: e.target.value })} placeholder="/publicaciones o https://..." className="flex-1 bg-transparent outline-none text-[13px]" /></div></label>
+                    <button type="button" onClick={() => removeSection(index)} aria-label={`Eliminar ${section.titulo || "enlace"}`} className="h-11 w-11 rounded-lg grid place-items-center hover:bg-[#fdecec] transition" style={{ color: "var(--brand-red)" }}><Trash2 className="w-4 h-4" /></button>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="mt-6 flex justify-end"><BrandButton type="submit"><Send className="w-4 h-4" /> Enviar Información</BrandButton></div>
           </Panel>

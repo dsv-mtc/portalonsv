@@ -296,10 +296,21 @@ router.get("/footer", isAuthenticated, async (req, res) => {
 });
 
 router.put("/footer", isAuthenticated, async (req, res) => {
-  const { telefono, email, direccion, descripcion, horario } = req.body;
-  const result = await mysql.updateFooterData({ telefono, email, direccion, descripcion, horario });
+  const { telefono, email, direccion, descripcion, horario, secciones } = req.body;
+  const result = await mysql.updateFooterData({ telefono, email, direccion, descripcion, horario, secciones });
   const log = await logAction('updated', 'Footer', 1, `Se actualizó el pie de página`, req);
   res.json({ ...result, log: log || undefined });
+});
+
+// --- Admin: Secciones del Footer ---
+router.get("/footer-secciones", isAuthenticated, async (req, res) => {
+  try {
+    const { data: footer } = await mysql.getFooterData();
+    res.render('../views/admin/footer-secciones', { seccionesData: footer });
+  } catch (error) {
+    console.error('Error al cargar secciones del footer:', error);
+    res.status(500).json({ success: false, message: 'Error al cargar las secciones' });
+  }
 });
 
 // --- Cifras ---
