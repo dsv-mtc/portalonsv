@@ -271,6 +271,7 @@ function getMapFromForm(){
 				document.getElementById('nombre').textContent=response.regionData.NOMBRE;
 				document.getElementById('telefono').textContent=response.regionData.TELEFONO;
 				document.getElementById('email').textContent=response.regionData['E-MAIL'];
+				setPageLink(response.regionData.WEBSITE);
 				setImage(response.regionData.REGION, response.regionData.imageUrl);
 				showRegionLabel(response.regionData.REGION);
 				updateRegionName(response.regionData.REGION);
@@ -300,6 +301,7 @@ function getMap(){
 			document.getElementById('nombre').textContent=response.regionData.NOMBRE || '';
 			document.getElementById('telefono').textContent=response.regionData.TELEFONO || '';
 			document.getElementById('email').textContent=response.regionData['E-MAIL'] || '';
+			setPageLink(response.regionData.WEBSITE || '');
 			setImage(response.regionData.REGION || 'Lima', response.regionData.imageUrl);
 			showRegionLabel('Lima');
 			updateRegionName('Lima');
@@ -322,6 +324,7 @@ function getMap(){
 				document.getElementById('nombre').textContent=response.regionData.NOMBRE;
 				document.getElementById('telefono').textContent=response.regionData.TELEFONO;
 				document.getElementById('email').textContent=response.regionData['E-MAIL'];
+				setPageLink(response.regionData.WEBSITE);
 				setImage(response.regionData.REGION, response.regionData.imageUrl);
 				document.getElementById('noti').innerHTML=response.template;
 				$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
@@ -386,9 +389,21 @@ function setImage(region, imageUrl){
 	const urlConCacheBuster = `${base}?v=${timeStamp}`;
 	imgRegion.innerHTML = `<img src="${urlConCacheBuster}" alt="${region || 'Lima'}" onerror="this.onerror=null;this.style.display='none'">`;
 }
+
+function setPageLink(website){
+	const pageLinkEl = document.getElementById('pageLink');
+	if(!pageLinkEl) return;
+	if(website && website !== '#'){
+		pageLinkEl.setAttribute('href', website);
+		pageLinkEl.textContent = website;
+	}else{
+		pageLinkEl.removeAttribute('href');
+		pageLinkEl.textContent = '';
+	}
+}
 /**
  * @description: Función encargada de desplegar el modal de suscripción al portal; valida el campo de correo y envía el mismo para 
- * su suscripción
+ *  su suscripción
  */
 function modal(){
 	$("#suscriber-modal-form").on("hidden.bs.modal",function(event){
