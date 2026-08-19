@@ -6,6 +6,8 @@ const path = require('path');
 const fs = require('fs');
 const { loginLimiter } = require("../../controllers/rateLimit");
 
+const { subirArchivoAFtp } = require('../../utils/ftpService');
+
 const mysql = new (require("../../api/mysql"));
 mysql.setQuery();
 
@@ -876,16 +878,39 @@ router.delete("/datos-abiertos/:id", isAuthenticated, async (req, res) => {
   res.json({ ...result, log: log || undefined });
 });
 
-router.post("/datos-abiertos/upload", isAuthenticated, async (req, res) => {
-  try {
-    uploadDatosMw(req, res, (err) => {
-      if (err) return res.status(400).json({ success: false, message: err.message });
-      res.json({ success: true, url: `/assets/datos/${req.file.filename}` });
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Error del servidor" });
-  }
+router.post("/datos-abiertos/upload", isAuthenticated, (req, res) => {
+  // Nota: Multer sigue procesando el archivo, pero lo usaremos de "puente" temporal
+  uploadDatosMw(req, res, async (err) => {
+    if (err) return res.status(400).json({ success: false, message: err.message });
+    if (!req.file) return res.status(400).json({ success: false, message: "No se recibió ningún archivo" });
+
+    try {
+      const localPath = req.file.path;
+      const fileName = req.file.filename; // Nombre generado
+
+      // 1. Subir el archivo al servidor FTP del MTC
+      await subirArchivoAFtp(localPath, fileName);
+
+      // 2. Borrar el archivo local. ¡Esto mantiene el servidor limpio y liviano!
+      if (fs.existsSync(localPath)) {
+        fs.unlinkSync(localPath);
+      }
+
+      const baseUrl = process.env.FTP_PUBLIC_URL || "";
+      const finalUrl = baseUrl ? `${baseUrl}/${fileName}` : fileName;
+
+      res.json({ success: true, url: finalUrl });
+
+    } catch (error) {
+      console.error("Error al subir a FTP:", error);
+      
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      res.status(500).json({ success: false, message: "Error al comunicarse con el servidor FTP del MTC" });
+    }
+  });
 });
 
 // --- Datos Abiertos - Categorías ---

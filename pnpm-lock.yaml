@@ -35,6 +35,9 @@ importers:
       base64url:
         specifier: 3.0.1
         version: 3.0.1
+      basic-ftp:
+        specifier: ^6.2.0
+        version: 6.2.0
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -1110,6 +1113,10 @@ packages:
   basic-auth@2.0.1:
     resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
     engines: {node: '>= 0.8'}
+
+  basic-ftp@6.2.0:
+    resolution: {integrity: sha512-H8eLjhoYPbOI717FLP8fGE7XInkMI7Ucj/ft0fp1avABtSiV5Bb2kYzScnOqlvJZs/KJZypr9Mp5zJmhaPFAEg==}
+    engines: {node: '>=10.0.0'}
 
   bcryptjs@3.0.3:
     resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
@@ -4975,6 +4982,8 @@ snapshots:
   basic-auth@2.0.1:
     dependencies:
       safe-buffer: 5.1.2
+
+  basic-ftp@6.2.0: {}
 
   bcryptjs@3.0.3: {}
 
