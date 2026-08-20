@@ -13,7 +13,7 @@
   justify-content: flex-start;
   gap: 1rem;
 
-  background-color: #ee1d27;
+  background-color: #C8102E;
   color: #fff;
 }
 
@@ -39,7 +39,7 @@
 
 .sidebar-menu-item:hover {
   background-color: #fff;
-  color: #ee1d27;
+  color: #C8102E;
   box-shadow: hsla(0, 0%, 100%, 0.844) 0 0 5px;
 }
 
@@ -63,7 +63,7 @@
 
 .sidebar-footer:hover {
   background-color: #fff;
-  color: #ee1d27;
+  color: #C8102E;
   box-shadow: hsla(0, 0%, 100%, 0.844) 0 0 5px;
 }
 

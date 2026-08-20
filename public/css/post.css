@@ -93,6 +93,9 @@
 	object-fit: cover;
 }
 
+.post-section .content .related-posts .new-card .card-content { flex: 1; }
+.post-section .content .related-posts .new-card .card-content .btn-rsp { margin-top: auto; }
+
 .post-section .related-posts .card {
 	border: 0;
 }
@@ -203,7 +206,7 @@
 }
 
 .images-list .image.active{
-	border: 3px solid #ee1d27;
+	border: 3px solid #C8102E;
 }
 
 .images-list .image img {

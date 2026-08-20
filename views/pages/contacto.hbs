@@ -1,78 +1,64 @@
-<section class="rsp-conf-section rsp-wrap">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <p class="text-justify">
-                    {{t lang "contact-intro"}}
-                </p>
-            </div>
-            {{#if info}}
-                {{#each info}}
-                    <div class="col-12">
-                        <div class="{{style}}" role="alert">
-                            <strong>{{message}}</strong> 
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    </div>
-                {{/each}}
-            {{/if}}
-            <div class="col-md-12">
-                <!--Formulario -->
-                <div class="conf-blk">
-                    <h3 class="rsp-title ft-bold mb-4 text-center">{{t lang "Contacte"}}</h3>
-                    <form action="/contacto" method="POST" class="needs-validation" novalidate >
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <input type="text" hidden class="form-control" name="lang" id="lang" value="{{lang}}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-5">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="{{t lang "Nombre"}}" required>
-                                    <small class="invalid-feedback">{{t lang "ingrese_nombre"}}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-5">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" name="mail" id="mail" placeholder="{{t lang "Correo"}}" required>
-                                    <small class="invalid-feedback" >{{t lang "ingrese_correo"}}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-5">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" name="subject" id="subject" placeholder="{{t lang "Asunto"}}" required>
-                                    <small class="invalid-feedback" >{{t lang "ingrese_asunto"}}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-5">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <textarea type="text" class="form-control" name="text" id="text" placeholder="{{t lang "Mensaje"}}" required rows="4"></textarea>
-                                    <small class="invalid-feedback" >{{t lang "ingrese_mensaje"}}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-5">
-                            <div class="col-md-12">
-                                <button type="submit" class="btn btn-rsp ft-bold">
-                                    {{t lang "Enviar"}} <i class="fal fa-long-arrow-right pl-2"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+<section class="rsp-conf-section rsp-wrap" style="background-color: #f8f9fa; padding: 4rem 0;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-8">
+        
+        <p class="text-center text-secondary mb-5" style="font-size: 1.1rem;">
+          {{t lang "contact-intro"}}
+        </p>
 
+        {{#if info}}
+          {{#each info}}
+            <div class="{{style}} alert-dismissible fade show shadow-sm" role="alert">
+              <strong>{{message}}</strong> 
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
+          {{/each}}
+        {{/if}}
+
+        <div class="conf-blk shadow-sm p-4 p-md-5 rounded" style="background-color: #ffffff; border: 1px solid #eaeaea;">
+          <h3 class="rsp-title ft-bold mb-4 text-center">{{t lang "Contacte"}}</h3>
+          
+          <form action="/contacto" method="POST" class="needs-validation" novalidate>
+            
+            <input type="hidden" name="lang" id="lang" value="{{lang}}">
+
+            <div class="form-row mb-4">
+              <div class="col-md-6 mb-4 mb-md-0">
+                <label for="nombre" class="font-weight-bold text-dark">{{t lang "Nombre"}}</label>
+                <input type="text" class="form-control form-control-lg" name="nombre" id="nombre" placeholder="{{t lang "Nombre"}}" required>
+                <small class="invalid-feedback">{{t lang "ingrese_nombre"}}</small>
+              </div>
+              <div class="col-md-6">
+                <label for="mail" class="font-weight-bold text-dark">{{t lang "Correo"}}</label>
+                <input type="email" class="form-control form-control-lg" name="mail" id="mail" placeholder="{{t lang "Correo"}}" required>
+                <small class="invalid-feedback">{{t lang "ingrese_correo"}}</small>
+              </div>
+            </div>
+
+            <div class="form-group mb-4">
+              <label for="subject" class="font-weight-bold text-dark">{{t lang "Asunto"}}</label>
+              <input type="text" class="form-control form-control-lg" name="subject" id="subject" placeholder="{{t lang "Asunto"}}" required>
+              <small class="invalid-feedback">{{t lang "ingrese_asunto"}}</small>
+            </div>
+
+            <div class="form-group mb-5">
+              <label for="text" class="font-weight-bold text-dark">{{t lang "Mensaje"}}</label>
+              <textarea class="form-control form-control-lg" name="text" id="text" placeholder="{{t lang "Mensaje"}}" required rows="5"></textarea>
+              <small class="invalid-feedback">{{t lang "ingrese_mensaje"}}</small>
+            </div>
+
+            <div class="text-center">
+              <button type="submit" class="btn btn-rsp ft-bold btn-lg px-5" style="border-radius: 30px;">
+                {{t lang "Enviar"}} <i class="fal fa-long-arrow-right pl-2"></i>
+              </button>
+            </div>
+
+          </form>
+        </div>
         </div>
     </div>
+  </div>
 </section>

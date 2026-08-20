@@ -1,11 +1,13 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const dotenv = require("dotenv");
 const crypto = require("crypto-js");
+const bcrypt = require("bcryptjs");
 const moment = require('moment');
 dotenv.config();
 const util = require("util");
 const logger = require('../controllers/logger');
-const MySQLStore = require('express-mysql-session');
+const BCRYPT_ROUNDS = 10;
+const isBcryptHash = (hash) => typeof hash === 'string' && /^\$2[ayb]\$\d{2}\$/.test(hash);
 const dataConnection = {
 	host: process.env.DATABASE_HOST,
 	user: process.env.DATABASE_USER,
@@ -14,6 +16,24 @@ const dataConnection = {
 }
 
 const client = mysql.createConnection(dataConnection)
+
+function handleDisconnect() {
+        client.on('error', (err) => {
+                logger.error('Error de conexión MySQL: ' + err.message);
+                if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.fatal) {
+                        logger.info('Intentando reconectar a la base de datos...');
+                        client.connect((error) => {
+                                if (error) {
+                                        logger.error('Fallo al reconectar: ' + error.message);
+                                } else {
+                                        logger.info('Reconexión exitosa a la base de datos');
+                                }
+                        });
+                }
+        });
+}
+handleDisconnect();
+
 
 class DataBase {
 	constructor() {
@@ -146,17 +166,20 @@ class DataBase {
 		conditions
 	}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} rurp.id = ${conditions.id} `
+				whereConditions += `${prefix} rurp.id = ? `
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 			if (conditions.userId) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} u.id = ${conditions.userId}`
+				whereConditions += `${prefix} u.id = ?`
+				params.push(Number(conditions.userId))
 				isFirstCondition = false
 			}
 		}
@@ -183,7 +206,7 @@ class DataBase {
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 
 			const users = results
 				.reduce((acc, r) => {
@@ -223,17 +246,20 @@ class DataBase {
 	}) {
 		const roleQuery = `
 			INSERT INTO user_role (value)
-			VALUES ('${value}');
+			VALUES (?);
 		`
 		try {
-			const {insertId} = await this.query(roleQuery);
+			const {insertId} = await this.query(roleQuery, [value]);
 
+			const placeholders = permissionIds.map(() => '(?, ?)').join(',');
+			const values = [];
+			permissionIds.forEach(p => { values.push(Number(p), insertId); });
 			const permissionsQuery = `
 				INSERT INTO rel_user_role_permission (permissionId, roleId)
-				VALUES ${permissionIds.map(p => `(${p}, ${insertId})`).join(',')}
+				VALUES ${placeholders}
 			`;
 			
-			await this.query(permissionsQuery);
+			await this.query(permissionsQuery, values);
 			return {
 				success: true,
 				message: "Se creó el rol"
@@ -254,23 +280,26 @@ class DataBase {
 		permissionIds
 	}) {
 		const removeRolPermissionsQuery = `
-			DELETE FROM rel_user_role_permission WHERE roleId=${id}
+			DELETE FROM rel_user_role_permission WHERE roleId=?
 		`
 
+		const placeholders = permissionIds.map(() => '(?, ?)').join(',');
+		const values = [];
+		permissionIds.forEach(p => { values.push(Number(p), Number(id)); });
 		const createRolPermissionQuery = `
 			INSERT INTO rel_user_role_permission (permissionId, roleId)
-			VALUES ${permissionIds.map(p => `(${p}, ${id})`).join(',')}
+			VALUES ${placeholders}
 		`
 
 		const updateRoleQuery = `
-			UPDATE user_role SET value='${value}' WHERE id=${id}
+			UPDATE user_role SET value=? WHERE id=?
 		`
 
 		try {
-			await this.query(removeRolPermissionsQuery)
+			await this.query(removeRolPermissionsQuery, [Number(id)])
 			await Promise.all([
-				this.query(createRolPermissionQuery),
-				this.query(updateRoleQuery),
+				this.query(createRolPermissionQuery, values),
+				this.query(updateRoleQuery, [value, Number(id)]),
 			]);
 
 			return {
@@ -287,9 +316,9 @@ class DataBase {
 	}
 
 	async deleteRole(id) {
-		const queryString = `DELETE FROM user_role WHERE id=${id}`;
+		const queryString = `DELETE FROM user_role WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -306,8 +335,8 @@ class DataBase {
 
 	async getUserByEmail(user) {
 		try {
-			const queryString = `SELECT * FROM ${process.env.USER_TABLE} WHERE user="${user}" `;
-			let result = await this.query(queryString)
+			const queryString = `SELECT * FROM ${process.env.USER_TABLE} WHERE user= ? `;
+			let result = await this.query(queryString, [user])
 			if (result.length > 0) {
 				return { success: true, data: result[0] }
 			} else {
@@ -333,9 +362,9 @@ class DataBase {
 					ur.value role
 				FROM ${process.env.USER_TABLE} u
 				JOIN user_role ur ON ur.id = u.idUserRole
-				WHERE u.id=${id}
+				WHERE u.id = ?
 			`;
-			let result = await this.query(queryString)
+			let result = await this.query(queryString, [Number(id)])
 			if (result.length > 0) {
 				return { success: true, data: result[0] }
 			} else {
@@ -354,6 +383,7 @@ class DataBase {
 				u.id,
 				u.user,
 				u.idUserRole,
+				u.estaActivo,
 				ur.value role
 			FROM ${process.env.USER_TABLE} u
 			JOIN user_role ur ON ur.id = u.idUserRole
@@ -362,7 +392,7 @@ class DataBase {
 			const results = await this.query(queryString);
 			return {
 				success: true,
-				data: results,
+				data: results.map(u => ({ ...u, esta_activo: u.estaActivo === 1 })),
 				message: "Se obtuvieron los usuarios"
 			}
 		} catch (error) {
@@ -378,17 +408,18 @@ class DataBase {
 	async createUser({
 		email,
 		password,
-		roleId
+		roleId,
+		estaActivo
 	}) {
 		try {
-			const passwordEncrypted = crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY);
+			const passwordHash = await bcrypt.hash(password || '', BCRYPT_ROUNDS);
 			const queryString = `
 				INSERT INTO ${process.env.USER_TABLE} 
-					(user, password, idUserRole) 
+					(user, password, idUserRole, estaActivo) 
 				VALUES 
-					("${email}","${passwordEncrypted}", ${roleId})
+					(?, ?, ?, ?)
 			`
-			const result = await this.query(queryString)
+			const result = await this.query(queryString, [email, passwordHash, Number(roleId), estaActivo ? 1 : 0])
 			return {
 				success: true,
 				data: result,
@@ -408,21 +439,42 @@ class DataBase {
 		id,
 		email,
 		password,
-		roleId
+		roleId,
+		estaActivo
 	}) {
-		const passwordEncrypted = password
-			? crypto.AES.encrypt(password, process.env.CRYPTO_SECRET_KEY)
-			: undefined;
-		const queryString = `
-			UPDATE ${process.env.USER_TABLE} 
-				SET
-					user='${email}',
-					${password ? `password='${passwordEncrypted}',` : ''}
-					idUserRole=${roleId}
-				WHERE id=${id}
-		`;
+		let passwordHash;
 		try {
-			const result = await this.query(queryString);
+			passwordHash = password
+				? await bcrypt.hash(password, BCRYPT_ROUNDS)
+				: undefined;
+		} catch (error) {
+			return {
+				success: false,
+				message: "No se pudo actualizar el usuario"
+			}
+		}
+		try {
+			let result;
+			if (passwordHash) {
+				const queryString = `
+					UPDATE ${process.env.USER_TABLE} 
+						SET
+							user=?,
+							password=?,
+							idUserRole=?,
+							estaActivo=?
+						WHERE id=?`;
+				result = await this.query(queryString, [email, passwordHash, Number(roleId), estaActivo ? 1 : 0, Number(id)]);
+			} else {
+				const queryString = `
+					UPDATE ${process.env.USER_TABLE} 
+						SET
+							user=?,
+							idUserRole=?,
+							estaActivo=?
+						WHERE id=?`;
+				result = await this.query(queryString, [email, Number(roleId), estaActivo ? 1 : 0, Number(id)]);
+			}
 			return {
 				success: true,
 				data: result,
@@ -439,9 +491,9 @@ class DataBase {
 	}
 
 	async deleteUser(id) {
-		const queryString = `DELETE FROM ${process.env.USER_TABLE} WHERE id=${id}`;
+		const queryString = `DELETE FROM ${process.env.USER_TABLE} WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -457,23 +509,46 @@ class DataBase {
 	}
 
 	/**
-	 * @description: Compara el password ingresado con el password guardado en tabla
+	 * @description: Compara el password ingresado con el password guardado en tabla.
+	 * Soporta hashes bcrypt (nuevos) y cifrados AES legacy (migración transparente).
 	 * @param {string} passIn: Password ingresado 
 	 * @param {string} passSaved: Password guardado en tabla
-	 * @returns 
+	 * @returns {Promise<{ok: boolean, rehash: boolean}>} ok: credencial válida; rehash: hay que migrar a bcrypt
 	 */
-	comparePassword = (passIn, passSaved) => {
-		const passwordDecrypted = crypto.AES.decrypt(passSaved, process.env.CRYPTO_SECRET_KEY).toString(crypto.enc.Utf8);
-		if (passIn == passwordDecrypted) {
-			return true;
+	comparePassword = async (passIn, passSaved) => {
+		try {
+			if (isBcryptHash(passSaved)) {
+				const ok = await bcrypt.compare(passIn || '', passSaved);
+				return { ok, rehash: false };
+			}
+			// Hash legacy AES: comparar en claro y marcar para rehasheo
+			const passwordDecrypted = crypto.AES.decrypt(passSaved, process.env.CRYPTO_SECRET_KEY).toString(crypto.enc.Utf8);
+			const ok = passIn == passwordDecrypted;
+			return { ok, rehash: ok };
+		} catch (error) {
+			console.error(error);
+			return { ok: false, rehash: false };
 		}
-		return false;
+	}
+
+	/**
+	 * @description: Migra el password de un usuario a bcrypt (rehash-on-login).
+	 */
+	rehashPassword = async (id, password) => {
+		try {
+			const passwordHash = await bcrypt.hash(password || '', BCRYPT_ROUNDS);
+			await this.query(`UPDATE ${process.env.USER_TABLE} SET password=? WHERE id=?`, [passwordHash, Number(id)]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false };
+		}
 	}
 
 	getDocumentsByTitle = async (title) => {
-		const queryString = `SELECT * FROM ${process.env.DOCUMENTS_TABLE} WHERE  category1='${title}' OR category2='${title}' OR category3='${title}' `;
+		const queryString = `SELECT * FROM ${process.env.DOCUMENTS_TABLE} WHERE category1=? OR category2=? OR category3=?`;
 		try {
-			const results = await this.query(queryString);
+			const results = await this.query(queryString, [title, title, title]);
 			return { success: true, data: results }
 		} catch (error) {
 			console.error(error);
@@ -484,15 +559,11 @@ class DataBase {
 	saveDocument = async (data) => {
 		try {
 			const date = moment().format('DD/MM/YYYY');
-			//const {title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile} = data;
 			const { title, author, description, category1, type, excelfile, pdffile, csvfile } = data;
-			// const queryString=`INSERT INTO ${process.env.DOCUMENTS_TABLE} 
-			//     (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile) 
-			//     VALUES ("${title}","${author}","${description}","${category1}","${category2}","${category3}","${type}","${excelfile}","${pdffile}","${csvfile}")`
 			const queryString = `INSERT INTO ${process.env.DOCUMENTS_TABLE} 
                 (title,author,description,category1,category2,category3,type,excelfile,pdffile,csvfile,fecha) 
-                VALUES ("${title}","${author}","${description}","${category1}","0","0","${type}","${excelfile}","${pdffile}","${csvfile}","${date}")`
-			await this.query(queryString);
+                VALUES (?, ?, ?, ?, "0", "0", ?, ?, ?, ?, ?)`
+			await this.query(queryString, [title, author, description, category1, type, excelfile, pdffile, csvfile, date]);
 			return { success: true, message: "El documento ha sido guardado" }
 		} catch (error) {
 			console.error(error);
@@ -504,7 +575,7 @@ class DataBase {
 	//doc: https://www.cleverclouds.im/es/blog/2018/06/guardar-la-sesi%C3%B3n-en-mysql-para-el-framework-express-en-node
 
 	sessionStore(session) {
-		MySQLStore(session);
+		const MySQLStore = require('express-mysql-session')(session);
 		let sessionStoreVar = new MySQLStore(dataConnection);
 		return sessionStoreVar;
 	}
@@ -562,7 +633,13 @@ class DataBase {
 				accidente, 
 				fallecido, 
 				mensaje1,
-				mensaje2
+				mensaje2,
+				fuente_siniestro,
+				porcentaje_siniestro,
+				fuente_lesiones,
+				porcentaje_lesiones,
+				fuente_muertes,
+				porcentaje_muertes
 			FROM parametro
 		`;
 		try {
@@ -575,6 +652,12 @@ class DataBase {
 					fallecidos: results[0].fallecido,
 					mensaje1: results[0].mensaje1,
 					mensaje2: results[0].mensaje2,
+					fuente_siniestro: results[0].fuente_siniestro,
+					porcentaje_siniestro: results[0].porcentaje_siniestro,
+					fuente_lesiones: results[0].fuente_lesiones,
+					porcentaje_lesiones: results[0].porcentaje_lesiones,
+					fuente_muertes: results[0].fuente_muertes,
+					porcentaje_muertes: results[0].porcentaje_muertes,
 				}
 			}
 		} catch (error) {
@@ -591,19 +674,32 @@ class DataBase {
 		accidentados,
 		fallecidos,
 		mensaje1,
-		mensaje2
+		mensaje2,
+		fuente_siniestro,
+		porcentaje_siniestro,
+		fuente_lesiones,
+		porcentaje_lesiones,
+		fuente_muertes,
+		porcentaje_muertes
 	}) {
 		const queryString = `
 			UPDATE parametro 
 				SET 
-					lesionado=${lesionados}, 
-					accidente=${accidentados}, 
-					fallecido=${fallecidos},
-					mensaje1='${mensaje1}',
-					mensaje2='${mensaje2}'
+					lesionado=?, 
+					accidente=?, 
+					fallecido=?,
+					mensaje1=?,
+					mensaje2=?,
+					fuente_siniestro=?,
+					porcentaje_siniestro=?,
+					fuente_lesiones=?,
+					porcentaje_lesiones=?,
+					fuente_muertes=?,
+					porcentaje_muertes=?
     `;
+		const params = [Number(lesionados), Number(accidentados), Number(fallecidos), mensaje1, mensaje2, fuente_siniestro, porcentaje_siniestro, fuente_lesiones, porcentaje_lesiones, fuente_muertes, porcentaje_muertes];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -624,18 +720,29 @@ class DataBase {
 				telefono, 
 				email, 
 				direccion,
-				piePagina
+				descripcion,
+				horario
 			FROM footer
+			ORDER BY (seccion IS NOT NULL AND seccion <> '') ASC
+			LIMIT 1
 		`;
 		try {
 			const results = await this.query(queryString);
+			const sectionResults = await this.query(`
+				SELECT seccion, enlace
+				FROM footer
+				WHERE seccion IS NOT NULL AND seccion <> ''
+				ORDER BY seccion ASC
+			`);
 			return {
 				success: true,
 				data: {
-					telefono: results[0].telefono,
-					email: results[0].email,
-					direccion: results[0].direccion,
-					piePagina: results[0].piePagina
+					telefono: results[0]?.telefono || '',
+					email: results[0]?.email || '',
+					direccion: results[0]?.direccion || '',
+					descripcion: results[0]?.descripcion || '',
+					horario: results[0]?.horario || '',
+					secciones: sectionResults.map(row => ({ titulo: row.seccion, enlace: row.enlace }))
 				}
 			}
 		} catch (error) {
@@ -646,63 +753,99 @@ class DataBase {
 			}
 		}
 	}
-
 	async updateFooterData({
 		telefono,
 		email,
 		direccion,
-		piePagina
+		descripcion,
+		horario,
+		secciones
 	}) {
-		const queryString = `
-			UPDATE footer 
-				SET 
-					telefono='${telefono}',
-					email='${email}',
-					direccion='${direccion}',
-					piePagina='${piePagina}'
-		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(`
+				UPDATE footer
+				SET telefono=?, email=?, direccion=?, descripcion=?, horario=?
+				WHERE seccion IS NULL OR seccion = ''
+				LIMIT 1
+			`, [telefono, email, direccion, descripcion, horario]);
+			await this.query(`DELETE FROM footer WHERE seccion IS NOT NULL AND seccion <> ''`);
+			for (const section of (Array.isArray(secciones) ? secciones : [])) {
+				if (!section.titulo?.trim() || !section.enlace?.trim()) continue;
+				await this.query(
+					`INSERT INTO footer (seccion, enlace) VALUES (?, ?)`,
+					[section.titulo.trim(), section.enlace.trim()]
+				);
+			}
 			return {
 				success: true,
 				data: result,
 				message: "Se actualizaron los datos"
 
 			}
+
 		} catch (error) {
 			console.error(error);
 			return {
 				success: false,
 				message: "No se pudo actualizar los datos"
 			}
+
 		}
 
 	}
-
 	async getContenidoQuienesSomos(secondary_navigation) {
 		const idioma = secondary_navigation ? 'EN' : 'ES';
-		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4 FROM pagina WHERE idioma like '${idioma}'`;
+		const queryString = `SELECT seccion1, seccion2, seccion3, seccion4, seccion5, seccion6, seccion7, seccion8, seccion9, seccion10, seccion11, seccion12, seccion13, seccion14, seccion15, seccion16, seccion17, seccion18, seccion19, seccion20, seccion21, seccion22, seccion23, seccion24, seccion25, seccion26, seccion27, seccion28, seccion29, seccion30, seccion31, seccion32, seccion33, seccion34, seccion35, seccion36, seccion37, seccion38, seccion39, seccion40, seccion41, seccion42, seccion43, seccion44 FROM pagina WHERE idioma LIKE ?`;
 		try {
-			const results = await this.query(queryString);
+			const results = await this.query(queryString, [idioma]);
+			const r = results[0];
 			return {
 				success: true,
 				data: [
-					{
-						label: '¿Quiénes somos?',
-						contenido: results[0].seccion1
-					},
-					{
-						label: 'Misión',
-						contenido: results[0].seccion2
-					},
-					{
-						label: 'Visión',
-						contenido: results[0].seccion3
-					},
-					{
-						label: 'Componentes tecnológicos',
-						contenido: results[0].seccion4.replace(/\s+/g, ' ').trim()
-					},
+					{ label: '¿Quiénes somos?',              contenido: r.seccion1 },
+					{ label: 'Misión',                       contenido: r.seccion2 },
+					{ label: 'Visión',                       contenido: r.seccion3 },
+					{ label: 'Componentes tecnológicos',     contenido: r.seccion4 },
+					{ label: 'Valores',                      contenido: r.seccion5 },
+					{ label: 'Comp1 título',                 contenido: r.seccion6  },
+					{ label: 'Comp1 desc',                   contenido: r.seccion7  },
+					{ label: 'Comp2 título',                 contenido: r.seccion8  },
+					{ label: 'Comp2 desc',                   contenido: r.seccion9  },
+					{ label: 'Comp3 título',                 contenido: r.seccion10 },
+					{ label: 'Comp3 desc',                   contenido: r.seccion11 },
+					{ label: 'Comp4 título',                 contenido: r.seccion12 },
+					{ label: 'Comp4 desc',                   contenido: r.seccion13 },
+					{ label: 'Val1 título',                  contenido: r.seccion14 },
+					{ label: 'Val1 desc',                    contenido: r.seccion15 },
+					{ label: 'Val2 título',                  contenido: r.seccion16 },
+					{ label: 'Val2 desc',                    contenido: r.seccion17 },
+					{ label: 'Val3 título',                  contenido: r.seccion18 },
+					{ label: 'Val3 desc',                    contenido: r.seccion19 },
+					{ label: 'Val4 título',                  contenido: r.seccion20 },
+					{ label: 'Val4 desc',                    contenido: r.seccion21 },
+					{ label: 'Val5 título',                  contenido: r.seccion22 },
+					{ label: 'Val5 desc',                    contenido: r.seccion23 },
+					{ label: 'Val6 título',                  contenido: r.seccion24 },
+					{ label: 'Val6 desc',                    contenido: r.seccion25 },
+					{ label: 'Comp5 título',                 contenido: r.seccion26 },
+					{ label: 'Comp5 desc',                   contenido: r.seccion27 },
+					{ label: 'Comp6 título',                 contenido: r.seccion28 },
+					{ label: 'Comp6 desc',                   contenido: r.seccion29 },
+					{ label: 'Comp7 título',                 contenido: r.seccion30 },
+					{ label: 'Comp7 desc',                   contenido: r.seccion31 },
+					{ label: 'Comp8 título',                 contenido: r.seccion32 },
+					{ label: 'Comp8 desc',                   contenido: r.seccion33 },
+					{ label: 'Comp9 título',                 contenido: r.seccion34 },
+					{ label: 'Comp9 desc',                   contenido: r.seccion35 },
+					{ label: 'Comp1 link',                   contenido: r.seccion36 },
+					{ label: 'Comp2 link',                   contenido: r.seccion37 },
+					{ label: 'Comp3 link',                   contenido: r.seccion38 },
+					{ label: 'Comp4 link',                   contenido: r.seccion39 },
+					{ label: 'Comp5 link',                   contenido: r.seccion40 },
+					{ label: 'Comp6 link',                   contenido: r.seccion41 },
+					{ label: 'Comp7 link',                   contenido: r.seccion42 },
+					{ label: 'Comp8 link',                   contenido: r.seccion43 },
+					{ label: 'Comp9 link',                   contenido: r.seccion44 },
 				]
 			}
 		} catch (error) {
@@ -714,17 +857,42 @@ class DataBase {
 		}
 	}
 
-	async updateMisionVision(secondary_navigation, { descripcion, mision, vision }) {
+	async updateMisionVision(secondary_navigation, data) {
 		const idioma = secondary_navigation ? 'EN' : 'ES';
+		const {
+			descripcion, mision, vision,
+			comp_titulo, val_intro,
+			val1_titulo, val1_desc, val2_titulo, val2_desc,
+			val3_titulo, val3_desc, val4_titulo, val4_desc,
+			val5_titulo, val5_desc, val6_titulo, val6_desc
+		} = data;
 		const queryString = `
-            UPDATE pagina 
-                SET 
-                    seccion1='${descripcion}',
-                    seccion2='${mision}',
-                    seccion3='${vision}' 
-            WHERE idioma LIKE '${idioma}'`;
+            UPDATE pagina
+                SET
+                    seccion1=?,
+                    seccion2=?,
+                    seccion3=?,
+                    seccion4=?,
+                    seccion5=?,
+                    seccion14=?,
+                    seccion15=?,
+                    seccion16=?,
+                    seccion17=?,
+                    seccion18=?,
+                    seccion19=?,
+                    seccion20=?,
+                    seccion21=?,
+                    seccion22=?,
+                    seccion23=?,
+                    seccion24=?,
+                    seccion25=?
+            WHERE idioma LIKE ?`;
+		const params = [descripcion, mision, vision, comp_titulo, val_intro,
+			val1_titulo, val1_desc, val2_titulo, val2_desc,
+			val3_titulo, val3_desc, val4_titulo, val4_desc,
+			val5_titulo, val5_desc, val6_titulo, val6_desc, idioma];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -839,17 +1007,16 @@ class DataBase {
 				create_time,
 				update_time
 			)
-			VALUES (
-				'${descripcion}',
-				${urlImagen?.trim() === '' ? null : `'${urlImagen.trim()}'`},
-				${observacion ? `'${observacion.trim()}'` : null},
-				${estaActivo ? 1 : 0},
-				CURRENT_TIMESTAMP,
-				CURRENT_TIMESTAMP
-			)
+			VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		`;
+		const values = [
+			descripcion,
+			urlImagen?.trim() === '' ? null : urlImagen?.trim(),
+			observacion ? observacion.trim() : null,
+			estaActivo ? 1 : 0
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, values);
 			return {
 				success: true,
 				data: result,
@@ -874,14 +1041,21 @@ class DataBase {
 		const queryString = `
 			UPDATE menu
 				SET 
-					descripcion='${descripcion}',
-					urlImagen=${urlImagen?.trim() === '' ? null : `'${urlImagen.trim()}'`},
-					observacion=${observacion ? `'${observacion.trim()}'` : null},
-					estaActivo=${estaActivo ? 1 : 0},
+					descripcion=?,
+					urlImagen=?,
+					observacion=?,
+					estaActivo=?,
 					update_time=CURRENT_TIMESTAMP
-				WHERE id=${id}`;
+				WHERE id=?`;
+		const values = [
+			descripcion,
+			urlImagen?.trim() === '' ? null : urlImagen?.trim(),
+			observacion ? observacion.trim() : null,
+			estaActivo ? 1 : 0,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, values);
 			return {
 				success: true,
 				data: result,
@@ -897,9 +1071,9 @@ class DataBase {
 	}
 
 	async deleteMenu(id) {
-		const queryString = `DELETE FROM menu WHERE id=${id}`;
+		const queryString = `DELETE FROM menu WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -939,7 +1113,7 @@ class DataBase {
 				data: results.map(s => ({
 					...s,
 					menuEstaActivo: s.menuEstaActivo === 1,
-					imagen: s.imagen || 'No existe',
+					imagen: s.imagen || null,
 					estado: s.estado === 1
 				}))
 			}
@@ -978,7 +1152,7 @@ class DataBase {
 				data: results.map(s => ({
 					...s,
 					menuEstaActivo: s.menuEstaActivo === 1,
-					imagen: s.imagen || 'No existe',
+					imagen: s.imagen || null,
 					estado: s.estado === 1
 				}))
 			}
@@ -1014,19 +1188,28 @@ class DataBase {
 					estado
 				) 
 			VALUES (
-				'${descripcion}', 
+				?, 
 				CURRENT_TIMESTAMP, 
 				CURRENT_TIMESTAMP, 
-				${menu_id}, 
-				'${rutabi}', 
-				'${linkvideo}', 
-				'${linkpdf}',
-				'${imagenpath}',
-				${estado ? 1 : 0}
+				?, 
+				?, 
+				?, 
+				?,
+				?,
+				?
 			)
 		`;
+		const values = [
+			descripcion,
+			Number(menu_id),
+			rutabi,
+			linkvideo,
+			linkpdf,
+			imagenpath,
+			estado ? 1 : 0
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, values);
 			return {
 				success: true,
 				data: result,
@@ -1054,17 +1237,27 @@ class DataBase {
 		const queryString = `
 			UPDATE submenu
 				SET 
-					descripcion='${descripcion}',
+					descripcion=?,
 					update_time=CURRENT_TIMESTAMP,
-					menu_id=${menu_id}, 
-					rutabi='${rutabi}', 
-					linkvideo='${linkvideo}', 
-					linkpdf='${linkpdf}',
-					imagen='${imagenpath}',
-					estado=${estado ? 1 : 0}
-				WHERE id=${id}`;
+					menu_id=?, 
+					rutabi=?, 
+					linkvideo=?, 
+					linkpdf=?,
+					imagen=?,
+					estado=?
+				WHERE id=?`;
+		const values = [
+			descripcion,
+			Number(menu_id),
+			rutabi,
+			linkvideo,
+			linkpdf,
+			imagenpath,
+			estado ? 1 : 0,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, values);
 			return {
 				success: true,
 				data: result,
@@ -1080,9 +1273,9 @@ class DataBase {
 	}
 
 	async deleteSubmenu(id) {
-		const queryString = `DELETE FROM submenu WHERE id=${id}`;
+		const queryString = `DELETE FROM submenu WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1100,17 +1293,29 @@ class DataBase {
 	async getPopup() {
 		const queryString = `
         SELECT
+            id,
+            posicion,
             imagen,
             estado,
             enlace,
             create_time, 
             update_time 
-        FROM popup`;
+        FROM popup
+        ORDER BY posicion ASC, id ASC`;
 		try {
 			const result = await this.query(queryString);
+			const slides = (result || []).map(r => ({
+				id: r.id,
+				posicion: r.posicion,
+				imagen: r.imagen || '',
+				enlace: r.enlace || ''
+			}));
+			const estadoRes = await this.query(`SELECT COALESCE(MAX(estado), 0) AS estado FROM popup`);
+			const estadoVal = estadoRes && estadoRes[0] ? estadoRes[0].estado : 0;
+			const estado = estadoVal === 1 || estadoVal === '1';
 			return {
 				success: true,
-				data: result[0],
+				data: { estado, slides },
 				message: "Obtener el popup"
 			}
 		} catch (error) {
@@ -1122,16 +1327,14 @@ class DataBase {
 		}
 	}
 
-	async updatePopup({ imagen, estado, enlace }) {
+	async updatePopup({ estado }) {
 		const queryString = `
-      		UPDATE popup 
+       		UPDATE popup 
           	SET 
-              imagen='${imagen}', 
-              estado='${estado}',
-              enlace='${enlace}',
+              estado=?,
               update_time=CURRENT_TIMESTAMP`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [estado ? 1 : 0]);
 			return {
 				success: true,
 				data: result[0],
@@ -1146,40 +1349,226 @@ class DataBase {
 		}
 	}
 
+	async getPopupSlides() {
+		const queryString = `SELECT id, posicion, imagen, enlace FROM popup ORDER BY posicion ASC, id ASC`;
+		try {
+			const result = await this.query(queryString);
+			return {
+				success: true,
+				data: (result || []).map(r => ({ id: r.id, posicion: r.posicion, imagen: r.imagen || '', enlace: r.enlace || '' })),
+				message: "Obtener slides del popup"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudieron obtener los slides del popup"
+			}
+		}
+	}
+
+	async createPopupSlide({ imagen, enlace }) {
+		const queryString = `
+			INSERT INTO popup (posicion, imagen, enlace)
+			VALUES ((SELECT COALESCE(MAX(posicion), 0) + 1 FROM (SELECT posicion FROM popup) p), ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [imagen || '', enlace || '']);
+			return { success: true, data: { insertId: result.insertId }, message: "Se creó el slide del popup" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el slide del popup" };
+		}
+	}
+
+	async updatePopupSlide(id, { imagen, enlace }) {
+		const queryString = `UPDATE popup SET imagen = ?, enlace = ?, update_time = CURRENT_TIMESTAMP WHERE id = ?`;
+		try {
+			await this.query(queryString, [imagen || '', enlace || '', id]);
+			return { success: true, message: "Se actualizó el slide del popup" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el slide del popup" };
+		}
+	}
+
+	async deletePopupSlide(id) {
+		const queryString = `DELETE FROM popup WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true, message: "Se eliminó el slide del popup" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el slide del popup" };
+		}
+	}
+
+	async updatePopupOrder(items) {
+		const queryString = `UPDATE popup SET posicion = ? WHERE id = ?`;
+		try {
+			for (const { id, posicion } of items) {
+				await this.query(queryString, [posicion, id]);
+			}
+			return { success: true, message: "Se actualizó el orden del popup" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el orden del popup" };
+		}
+	}
+
+	// --- YouTube Videos (administrables desde el panel) ---
+	async getYoutubeVideos(seccion) {
+		const queryString = `
+			SELECT id, seccion, titulo, descripcion, video_url, create_time, update_time
+			FROM youtube_videos
+			WHERE seccion = ?
+			ORDER BY id ASC`;
+		try {
+			const result = await this.query(queryString, [seccion]);
+			return {
+				success: true,
+				data: result,
+				message: "Obtener videos de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo obtener los videos de YouTube",
+				data: []
+			}
+		}
+	}
+
+	async getYoutubeVideoById(id) {
+		const queryString = `
+			SELECT id, seccion, titulo, descripcion, video_url, create_time, update_time
+			FROM youtube_videos
+			WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [id]);
+			return {
+				success: true,
+				data: result[0],
+				message: "Obtener video de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo obtener el video de YouTube"
+			}
+		}
+	}
+
+	async createYoutubeVideo({ seccion, titulo, descripcion, video_url }) {
+		const queryString = `
+			INSERT INTO youtube_videos (seccion, titulo, descripcion, video_url)
+			VALUES (?, ?, ?, ?)`;
+		try {
+			const result = await this.query(queryString, [seccion, titulo, descripcion || '', video_url]);
+			return {
+				success: true,
+				data: { insertId: result.insertId },
+				message: "Se creó el video de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo crear el video de YouTube"
+			}
+		}
+	}
+
+	async updateYoutubeVideo({ id, titulo, descripcion, video_url }) {
+		const queryString = `
+			UPDATE youtube_videos
+			SET titulo = ?,
+				descripcion = ?,
+				video_url = ?,
+				update_time = CURRENT_TIMESTAMP
+			WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [titulo, descripcion || '', video_url, Number(id)]);
+			return {
+				success: true,
+				data: result,
+				message: "Se actualizó el video de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo actualizar el video de YouTube"
+			}
+		}
+	}
+
+	async deleteYoutubeVideo(id) {
+		const queryString = `DELETE FROM youtube_videos WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [Number(id)]);
+			return {
+				success: true,
+				data: result,
+				message: "Se eliminó el video de YouTube"
+			}
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: "No se pudo eliminar el video de YouTube"
+			}
+		}
+	}
+
 	async getDatosAbiertosPages({ pageLength, conditions }) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.id = ${conditions.id} `
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.id = ? `
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 			if (conditions.idCategoria) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idCategoria = ${conditions.idCategoria}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idCategoria = ?`
+				params.push(Number(conditions.idCategoria))
 				isFirstCondition = false
 			}
 			if (conditions.idTipo) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idTipo = ${conditions.idTipo}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idTipo = ?`
+				params.push(Number(conditions.idTipo))
 				isFirstCondition = false
 			}
 			if (conditions.title) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.title LIKE '%${conditions.title}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.title LIKE ?`
+				params.push(`%${conditions.title}%`)
 				isFirstCondition = false
 			}
 			if (conditions.description) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE '%${conditions.description}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE ?`
+				params.push(`%${conditions.description}%`)
 				isFirstCondition = false
 			}
-			if (conditions.fecha) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE '${conditions.fecha}%'`
-				isFirstCondition = false
-			}
+		if (conditions.fecha) {
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE ?`
+			params.push(`${conditions.fecha}%`)
+			isFirstCondition = false
 		}
+		if (conditions.estaActivo !== undefined) {
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.estaActivo = ?`
+			params.push(conditions.estaActivo ? 1 : 0)
+			isFirstCondition = false
+		}
+	}
 
-		const queryString = `
-			SELECT
-				count(f.id) pages
+	const queryString = `
+		SELECT
+			count(f.id) pages
 			FROM files f
 			LEFT JOIN categoria c ON c.id = f.idCategoria
 			LEFT JOIN tipo t ON t.id = f.idTipo
@@ -1190,9 +1579,9 @@ class DataBase {
 		`;
 
 		const query = queryString.replace(/\s+/g, ' ')
-		console.log(query)
+		//console.log(query)
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				dataLength: results[0].pages,
@@ -1214,50 +1603,64 @@ class DataBase {
 			pageLength: 5
 		}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.id = ${conditions.id} `
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.id = ? `
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 			if (conditions.idCategoria) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idCategoria = ${conditions.idCategoria}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idCategoria = ?`
+				params.push(Number(conditions.idCategoria))
 				isFirstCondition = false
 			}
 			if (conditions.idTipo) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idTipo = ${conditions.idTipo}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.idTipo = ?`
+				params.push(Number(conditions.idTipo))
 				isFirstCondition = false
 			}
 			if (conditions.title) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.title LIKE '%${conditions.title}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.title LIKE ?`
+				params.push(`%${conditions.title}%`)
 				isFirstCondition = false
 			}
 			if (conditions.description) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE '%${conditions.description}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} f.description LIKE ?`
+				params.push(`%${conditions.description}%`)
 				isFirstCondition = false
 			}
-			if (conditions.fecha) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE '${conditions.fecha}%'`
-				isFirstCondition = false
-			}
+		if (conditions.fecha) {
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.fecha LIKE ?`
+			params.push(`${conditions.fecha}%`)
+			isFirstCondition = false
 		}
+		if (conditions.estaActivo !== undefined) {
+			whereConditions += `${isFirstCondition ? '' : unionCondition} f.estaActivo = ?`
+			params.push(conditions.estaActivo ? 1 : 0)
+			isFirstCondition = false
+		}
+	}
 
-		let query = `
-			SELECT
-				f.id,
-				f.title titulo,
-				f.author autor,
-				f.description descripcion,
-				f.idCategoria,
-				c.value categoria,
-				c.icon iconCategoria,
-				f.idTipo,
-				t.value tipo,
-				f.excelfile,
-				f.pdffile,
-				f.csvfile,
-				f.fecha
+	let query = `
+		SELECT
+			f.id,
+			f.title titulo,
+			f.author autor,
+			f.description descripcion,
+			f.idCategoria,
+			c.value categoria,
+			c.icon iconCategoria,
+			f.idTipo,
+			t.value tipo,
+		f.excelfile,
+		f.pdffile,
+		f.csvfile,
+		f.shapefile,
+		f.estaActivo,
+		f.fecha
 			FROM files f
 			LEFT JOIN categoria c ON c.id = f.idCategoria
 			LEFT JOIN tipo t ON t.id = f.idTipo
@@ -1272,25 +1675,29 @@ class DataBase {
 		const offsetData = (page - 1) * pageLength
 
 		if (paginate) {
-			query += `LIMIT ${pageLength} OFFSET ${offsetData}`
+			query += `LIMIT ? OFFSET ?`
+			params.push(Number(pageLength), Number(offsetData))
 		}
 
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				data: results.map(res => ({
 					...res,
+					esta_activo: res.estaActivo === 1,
 					categoria: res.categoria ?? 'No existe',
 					tipo: res.tipo ?? 'No existe',
 					excelfile: res.excelfile === 'null' ? 'No existe' : res.excelfile,
 					hasExcel: res.excelfile === 'null' ? false : true,
 					pdffile: res.pdffile === 'null' ? 'No existe' : res.pdffile,
 					hasPdf: res.pdffile === 'null' ? false : true,
-					csvfile: res.csvfile === 'null' ? 'No existe' : res.csvfile,
-					hasCsv: res.csvfile === 'null' ? false : true,
+				csvfile: res.csvfile === 'null' ? 'No existe' : res.csvfile,
+				hasCsv: res.csvfile === 'null' ? false : true,
+				shapefile: res.shapefile === 'null' ? 'No existe' : res.shapefile,
+				hasShapefile: res.shapefile === 'null' ? false : true,
 					fecha: res.fecha.split('/').reverse().join('-')
 				}))
 			}
@@ -1312,6 +1719,8 @@ class DataBase {
 		excelfilepath,
 		pdffilepath,
 		csvfilepath,
+		shapefilepath,
+		estaActivo,
 		fecha
 	}) {
 		const queryString = `
@@ -1325,22 +1734,29 @@ class DataBase {
 					excelfile,
 					pdffile,
 					csvfile,
+					shapefile,
+					estaActivo,
 					fecha
 				)
 			VALUES (
-				'${titulo}', 
-				'${autor}', 
-				'${descripcion}', 
-				${idCategoria}, 
-				${idTipo}, 
-				'${excelfilepath}', 
-				'${pdffilepath}', 
-				'${csvfilepath}', 
-				'${fecha}' 
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 			)
 		`;
+		const params = [
+			titulo,
+			autor,
+			descripcion,
+			Number(idCategoria),
+			Number(idTipo),
+			excelfilepath,
+			pdffilepath,
+			csvfilepath,
+			shapefilepath,
+			estaActivo ? 1 : 0,
+			fecha
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -1365,24 +1781,42 @@ class DataBase {
 		excelfilepath,
 		pdffilepath,
 		csvfilepath,
+		shapefilepath,
+		estaActivo,
 		fecha
 	}) {
 		const queryString = `
 			UPDATE files 
 				SET
-					title='${titulo}',
-					author='${autor}',
-					description='${descripcion}',
-					idCategoria=${idCategoria},
-					idTipo=${idTipo},
-					excelfile='${excelfilepath}',
-					pdffile='${pdffilepath}',
-					csvfile='${csvfilepath}',
-					fecha='${fecha}'
-				WHERE id=${id}
+					title=?,
+					author=?,
+					description=?,
+					idCategoria=?,
+					idTipo=?,
+					excelfile=?,
+					pdffile=?,
+					csvfile=?,
+					shapefile=?,
+					estaActivo=?,
+					fecha=?
+				WHERE id=?
 		`;
+		const params = [
+			titulo,
+			autor,
+			descripcion,
+			Number(idCategoria),
+			Number(idTipo),
+			excelfilepath,
+			pdffilepath,
+			csvfilepath,
+			shapefilepath,
+			estaActivo ? 1 : 0,
+			fecha,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -1398,9 +1832,9 @@ class DataBase {
 	}
 
 	async deleteDatosAbiertos(id) {
-		const queryString = `DELETE FROM files WHERE id=${id}`;
+		const queryString = `DELETE FROM files WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1477,10 +1911,10 @@ class DataBase {
 	}) {
 		const queryString = `
 			INSERT INTO categoria ( value, icon, estaActivo )
-			VALUES ( '${value}', '${icon}',${estaActivo ? 1 : 0} )
+			VALUES ( ?, ?, ? )
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, icon, estaActivo ? 1 : 0]);
 			return {
 				success: true,
 				data: result,
@@ -1504,13 +1938,13 @@ class DataBase {
 		const queryString = `
 			UPDATE categoria 
 				SET
-					value='${value}',
-					icon='${icon}',
-					estaActivo=${estaActivo ? 1 : 0}
-				WHERE id=${id}
+					value=?,
+					icon=?,
+					estaActivo=?
+				WHERE id=?
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, icon, estaActivo ? 1 : 0, Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1526,9 +1960,9 @@ class DataBase {
 	}
 
 	async deleteCategoria(id) {
-		const queryString = `DELETE FROM categoria WHERE id=${id}`;
+		const queryString = `DELETE FROM categoria WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1544,6 +1978,7 @@ class DataBase {
 	}
 
 	async getRegion(name) {
+		const slug = (name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 		let query = `
 			SELECT
 				r.id,
@@ -1555,14 +1990,15 @@ class DataBase {
 				r.imageUrl,
 				r.pageLink
 			FROM regiones r
-			WHERE r.value LIKE '${name}'
+			WHERE r.value LIKE ? OR r.slug = ?
 			ORDER BY r.slug ASC
+			LIMIT 1
 		`
 
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, [name, slug]);
 			return {
 				success: true,
 				data: results[0]
@@ -1578,11 +2014,13 @@ class DataBase {
 
 	async getRegionesMeta({ pageSize, conditions }) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} r.id = ${conditions.id}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} r.id = ?`
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 		}
@@ -1600,7 +2038,7 @@ class DataBase {
 		const query = queryString.replace(/\s+/g, ' ')
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				amount: results[0].amount,
@@ -1622,11 +2060,13 @@ class DataBase {
 			pageSize: 5
 		}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} r.id = ${conditions.id}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} r.id = ?`
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 		}
@@ -1653,13 +2093,14 @@ class DataBase {
 		const offsetData = (page - 1) * pageSize
 
 		if (paginate) {
-			query += `LIMIT ${pageSize} OFFSET ${offsetData}`
+			query += `LIMIT ? OFFSET ?`
+			params.push(Number(pageSize), Number(offsetData))
 		}
 
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				data: results
@@ -1684,15 +2125,21 @@ class DataBase {
 		const queryString = `
 			UPDATE regiones 
 				SET
-					nombreEncargado=${nombreEncargado ? `'${nombreEncargado}'` : 'null'},
-					celularEncargado=${celularEncargado ? `'${celularEncargado}'` : 'null'},
-					correoEncargado=${correoEncargado ? `'${correoEncargado}'` : 'null'},
-					imageUrl='${imageUrl}',
-					pageLink=${pageLink ? `'${pageLink}'` : 'null'}
-				WHERE id=${id}
-		`;
+					nombreEncargado=?,
+					celularEncargado=?,
+					correoEncargado=?,
+					imageUrl=?,
+					pageLink=?
+				WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [
+				nombreEncargado ? String(nombreEncargado) : null,
+				celularEncargado ? String(celularEncargado) : null,
+				correoEncargado ? String(correoEncargado) : null,
+				imageUrl ? String(imageUrl) : null,
+				pageLink ? String(pageLink) : null,
+				Number(id)
+			]);
 			return {
 				success: true,
 				data: result,
@@ -1766,10 +2213,10 @@ class DataBase {
 	}) {
 		const queryString = `
 			INSERT INTO tipo ( value, estaActivo )
-			VALUES ( '${value}', ${estaActivo ? 1 : 0} )
+			VALUES ( ?, ? )
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, estaActivo ? 1 : 0]);
 			return {
 				success: true,
 				data: result,
@@ -1784,7 +2231,7 @@ class DataBase {
 		}
 	}
 
-	async updateTipo({
+async updateTipo({
 		id,
 		value,
 		estaActivo
@@ -1792,12 +2239,11 @@ class DataBase {
 		const queryString = `
 			UPDATE tipo 
 				SET
-					value='${value}',
-					estaActivo=${estaActivo ? 1 : 0}
-				WHERE id=${id}
-		`;
+					value = ?,
+					estaActivo = ?
+				WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, estaActivo ? 1 : 0, Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1813,9 +2259,9 @@ class DataBase {
 	}
 
 	async deleteTipo(id) {
-		const queryString = `DELETE FROM tipo WHERE id=${id}`;
+		const queryString = `DELETE FROM tipo WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -1853,10 +2299,10 @@ class DataBase {
 				e.isActive
 			FROM evento e
 			LEFT JOIN tipo_evento te ON te.id = e.idTipoEvento
-			WHERE e.id = ${id};
+			WHERE e.id = ?;
 		`;
 		try {
-			const results = await this.query(queryString);
+			const results = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: results.map(evento => ({
@@ -1867,8 +2313,8 @@ class DataBase {
 					reunionIsInZoom: evento.reunionLink?.includes("zoom"),
 					startDateString: moment(evento.startTime).format("DD/MM/YYYY"),
 					startTimeString: moment(evento.startTime).format("HH:mm"),
-					endDateString: moment(evento.endTime).format("DD/MM/YYYY"),
-					endTimeString: moment(evento.endTime).format("HH:mm"),
+					endDateString: evento.endTime ? moment(evento.endTime).format("DD/MM/YYYY") : null,
+					endTimeString: evento.endTime ? moment(evento.endTime).format("HH:mm") : null,
 					isActive: evento.isActive === 1
 				}))
 			}
@@ -1883,23 +2329,28 @@ class DataBase {
 
 	async getComunicationsMeta({ pageSize, conditions }) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.idTipoEvento) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} e.idTipoEvento = ${conditions.idTipoEvento}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} e.idTipoEvento = ?`
+				params.push(Number(conditions.idTipoEvento))
 				isFirstCondition = false
 			}
 			if (conditions.title) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} e.title LIKE '%${conditions.title}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} e.title LIKE ?`
+				params.push(`%${conditions.title}%`)
 				isFirstCondition = false
 			}
 			if (conditions.startDate) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.startTime) >= '${conditions.startDate}'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.startTime) >= ?`
+				params.push(conditions.startDate)
 				isFirstCondition = false
 			}
 			if (conditions.endDate) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= '${conditions.endDate}'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= ?`
+				params.push(conditions.endDate)
 				isFirstCondition = false
 			}
 			if (conditions.nearest) {
@@ -1925,7 +2376,7 @@ class DataBase {
 		const query = queryString.replace(/\s+/g, ' ')
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				amount: results[0].amount,
@@ -1947,23 +2398,28 @@ class DataBase {
 			pageSize: 5
 		}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.idTipoEvento) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} e.idTipoEvento = ${conditions.idTipoEvento}`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} e.idTipoEvento = ?`
+				params.push(Number(conditions.idTipoEvento))
 				isFirstCondition = false
 			}
 			if (conditions.title) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} e.title LIKE '%${conditions.title}%'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} e.title LIKE ?`
+				params.push(`%${conditions.title}%`)
 				isFirstCondition = false
 			}
 			if (conditions.startDate) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.startTime) >= '${conditions.startDate}'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.startTime) >= ?`
+				params.push(conditions.startDate)
 				isFirstCondition = false
 			}
 			if (conditions.endDate) {
-				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= '${conditions.endDate}'`
+				whereConditions += `${isFirstCondition ? '' : unionCondition} DATE(e.endTime) <= ?`
+				params.push(conditions.endDate)
 				isFirstCondition = false
 			}
 			if (conditions.nearest) {
@@ -2010,13 +2466,14 @@ class DataBase {
 		const offsetData = (page - 1) * pageSize
 
 		if (paginate) {
-			query += `LIMIT ${pageSize} OFFSET ${offsetData}`
+			query += `LIMIT ? OFFSET ?`
+			params.push(Number(pageSize), Number(offsetData))
 		}
 
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				data: results.map(evento => ({
@@ -2027,9 +2484,9 @@ class DataBase {
 					startDayISO: moment(evento.startTime).format("YYYY-MM-DD"),
 					startTimeISO: moment(evento.startTime).format("HH:mm:ss"),
 
-					endTimeString: evento.endTime ? moment(evento.endTime).format("DD/MM/YYYY HH:mm") : ' - ',
-					endDayISO: moment(evento.endTime).format("YYYY-MM-DD"),
-					endTimeISO: moment(evento.endTime).format("HH:mm:ss"),
+				endTimeString: evento.endTime ? moment(evento.endTime).format("DD/MM/YYYY HH:mm") : ' - ',
+					endDayISO: evento.endTime ? moment(evento.endTime).format("YYYY-MM-DD") : null,
+					endTimeISO: evento.endTime ? moment(evento.endTime).format("HH:mm:ss") : null,
 					isActive: evento.isActive === 1
 				}))
 			}
@@ -2084,27 +2541,32 @@ class DataBase {
 				isActive
 			)
 			VALUES ( 
-				'${title}',
-				${idTipoEvento},
-				'${organizedBy}',
-				${place ? `'${place}'` : 'null'},
-				${shortDescription ? `'${shortDescription}'` : 'null'},
-				${description ? `'${description}'` : 'null'},
-				'${startDay} ${startTime}',
-				${endDay ? `'${endDay}${endTime ? ` ${endTime}` : ''}'` : 'null'},
-				${price ? price : 'null'},
-				${imageUrl ? `'${imageUrl}'` : 'null'},
-				${direccion ? `'${direccion}'` : 'null'},
-				${reunionLink ? `'${reunionLink}'` : 'null'},
-				${facebookLink ? `'${facebookLink}'` : 'null'},
-				${youtubeLink ? `'${youtubeLink}'` : 'null'},
-				${twitterLink ? `'${twitterLink}'` : 'null'},
-				${anotherLink ? `'${anotherLink}'` : 'null'},
-				${isActive ? 1 : 0}
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 			)
 		`;
+		const startTimeValue = startDay ? `${startDay} ${startTime ?? ''}`.trim() : null;
+		const endTimeValue = endDay ? `${endDay}${endTime ? ` ${endTime}` : ''}` : null;
+		const params = [
+			title,
+			Number(idTipoEvento),
+			organizedBy,
+			place || null,
+			shortDescription || null,
+			description || null,
+			startTimeValue,
+			endTimeValue,
+			price || null,
+			imageUrl || null,
+			direccion || null,
+			reunionLink || null,
+			facebookLink || null,
+			youtubeLink || null,
+			twitterLink || null,
+			anotherLink || null,
+			isActive ? 1 : 0
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -2144,27 +2606,49 @@ class DataBase {
 		const queryString = `
 			UPDATE evento 
 				SET
-					title = '${title}',
-					idTipoEvento = ${idTipoEvento},
-					organizedBy = '${organizedBy}',
-					place = ${place ? `'${place}'` : 'null'},
-					shortDescription = ${shortDescription ? `'${shortDescription}'` : 'null'},
-					description = ${description ? `'${description}'` : 'null'},
-					startTime = '${startDay} ${startTime}',
-					endTime = ${endDay ? `'${endDay}${endTime ? ` ${endTime}` : ''}'` : 'null'},
-					price = ${price ? price : 'null'},
-					imageUrl = ${imageUrl ? `'${imageUrl}'` : 'null'},
-					direccion = ${direccion ? `'${direccion}'` : 'null'},
-					reunionLink = ${reunionLink ? `'${reunionLink}'` : 'null'},
-					facebookLink = ${facebookLink ? `'${facebookLink}'` : 'null'},
-					youtubeLink = ${youtubeLink ? `'${youtubeLink}'` : 'null'},
-					twitterLink = ${twitterLink ? `'${twitterLink}'` : 'null'},
-					anotherLink = ${anotherLink ? `'${anotherLink}'` : 'null'},
-					isActive = ${isActive ? 1 : 0}
-				WHERE id=${id}
+					title = ?,
+					idTipoEvento = ?,
+					organizedBy = ?,
+					place = ?,
+					shortDescription = ?,
+					description = ?,
+					startTime = ?,
+					endTime = ?,
+					price = ?,
+					imageUrl = ?,
+					direccion = ?,
+					reunionLink = ?,
+					facebookLink = ?,
+					youtubeLink = ?,
+					twitterLink = ?,
+					anotherLink = ?,
+					isActive = ?
+				WHERE id=?
 		`;
+		const startTimeValue = startDay ? `${startDay} ${startTime ?? ''}`.trim() : null;
+		const endTimeValue = (endDay && endDay !== 'Invalid date') ? `${endDay}${endTime ? ` ${endTime}` : ''}` : null;
+		const params = [
+			title,
+			Number(idTipoEvento),
+			organizedBy,
+			place || null,
+			shortDescription || null,
+			description || null,
+			startTimeValue,
+			endTimeValue,
+			price || null,
+			imageUrl || null,
+			direccion || null,
+			reunionLink || null,
+			facebookLink || null,
+			youtubeLink || null,
+			twitterLink || null,
+			anotherLink || null,
+			isActive ? 1 : 0,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -2180,9 +2664,9 @@ class DataBase {
 	}
 
 	async deleteComunication(id) {
-		const queryString = `DELETE FROM evento WHERE id=${id}`;
+		const queryString = `DELETE FROM evento WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2261,12 +2745,12 @@ class DataBase {
 					isActive
 				) 
 			VALUES (
-				'${value}',
-				${isActive ? 1 : 0}
+				?,
+				?
 			)
 		`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, isActive ? 1 : 0]);
 			return {
 				success: true,
 				data: result,
@@ -2289,11 +2773,11 @@ class DataBase {
 		const queryString = `
 			UPDATE tipo_evento
 				SET
-					value = '${value}',
-					isActive = ${isActive ? 1 : 0}
-				WHERE id=${id}`;
+					value = ?,
+					isActive = ?
+				WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [value, isActive ? 1 : 0, Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2309,9 +2793,9 @@ class DataBase {
 	}
 
 	async deleteTipoEvento(id) {
-		const queryString = `DELETE FROM tipo_evento WHERE id=${id}`;
+		const queryString = `DELETE FROM tipo_evento WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2341,22 +2825,26 @@ class DataBase {
 		conditions
 	}) {
 		let whereConditions = ''
+		const params = []
 		if (conditions) {
 			const unionCondition = ' AND '
 			let isFirstCondition = true
 			if (conditions.id) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} pr.id = ${conditions.id} `
+				whereConditions += `${prefix} pr.id = ? `
+				params.push(Number(conditions.id))
 				isFirstCondition = false
 			}
 			if (conditions.idAutor) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} pr.authorId = ${conditions.idAutor}`
+				whereConditions += `${prefix} pr.authorId = ?`
+				params.push(Number(conditions.idAutor))
 				isFirstCondition = false
 			}
 			if (conditions.idRegion) {
 				const prefix = isFirstCondition ? '' : unionCondition
-				whereConditions += `${prefix} pr.regionId = ${conditions.idRegion}`
+				whereConditions += `${prefix} pr.regionId = ?`
+				params.push(Number(conditions.idRegion))
 				isFirstCondition = false
 			}
 		}
@@ -2388,7 +2876,7 @@ class DataBase {
 		query = query.replace(/\s+/g, ' ').trim()
 
 		try {
-			const results = await this.query(query);
+			const results = await this.query(query, params);
 			return {
 				success: true,
 				data: results.map(pr => ({
@@ -2434,19 +2922,22 @@ class DataBase {
 				isActive
 			)
 			VALUES (
-				'${titulo.trim()}',
-				'${descripcion.trim()}',
-				${idRegion},
-				${idAutor},
-				${pdfFileUrl ? `'${pdfFileUrl}'`.trim() : 'null'},
-				${excelFileUrl ? `'${excelFileUrl}'`.trim() : 'null'},
-				${csvFileUrl ? `'${csvFileUrl}'`.trim() : 'null'},
-				'${fechaCreacion}',
-				${estaActivo ? 1 : 0}
+				?, ?, ?, ?, ?, ?, ?, ?, ?
 			)
 		`;
+		const params = [
+			titulo?.trim() || '',
+			descripcion?.trim() || '',
+			Number(idRegion),
+			Number(idAutor),
+			pdfFileUrl ? String(pdfFileUrl).trim() : null,
+			excelFileUrl ? String(excelFileUrl).trim() : null,
+			csvFileUrl ? String(csvFileUrl).trim() : null,
+			fechaCreacion,
+			estaActivo ? 1 : 0
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -2476,19 +2967,30 @@ class DataBase {
 		const queryString = `
 			UPDATE plan_regional 
 				SET
-					title='${titulo.trim()}',
-					description='${descripcion.trim()}',
-					regionId=${idRegion},
-					authorId=${idAutor},
-					pdfFileUrl=${pdfFileUrl ? `'${pdfFileUrl}'`.trim() : 'null'},
-					excelFileUrl=${excelFileUrl ? `'${excelFileUrl}'`.trim() : 'null'},
-					csvFileUrl=${csvFileUrl ? `'${csvFileUrl}'`.trim() : 'null'},
-					creationDate='${fechaCreacion}',
-					isActive=${estaActivo ? 1 : 0}
-				WHERE id=${id}
-		`;
+					title=?,
+					description=?,
+					regionId=?,
+					authorId=?,
+					pdfFileUrl=?,
+					excelFileUrl=?,
+					csvFileUrl=?,
+					creationDate=?,
+					isActive=?
+				WHERE id=?`;
+		const params = [
+			titulo?.trim() || '',
+			descripcion?.trim() || '',
+			Number(idRegion),
+			Number(idAutor),
+			pdfFileUrl ? String(pdfFileUrl).trim() : null,
+			excelFileUrl ? String(excelFileUrl).trim() : null,
+			csvFileUrl ? String(csvFileUrl).trim() : null,
+			fechaCreacion,
+			estaActivo ? 1 : 0,
+			Number(id)
+		];
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, params);
 			return {
 				success: true,
 				data: result,
@@ -2504,9 +3006,9 @@ class DataBase {
 	}
 
 	async deletePlanRegional(id) {
-		const queryString = `DELETE FROM plan_regional WHERE id=${id}`;
+		const queryString = `DELETE FROM plan_regional WHERE id=?`;
 		try {
-			const result = await this.query(queryString);
+			const result = await this.query(queryString, [Number(id)]);
 			return {
 				success: true,
 				data: result,
@@ -2521,7 +3023,616 @@ class DataBase {
 		}
 	}
 
-}
+	async createLog({
+		action,
+		entity,
+		entity_id,
+		description,
+		user_id,
+		user_email
+	}) {
+		const queryString = `
+			INSERT INTO logs (action, entity, entity_id, description, user_id, user_email)
+			VALUES (?, ?, ?, ?, ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [
+				action,
+				entity,
+				entity_id !== undefined && entity_id !== null ? entity_id : null,
+				description,
+				user_id,
+				user_email || ''
+			]);
+			return {
+				success: true,
+				data: {
+					id: result.insertId,
+					action,
+					entity,
+					entity_id,
+					description,
+					user_id,
+					user_email: user_email || '',
+					created_at: new Date().toISOString()
+				}
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo registrar el log" };
+		}
+	}
 
+	async getRecentLogs(limit = 10) {
+		const queryString = `
+			SELECT l.*,
+				TIMESTAMPDIFF(MINUTE, l.created_at, NOW()) AS minutes_ago
+			FROM logs l
+			ORDER BY l.created_at DESC
+			LIMIT ${limit}
+		`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results.map(r => ({
+					...r,
+					created_at: this.formatTimeAgo(r.minutes_ago)
+				}))
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener los logs" };
+		}
+	}
+
+	formatTimeAgo(minutes) {
+		if (minutes < 1) return "ahora";
+		if (minutes < 60) return minutes === 1 ? "hace 1 min" : `hace ${minutes} min`;
+		const hours = Math.floor(minutes / 60);
+		if (hours < 24) return hours === 1 ? "hace 1 h" : `hace ${hours} h`;
+		const days = Math.floor(hours / 24);
+		return days === 1 ? "ayer" : `hace ${days} d`;
+	}
+
+	async getRevistas() {
+		const queryString = `
+			SELECT r.id, r.titulo, r.slug, r.imagen_url, r.pdf_url, r.esta_activo, r.created_at,
+			       r.idTemaRevista, t.value AS tema
+			FROM revistas r
+			LEFT JOIN tipos_revista t ON r.idTemaRevista = t.id
+			ORDER BY r.created_at DESC
+		`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener las revistas" };
+		}
+	}
+
+	async createRevista({ titulo, slug, idTemaRevista, imagen_url, pdf_url, esta_activo }) {
+		const queryString = `
+			INSERT INTO revistas (titulo, slug, idTemaRevista, imagen_url, pdf_url, esta_activo)
+			VALUES (?, ?, ?, ?, ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [titulo, slug || '', idTemaRevista || null, imagen_url || '', pdf_url || '', esta_activo ? 1 : 0]);
+			return { success: true, data: { insertId: result.insertId } };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear la revista" };
+		}
+	}
+
+	async updateRevista({ id, titulo, slug, idTemaRevista, imagen_url, pdf_url, esta_activo }) {
+		const queryString = `
+			UPDATE revistas
+			SET titulo = ?, slug = ?, idTemaRevista = ?, imagen_url = ?, pdf_url = ?, esta_activo = ?
+			WHERE id = ?
+		`;
+		try {
+			await this.query(queryString, [titulo, slug || '', idTemaRevista || null, imagen_url || '', pdf_url || '', esta_activo ? 1 : 0, id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar la revista" };
+		}
+	}
+
+	async deleteRevista(id) {
+		const queryString = `DELETE FROM revistas WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar la revista" };
+		}
+	}
+
+	async getTiposRevista() {
+		const queryString = `SELECT id, value, isActive FROM tipos_revista ORDER BY id ASC`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results.map(t => ({ ...t, isActive: t.isActive === 1 }))
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener los tipos de revista" };
+		}
+	}
+
+	async createTipoRevista({ value, isActive }) {
+		const queryString = `INSERT INTO tipos_revista (value, isActive) VALUES (?, ?)`;
+		try {
+			const result = await this.query(queryString, [value, isActive ? 1 : 0]);
+			return { success: true, data: result, message: "Se creó el tipo de revista" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el tipo de revista" };
+		}
+	}
+
+	async updateTipoRevista({ id, value, isActive }) {
+		const queryString = `UPDATE tipos_revista SET value = ?, isActive = ? WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [value, isActive ? 1 : 0, id]);
+			return { success: true, data: result, message: "Se actualizó el tipo de revista" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el tipo de revista" };
+		}
+	}
+
+	async deleteTipoRevista(id) {
+		const queryString = `DELETE FROM tipos_revista WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [id]);
+			return { success: true, data: result, message: "Se eliminó el tipo de revista" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el tipo de revista" };
+		}
+	}
+
+	async countRevistasByTipoRevista(idTemaRevista) {
+		const queryString = `SELECT COUNT(*) AS count FROM revistas WHERE idTemaRevista = ?`;
+		try {
+			const results = await this.query(queryString, [idTemaRevista]);
+			return { success: true, count: results[0].count };
+		} catch (error) {
+			console.error(error);
+			return { success: false, count: 0 };
+		}
+	}
+
+	async getRedesSociales() {
+		const queryString = `SELECT id, red, url, imagen_url, isActive FROM redes_sociales ORDER BY id ASC`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: results.map(r => ({ ...r, isActive: r.isActive === 1 }))
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener las redes sociales" };
+		}
+	}
+
+	async createRedSocial({ red, url, imagen_url, isActive }) {
+		const queryString = `INSERT INTO redes_sociales (red, url, imagen_url, isActive) VALUES (?, ?, ?, ?)`;
+		try {
+			const result = await this.query(queryString, [red, url, imagen_url || null, isActive ? 1 : 0]);
+			return { success: true, data: result, message: "Red social creada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear la red social" };
+		}
+	}
+
+	async updateRedSocial({ id, red, url, imagen_url, isActive }) {
+		const queryString = `UPDATE redes_sociales SET red = ?, url = ?, imagen_url = ?, isActive = ? WHERE id = ?`;
+		try {
+			await this.query(queryString, [red, url, imagen_url || null, isActive ? 1 : 0, id]);
+			return { success: true, message: "Red social actualizada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar la red social" };
+		}
+	}
+
+	async deleteRedSocial(id) {
+		const queryString = `DELETE FROM redes_sociales WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true, message: "Red social eliminada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar la red social" };
+		}
+	}
+
+	// --- Programas (antes Entornos Viales) ---
+	async getProgramas() {
+		const queryString = `
+			SELECT id, codigo, nombre, descripcion, enlace, imagen, estaActivo
+			FROM programa
+			ORDER BY id ASC
+		`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results.map(r => ({ ...r, activo: r.estaActivo === 1 })) };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener los programas" };
+		}
+	}
+
+	async createPrograma({ codigo, nombre, descripcion, enlace, imagen, estaActivo }) {
+		const queryString = `
+			INSERT INTO programa (codigo, nombre, descripcion, enlace, imagen, estaActivo, fechaRegistro, fechaActualizacion)
+			VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())
+		`;
+		try {
+			const result = await this.query(queryString, [
+				codigo || '', nombre || '', descripcion || '', enlace || '', imagen || '', estaActivo ? 1 : 0
+			]);
+			return { success: true, data: { insertId: result.insertId } };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el programa" };
+		}
+	}
+
+	async updatePrograma({ id, codigo, nombre, descripcion, enlace, imagen, estaActivo }) {
+		const queryString = `
+			UPDATE programa
+			SET codigo = ?, nombre = ?, descripcion = ?, enlace = ?, imagen = ?, estaActivo = ?, fechaActualizacion = NOW()
+			WHERE id = ?
+		`;
+		try {
+			await this.query(queryString, [
+				codigo || '', nombre || '', descripcion || '', enlace || '', imagen || '', estaActivo ? 1 : 0, id
+			]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el programa" };
+		}
+	}
+
+	async deletePrograma(id) {
+		const queryString = `DELETE FROM programa WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el programa" };
+		}
+	}
+
+	async getPublicacionesEstado(tipo) {
+		const queryString = `SELECT ghost_id, habilitado FROM publicaciones_estado WHERE tipo = ?`;
+		try {
+			const results = await this.query(queryString, [tipo]);
+			const map = {};
+			results.forEach(r => { map[r.ghost_id] = r.habilitado; });
+			return { success: true, data: map };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: {} };
+		}
+	}
+
+	async setPublicacionEstado(ghost_id, tipo, habilitado) {
+		const queryString = `INSERT INTO publicaciones_estado (ghost_id, tipo, habilitado) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE habilitado = VALUES(habilitado)`;
+		try {
+			await this.query(queryString, [ghost_id, tipo, habilitado ? 1 : 0]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el estado" };
+		}
+	}
+
+	async getDisabledGhostIds(tipo) {
+		const queryString = `SELECT ghost_id FROM publicaciones_estado WHERE tipo = ? AND habilitado = 0`;
+		try {
+			const results = await this.query(queryString, [tipo]);
+			return { success: true, data: results.map(r => r.ghost_id) };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	// --- Banners ---
+	async getBanners() {
+		const queryString = `SELECT id, posicion, archivo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron obtener los banners" };
+		}
+	}
+
+	async updateBannerTextos(id, idioma, datos) {
+		const lang = idioma === 'en' ? 'en' : 'es';
+		const { kicker, titulo, parrafo, btn1_label, btn1_href, btn2_label, btn2_href } = datos;
+		const queryString = `UPDATE banners SET
+			kicker_${lang} = ?,
+			titulo_${lang} = ?,
+			parrafo_${lang} = ?,
+			btn1_label_${lang} = ?,
+			btn1_href = ?,
+			btn2_label_${lang} = ?,
+			btn2_href = ?
+		WHERE id = ?`;
+		try {
+			await this.query(queryString, [
+				kicker || null,
+				titulo || null,
+				parrafo || null,
+				btn1_label || null,
+				btn1_href || null,
+				btn2_label || null,
+				btn2_href || null,
+				id
+			]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudieron actualizar los textos del banner" };
+		}
+	}
+
+	async updateBannerOrder(items) {
+		const queryString = `UPDATE banners SET posicion = ? WHERE id = ?`;
+		try {
+			for (const { id, posicion } of items) {
+				await this.query(queryString, [posicion, id]);
+			}
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el orden" };
+		}
+	}
+
+	async updateBannerArchivo(id, archivo) {
+		const queryString = `UPDATE banners SET archivo = ? WHERE id = ?`;
+		try {
+			await this.query(queryString, [archivo, id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el banner" };
+		}
+	}
+
+	async getAllBanners() {
+		const queryString = `SELECT id, posicion, archivo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	async getComponentesTecnologicos(idioma) {
+		const lang = idioma && String(idioma).toUpperCase() === 'EN' ? 'EN' : 'ES';
+		const queryString = `SELECT id, idioma, orden, titulo, descripcion, link, icon, external FROM componentes_tecnologicos WHERE idioma = ? ORDER BY orden ASC, id ASC`;
+		try {
+			const results = await this.query(queryString, [lang]);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	async createComponenteTecnologico({ idioma, titulo = '', descripcion = '', link = '' }) {
+		const lang = idioma && String(idioma).toUpperCase() === 'EN' ? 'EN' : 'ES';
+		const external = /^https?:\/\//.test(link || '') ? 1 : 0;
+		const queryString = `
+			INSERT INTO componentes_tecnologicos (idioma, orden, titulo, descripcion, link, external)
+			SELECT ?, COALESCE(MAX(orden), 0) + 1, ?, ?, ?, ?
+			FROM componentes_tecnologicos WHERE idioma = ?
+		`;
+		try {
+			const result = await this.query(queryString, [lang, titulo, descripcion, link, external, lang]);
+			return { success: true, data: result, message: "Se creó el componente tecnológico" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el componente tecnológico" };
+		}
+	}
+
+	async updateComponenteTecnologico(id, { titulo, descripcion, link }) {
+		const external = /^https?:\/\//.test(link || '') ? 1 : 0;
+		const queryString = `
+			UPDATE componentes_tecnologicos
+			SET titulo = ?, descripcion = ?, link = ?, external = ?
+			WHERE id = ?
+		`;
+		try {
+			const result = await this.query(queryString, [titulo, descripcion, link, external, id]);
+			return { success: true, data: result, message: "Se actualizó el componente tecnológico" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el componente tecnológico" };
+		}
+	}
+
+	async deleteComponenteTecnologico(id) {
+		const queryString = `DELETE FROM componentes_tecnologicos WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [id]);
+			return { success: true, data: result, message: "Se eliminó el componente tecnológico" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el componente tecnológico" };
+		}
+	}
+
+	async getAccesosRapidos(idioma) {
+		const lang = idioma && String(idioma).toUpperCase() === 'EN' ? 'EN' : 'ES';
+		const queryString = `SELECT id, idioma, orden, eyebrow, titulo, descripcion, texto_boton, enlace_boton, external, imagen FROM accesos_rapidos WHERE idioma = ? ORDER BY orden ASC, id ASC`;
+		try {
+			const results = await this.query(queryString, [lang]);
+			return { success: true, data: results.map(r => ({ ...r, external: r.external === 1 })) };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	async createAccesoRapido({ idioma, orden, eyebrow, titulo, descripcion, texto_boton, enlace_boton, imagen }) {
+		const lang = idioma && String(idioma).toUpperCase() === 'EN' ? 'EN' : 'ES';
+		const external = /^https?:\/\//.test(enlace_boton || '') ? 1 : 0;
+		const queryString = `
+			INSERT INTO accesos_rapidos (idioma, orden, eyebrow, titulo, descripcion, texto_boton, enlace_boton, external, imagen)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		`;
+		try {
+			const result = await this.query(queryString, [
+				lang, orden || 0, eyebrow || '', titulo || '', descripcion || '', texto_boton || '', enlace_boton || '', external, imagen || ''
+			]);
+			return { success: true, data: result, message: "Se creó el acceso rápido" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el acceso rápido" };
+		}
+	}
+
+	async updateAccesoRapido(id, { eyebrow, titulo, descripcion, texto_boton, enlace_boton, imagen }) {
+		const external = /^https?:\/\//.test(enlace_boton || '') ? 1 : 0;
+		const queryString = `
+			UPDATE accesos_rapidos
+			SET eyebrow = ?, titulo = ?, descripcion = ?, texto_boton = ?, enlace_boton = ?, external = ?, imagen = ?
+			WHERE id = ?
+		`;
+		try {
+			const result = await this.query(queryString, [
+				eyebrow || '', titulo || '', descripcion || '', texto_boton || '', enlace_boton || '', external, imagen || '', id
+			]);
+			return { success: true, data: result, message: "Se actualizó el acceso rápido" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el acceso rápido" };
+		}
+	}
+
+	async deleteAccesoRapido(id) {
+		const queryString = `DELETE FROM accesos_rapidos WHERE id = ?`;
+		try {
+			const result = await this.query(queryString, [id]);
+			return { success: true, data: result, message: "Se eliminó el acceso rápido" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el acceso rápido" };
+		}
+	}
+
+	// --- Subitems del navbar (menu_subitems) ---
+	async getMenuSubitems() {
+		const queryString = `SELECT id, seccion, orden, label_es, label_en, url, external, isActive FROM menu_subitems ORDER BY seccion ASC, orden ASC, id ASC`;
+		try {
+			const results = await this.query(queryString);
+			return {
+				success: true,
+				data: (results || []).map(r => ({
+					id: r.id,
+					seccion: r.seccion,
+					orden: r.orden,
+					label_es: r.label_es || '',
+					label_en: r.label_en || '',
+					url: r.url || '',
+					external: r.external === 1 || r.external === '1',
+					isActive: r.isActive === 1 || r.isActive === '1'
+				}))
+			};
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	async createMenuSubitem({ seccion, label_es, label_en, url, external, isActive }) {
+		const allowed = ['quienes-somos', 'comunicaciones', 'publicaciones', 'educacion-vial', 'aplicaciones', 'normas-legales'];
+		const sec = allowed.includes(seccion) ? seccion : 'quienes-somos';
+		const queryString = `
+			INSERT INTO menu_subitems (seccion, orden, label_es, label_en, url, external, isActive)
+			SELECT ?, COALESCE(MAX(orden), 0) + 1, ?, ?, ?, ?, ?
+			FROM (SELECT orden FROM menu_subitems WHERE seccion = ?) s
+		`;
+		try {
+			const result = await this.query(queryString, [
+				sec, label_es || '', label_en || '', url || '',
+				external ? 1 : 0, isActive ? 1 : 0, sec
+			]);
+			return { success: true, data: { insertId: result.insertId }, message: "Se creó el subitem" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el subitem" };
+		}
+	}
+
+	async updateMenuSubitem(id, { label_es, label_en, url, external, isActive }) {
+		const setParts = [];
+		const params = [];
+		if (label_es !== undefined) { setParts.push('label_es = ?'); params.push(label_es || ''); }
+		if (label_en !== undefined) { setParts.push('label_en = ?'); params.push(label_en || ''); }
+		if (url !== undefined) { setParts.push('url = ?'); params.push(url || ''); }
+		if (external !== undefined) { setParts.push('external = ?'); params.push(external ? 1 : 0); }
+		if (isActive !== undefined) { setParts.push('isActive = ?'); params.push(isActive ? 1 : 0); }
+		if (setParts.length === 0) return { success: true, message: "Nada que actualizar" };
+		setParts.push('update_time = CURRENT_TIMESTAMP');
+		params.push(id);
+		const queryString = `UPDATE menu_subitems SET ${setParts.join(', ')} WHERE id = ?`;
+		try {
+			await this.query(queryString, params);
+			return { success: true, message: "Se actualizó el subitem" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el subitem" };
+		}
+	}
+
+	async deleteMenuSubitem(id) {
+		const queryString = `DELETE FROM menu_subitems WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true, message: "Se eliminó el subitem" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el subitem" };
+		}
+	}
+
+	async reorderMenuSubitems(items) {
+		const queryString = `UPDATE menu_subitems SET orden = ? WHERE id = ?`;
+		try {
+			for (const { id, orden } of items) {
+				await this.query(queryString, [orden, id]);
+			}
+			return { success: true, message: "Se actualizó el orden" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el orden" };
+		}
+	}
+
+}
 
 module.exports = DataBase;

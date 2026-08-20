@@ -1,357 +1,1237 @@
-<!-- banner section -->
-<section class="rsp-banner">
-	<div class="carousel slide" data-ride="carousel" data-interval="3000">
-	<!-- The slideshow -->
-		<div class="carousel-inner">
-			{{#each banners}}
-				{{#if @first}}
-				<div class="carousel-item active img-banner">
-					<img src="/assets/{{this}}" >
-				</div>
-				{{else}}
-				<div class="carousel-item">
-					<img src="/assets/{{this}}"ñ >
-				</div>
-				{{/if}}
-			{{/each}}
-		</div>
-	</div>
-	<div class="rsp-ban-desc">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-9 col-md-8 mx-auto d-md-none d-lg-none d-xl-none">
-					<h1 class="ft-bold">
-						Bienvenido al Observatorio Nacional 
-						de Seguridad Vial
-					</h1>
-					<p class="text-justify">
-						El Observatorio Nacional de Seguridad Vial sistematiza, analiza y difunde información sobre riesgos, causas y consecuencias de los siniestros viales utilizando las buenas prácticas en la gestión de datos. Tiene como finalidad servir de insumo a las entidades competentes para mejorar las políticas entorno a la prevención, fiscalización y respuesta frente a la ocurrencia de hechos de tránsito de manera y así garantizar el cuidado de la vida y la salud de todos los usuarios y usuarias de las vías del Perú.
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
+<style>
+  .eyebrow { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--red); margin-bottom: 6px; display: block; }
+  .sec-title { font-family: "Barlow Condensed", sans-serif; font-weight: 800; text-transform: uppercase; font-size: clamp(26px,3.4vw,42px); line-height: 1; color: var(--navy); letter-spacing: .005em; margin: 0; }
+  .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
+  .sec-head .more { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 13px; color: var(--blue-2); display: inline-flex; align-items: center; gap: 7px; background: none; border:none; padding: 0; cursor: pointer; transition: .2s; }
+  .sec-head .more:hover { color: var(--red); gap: 11px; text-decoration: none; }
+
+  .sec-head .more.srat-btn {
+    background: #C8102E;
+    color: #fff;
+    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+  .sec-head .more.srat-btn:hover {
+    background: #a00d24;
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200,16,46,0.3);
+  }
+
+  .hero { position: relative; background: var(--navy); overflow: hidden; }
+  .slides.carousel-inner { height: clamp(420px,56vh,560px); }
+  .hero .slide.carousel-item { height: 100%; border:none; }
+  .hero .bg { position: absolute; inset: 0; background-size: cover; background-position: center; transform: scale(1.06); }
+  .hero .active .bg { animation: kb 7s ease forwards; }
+  @keyframes kb { to { transform: scale(1); } }
+  .hero .veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,21,40,0) 48%, rgba(13,21,40,.5) 58%, rgba(13,21,40,.5) 100%); }
+  
+  .hero-in { position: absolute; inset:0; z-index: 2; width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: flex-end; }
+  .hero-card { max-width: 480px; text-align: left; margin-right: 60px; }
+  .hero .kick { color: var(--amber); font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .2em; font-size: 14px; margin-bottom: 14px; opacity: 0; animation: rise .7s .15s forwards; }
+  .hero h2 { color: #fff; font-family: "Barlow Condensed", sans-serif; font-size: clamp(26px,3.4vw,42px); line-height: 1.04; font-weight: 700; margin: 0; opacity: 0; animation: rise .7s .3s forwards; }
+  .hero h2 em { color: var(--red); font-style: normal; }
+  .hero p { color: #e7ecf6; font-family: "Barlow", sans-serif; font-size: clamp(15px,1.7vw,17px); max-width: 440px; margin-top: 16px; opacity: 0; animation: rise .7s .45s forwards; }
+  
+  .hero .btns { margin-top: 28px; display: flex; gap: 14px; flex-wrap: wrap; opacity: 0; animation: rise .7s .6s forwards; }
+  .hero .btn-hero { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 15px; padding: 13px 24px; border-radius: 9px; cursor: pointer; border: 2px solid transparent; transition: .2s; display: inline-flex; gap: 9px; align-items: center; text-decoration: none; }
+  .btn-white { background: #fff; color: var(--navy); } .btn-white:hover { background: var(--navy); color: #fff; text-decoration: none; }
+  .hero .btn-ghost { border: 2px solid rgba(255,255,255,.5); color: #fff; }
+  .hero .btn-ghost:hover { background: #fff; color: var(--navy); border-color: #fff; text-decoration: none; }  @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  
+  .hero-capsules { list-style: none; margin: 0; padding: 0; position: absolute; z-index: 5; left: 50%; transform: translateX(-50%); bottom: 26px; display: flex; gap: 8px; }
+  .hero-capsules .hero-capsule { box-sizing: border-box; width: 44px; height: 5px; margin: 0; padding: 0; border: none; border-radius: 999px; background: rgba(255,255,255,.32); overflow: hidden; cursor: pointer; position: relative; opacity: 1; text-indent: -9999px; transition: background .2s; }
+  .hero-capsules .hero-capsule:hover { background: rgba(255,255,255,.5); }
+  .hero-capsules .hero-capsule.active { background: rgba(255,255,255,.32); }
+  .hero-capsules .hero-capsule .capsule-fill { position: absolute; top: 0; left: 0; bottom: 0; width: 100%; background: var(--red); border-radius: 999px; transform: scaleX(0); transform-origin: left center; will-change: transform; }
+
+  .hero-capsules .hero-capsule.active .capsule-fill { animation: capsuleFill 5s linear forwards; }
+  @keyframes capsuleFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @media(max-width: 760px) { .hero-capsules { bottom: 16px; } .hero-capsules .hero-capsule { width: 30px; } .hero-card { margin-right: 0; } }
+  @media(max-width: 400px) { .hero h1 { font-size: 22px !important; } .hero p { font-size: 14px !important; } }
+
+  .kpis { background: var(--mist); padding: 46px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .kpis .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: #fff; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
+  .kpis .kpi { display: block; background: #fff; padding: 26px 28px 24px; position: relative; border-left: 5px solid var(--c); }
+  .kpis .kpi .ic { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 13%, #fff); margin: 0 0 16px 0; flex: none; }
+  .kpis .kpi .ic svg { width: 24px; height: 24px; stroke: var(--c); }
+  .kpis .kpi .num { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: clamp(34px,4vw,54px); color: var(--navy); line-height: 1; margin:0;}
+  .kpis .kpi .lb { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-size: 13px; margin-top: 5px; }
+  .kpis .src { text-align: center; color: var(--muted); font-size: 14px; margin-top: 16px; font-family:"Barlow", sans-serif; }
+
+  .kpis .kpi-badge {
+    position: absolute;
+    top: 38px;
+    right: 12px;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #fff;
+    background: var(--c);
+    padding: 3px 10px;
+    border-radius: 6px;
+    line-height: 1.4;
+  }
+  @media(max-width: 760px) { .kpis .kpi-grid { grid-template-columns: 1fr; } .hero .veil { background: linear-gradient(180deg, rgba(13,21,40,.5), rgba(13,21,40,.78)); } .hero-in { justify-content: flex-start; } .hero-card { max-width: none; } }
+  @media(max-width: 400px) { .kpis .kpi .num { font-size: 28px !important; } .kpis .kpi { padding: 18px 16px; } }
+</style>
+
+<section id="heroCarousel" class="carousel slide carousel-fade hero">
+  <div class="carousel-inner slides">
+      <div class="carousel-item slide active">
+        <div class="bg" style="background-image: url('{{banners.[0].archivo}}');"></div>
+        <div class="veil"></div>
+        
+        <div class="hero-in">
+          <div class="hero-card">
+            <div class="kick">{{{banners.[0].kicker}}}</div>
+            <h2>{{{banners.[0].titulo}}}</h2>
+            <p>{{{banners.[0].parrafo}}}</p>
+            <div class="btns">
+              <a class="btn-hero btn-white" href="{{banners.[0].btn1_href}}"{{#if banners.[0].btn1_externo}} target="_blank"{{/if}}>{{banners.[0].btn1_label}} →</a>
+              {{#if banners.[0].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[0].btn2_href}}"{{#if banners.[0].btn2_externo}} target="_blank"{{/if}}>{{banners.[0].btn2_label}} →</a>{{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-item slide">
+        <div class="bg" style="background-image: url('{{banners.[1].archivo}}');"></div>
+        <div class="veil"></div>
+        
+        <div class="hero-in">
+          <div class="hero-card">
+            <div class="kick">{{{banners.[1].kicker}}}</div>
+            <h2>{{{banners.[1].titulo}}}</h2>
+            <p>{{{banners.[1].parrafo}}}</p>
+            <div class="btns">
+              <a class="btn-hero btn-white" href="{{banners.[1].btn1_href}}"{{#if banners.[1].btn1_externo}} target="_blank"{{/if}}>{{banners.[1].btn1_label}} →</a>
+              {{#if banners.[1].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[1].btn2_href}}"{{#if banners.[1].btn2_externo}} target="_blank"{{/if}}>{{banners.[1].btn2_label}} →</a>{{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-item slide">
+        <div class="bg" style="background-image: url('{{banners.[2].archivo}}');"></div>
+        <div class="veil"></div>
+        
+        <div class="hero-in">
+          <div class="hero-card">
+            <div class="kick">{{{banners.[2].kicker}}}</div>
+            <h2>{{{banners.[2].titulo}}}</h2>
+            <p>{{{banners.[2].parrafo}}}</p>
+            <div class="btns">
+              <a class="btn-hero btn-white" href="{{banners.[2].btn1_href}}"{{#if banners.[2].btn1_externo}} target="_blank"{{/if}}>{{banners.[2].btn1_label}} →</a>
+              {{#if banners.[2].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[2].btn2_href}}"{{#if banners.[2].btn2_externo}} target="_blank"{{/if}}>{{banners.[2].btn2_label}} →</a>{{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <ol class="hero-capsules" id="heroCapsules">
+    {{#each banners}}
+      <li class="hero-capsule {{#if @first}}active{{/if}}">
+        <span class="capsule-fill"></span>
+      </li>
+    {{/each}}
+  </ol>
 </section>
 <!-- End banner section -->
 
-<section class="rsp-hs-ic-sec rsp-wrap">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4">
-				<div class="rsp-hs-ic-blk">
-					<div class="rsp-hs-ic-img">
-						<img class="icon-slider" src="/assets/hs2.png" alt="hs-icon">
-					</div>
-					<h3 class="ft-bold">{{accidentados}}*</h3>
-					<p>{{t lang "Siniestros"}}</p>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="rsp-hs-ic-blk">
-					<div class="rsp-hs-ic-img">
-						<img class="icon-slider" src="/assets/hs3.png" alt="hs-icon">
-					</div>
-					<h3 class="ft-bold">{{lesionados}}*</h3>
-					<p>{{t lang "Lesionados"}}</p>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="rsp-hs-ic-blk">
-					<div class="rsp-hs-ic-img">
-						<img class="icon-slider" src="/assets/hs4.png" alt="hs-icon">
-					</div>
-					<h3 class="ft-bold">{{fallecidos}}*</h3>
-					<p>{{t lang "Fallecidos"}}</p>
-				</div>
-			</div>
-		</div>
-		<p class="mt-2">
-			<span class="cita">{{mensaje1}}</span>
-		</p>
-		<p>
-			<span class="cita">{{mensaje2}}</span>
-		</p>
-	</div>
+<h1 class="sr-only">Observatorio Nacional de Seguridad Vial — Sistematización, análisis y difusión de información sobre siniestros viales en el Perú</h1>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var el = document.getElementById("heroCarousel");
+    var capsules = document.querySelectorAll(".hero-capsule");
+    var slides = el.querySelectorAll(".carousel-item");
+    var current = 0;
+    var timer;
+
+    function goTo(index) {
+      slides[current].classList.remove("active");
+      capsules[current].classList.remove("active");
+      current = index;
+      slides[current].classList.add("active");
+      capsules[current].classList.add("active");
+      restartFill();
+    }
+
+    function next() { goTo((current + 1) % slides.length); }
+
+    function restartFill() {
+      var fill = capsules[current].querySelector(".capsule-fill");
+      if (fill) {
+        fill.style.animation = "none";
+        void fill.offsetWidth;
+        fill.style.animation = "";
+      }
+    }
+
+    capsules.forEach(function (cap, i) {
+      cap.addEventListener("click", function () { goTo(i); });
+    });
+
+    timer = setInterval(next, 5000);
+  });
+</script>
+
+<style>
+  .stats-variation { font-size: 11px; color: #777; font-family: "Barlow", sans-serif; font-weight: 600; margin-top: 6px; }
+  .red-text { color: var(--red); }
+</style>
+
+<section class="kpis" id="siniestralidad">
+  <div class="container wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">{{t lang "Panorama nacional"}}</div>
+        <h2 class="sec-title">{{t lang "Datos de siniestralidad"}}</h2>
+      </div>
+      <a class="more" href="/analitica">{{t lang "Analítica completa →"}}</a>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi" style="--c:#C8102E">
+        <span class="kpi-badge">{{t lang "Siniestros"}}</span>
+        <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 16.5v.5"/></svg></div>
+        <div class="num" id="val-accidentados">{{accidentados}}</div>
+        <div class="stats-variation">{{fuente_siniestro}} · <span class="red-text">{{porcentaje_siniestro}}</span></div>
+      </div>
+      
+      <div class="kpi" style="--c:#F2A900">
+        <span class="kpi-badge">{{t lang "Lesiones"}}</span>
+        <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <div class="num" id="val-lesionados">{{lesionados}}</div>
+        <div class="stats-variation">{{fuente_lesiones}} · <span class="red-text">{{porcentaje_lesiones}}</span></div>
+      </div>
+      
+      <div class="kpi" style="--c:#14213D">
+        <span class="kpi-badge">{{t lang "Muertes"}}</span>
+        <div class="ic"><svg fill="none" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z"/><circle cx="12" cy="11" r="2.4"/></svg></div>
+        <div class="num" id="val-fallecidos">{{fallecidos}}</div>
+        <div class="stats-variation">{{fuente_muertes}} · <span class="red-text">{{porcentaje_muertes}}</span></div>
+      </div>
+    </div>
+
+    <div class="src mt-3">
+      <span class="cita d-block font-weight-bold">{{mensaje1}}</span>
+      <span class="cita d-block">{{mensaje2}}</span>
+    </div>
+  </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const nums = document.querySelectorAll(".kpi .num");
+
+    function animateCount(el) {
+      const raw = el.innerText.replace(/[^0-9]/g, "");
+      if (!raw) return;
+      const target = parseInt(raw);
+      if (el.dataset.counted === "true") return;
+      el.dataset.counted = "true";
+
+      const duration = 2000;
+      const start = performance.now();
+
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        el.innerText = Math.round(target * eased).toLocaleString();
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCount(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    nums.forEach(num => observer.observe(num));
+  });
+</script>
+
+<style>
+  .tech { background: linear-gradient(180deg, #394c75, #2f4267); color: #fff; padding: 46px 0; margin-bottom: 30px; }
+  .tech .sec-title { color: #fff; margin-bottom: 26px; } 
+  .tech .eyebrow { color: var(--amber); }
+  
+  .tech-carousel-wrap { position: relative; padding: 0 60px; }
+  
+    .tech-viewport {
+    overflow: hidden;
+    padding: 15px 10px 40px 10px;
+    margin: -15px -10px -40px -10px;
+  }
+  
+  .tech-track-native {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .tcard { 
+    background: linear-gradient(160deg, #41547e, #374a71); border: 1px solid #506498; border-radius: 14px; padding: 24px; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; cursor: pointer; text-decoration: none !important; display: flex; flex-direction: column; height: auto; min-height: 250px; 
+    flex: 0 0 calc(33.333% - 13.33px);
+  }
+  
+  .tcard:hover { transform: translateY(-8px); border-color: var(--red); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+  
+  .tcard .ic { width: 52px; height: 52px; border-radius: 12px; background: rgba(255,255,255,.09); display: grid; place-items: center; margin-bottom: 16px; border: 1px solid #506498; }
+  .tcard .ic svg { width: 26px; height: 26px; stroke: var(--amber); fill: none; stroke-width: 1.6; }
+  .tcard h3 { font-size: 22px; color: #fff; text-transform: uppercase; margin: 0 0 7px 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; }
+  .tcard p { color: #aeb9d2; font-size: 14px; margin: 0; font-family: "Barlow", sans-serif; flex: 1; }
+  .tcard .arrow { margin-top: 14px; color: var(--red); font-weight: 700; font-family: "Barlow Semi Condensed", sans-serif; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+  
+  .tech .arrow-ctrl { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.4); color: #fff; display: grid; place-items: center; font-size: 20px; transition: .2s; z-index: 10; text-decoration: none; cursor: pointer; }
+  .tech .arrow-ctrl:hover { background: var(--red); border-color: var(--red); text-decoration: none; }
+  .tech .prev-ctrl { left: 0; }
+  .tech .next-ctrl { right: 0; }
+  
+  @media(max-width: 991px) { .tcard { flex: 0 0 calc(50% - 10px); } }
+  @media(max-width: 767px) { .tcard { flex: 0 0 100%; } .tech-carousel-wrap { padding: 0 40px; } }
+
+</style>
+
+<section class="tech" id="tech">
+  <div class="container wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">{{t lang "Aplicaciones e Información"}}</div>
+        <h2 class="sec-title">{{t lang "Componentes tecnológicos"}}</h2>
+      </div>
+    </div>
+    
+    <div class="tech-carousel-wrap">
+      
+      <div class="tech-viewport">
+        <div class="tech-track-native" id="techTrackNative">
+          {{#each componentesCards}}
+          <a class="tcard" href="{{link}}" {{#if external}}target="_blank"{{/if}}>
+            <div class="ic"><svg viewBox="0 0 24 24">{{{icon}}}</svg></div>
+            <h3>{{titulo}}</h3>
+            <p>{{descripcion}}</p>
+            <div class="arrow">{{t lang "Ingresar →"}}</div>
+          </a>
+          {{/each}}
+        </div>
+      </div>
+      
+      <a class="arrow-ctrl prev-ctrl" id="techPrev" href="#" role="button">
+        <span aria-hidden="true">‹</span>
+      </a>
+      <a class="arrow-ctrl next-ctrl" id="techNext" href="#" role="button">
+        <span aria-hidden="true">›</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const track = document.getElementById("techTrackNative");
+    const prevBtn = document.getElementById("techPrev");
+    const nextBtn = document.getElementById("techNext");
+    if(!track || !prevBtn || !nextBtn) return;
+
+    let isAnimating = false;
+
+    nextBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      const cardWidth = track.firstElementChild.offsetWidth + 20;
+
+      track.style.transition = "transform 0.4s ease-in-out";
+      track.style.transform = `translateX(-${cardWidth}px)`;
+
+      setTimeout(() => {
+        track.style.transition = "none";
+        track.appendChild(track.firstElementChild);
+        track.style.transform = "translateX(0)";
+        isAnimating = false;
+      }, 400);
+    });
+
+    prevBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      const cardWidth = track.firstElementChild.offsetWidth + 20;
+
+      track.style.transition = "none";
+      track.insertBefore(track.lastElementChild, track.firstElementChild);
+      track.style.transform = `translateX(-${cardWidth}px)`;
+
+      void track.offsetWidth;
+
+      track.style.transition = "transform 0.4s ease-in-out";
+      track.style.transform = "translateX(0)";
+
+      setTimeout(() => {
+        track.style.transition = "none";
+        isAnimating = false;
+      }, 400);
+    });
+  });
+</script>
 
 <!-- vu section -->
-<section class="rsp-vu-sec rsp-wrap">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-6 col-md-7 vu-map-col">
-				<h3  class="rsp-title ft-bold">{{t lang "Visor de Alerta de Siniestros"}}  <br/>
-				{{t lang "de Tránsito"}}  <a href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank" class="btn btn-rsp ft-bold">{{t lang 'ver'}}</a></h3>
-			
-				<div class="vu-map">
-					<div class="mapouter">
-						<div class="gmap_canvas">
-							<iframe width="100%" height="550" id="gmap_canvas" src="https://sratma.mtc.gob.pe/SRATMA/mapa/" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-5 vu-list-col">
-				<h3 class="rsp-title ft-bold text-center">{{t lang "Ultimos"}} <br/>
-					{{t lang "10 accidentes"}}</h3>
-				<div class="vu-list radius">
-						{{#each accidents}}
-							{{>index/accident lang=../lang}}
-						{{/each}}
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-5 vu-list-col">
-				<div class="social_section vu-list radius">
-					<div class="social_section_tabs">
-						<span id="tab_facebook" class="active">
-							<svg width="24" height="24" viewBox="0 0 24 24">
-								<path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/>
-							</svg>
-						</span>
-						<span id="tab_twitter">
-							<svg width="24" height="24" viewBox="0 0 24 24">
-								<path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/>
-							</svg>
-						</span>
-					</div>
-					<div class="iframes_content">
-						<section id="iframe_facebook" class="show">
-							<div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-width="360" data-height="700" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
-						</section>
-						<section id="iframe_twitter">
-							<a class="twitter-timeline" href="https://twitter.com/onsvPE?ref_src=twsrc%5Etfw">Tweets by onsvPE</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-						</section>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<style>
+  .new-map-box { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); height: 100%; min-height: 430px; background: #fff; }
+  .feed { background: #fff; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); height: 100%; max-height: 550px; }
+  .feed .fh { background: var(--navy); color: #fff; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .feed .fh h3 { color: #fff; font-size: 19px; text-transform: uppercase; margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; }
+  .feed .fh .live { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; font-size: 11px; letter-spacing: .1em; display: flex; gap: 6px; align-items: center; color: #ffd9df; }
+  .feed .fh .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: blink 1.3s infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  
+  .feed .vu-list { padding: 0; flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #c7cfdd transparent; }
+  .feed .vu-list::-webkit-scrollbar { width: 6px; }
+  .feed .vu-list::-webkit-scrollbar-thumb { background: #c7cfdd; border-radius: 6px; }
+
+
+
+  .social-box-modern { border: 1px solid var(--line); border-radius: 16px !important; overflow: hidden; box-shadow: var(--shadow); background: #fff; }
+  .social_section_tabs { background: #fafbfd; border-bottom: 1px solid var(--line); display: flex; }
+  .social_section_tabs span { flex: 1; text-align: center; padding: 12px 0; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; }
+  .social_section_tabs span.active { border-bottom-color: var(--blue-2); background: #fff; }
+  .social_section_tabs span svg { fill: var(--muted); width: 22px; height: 22px; transition: 0.2s; }
+  .social_section_tabs span.active svg { fill: var(--blue-2); }
+
+  @media(max-width: 991px) { .new-map-box iframe { min-height: 350px !important; } }
+  @media(max-width: 767px) { .new-map-box iframe { min-height: 280px !important; } .feed { max-height: 400px; } }
+</style>
+
+<section class="rsp-vu-sec" id="mapa" style="padding: 46px 0; scroll-margin-top: 20px;">
+  <div class="container wrap">
+    
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">{{t lang "Georreferencia"}}</div>
+        <h2 class="sec-title">{{t lang "Mapa de siniestros viales"}}</h2>
+      </div>
+      <a class="more srat-btn" href="https://sratma.mtc.gob.pe/SRATMA/mapa/" target="_blank">{{t lang 'ver'}} {{t lang "SRAT Completo →"}}</a>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8 col-md-7 vu-map-col mb-4 mb-lg-0">
+        <div class="new-map-box">
+          <iframe width="100%" height="100%" style="min-height: 550px;" id="gmap_canvas" src="https://sratma.mtc.gob.pe/SRATMA/mapa/" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-5 vu-list-col">
+        <div class="feed">
+          <div class="fh">
+            <h3>{{t lang "Ultimos"}} {{t lang "Siniestros"}}</h3>
+            <span class="live">{{t lang "EN VIVO"}}</span>
+          </div>
+          <div class="vu-list bg-white">
+            {{#each accidents}}
+              {{>index/accident lang=../lang}}
+            {{/each}}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!--<section class="rsp-wrap mt-n4">
-	<div class="container">
-		<div class="jumbotron newsletter">
-			<div class="icon-newsletter">
-				<i class="fas fa-envelope-open-text fa-5x"></i>
-			</div>
-			<div class="texto-newsletter ml-5">
-				<p class="titulo-newsletter pb-4 text-center text-md-left">{{t lang 'news-text'}}</p>
-				<button 
-					class="btn btn-rsp btn-block ft-bold boton-newsletter"
-					id="suscriber-button"
-					class="btn"
-					data-toggle="modal"
-					data-target="#suscriber-modal-form">{{t lang 'news-button'}}
-				</button>
-			</div>
-		</div>
-	</div>
-</section>-->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var mesesCortos = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 
-<section class="rsp-vu-sec rsp-wrap">
-	<div class="container">
-		<div 
-			class="row justify-content-around" 
-			style="padding: 3rem;border: 2px solid #c00e0e;border-radius: 0.3rem;"
-		>
-			
-			<div class="col-lg-3" style="padding: 0;">
-				<div class="rsp-res-blk">
-					<div class="rsp-res-img">
-						<img
-							style="object-fit: cover;"
-							class="no-4" 
-							src="/img/secciones/suscripciones.png" 
-							alt="Boletín informativo ONSV"
-						>
-					</div>
-					<h6 class="card-title ft-bold publicaciones-tit text-center mb-3">
-						Boletín informativo ONSV
-					</h6>
-					<div class="px-2 mb-2">
-						<button 
-							class="btn btn-rsp btn-block ft-bold boton-newsletter" 
-							style="padding: 0.4rem;"
-							class="btn"
-							type="button"
-							data-toggle="modal"
-							data-target="#suscriber-modal-form"
-						>
-							Suscribirse
-						</button>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-lg-3" style="padding: 0;">
-				<div class="rsp-res-blk">
-					<a class="rsp-res-img" href="https://aulavirtual.mtc.gob.pe/seguridadvial/" target="_blank">
-						<img 
-							style="object-fit: cover;"
-							class="no-4" 
-							src="/img/secciones/aula-virtual.png" 
-							alt="Aula virtual ONSV"
-						>
-					</a>
-					<h6 class="card-title ft-bold publicaciones-tit text-center">
-						Aula Virtual ONSV
-					</h6>
-					<div class="px-2 mb-2">
-						<a 
-							class="btn btn-rsp btn-block ft-bold boton-newsletter" 
-							style="padding: 0.4rem;"
-							class="btn"
-							type="button"
-							href="https://aulavirtual.mtc.gob.pe/seguridadvial/"
-							target="_blank"
-						>
-							Ingresar
-						</a>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-lg-3" style="padding: 0;">
-				<div class="rsp-res-blk">
-					<a class="rsp-res-img" href="/datosabiertos" target="_blank">
-						<img 
-							style="object-fit: cover;"
-							class="no-4" 
-							src="/img/secciones/datos-abiertos.png" 
-							alt="Datos abiertos ONSV"
-						>
-					</a>
-					<h6 class="card-title ft-bold publicaciones-tit text-center">
-						Datos Abiertos ONSV
-					</h6>
-					<div class="px-2 mb-2">
-						<a 
-							class="btn btn-rsp btn-block ft-bold boton-newsletter" 
-							style="padding: 0.4rem;"
-							class="btn"
-							type="button"
-							href="/datosabiertos" target="_blank"
-						>
-							Ingresar
-						</a>
-					</div>
-				</div>
-			</div>
+    function formatearHoraCorta(texto) {
+      var partes = texto.trim().split(":");
+      if (partes.length >= 2) {
+        return partes[0] + ":" + partes[1];
+      }
+      return texto;
+    }
 
-		</div>
-	</div>
+    function formatearFechaCorta(texto) {
+      var partes = texto.trim().split(/[-\/]/);
+      if (partes.length !== 3) return texto;
+
+      var dia, mesIndex;
+      if (partes[0].length === 4) {
+        mesIndex = parseInt(partes[1], 10) - 1;
+        dia = partes[2];
+      } else {
+        dia = partes[0];
+        mesIndex = parseInt(partes[1], 10) - 1;
+      }
+
+      if (mesesCortos[mesIndex]) {
+        return dia.padStart(2, "0") + " " + mesesCortos[mesIndex];
+      }
+      return texto;
+    }
+
+    document.querySelectorAll(".accident-row").forEach(function (fila) {
+      var horaEl = fila.querySelector(".ar-time");
+      var fechaEl = fila.querySelector(".ar-day");
+      if (horaEl) horaEl.textContent = formatearHoraCorta(horaEl.textContent);
+      if (fechaEl) fechaEl.textContent = formatearFechaCorta(fechaEl.textContent);
+    });
+  });
+</script>
+
+<style>
+  .promo-sec { 
+    padding: 0 0 46px 0;
+  } 
+  .promo-card { 
+    position: relative; 
+    border-radius: 16px; 
+    overflow: hidden; 
+    min-height: 320px; 
+    background-color: #556070;
+    background-size: cover; 
+    background-position: center; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-end; 
+    padding: 35px 30px; 
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+  }
+  .promo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(20, 33, 61, 0.2);
+  }
+  .promo-overlay { 
+    position: absolute; 
+    inset: 0; 
+    background: linear-gradient(90deg, rgba(30,41,59,0.85) 0%, rgba(30,41,59,0.5) 50%, rgba(30,41,59,0.1) 100%); 
+    z-index: 1; 
+  }
+  .promo-content { 
+    position: relative; 
+    z-index: 2; 
+    max-width: 90%; 
+  }
+  .promo-content .eyebrow { 
+    color: var(--amber); 
+    font-size: 14px; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 0.1em; 
+    margin-bottom: 6px; 
+    font-family: "Barlow Semi Condensed", sans-serif; 
+  }
+  .promo-content h3 { 
+    color: #fff; 
+    font-size: clamp(24px, 2.5vw, 32px); 
+    font-family: "Barlow Condensed", sans-serif; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    margin-bottom: 12px; 
+    line-height: 1.1; 
+  }
+  .promo-content p { 
+    color: #e2e8f0; 
+    font-size: 15px; 
+    font-family: "Barlow", sans-serif; 
+    margin-bottom: 24px; 
+    line-height: 1.4; 
+  }
+  .promo-btn { 
+    background: var(--red); 
+    color: #fff; 
+    border: none; 
+    padding: 12px 24px; 
+    border-radius: 8px; 
+    font-weight: 700; 
+    font-size: 15px; 
+    font-family: "Barlow Semi Condensed", sans-serif;
+    text-transform: uppercase; 
+    cursor: pointer; 
+    transition: 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    letter-spacing: 0.05em;
+  }
+  .promo-btn:hover { 
+    background: #fff; 
+    color: var(--red); 
+    text-decoration: none; 
+  }
+  @media(max-width: 991px) { .promo-card { min-height: 260px; padding: 28px 24px; } }
+  @media(max-width: 767px) { .promo-card { min-height: 220px; padding: 24px 20px; } .promo-overlay { background: linear-gradient(180deg, rgba(30,41,59,0.85) 0%, transparent 100%); } .promo-content h3 { font-size: 22px; } .promo-content { max-width: 100%; } .promo-sec .row { transform: translateY(0) !important; } }
+</style>
+
+<section class="promo-sec" id="recursos">
+  <div class="container wrap">
+    <div class="row" style="transform: translateY(30px);">
+      
+      {{#each accesosRapidos}}
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="promo-card" style="background-image: url('{{imagen}}');">
+          <div class="promo-overlay"></div>
+          
+          <div class="promo-content">
+            <div class="eyebrow">{{eyebrow}}</div>
+            <h3>{{titulo}}</h3>
+            <p>{{descripcion}}</p>
+            <a href="{{enlace_boton}}"{{#if external}} target="_blank"{{/if}} class="promo-btn">{{texto_boton}}</a>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+      
+    </div>
+  </div>
 </section>
 
-<!-- End vu section -->
-<section class="rsp-res-sec rsp-wrap">
-	<div class="container">
-		<div class="row mb-2">
-			<div class="col-md-9 res-tit">
-				<h3 class="rsp-title ft-bold">Resumen de Noticias</h3>
-			</div>
-			<div class="col-md-3 res-btn">
-				<a href="/comunicaciones/noticias/" class="btn btn-rsp-outline ft-bold">{{t lang "Ver mas"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
-			</div>
-		</div> 
-		<div class="row">
-			{{#each post2}}
-				{{>index/noticias-eventos-card lang=../lang }}
-			{{/each}}
-		</div>
-	</div>
+<style>
+  .social-sec { padding: 50px 0; background: #fff; }
+
+  .social-sec .sec-head { align-items: flex-end; }
+  .social-sec .sec-head .sponsor { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+
+  .sc-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; height: 100%; box-shadow: var(--shadow); }
+
+  .sc-header { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--line); }
+  .sc-info h4 { margin: 0; font-size: 18px; font-family: "Barlow Condensed", sans-serif; font-weight: 800; color: var(--navy); text-transform: uppercase; line-height: 1; }
+  .sc-info span { font-size: 13px; color: #64748b; font-weight: 500; }
+
+  .sc-tabs { display: flex; gap: 10px; }
+  .sc-tab { width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; background: #f1f5f9; }
+  .sc-tab.active.fb { background: #0866FF; }
+  .sc-tab.active.fb svg { fill: #fff; }
+  .sc-tab.active.x { background: #000; }
+  .sc-tab.active.x svg { fill: #fff; }
+  .sc-tab svg { width: 22px; height: 22px; fill: #94a3b8; }
+
+  .sc-body { flex: 1; position: relative; padding: 0; overflow: auto; }
+  .sc-panel { width: 100%; height: 100%; }
+  .sc-panel[data-panel="fb"] { display: block; }
+  .sc-panel[data-panel="fb"] .fb-page {
+    width: 100%;
+    margin-top: -70px;
+    position: relative;
+    z-index: 2;
+  }
+  .sc-panel[data-panel="fb"] .fb-page > blockquote { display: none; }
+  .sc-panel[data-panel="x"] { padding: 0; }
+
+  .yt-icon { width: 42px; height: 42px; background: #FF0000; border-radius: 10px; display: grid; place-items: center; }
+  .yt-icon svg { width: 24px; height: 24px; fill: #fff; }
+  .yt-body { display: flex; flex: 1; flex-wrap: wrap; }
+
+  .yt-main { flex: 1; min-width: 300px; background: #162645; position: relative; display: flex; align-items: center; justify-content: center; min-height: 380px; overflow: hidden; }
+  .yt-main::before { content:''; position:absolute; bottom:0; width:100px; height:150px; border-left: 2px dashed rgba(255,255,255,0.2); border-right: 2px dashed rgba(255,255,255,0.2); transform: perspective(200px) rotateX(40deg); opacity: 0.5; }
+
+  .play-btn { width: 68px; height: 48px; background: #FF0000; border-radius: 12px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; z-index: 2; }
+  .play-btn:hover { transform: scale(1.05); }
+  .play-btn svg { width: 20px; height: 20px; fill: #fff; }
+  .yt-title { position: absolute; bottom: 20px; width: 100%; text-align: center; color: #fff; font-weight: 700; font-size: 14px; z-index: 2; font-family: "Barlow", sans-serif; }
+
+  .yt-list { width: 320px; border-left: 1px solid var(--line); background: #fff; display: flex; flex-direction: column; }
+  .yt-item { padding: 18px 20px; display: flex; gap: 14px; border-bottom: 1px solid var(--line); cursor: pointer; transition: 0.2s; }
+  .yt-item:hover { background: #f8fafc; }
+  .yt-item .thumb { width: 64px; height: 44px; background: #162645; border-radius: 6px; display: grid; place-items: center; flex-shrink: 0; }
+  .yt-item .thumb svg { width: 16px; height: 16px; fill: #fff; }
+  .yt-item.active .title { color: var(--red); }
+  .yt-item.active .thumb { outline: 2px solid var(--red); outline-offset: 2px; border-radius: 6px; }
+  .yt-item .info { display: flex; flex-direction: column; justify-content: center; }
+  .yt-item .title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; line-height: 1.2; font-family: "Barlow", sans-serif; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+  .yt-item .desc { font-size: 12px; color: #64748b; }
+
+  .sc-footer { padding: 16px 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .sc-footer .link { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; }
+  .sc-footer .btn-follow { background: #0866FF; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; }
+  .sc-footer .btn-follow:hover { background: #0756d6; }
+  .sc-footer .btn-follow.x { background: #000; }
+  .sc-footer .btn-follow.x:hover { background: #222; }
+  .sc-footer p { margin: 0; font-size: 14px; color: #475569; font-weight: 500; }
+  .sc-footer .btn-yt { background: #FF0000; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; text-transform: uppercase; text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; transition: 0.2s; }
+  .sc-footer .btn-yt:hover { background: #cc0000; }
+
+.x-timeline-wrap { min-height: 400px; max-height: 500px; overflow: auto; padding: 0 12px; background: #fff; }
+  .x-timeline-wrap .twitter-timeline { width: 100% !important; }
+
+  .x-fallback { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; padding: 24px; text-align: center; background: #fff; }
+  .x-fallback.active { display: flex; }
+  .x-fallback .x-fallback-icon { width: 64px; height: 64px; border-radius: 50%; background: #000; display: grid; place-items: center; margin-bottom: 16px; }
+  .x-fallback .x-fallback-icon svg { width: 32px; height: 32px; fill: #fff; }
+  .x-fallback h5 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 20px; color: var(--navy); text-transform: uppercase; margin: 0 0 4px 0; }
+  .x-fallback .x-fallback-handle { font-size: 14px; color: #64748b; font-weight: 500; margin-bottom: 10px; }
+  .x-fallback .x-fallback-bio { font-size: 13.5px; color: #334155; line-height: 1.45; margin: 0 0 18px 0; max-width: 320px; }
+  .x-fallback .x-fallback-btn { background: #000; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; font-family: "Barlow Semi Condensed", sans-serif; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+  .x-fallback .x-fallback-btn:hover { background: #222; }
+  .x-fallback .x-fallback-note { font-size: 12px; color: #94a3b8; margin-top: 12px; }
+
+  @media(max-width: 991px) { .yt-list { width: 100%; border-left: none; border-top: 1px solid var(--line); } }
+  @media(max-width: 767px) { .sc-body { min-height: auto; } .x-timeline-wrap { min-height: 360px; } .yt-main { min-height: 220px; min-width: auto; } .sc-tabs { gap: 6px; } .sc-tab { width: 36px; height: 36px; } .sc-panel[data-panel="fb"] .fb-page { margin-top: -80px; } }
+
+  .yt-main iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 3; }
+  .yt-main .yt-empty { color: #fff; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 16px; z-index: 2; text-align: center; padding: 20px; }
+  .yt-item .thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+</style>
+
+<section class="social-sec" id="comunidad">
+  <div class="container wrap">
+    
+    <div class="sec-head d-flex justify-content-between">
+      <div>
+        <div class="eyebrow">{{t lang "Comunidad"}}</div>
+        <h2 class="sec-title">{{t lang "Síguenos en redes sociales"}}</h2>
+      </div>
+      <div class="sponsor d-none d-md-block">
+        {{t lang "Observatorio Nacional de Seguridad Vial"}}
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <div class="sc-card">
+          
+          <div class="sc-header">
+            <div class="sc-tabs">
+              <div class="sc-tab active fb" data-panel="fb">
+                <svg viewBox="0 0 24 24"><path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/></svg>
+              </div>
+              <div class="sc-tab x" data-panel="x">
+                <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/></svg>
+              </div>
+            </div>
+            <div class="sc-info">
+              <h4 id="scNetworkName">FACEBOOK</h4>
+              <span id="scNetworkHandle">@ObservatorioNSV</span>
+            </div>
+          </div>
+          
+          <div class="sc-body">
+            <div class="sc-panel active" data-panel="fb">
+              <div class="fb-page" data-href="https://www.facebook.com/onsvPE/" data-tabs="timeline" data-height="500" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false"><blockquote cite="https://www.facebook.com/onsvPE/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/onsvPE/">Observatorio Nacional de Seguridad Vial</a></blockquote></div>
+            </div>
+<div class="sc-panel" data-panel="x" style="display:none;">
+              <div class="x-timeline-wrap">
+                <a class="twitter-timeline" data-height="500" data-tweet-limit="5" data-dnt="true" data-theme="light" href="https://twitter.com/onsvPE?ref_src=twsrc%5Etfw">Publicaciones de @onsvPE</a>
+              </div>
+              <div class="x-fallback" id="xFallback">
+                <div class="x-fallback-icon">
+                  <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"/></svg>
+                </div>
+                <h5>{{t lang "Observatorio Nacional de Seguridad Vial"}}</h5>
+                <div class="x-fallback-handle">@onsvPE</div>
+                <p class="x-fallback-bio">{{t lang "Entidad del Ministerio de Transportes y Comunicaciones. #CompartamosElCamino #ONSV"}}</p>
+                <a href="https://x.com/onsvPE" target="_blank" rel="noopener noreferrer" class="x-fallback-btn">{{t lang "Ver publicaciones en X"}} <i class="fal fa-long-arrow-right"></i></a>
+                <p class="x-fallback-note">{{t lang "Si el feed no carga, visita nuestro perfil directamente."}}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="sc-footer">
+            <a href="https://www.facebook.com/onsvPE/" target="_blank" class="link" id="scFooterLink">{{t lang "VER MÁS PUBLICACIONES"}}</a>
+            <a href="https://www.facebook.com/onsvPE/" target="_blank" class="btn-follow" id="scFooterBtn">{{t lang "VER PERFIL EN FB"}}</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-8">
+        <div class="sc-card">
+          
+          <div class="sc-header">
+            <div class="yt-icon">
+              <svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M9.996,15.5l0-7l6.5,3.5L9.996,15.5z"/></svg>
+            </div>
+            <div class="sc-info">
+              <h4>{{t lang "YOUTUBE"}}</h4>
+              <span>{{t lang "ONSV · MTC"}}</span>
+            </div>
+          </div>
+          
+          <div class="yt-body">
+            <div class="yt-main">
+              {{#if youtubeTopVideos.[0]}}
+                <iframe
+                  src="https://www.youtube.com/embed/{{youtubeTopVideos.[0].video}}"
+                  title="{{youtubeTopVideos.[0].title}}"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+              {{else}}
+                <div class="yt-empty">{{t lang "Próximamente"}}</div>
+              {{/if}}
+            </div>
+            
+            <div class="yt-list">
+              {{#each youtubeTopVideos}}
+                <div class="yt-item{{#if @first}} active{{/if}}" data-video="{{video}}" data-title="{{title}}">
+                  <div class="thumb">
+                    {{#if thumbnail}}
+                      <img src="{{thumbnail}}" alt="{{title}}" loading="lazy">
+                    {{else}}
+                      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    {{/if}}
+                  </div>
+                  <div class="info">
+                    <div class="title" title="{{title}}">{{title}}</div>
+                    <div class="desc">{{t lang "ONSV · MTC"}}</div>
+                  </div>
+                </div>
+              {{/each}}
+              {{#unless youtubeTopVideos.length}}
+                <div class="yt-item">
+                  <div class="thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                  <div class="info">
+                    <div class="title">{{t lang "Próximamente"}}</div>
+                    <div class="desc">{{t lang "ONSV · MTC"}}</div>
+                  </div>
+                </div>
+              {{/unless}}
+            </div>
+          </div>
+          
+          <div class="sc-footer">
+            <p>{{t lang "Selecciona y reproduce los videos del Observatorio."}}</p>
+            <a href="https://www.youtube.com/@observatorionacionaldesegu8980" target="_blank" class="btn-yt">{{t lang "VER EN YOUTUBE"}}</a>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </div>
 </section>
 
-<section class="rsp-ult-sec rsp-wrap">
-	<div class="container">
-		<div class="row mb-2">
-			<div class="col-md-9">
-				<h3 class="rsp-title ft-bold">{{t lang "ultimas publicaciones"}}</h3>
-			</div>
-		</div>
-		<div class="row ultimas-publicaciones">
-			{{#each post3}}
-				{{>index/post-card lang=../lang }}
-			{{/each}}
-		</div>
-			
-	</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var scCard = document.querySelector(".social-sec .sc-card");
+    if (!scCard) return;
+
+    var tabs = scCard.querySelectorAll(".sc-tab");
+    var panels = scCard.querySelectorAll(".sc-panel");
+    var nameEl = document.getElementById("scNetworkName");
+    var handleEl = document.getElementById("scNetworkHandle");
+    var footerLink = document.getElementById("scFooterLink");
+    var footerBtn = document.getElementById("scFooterBtn");
+var xTimelineLoading = false;
+    var xFallbackTimer = null;
+
+    function showXFallback() {
+      var xPanel = scCard.querySelector('.sc-panel[data-panel="x"]');
+      var xWrap = xPanel ? xPanel.querySelector('.x-timeline-wrap') : null;
+      var xFallback = document.getElementById('xFallback');
+      var hasIframe = xWrap && xWrap.querySelector('iframe');
+      if (!hasIframe && xFallback) {
+        if (xWrap) xWrap.style.display = 'none';
+        xFallback.classList.add('active');
+      }
+    }
+
+    function checkXTimelineLoaded() {
+      var xPanel = scCard.querySelector('.sc-panel[data-panel="x"]');
+      var xWrap = xPanel ? xPanel.querySelector('.x-timeline-wrap') : null;
+      var xFallback = document.getElementById('xFallback');
+      if (!xWrap || !xFallback) return;
+      var iframe = xWrap.querySelector('iframe');
+      if (iframe) {
+        var timer = 0;
+        var checkIframeContent = setInterval(function () {
+          timer += 500;
+          var fw = iframe.offsetWidth;
+          var fh = iframe.offsetHeight;
+          if ((fw > 50 && fh > 50) || timer >= 8000) {
+            clearInterval(checkIframeContent);
+            if (fw <= 50 || fh <= 50) {
+              if (xWrap) xWrap.style.display = 'none';
+              xFallback.classList.add('active');
+            }
+          }
+        }, 500);
+      } else {
+        var fallbackTimer = 0;
+        var checkNoIframe = setInterval(function () {
+          fallbackTimer += 500;
+          if (xWrap.querySelector('iframe')) {
+            clearInterval(checkNoIframe);
+          } else if (fallbackTimer >= 6000) {
+            clearInterval(checkNoIframe);
+            if (xWrap) xWrap.style.display = 'none';
+            xFallback.classList.add('active');
+          }
+        }, 500);
+      }
+    }
+
+    function loadXTimeline() {
+      var xPanel = scCard.querySelector('.sc-panel[data-panel="x"]');
+      if (!xPanel || xTimelineLoading) return;
+      var xWrap = xPanel.querySelector('.x-timeline-wrap');
+      var xFallback = document.getElementById('xFallback');
+      if (xFallback) xFallback.classList.remove('active');
+      if (xWrap) xWrap.style.display = '';
+      if (xWrap && xWrap.querySelector('iframe')) { checkXTimelineLoaded(); return; }
+      xTimelineLoading = true;
+
+      var render = function () {
+        if (window.twttr && window.twttr.widgets) {
+          window.twttr.widgets.load(xPanel).then(function () {
+            xTimelineLoading = false;
+            checkXTimelineLoaded();
+          }).catch(function () {
+            xTimelineLoading = false;
+            showXFallback();
+          });
+        } else {
+          xTimelineLoading = false;
+          showXFallback();
+        }
+      };
+
+      if (window.twttr && window.twttr.ready) {
+        window.twttr.ready(render);
+        return;
+      }
+
+      var script = document.getElementById('x-widgets-script');
+      if (!script) {
+        script = document.createElement('script');
+        script.id = 'x-widgets-script';
+        script.async = true;
+        script.charset = 'utf-8';
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.onload = function () {
+          if (window.twttr && window.twttr.ready) window.twttr.ready(render);
+          else render();
+        };
+        script.onerror = function () {
+          xTimelineLoading = false;
+          showXFallback();
+        };
+        document.head.appendChild(script);
+      } else {
+        script.addEventListener('load', function () {
+          if (window.twttr && window.twttr.ready) window.twttr.ready(render);
+          else render();
+        }, { once: true });
+      }
+    }
+
+    var isEnSocial = location.href.includes('/en/');
+    var redes = {
+      fb: {
+        nombre: isEnSocial ? "FACEBOOK" : "FACEBOOK",
+        handle: "@ObservatorioNSV",
+        url: "https://www.facebook.com/onsvPE/"
+      },
+      x: {
+        nombre: isEnSocial ? "X (TWITTER)" : "X (TWITTER)",
+        handle: "@onsvPE",
+        url: "https://x.com/onsvPE"
+      }
+    };
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var destino = tab.getAttribute("data-panel");
+
+        tabs.forEach(function (t) { t.classList.remove("active"); });
+        tab.classList.add("active");
+
+        panels.forEach(function (panel) {
+          panel.style.display = panel.getAttribute("data-panel") === destino ? "" : "none";
+        });
+
+        if (destino === "fb" && window.FB && FB.XFBML) {
+          var fbPanel = scCard.querySelector('.sc-panel[data-panel="fb"]');
+          if (fbPanel) FB.XFBML.parse(fbPanel);
+        }
+
+        if (destino === "x") {
+          loadXTimeline();
+        }
+
+        var data = redes[destino];
+        if (data) {
+          if (nameEl) nameEl.textContent = data.nombre;
+          if (handleEl) handleEl.textContent = data.handle;
+          if (footerLink) footerLink.href = data.url;
+          if (footerBtn) {
+            footerBtn.classList.toggle("x", destino === "x");
+            footerBtn.href = data.url;
+            footerBtn.textContent = destino === "x" ? (isEnSocial ? "VIEW X PROFILE" : "VER PERFIL EN X") : (isEnSocial ? "VIEW FB PROFILE" : "VER PERFIL EN FB");
+          }
+        }
+      });
+    });
+
+    var ytCard = document.querySelector(".social-sec .col-lg-8 .sc-card");
+    var ytItems = ytCard.querySelectorAll(".yt-item");
+    var ytMain = ytCard.querySelector(".yt-main");
+    ytItems.forEach(function (item) {
+      item.addEventListener("click", function () {
+        ytItems.forEach(function (i) { i.classList.remove("active"); });
+        this.classList.add("active");
+        var videoId = this.getAttribute("data-video");
+        var title = this.getAttribute("data-title") || "";
+        var iframe = ytMain.querySelector("iframe");
+        if (iframe && videoId) {
+          iframe.src = "https://www.youtube.com/embed/" + videoId;
+          iframe.title = title;
+        }
+      });
+    });
+  });
+</script>
+
+<!--
+<section class="rsp-wrap mt-n4">
+  <div class="container">
+    <div class="jumbotron newsletter">
+      <div class="icon-newsletter">
+        <i class="fas fa-envelope-open-text fa-5x"></i>
+      </div>
+      <div class="texto-newsletter ml-5">
+        <p class="titulo-newsletter pb-4 text-center text-md-left">{{t lang 'news-text'}}</p>
+        <button
+          class="btn btn-rsp btn-block ft-bold boton-newsletter"
+          id="suscriber-button"
+          class="btn"
+          data-toggle="modal"
+          data-target="#suscriber-modal-form">{{t lang 'news-button'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+-->
+
+<style>
+  .news-sec { background: var(--mist); padding: 56px 0; }
+  .pubs-sec { background: #fff; padding: 56px 0; }
+  
+  .news-sec .sec-head, .pubs-sec .sec-head { margin-bottom: 30px; }
+
+  .news-sec .row > div, .pubs-sec .row > div { 
+    margin-bottom: 24px; 
+  }
+  .news-sec .card, .pubs-sec .card, 
+  .news-sec .rsp-post-blk, .pubs-sec .rsp-post-blk,
+  .news-sec .rsp-noti-blk, .pubs-sec .rsp-noti-blk { 
+    border: 1px solid var(--line) !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    background: #fff !important;
+    height: 100% !important;
+    display: flex;
+    flex-direction: column;
+  }
+  .news-sec .card:hover, .pubs-sec .card:hover,
+  .news-sec .rsp-post-blk:hover, .pubs-sec .rsp-post-blk:hover,
+  .news-sec .rsp-noti-blk:hover, .pubs-sec .rsp-noti-blk:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 40px rgba(20,33,61,.18) !important;
+    border-color: var(--line) !important;
+  }
+  
+  .news-sec img, .pubs-sec img {
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    object-fit: cover;
+  }
+  .news-sec .new-card, .pubs-sec .new-card { min-height: 539px; }
+  .pubs-sec img {
+    object-fit: contain !important;
+    background: #f1f4f9;
+  }
+  .pubs-sec .ultimas-publicaciones .m-gap {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 380px;
+    background: #f1f4f9;
+    overflow: hidden;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+  }
+  .pubs-sec .ultimas-publicaciones .m-gap img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+    background: #f1f4f9;
+    border-bottom: 0 !important;
+  }
+  @media(max-width: 767px) { .news-sec img { height: 180px !important; } .news-sec .card-title, .pubs-sec .card-title { font-size: 15px !important; } .news-sec { padding: 36px 0; } .pubs-sec { padding: 36px 0; } }
+</style>
+
+<section class="news-sec" id="noticias">
+  <div class="container wrap">
+    
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">{{t lang "Comunicación"}}</div>
+        <h2 class="sec-title">{{t lang "Resumen de Noticias"}}</h2>
+      </div>
+      <a class="more" href="/comunicaciones/noticias/">{{t lang "Ver más"}} →</a>
+    </div>
+
+    <div class="row">
+      {{#each post2}}
+        {{>index/noticias-eventos-card lang=../lang }}
+      {{/each}}
+    </div>
+
+  </div>
+</section>
+
+<section class="pubs-sec" id="publicaciones">
+  <div class="container wrap">
+    
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">{{t lang "Conocimiento"}}</div>
+        <h2 class="sec-title">{{t lang "ultimas publicaciones"}}</h2>
+      </div>
+      <a class="more" href="/publicaciones/">{{t lang "Ver más"}} →</a>
+    </div>
+
+    <div class="row ultimas-publicaciones">
+      {{#each post3}}
+        {{>index/post-card lang=../lang }}
+      {{/each}}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .newsletter-cta { background: var(--red); border-radius: 16px; padding: 40px; margin: 60px 0; position: relative; top: -30px; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 40px; color: #fff; }
+  
+  .newsletter-cta::after { 
+    content: ''; 
+    position: absolute; 
+    right: -40px; 
+    top: -20px; 
+    width: 280px; 
+    height: 280px; 
+    border: 30px solid rgba(165, 165, 165, 0.26);
+    background: transparent;
+    border-radius: 50%; 
+    z-index: 0; 
+    pointer-events: none;
+  }
+  
+  .news-text, .news-form { position: relative; z-index: 1; }
+  
+  .news-text { flex: 1; }
+  .news-text .eyebrow { color: #ffbfbf; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .news-text h2 { color: #fff; font-size: 32px; font-family: "Barlow Condensed", sans-serif; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+  .news-text p { color: #f2f2f2; margin: 0; font-size: 16px; opacity: 0.9; }
+  
+  .news-form { background: #fff; padding: 6px; border-radius: 12px; display: flex; align-items: center; width: 100%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  .news-form input { border: none; padding: 12px 20px; font-size: 14px; color: #333; width: 100%; outline: none; border-radius: 8px; background: transparent; }
+  .news-form button { background: var(--navy); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+  .news-form button:hover { background: #334d74; }
+  
+  @media(max-width: 767px) { .newsletter-cta { flex-direction: column; text-align: center; padding: 30px; } }
+  @media(max-width: 480px) { .newsletter-cta { padding: 24px 16px; } .news-text h2 { font-size: 24px; } }
+
+  /* ===== Responsive additions (sin alterar reglas existentes) ===== */
+  @media (max-width: 991px) {
+    .hero-card { margin-right: 0; }
+    .yt-body { flex-direction: column; }
+    .yt-list { width: 100%; border-left: none; border-top: 1px solid var(--line); }
+  }
+  @media (max-width: 767px) {
+    .yt-main { min-width: 0; min-height: 220px; }
+    .yt-list { width: 100%; }
+    .news-form { flex-wrap: wrap; }
+    .news-form input { flex: 1 1 100%; margin-bottom: 8px; }
+    .news-form button { width: 100%; }
+  }
+  @media (max-width: 425px) {
+    .yt-item { padding: 14px 12px; }
+    .yt-item .thumb { width: 56px; height: 40px; }
+  }
+</style>
+
+<section class="container">
+  <div class="newsletter-cta">
+    <div class="news-text">
+      <div class="eyebrow">{{t lang "Boletín informativo ONSV"}}</div>
+      <h2>{{t lang "Recibe los datos antes que nadie"}}</h2>
+      <p>{{t lang "Suscríbete y recibe boletines, informes y alertas de seguridad vial directamente en tu correo."}}</p>
+    </div>
+    
+    <form class="news-form" action="/subscribe" method="POST">
+      <input type="email" name="email" placeholder="{{t lang 'tucorreo@ejemplo.com'}}" required>
+      <button type="submit">{{t lang "Suscribirse"}}</button>
+    </form>
+  </div>
 </section>
 
 <div class="container">
-	<section class="logos-container rsp-noti-sec rsp-wrap" style="padding: 0">
-		<h3 class="col-12 mb-4 rsp-title ft-bold">
-			Instituciones Aliadas
-		</h3>
-		<div class="d-flex justify-content-center">
-			<div class="logos owl-carousel owl-theme" id="others">
-				
-				<a
-					class="logo"
-					href="https://www.gob.pe/1013-solicitar-atencion-medida-en-caso-de-emergencia.samu"
-					target="_blank"
-				>
-					<img src="/img/logosamu.jpg" alt="samu" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/pnp" target="_blank">
-					<img src="/img/logo-PNP.png" alt="pnp" />
-				</a>
-
-				<a class="logo" href="http://www.bomberosperu.gob.pe" target="_blank">
-					<img src="/img/bomberos.jpg" alt="cgbv" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/mpfn" target="_blank">
-					<img src="/img/logomp.jfif" alt="mp" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/atu" target="_blank">
-					<img src="/img/logoatu.png" alt="atu" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/sutran" target="_blank">
-					<img src="/img/logo-sutran.jpg" alt="sutran" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/minjus" target="_blank">
-					<img src="/img/minjus.jpg" alt="Ministerio de justicia" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/mininter" target="_blank">
-					<img src="/img/PCM-Interior.png" alt="Ministerio del interior" />
-				</a>
-
-				<a class="logo" href="https://www.gob.pe/minsa" target="_blank">
-					<img src="/img/minsa.png" alt="Ministerio de salud" />
-				</a>
-
-			</div>
-		</div>
-	</section>
+  <section class="logos-container rsp-noti-sec rsp-wrap" style="padding: 0">
+    <div class="sec-head col-12 mt-4 mb-5" style="padding: 0;">
+      <div>
+        <div class="eyebrow">{{t lang "Trabajo articulado"}}</div>
+        <h2 class="sec-title">{{t lang "Instituciones aliadas"}}</h2>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <div class="logos owl-carousel owl-theme" id="others">
+        <a class="logo" href="https://www.gob.pe/1013-solicitar-atencion-medida-en-caso-de-emergencia.samu" target="_blank">
+          <img src="/img/logosamu.png" alt="samu" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/pnp" target="_blank">
+          <img src="/img/logo-PNP.png" alt="pnp" />
+        </a>
+        <a class="logo" href="http://www.bomberosperu.gob.pe" target="_blank">
+          <img src="/img/logobombero.png" alt="cgbv" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/mpfn" target="_blank">
+          <img src="/img/logomp.png" alt="mp" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/atu" target="_blank">
+          <img src="/img/logoatu.png" alt="atu" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/sutran" target="_blank">
+          <img src="/img/logo-sutran.png" alt="sutran" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/minjus" target="_blank">
+          <img src="/img/minjus.png" alt="{{t lang "Ministerio de Justicia"}}" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/mininter" target="_blank">
+          <img src="/img/PCM-Interior.png" alt="{{t lang "Ministerio del Interior"}}" />
+        </a>
+        <a class="logo" href="https://www.gob.pe/minsa" target="_blank">
+          <img src="/img/minsa.png" alt="{{t lang "Ministerio de Salud"}}" />
+        </a>
+      </div>
+    </div>
+  </section>
 </div>
 
+{{>default/campaign-modal post=modalinfo pop=popup lang=lang}}
 
-{{>default/campaign-modal post=modalinfo pop=popup lang=lang}}    
-
-<script async defer> 
+<script>
   var popupStatusM = {{{popupStatus}}}
-  /* const popupTitle = document.getElementById('popup_title')
-  const popupImage = document.getElementById('popup_image')
-  popupTitle.textContent = popupData.titulo
-  popupImage.setAtributte('src', popup.imagen)
-  console.log('popup.imagen', popup.imagen) */
-
-  addEventListener('DOMContentLoaded', (event) => {
-    console.log('popupStatusM', popupStatusM)
-    
-    if (popupStatusM !== '1') {
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-      
-      const campaignModal = document.getElementById('campaign-modal');
-      const modalBackdrop = document.querySelector('.modal-backdrop');
-      if (campaignModal) campaignModal.classList.add('hideModal');
-      if (modalBackdrop) modalBackdrop.classList.add('hideModal');
-    }
-  });
 </script>

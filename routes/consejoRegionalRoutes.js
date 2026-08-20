@@ -4,6 +4,7 @@ const criptoUtils = require("../utils/criptoUtils");
 const customUploader = require("../controllers/customMulter");
 const { Permission } = require('../controllers/permission');
 const { pageAuthorize } = require('../utils/rest');
+const { loginLimiter } = require('../controllers/rateLimit');
 
 const mysql = new (require("../api/mysql"));
 mysql.setQuery();
@@ -27,15 +28,17 @@ router.get("/login", isNotAuthenticated, (req, res) => {
 	res.render("pages/consejo-regional/login", { info_login });
 })
 
-router.post("/login", passport.authenticate('local-login', {
+router.post("/login", loginLimiter, passport.authenticate('local-login', {
 	successRedirect: "/consejo-regional",
 	failureRedirect: "/consejo-regional/login",
 	passReqToCallback: true
 }))
 
 router.get("/logout", (req, res) => {
-	req.logOut();
-	res.redirect("/consejo-regional/login")
+	req.logOut(function (err) {
+		if (err) return res.status(500).send("Error al cerrar sesión");
+		res.redirect("/consejo-regional/login")
+	});
 })
 
 router.get('/planes-regionales', isAuthenticated, permissionChecker, async (req, res) => {
@@ -263,8 +266,10 @@ async function permissionChecker(req, res, next) {
 		req.permissions = user.permissions
 		return next()
 	}
-	req.logOut();
-	res.redirect('/consejo-regional/login');
+	req.logOut(function (err) {
+		if (err) console.log(err);
+		res.redirect('/consejo-regional/login');
+	});
 }
 
 

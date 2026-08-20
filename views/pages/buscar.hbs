@@ -1,0 +1,53 @@
+<section class="content">
+	<div class="container py-5">
+		<div class="row">
+			<div class="col-12 mb-4">
+				<h1 class="ft-bold">{{t lang "Buscar"}}</h1>
+				<form action="{{#if secondary_navigation}}/en/buscar{{else}}/buscar{{/if}}" method="GET" class="d-flex mt-3" role="search">
+					<input type="search" name="q" value="{{query}}" class="form-control mr-2" placeholder="{{t lang 'buscar'}}" aria-label="{{t lang 'Buscar'}}">
+					<button type="submit" class="btn btn-primary">{{t lang "Buscar"}}</button>
+				</form>
+			</div>
+		</div>
+
+		{{#if query}}
+			<div class="row">
+				<div class="col-12 mb-3">
+					<p class="text-muted">{{t lang "resultados"}}: <strong>{{total}}</strong> · <em>"{{query}}"</em></p>
+				</div>
+			</div>
+
+			{{#if results.length}}
+				<div class="row">
+					{{#each results}}
+						<div class="col-md-6 col-lg-4 mb-4">
+							<a href="{{url}}" class="card h-100 text-decoration-none text-dark">
+								{{#if imagen}}
+									<img src="{{imagen}}" class="card-img-top" alt="{{titulo}}" loading="lazy" style="max-height:200px;object-fit:cover;">
+								{{/if}}
+								<div class="card-body">
+									<span class="badge badge-{{#eq tipo "evento"}}info{{else}}secondary{{/if}} mb-2">{{tipo}}</span>
+									<h2 class="h5 card-title ft-bold">{{titulo}}</h2>
+									<p class="card-text small text-muted">{{descripcion}}</p>
+								</div>
+							</a>
+						</div>
+					{{/each}}
+				</div>
+			{{else}}
+				<div class="row">
+					<div class="col-12 text-center py-5">
+						<p class="text-muted">{{t lang "no-results"}}</p>
+						<a href="{{#if secondary_navigation}}/en/{{else}}/{{/if}}" class="btn btn-link">{{t lang "INICIO"}}</a>
+					</div>
+				</div>
+			{{/if}}
+		{{else}}
+			<div class="row">
+				<div class="col-12 text-center py-5">
+					<p class="text-muted">{{t lang "buscar"}}</p>
+				</div>
+			</div>
+		{{/if}}
+	</div>
+</section>

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded',()=>{
 	console.log('webpack - iniciado');
+	pageFx();
 	validationForm();
 	carousel();
 	back();
@@ -11,7 +12,49 @@ document.addEventListener('DOMContentLoaded',()=>{
 	openDataForm();
 	fileSelectedName()
 	getMapFromForm();
+	closeNavbarOnOutsideClick();
 })
+
+/**
+ * @description Capa de transiciones suaves globales (opt-in, sin dependencias).
+ *  - Fade-in del <body> al cargar
+ *  - Reveal on scroll via IntersectionObserver sobre elementos con [data-fx]
+ *  - Fade-out antes de navegar (links internos) + restauración bfcache
+ * Respeta prefers-reduced-motion (el CSS neutraliza todo; aca no hacemos nada extra).
+ */
+function pageFx(){
+  var body = document.body;
+  if(!body) return;
+
+  // 1) Fade-in al cargar
+  if(body.classList.contains('fx-boot')){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ body.classList.add('fx-in'); });
+    });
+  }
+
+  // 2) Reveal on scroll opt-in
+  var fxEl = document.querySelectorAll('[data-fx]');
+  if(fxEl.length && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add('fx-in');
+          io.unobserve(en.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+    fxEl.forEach(function(el){ io.observe(el); });
+  }
+
+  // 3) bfcache (volver con back/forward): forzar body visible
+  window.addEventListener('pageshow', function(ev){
+    if(ev.persisted){
+      body.classList.remove('fx-out');
+      body.classList.add('fx-in');
+    }
+  });
+}
 /**
  * @description: Función auxiliar utilizada en los post para el retorno al menú inmediato desde donde se originó su llamada
  */
@@ -48,6 +91,19 @@ function validationForm(){
  * eventos se administran a través de eventos jquery 
  */
 function carousel(){
+	$('#others').owlCarousel({
+		loop: true,
+		margin: 24,
+		nav: true,
+		dots: false,
+		autoplay: true,
+		autoplayTimeout: 3000,
+		responsive: {
+			0: { items: 1 },
+			600: { items: 3 },
+			1000: { items: 3 }
+		}
+	});
 	$('#noti').owlCarousel({
 		loop:true,
 		margin: 6,
@@ -66,10 +122,24 @@ function carousel(){
 				items:3
 			},
 			1280: {
-				items: 4
+				items: 3
 			}
 		}
 	});
+	if (document.getElementById('entornos-carousel')) {
+		$('#entornos-carousel').owlCarousel({
+			loop: true,
+			margin: 24,
+			nav: true,
+			dots: false,
+			autoplay: false,
+			responsive: {
+				0: { items: 1 },
+				600: { items: 2 },
+				1000: { items: 3 }
+			}
+		});
+	}
 }
 /**
  * @description: Función encargada de procesar la búsqueda, en las páginas de publicaciones y normas legales, la función obtiene el segmento del menú
@@ -192,10 +262,19 @@ function getMapFromForm(){
 				return results.json();
 			})
 			.then(response=>{
-				document.getElementById('nombre').value=response.regionData.NOMBRE;
-				document.getElementById('telefono').value=response.regionData.TELEFONO;
-				document.getElementById('email').value=response.regionData['E-MAIL'];
-				setImage(response.regionData.REGION);
+				document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
+				var opt=e.target.options[e.target.selectedIndex];
+				var mapId=opt.getAttribute('data-map')||opt.value;
+				if(document.getElementById(mapId)){
+					document.getElementById(mapId).classList.replace('map','map-selected');
+				}
+				document.getElementById('nombre').textContent=response.regionData.NOMBRE;
+				document.getElementById('telefono').textContent=response.regionData.TELEFONO;
+				document.getElementById('email').textContent=response.regionData['E-MAIL'];
+				setPageLink(response.regionData.WEBSITE);
+				setImage(response.regionData.REGION, response.regionData.imageUrl);
+				showRegionLabel(response.regionData.REGION);
+				updateRegionName(response.regionData.REGION);
 				document.getElementById('noti').innerHTML=response.template;
 				$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
 				carousel();
@@ -212,56 +291,119 @@ function getMapFromForm(){
  * obtiene las noticias asociadas a la región seleccionada y que coloca sobre el carousel.
  */ 
 function getMap(){
-	//By default
+	//By default - cargar Lima desde /services-map (consulta BD)
 	if(location.href.includes('regiones')){
-		document.querySelector('svg g g path[id="Lima"]').classList.replace('map','map-selected');
-		document.getElementById('nombre').value='José Eduardo Pretel Saldaña';
-		document.getElementById('telefono').value='943990699';
-		document.getElementById('email').value='jpretel@regionlima.gob.pe';
-		setImage('Lima');
-	}
-	
-	//For click event
-	if(document.querySelectorAll('path')) document.querySelectorAll('path').forEach(element=>element.addEventListener('click',(e)=>{
-		e.preventDefault();
-		console.log(e.target.id);
 		let lang=location.href.includes('/en/')?'en':'es';
-		fetch('/services-map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region:e.target.id,lang})})
+		fetch('/services-map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region:'Lima',lang})})
 		.then(results=>results.json())
 		.then(response=>{
-			document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
-			document.getElementById(e.target.id).classList.replace('map','map-selected');
-			document.getElementById('nombre').value=response.regionData.NOMBRE;
-			document.getElementById('telefono').value=response.regionData.TELEFONO;
-			document.getElementById('email').value=response.regionData['E-MAIL'];
-			setImage(response.regionData.REGION);
+			document.querySelector('svg g g path[id="Lima"]').classList.replace('map','map-selected');
+			document.getElementById('nombre').textContent=response.regionData.NOMBRE || '';
+			document.getElementById('telefono').textContent=response.regionData.TELEFONO || '';
+			document.getElementById('email').textContent=response.regionData['E-MAIL'] || '';
+			setPageLink(response.regionData.WEBSITE || '');
+			setImage(response.regionData.REGION || 'Lima', response.regionData.imageUrl);
+			showRegionLabel('Lima');
+			updateRegionName('Lima');
 			document.getElementById('noti').innerHTML=response.template;
-			$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
+			$("#noti").trigger('destroy.owl.carousel');
 			carousel();
 		})
-		.catch(error=>console.error(error))
-	})); 
+		.catch(error=>console.error(error));
+
+		//For click event
+		if(document.querySelectorAll('path')) document.querySelectorAll('path').forEach(element=>element.addEventListener('click',(e)=>{
+			e.preventDefault();
+			console.log(e.target.id);
+			let lang=location.href.includes('/en/')?'en':'es';
+			fetch('/services-map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region:e.target.id,lang})})
+			.then(results=>results.json())
+			.then(response=>{
+				document.querySelectorAll('path').forEach(x=>x.classList.replace('map-selected','map'));
+				document.getElementById(e.target.id).classList.replace('map','map-selected');
+				document.getElementById('nombre').textContent=response.regionData.NOMBRE;
+				document.getElementById('telefono').textContent=response.regionData.TELEFONO;
+				document.getElementById('email').textContent=response.regionData['E-MAIL'];
+				setPageLink(response.regionData.WEBSITE);
+				setImage(response.regionData.REGION, response.regionData.imageUrl);
+				document.getElementById('noti').innerHTML=response.template;
+				$("#noti").trigger('destroy.owl.carousel');//owl dependencia de evento jquery
+				carousel();
+				showRegionLabel(e.target.id);
+				updateRegionName(e.target.id);
+			})
+			.catch(error=>console.error(error))
+		}));
+	}
+}
+
+/**
+ * @description: Muestra una etiqueta con el nombre del departamento seleccionado sobre el mapa
+ * @param {String} regionId: ID del departamento seleccionado
+ */
+function showRegionLabel(regionId){
+	const label = document.getElementById('region-label');
+	const pathElement = document.getElementById(regionId);
+	
+	if(label && pathElement){
+		const svgRect = pathElement.ownerSVGElement.getBoundingClientRect();
+		const pathRect = pathElement.getBoundingClientRect();
+		
+		label.textContent = regionId;
+		label.style.display = 'block';
+		label.style.left = (pathRect.left - svgRect.left + pathRect.width / 2) + 'px';
+		label.style.top = (pathRect.top - svgRect.top + pathRect.height / 2) + 'px';
+	}
+}
+
+/**
+ * @description: Actualiza el nombre del departamento seleccionado en la sección de info
+ * @param {String} regionId: ID del departamento seleccionado
+ */
+function updateRegionName(regionId){
+	const regionNameElement = document.getElementById('region-name');
+	if(regionNameElement){
+		regionNameElement.textContent = regionId;
+	}
+	
+	const breadcrumbElement = document.querySelector('.crumb');
+	if(breadcrumbElement){
+		breadcrumbElement.innerHTML = `Perú <span class="sep">›</span> ${regionId}`;
+	}
 }
 /**
  * @description: Función encargada de validar si la imagen de la región seleccionada existe; si existe la despliega, y sino invoca 
  * una imagen por defecto
  * @param {String} region: Nombre de la región seleccionada, que coincide con el nombre de la imagen de la región. 
  */
-function setImage(region){
-	document.getElementById('img-region').innerHTML='';
-	fetch(`/assets${region.toLowerCase()}.svg`,{method:'GET'})
-	.then(results=>results)
-	.then(response=>{
-		if(response.status==200) document.getElementById('img-region').innerHTML=`<img src="../assets/${region.toLowerCase()}.png"></img>`;
-		if(response.status!=200) document.getElementById('img-region').innerHTML=`<img src="../assets/escudo.jpg"></img>`;    
-	})
-	.catch(error=>{
-		console.log(error);
-	})
+function setImage(region, imageUrl){
+	const imgRegion = document.getElementById('img-region');
+	if(!imgRegion) return;
+	const normalized = (region || 'Lima').toLowerCase()
+		.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+	const primary = imageUrl
+		? imageUrl
+		: `/assets/${normalized}.png`;
+	const timeStamp = new Date().getTime();
+	const [base] = primary.split('?');
+	const urlConCacheBuster = `${base}?v=${timeStamp}`;
+	imgRegion.innerHTML = `<img src="${urlConCacheBuster}" alt="${region || 'Lima'}" onerror="this.onerror=null;this.style.display='none'">`;
+}
+
+function setPageLink(website){
+	const pageLinkEl = document.getElementById('pageLink');
+	if(!pageLinkEl) return;
+	if(website && website !== '#'){
+		pageLinkEl.setAttribute('href', website);
+		pageLinkEl.textContent = website;
+	}else{
+		pageLinkEl.removeAttribute('href');
+		pageLinkEl.textContent = '';
+	}
 }
 /**
  * @description: Función encargada de desplegar el modal de suscripción al portal; valida el campo de correo y envía el mismo para 
- * su suscripción
+ *  su suscripción
  */
 function modal(){
 	$("#suscriber-modal-form").on("hidden.bs.modal",function(event){
@@ -291,7 +433,11 @@ function modal(){
  * cambie el valor show por hide
  */
 function modalCampaign(){
-	if(document.querySelector("#campaign-modal"))  $('#campaign-modal').modal('show');
+	if(document.querySelector("#campaign-modal")) {
+		if (typeof popupStatusM === 'undefined' || popupStatusM == 1) {
+			$('#campaign-modal').modal('show');
+		}
+	}
 }
 /**
  * @description: Función encargada del despliegue del modal del menú analítica por defecto se auto ejecutan; si desea cambiar el comportamiento
@@ -329,5 +475,28 @@ function fileSelectedName(){
 	$(".custom-file-input").on("change", function() {
 		var fileName = $(this).val().split("\\").pop();
 		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+	});
+}
+
+/**
+ * @description Cierra el menú hamburguesa (#navbarResponsive) al hacer clic fuera de él
+ *              y al redimensionar el viewport a >=992px (p.ej. al rotar a PC).
+ *              Usa el toggler nativo de Bootstrap para colapsar.
+ */
+function closeNavbarOnOutsideClick(){
+	var navbarCollapse = document.getElementById('navbarResponsive');
+	var toggler = document.querySelector('#mainNav .navbar-toggler');
+	if(!navbarCollapse || !toggler) return;
+	document.addEventListener('click', function(e){
+		if(navbarCollapse.classList.contains('show')){
+			if(!navbarCollapse.contains(e.target) && !toggler.contains(e.target)){
+				toggler.click();
+			}
+		}
+	});
+	window.addEventListener('resize', function(){
+		if(window.innerWidth >= 992 && navbarCollapse.classList.contains('show')){
+			toggler.click();
+		}
 	});
 }

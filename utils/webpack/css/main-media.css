@@ -49,15 +49,9 @@
         color: #fff;
         font-size: 13px;
         font-weight: 700;
-        padding: 16px 20px;
+        padding: 16px 15px;
         text-transform: uppercase;
         background-color: transparent;
-    }
-    .rsp-noti-sec .owl-prev span {
-        left: -39px;
-    }
-    .rsp-noti-sec .owl-next span {
-        right: -34px;
     }
     .disclaimer{
         height: 20px;
@@ -65,26 +59,62 @@
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
-    .rsp-noti-sec .owl-prev span {
-        left: -20px;
-    }
-    .rsp-noti-sec .owl-next span {
-        right: -20px;
-    }
+    /* --- Header top: logos horizontales + EN|ES debajo a la derecha --- */
     .logo img {
         width: 200px;
     }
     .logo-sm img {
-        width: 120px;
+        width: 95px;
         position: relative;
-        top: 8px;
-    }   
+        top: 0;
+    }
+    .logo-sm {
+        margin-left: 0;
+        margin-top: 0;
+        text-align: right;
+    }
+    .navbar-brand-text {
+        transform: none;
+    }
+    .logo-icon-img {
+        height: 42px;
+        margin-left: 6px;
+    }
+    .logo-text {
+        margin-left: 10px;
+    }
+    .logo-text-title {
+        font-size: 18px;
+    }
+    .logo-text-subtitle {
+        font-size: 9px;
+        letter-spacing: 1px;
+    }
+    .logo-container .col-md-6:first-child {
+        margin-left: 0;
+        padding-left: 14px;
+    }
+    .logo-container .col-md-6:last-child {
+        margin-left: 0;
+        padding-right: 14px;
+    }
+    .logo-container .logo-sm {
+        transform: none;
+    }
+    .logo-container .d-flex.flex-row-reverse {
+        transform: none;
+        position: static;
+        justify-content: flex-end;
+        padding-right: 14px;
+        margin-top: -8px;
+        top: 0;
+    }
     i.fal.fa-bars {
         color: #fff;
     }
     #mainNav .container {
-        justify-content: center;
-        padding: 10px 0 10px 0;
+        justify-content: flex-start;
+        padding: 8px 14px;
     }
     .rsp-ban-desc h1 {
         line-height: 24px;
@@ -135,13 +165,65 @@
 }
 
 @media screen and (max-width: 767px) {
+    /* --- Header top: logos horizontales (más pequeños) + EN|ES debajo a la derecha --- */
     .logo img {
-        width: 165px;
+        width: 150px;
+    }
+    .logo-icon-img {
+        height: 34px;
+        margin-left: 4px;
+    }
+    .logo-text {
+        margin-left: 8px;
+    }
+    .logo-text-title {
+        font-size: 14px;
+    }
+    .logo-text-subtitle {
+        font-size: 7px;
+        letter-spacing: 0.5px;
+    }
+    .navbar-brand-text {
+        transform: none;
     }
     .logo-sm img {
-        width: 80px;
-        top: 10px;
-    }   
+        width: 75px;
+        position: relative;
+        top: 0;
+    }
+    .logo-sm {
+        margin-left: 0;
+        margin-top: 0;
+        text-align: right;
+    }
+    .logo-container .row .col-8 {
+        flex: 0 0 65%;
+        max-width: 65%;
+    }
+    .logo-container .row .col-4 {
+        flex: 0 0 35%;
+        max-width: 35%;
+    }
+    .logo-container .row .col-md-6:first-child {
+        margin-left: 0;
+        padding-left: 8px;
+    }
+    .logo-container .row .col-md-6:last-child {
+        margin-left: 0;
+        padding-right: 8px;
+        padding-left: 0;
+    }
+    .logo-container .row .col-4 .logo-sm {
+        transform: none;
+    }
+    body .logo-container .d-flex.flex-row-reverse {
+        transform: none;
+        position: static;
+        justify-content: flex-end;
+        padding-right: 8px;
+        padding-top: 6px;
+        top: 0;
+    }
     .rsp-ban-desc {
         top: 0;
         position: inherit;
@@ -227,29 +309,6 @@
     .conf-blk {
         padding: 50px 15px;
     }
-    .rsp-noti-sec .owl-prev span {
-        background-image: url(../img/left.png);
-        width: 34px;
-        height: 34px;
-        background-repeat: no-repeat;
-        position: absolute;
-        left: auto;
-        top: -40px;
-        background-size: 100%;
-        color: transparent;
-        right: 50px;
-    }
-    .rsp-noti-sec .owl-next span {
-        background-image: url(../img/right.png);
-        width: 34px;
-        height: 34px;
-        background-repeat: no-repeat;
-        position: absolute;
-        top: -40px;
-        right: 0;
-        background-size: 100%;
-        color: transparent;
-    }
     .rsp-c-tab-blk {
         margin: 0 0 40px 0;
     }
@@ -268,3 +327,141 @@
         width: 135px;
     }
 }
+
+/* ============================================================
+   ORIENTACIÓN A VÍCTIMAS — responsive .orv-*
+   Breakpoints: 1024 (lg), 768 (md), 600, 425
+   ============================================================ */
+
+/* ---- A partir de 768px (md) ---- */
+@media screen and (min-width: 768px) {
+    .orv-hero-cta-grid{grid-template-columns:1fr 1fr}
+    .orv-servicios-grid{grid-template-columns:1fr 1fr}
+    .orv-form-row{grid-template-columns:1fr 1fr}
+    .orv-marco-row{flex-direction:row;gap:32px}
+}
+
+/* ---- A partir de 992px (lg) ---- */
+@media screen and (min-width: 992px) {
+    .orv-hero-grid{grid-template-columns:1.05fr 1fr;gap:48px}
+    .orv-hero-media{margin-top:0}
+    .orv-seguros-grid{grid-template-columns:1fr 1fr;gap:56px}
+    .orv-servicios-grid{grid-template-columns:repeat(4,1fr);gap:24px}
+    .orv-pasos-grid{grid-template-columns:repeat(3,1fr);gap:32px}
+    .orv-registro-grid{grid-template-columns:1fr 1fr;gap:56px}
+    .orv-fondo-grid{grid-template-columns:1fr 1fr;gap:56px}
+    .orv-contacto-grid{grid-template-columns:1fr 1fr;gap:48px}
+    .orv-hero-badge{left:-24px;bottom:-24px;padding:16px 22px}
+}
+
+/* ---- Mobile <768 ---- */
+@media screen and (max-width: 767px) {
+    .orv-hero{padding:40px 0 60px}
+    .orv-seguros,
+    .orv-servicios,
+    .orv-guia,
+    .orv-registro,
+    .orv-fondo,
+    .orv-contacto{padding:50px 0}
+    .orv-hero-cta-grid{margin-top:40px}
+    .orv-hero-badge{left:50%;bottom:-14px;transform:translateX(-50%);max-width:90%}
+    .orv-card-panel{padding:22px}
+    .orv-cobertura-item{font-size:18px}
+    .orv-fondo-gal{grid-template-columns:1fr 1fr}
+}
+
+/* ---- Mobile pequeño <600 ---- */
+@media screen and (max-width: 599px) {
+    .orv-hero-title{font-size:28px}
+    .orv-hero-lead{font-size:15px}
+    .orv-servicios-grid{grid-template-columns:1fr}
+    .orv-fondo-gal{grid-template-columns:1fr}
+    .orv-fondo-col{flex-direction:row;flex-wrap:wrap;gap:10px}
+    .orv-fondo-col img{width:calc(50% - 5px)}
+    .orv-form-panel{padding:24px}
+    .orv-canal{gap:14px}
+    .orv-canal-icon{width:42px;height:42px;font-size:18px}
+    .orv-bubble{padding:12px 18px 12px 12px;right:16px;bottom:16px}
+    .orv-bubble-title{display:none}
+}
+
+/* ---- Mobile <=425 ---- */
+@media screen and (max-width: 425px) {
+    .orv-form-row{grid-template-columns:1fr;gap:10px}
+    .orv-paso-copy{gap:10px}
+    .orv-paso-num{width:28px;height:28px;font-size:13px}
+}
+
+/* ============================================================
+   PAGINACIÓN (.custom-pag-btn) — responsive global
+   Afecta a: noticias, notas-prensa, publicaciones,
+             normas-legales, datos-abiertos, revistas
+   ============================================================ */
+
+/* ---- Mobile <768 ---- */
+@media screen and (max-width: 767px) {
+    .custom-pag-wrapper {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .custom-pag-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+    .custom-pag-btn i {
+        font-size: 16px;
+    }
+}
+
+/* ---- Mobile pequeño <425 ---- */
+@media screen and (max-width: 425px) {
+    .custom-pag-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+    .custom-pag-btn i {
+        font-size: 14px;
+    }
+}
+
+/* ============================================================
+   Ajustes puntuales (<992):
+   1) EN|ES alineado bajo el logo gob.pe
+   2) Sidebar hamburguesa abre a la izquierda
+   ============================================================ */
+@media screen and (max-width: 991px) {
+    .logo-container .d-flex.flex-row-reverse {
+        justify-content: flex-end;
+    }
+    .logo-container .d-flex.flex-row-reverse > .navbar {
+        width: 35%;
+        justify-content: center;
+    }
+    #mainNav {
+        position: relative;
+    }
+    #navbarResponsive.collapse.navbar-collapse {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #3C4250;
+        width: 280px;
+        min-height: calc(100vh - 100%);
+        padding: 16px 0;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+    #navbarResponsive .navbar-nav.nav-rsp {
+        flex-direction: column;
+        width: 100%;
+        padding-left: 0;
+    }
+    #navbarResponsive .nav-rsp .nav-link {
+        padding: 14px 20px;
+        white-space: normal;
+    }
+}
+

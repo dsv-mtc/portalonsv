@@ -1,30 +1,20 @@
 <!DOCTYPE html>
-<html lang="{{settings.lang}}">
+<html lang="{{lang}}">
 
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="/main.css">
-		<link rel="stylesheet" href="/features.css">
-		<link rel="stylesheet" href="/openData.css">
-		<script src="https://kit.fontawesome.com/06fd3ecd3e.js" crossorigin="anonymous"></script>
-		<link rel="icon" type="/img/png" href="{{settings.icon}}">
-		<title>{{seoMetas.title}}</title>
-		<meta name="description" content="{{seoMetas.description}}">
-		<meta name="keywords" content="seguridad vial, reportes, accidentes,carreteras">
-		<meta name="author" content="Observatorio Nacional de Seguridad Vial">   
-		<!-- Google tag (gtag.js) -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-256137196-1"></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
+  <head>
+    {{> seo/head}}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-256137196-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-			gtag('config', 'UA-256137196-1');
-		</script>
-	</head>
+      gtag('config', 'UA-256137196-1');
+    </script>
+  </head>
 
-	<body>
+	<body class="fx-boot">
+		<div id="fb-root"></div>
 		{{#if enabledNavigation}}
 			{{> default/navigation}}
 		{{/if}}
@@ -39,10 +29,24 @@
 			{{> default/suscribers-modal}}
 		{{/if}}
 		
-		<div id="fb-root"></div>
-
-		<!--Facebookk-->
-		<script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
+		<script>
+			window.fbAsyncInit = function () {
+				FB.init({
+					xfbml: true,
+					version: 'v19.0'
+				});
+				if (document.querySelector('.fb-page')) {
+					FB.XFBML.parse();
+				}
+			};
+			(function (d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) { return; }
+				js = d.createElement(s); js.id = id;
+				js.src = 'https://connect.facebook.net/es_LA/sdk.js';
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
 		<script src="/main.js"></script>
 		<script src="/opendata.js"></script>
 		<script src="/features.js"></script>

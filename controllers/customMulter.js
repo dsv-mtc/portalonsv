@@ -12,8 +12,8 @@ let storage= multer
 			cb(null,path.join(__dirname,filePath));
 		},
 		filename:function(req,file,cb){
-				//file.fieldname+path.extname(file.originalname)
-				cb(null,file.originalname)
+				//nombre generado por el servidor (evita sobrescritura y path traversal)
+				cb(null, `${file.fieldname.split("-")[0]}-${Date.now()}${path.extname(file.originalname).toLowerCase()}`)
 		},
 		fileFilter:function(_req,file,cb){
 				checkFileType(file,cb)
@@ -21,9 +21,9 @@ let storage= multer
 	})
 
 function checkFileType(file,cb){
-	const fileTypes = /pdf|xlxs|csv|png|jpg|jpeg/;
-	const extname = fileTypes.test(	path.extname(file.originalname).toLowerCase() );
-	const mimeType = fileTypes.test(file.mimeType);
+	const fileTypes = /\.(pdf|xlsx?|csv|png|jpe?g|gif)$/i;
+	const extname = fileTypes.test( path.extname(file.originalname).toLowerCase() );
+	const mimeType = fileTypes.test(file.mimetype || '');
 	if(mimeType && extname) return cb(null,true)
 	cb('Formato no aceptado')
 }

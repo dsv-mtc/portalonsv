@@ -1,23 +1,72 @@
-<section class="rsp-navbar banner">
-	<div class="d-flex justify-content-between">
-		<div class="logo">
-			<!--Cambiar la imagen-->
-			<a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="img/logo-datos.png" alt="{{ settings.title }}"></a>
-		</div>
-		<div class="d-flex align-items-center mr-3">
-			<div class="navbar-nav">
-				<div class="nav-item"><a href="/administrador/logout" style="color: white;" class="nav-link">Cerrar Sesión</a></div>
-			</div>
-		</div>
-	</div>
+<section class="rsp-navbar banner-admin">
+  <div class="d-flex justify-content-between align-items-center px-4 w-100">
+    <div class="logo-admin">
+      <a class="navbar-brand" href="{{endpointRebase settings.url}}">
+        <img class="logo-img-admin" src="/img/logo-1.svg" alt="ONSV">
+      </a>
+    </div>
+    <div class="logout-wrapper">
+      <a href="/administrador/logout" class="btn-logout-admin">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        Cerrar Sesión
+      </a>
+    </div>
+  </div>
 </section>
 
 {{>admin/navigation secondary_navigation=secondary_navigation}}
 
-<main class="container">
-	<div class="row justify-content-center">
-		<picture class="admin-main-picture" style="width: 99%;">
-			<img class="admin-main-img d-block" src="/estaticos/img/admin/IMAGENES PARA LA WEB DEL ONSV.png" alt="MDN" />
-		</picture>
-	</div>
+<main class="container-fluid admin-main-content">
+  <div class="container py-5">
+    
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="welcome-box-admin">
+          <h2>¡Bienvenido al Panel de Control Administrativo!</h2>
+          <p>Desde aquí tienes acceso completo para gestionar, actualizar y monitorear todos los contenidos del Observatorio Nacional de Seguridad Vial (ONSV). Usa el menú superior para navegar entre los diferentes módulos.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row grid-stats-admin">
+      
+      <div class="col-md-4 mb-4">
+        <div class="card-stat-admin stat-blue">
+          <div class="stat-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div class="stat-info">
+            <h3>DATOS ABIERTOS</h3>
+            <p>Repositorio de datasets, archivos XLS, CSV y PDFs publicados.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card-stat-admin stat-teal">
+          <div class="stat-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </div>
+          <div class="stat-info">
+            <h3>ANALÍTICA DE DATOS</h3>
+            <p>Administración de menús, submenús y enlaces a tableros BI.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card-stat-admin stat-red">
+          <div class="stat-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <div class="stat-info">
+            <h3>COMUNICACIONES</h3>
+            <p>Gestión de campañas de seguridad, entrevistas y eventos.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
 </main>

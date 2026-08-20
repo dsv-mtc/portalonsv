@@ -1,23 +1,16 @@
 {{#each post}}
     <div class="item">
-        <div class="rsp-res-blk">
-            <div class="rsp-res-img">
-                <a href="{{ endpointPostParse (parseHttp url) ../lang }}"><img class="regiones-img-extend" src="{{parseHttpImage feature_image}}" alt="h-map"></a>
-            </div>
-            <div class="rsp-res-blk-desc">
-                <a href="{{ endpointPostParse (parseHttp url) ../lang }}"><h6 class="ft-bold publicaciones-tit">{{ title }}</h6></a> 
-            </div>
-            <div class="rsp-pro-det">
-                <div class="pd-desc">
-                    <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
-                </div>
-            </div>
-            <p class="p-hide">
-                {{excerpt}}
-            </p>
-            <a href="{{endpointPostParse (parseHttp url) ../lang}}" class="btn btn-rsp ft-bold">
-                {{t ../lang "leer más"}} <i class="fal fa-long-arrow-right pl-2"></i>
+        <div class="rsp-res-blk new-card">
+            <a href="{{endpointPostParse (parseHttp url) ../lang}}">
+                <img class="card-img" src="{{parseHttpImage feature_image}}" alt="{{title}}">
             </a>
+            <div class="card-content">
+                <span class="card-meta"><i class="fas fa-calendar-alt"></i> {{parseDate created_at}}</span>
+                <h3 class="card-title">{{title}}</h3>
+                <a href="{{endpointPostParse (parseHttp url) ../lang}}" class="card-link">
+                    {{t ../lang "leer más"}} &rarr;
+                </a>
+            </div>
         </div>
     </div>
 {{/each}}

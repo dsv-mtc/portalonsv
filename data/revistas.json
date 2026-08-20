@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Econom\u00eda",
+    "slug": "economia",
+    "tema": "Econom\u00eda",
+    "image": "/revistas/economia.jpg",
+    "pdf": "/revistas/economia.pdf"
+  },
+  {
+    "title": "Derecho PUCP",
+    "slug": "derecho-pucp",
+    "tema": "Derecho",
+    "image": "/revistas/derecho-pucp.jpg",
+    "pdf": "/revistas/derecho-pucp.pdf"
+  },
+  {
+    "title": "Revista de Psicolog\u00eda",
+    "slug": "revista-de-psicologia",
+    "tema": "Psicolog\u00eda",
+    "image": "/revistas/revista-de-psicologia.jpg",
+    "pdf": "/revistas/revista-de-psicologia.pdf"
+  },
+  {
+    "title": "Anthropologica",
+    "slug": "anthropologica",
+    "tema": "Antropolog\u00eda",
+    "image": "/revistas/anthropologica.jpg",
+    "pdf": "/revistas/anthropologica.pdf"
+  },
+  {
+    "title": "Kawsaypacha: Sociedad y Medio Ambiente",
+    "slug": "kawsaypacha",
+    "tema": "Medio Ambiente",
+    "image": "/revistas/kawsaypacha.jpg",
+    "pdf": "/revistas/kawsaypacha.pdf"
+  },
+  {
+    "title": "Educaci\u00f3n",
+    "slug": "educacion",
+    "tema": "Educaci\u00f3n",
+    "image": "/revistas/educacion.jpg",
+    "pdf": "/revistas/educacion.pdf"
+  }
+]

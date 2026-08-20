@@ -1,0 +1,58 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/features.css">
+<link rel="stylesheet" href="/openData.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://img.youtube.com" crossorigin>
+<link rel="preconnect" href="https://www.youtube.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&family=Barlow+Semi+Condensed:wght@600;700&family=Roboto+Condensed:wght@400;700;900&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  :root {
+    --red: #C8102E; --red-dk: #9E0C24; --navy: #14213D; --navy-2: #1F3864; 
+    --blue: #15457E; --blue-2: #1E5BAA; --amber: #F4B41A; --cyan: #1597B8; --green: #2E7D32;
+    --ink: #1b1e28; --muted: #5c6273; --line: #e3e7ef; --paper: #fff; --mist: #f1f4f9; --gnav: #3c4250;
+    --shadow: 0 1px 2px rgba(20,33,61,.05),0 10px 28px rgba(20,33,61,.08);
+    --shadow-lg: 0 20px 54px rgba(20,33,61,.18);
+  }
+</style>
+<script src="https://kit.fontawesome.com/06fd3ecd3e.js" crossorigin="anonymous"></script>
+
+<link rel="icon" type="image/png" href="{{settings.icon}}">
+<link rel="apple-touch-icon" href="{{settings.icon}}">
+<link rel="mask-icon" href="{{settings.icon}}" color="#14213D">
+<meta name="theme-color" content="#14213D">
+<meta name="msapplication-TileColor" content="#14213D">
+<meta name="author" content="Observatorio Nacional de Seguridad Vial">
+<meta name="generator" content="Express + Handlebars">
+<meta name="google-site-verification" content="PENDIENTE_VERIFICACION_GOOGLE">
+
+<title>{{seoMetas.title}}</title>
+<meta name="description" content="{{seoMetas.description}}">
+{{#if seoMetas.canonical}}<link rel="canonical" href="{{seoMetas.canonical}}">{{/if}}
+{{#if seoMetas.prev}}<link rel="prev" href="{{seoMetas.prev}}">{{/if}}
+{{#if seoMetas.next}}<link rel="next" href="{{seoMetas.next}}">{{/if}}
+
+{{#each seoMetas.hreflang}}<link rel="alternate" hreflang="{{lang}}" href="{{url}}">{{/each}}
+
+<meta property="og:type" content="{{seoMetas.og.type}}">
+<meta property="og:url" content="{{seoMetas.og.url}}">
+<meta property="og:title" content="{{seoMetas.og.title}}">
+<meta property="og:description" content="{{seoMetas.og.description}}">
+<meta property="og:image" content="{{seoMetas.og.image}}">
+<meta property="og:locale" content="{{seoMetas.og.locale}}">
+<meta property="og:site_name" content="{{seoMetas.og.siteName}}">
+
+<meta name="twitter:card" content="{{seoMetas.twitter.card}}">
+<meta name="twitter:site" content="{{seoMetas.twitter.site}}">
+<meta name="twitter:title" content="{{seoMetas.twitter.title}}">
+<meta name="twitter:description" content="{{seoMetas.twitter.description}}">
+<meta name="twitter:image" content="{{seoMetas.twitter.image}}">
+
+<meta name="robots" content="{{seoMetas.robots}}">
+
+{{{seoMetas.jsonLd}}}

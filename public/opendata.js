@@ -140,26 +140,123 @@ function reloadPosts(response) {
 	
 	const $resultTemplate = document.getElementById('results-template')
 	$resultTemplate.classList.remove('d-none');
+	const isEn = location.href.includes('/en/');
 	
 	if (!response.success) {
-		$resultTemplate.innerHTML = 'Ocurrió un error al buscar los datos';
+		$resultTemplate.innerHTML = isEn ? 'An error occurred while searching the data' : 'Ocurrió un error al buscar los datos';
 		return;
 	}
 
 	if(response.dataLength === 0)
 		$resultTemplate.innerHTML = `
 			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
-				No se encontraron resultados
+				${isEn ? 'No results found' : 'No se encontraron resultados'}
 			</h3>
 		`;
-	else
+	else {
 		$resultTemplate.innerHTML = `
 			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
 				Se encontraron ${response.dataLength} conjunto(s) de datos
 			</h3>
-			${response.dataRendered}
+			<div class="od-cards-container">${response.dataRendered}</div>
 		`;
+		initSearchPagination();
+	}
 
+}
+
+const SEARCH_PER_PAGE = 5
+
+function getSearchPageNumbers(current, total, delta = 3) {
+	if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+	const result = [];
+	const left = Math.max(2, current - delta);
+	const right = Math.min(total - 1, current + delta);
+	result.push(1);
+	if (left > 2) result.push('...');
+	for (let i = left; i <= right; i++) result.push(i);
+	if (right < total - 1) result.push('...');
+	result.push(total);
+	return result;
+}
+
+function initSearchPagination() {
+	const $cards = Array.from(document.querySelectorAll('#results-template .od-card'))
+	const totalPages = Math.max(1, Math.ceil($cards.length / SEARCH_PER_PAGE))
+	if ($cards.length <= SEARCH_PER_PAGE) return
+
+	let currentPage = 1
+
+	function showPage(page) {
+		const start = (page - 1) * SEARCH_PER_PAGE
+		const end = start + SEARCH_PER_PAGE
+		$cards.forEach(($card, index) => {
+			$card.style.display = index >= start && index < end ? '' : 'none'
+		})
+	}
+
+	function renderPagination() {
+		$resultTemplate.querySelector('.od-search-pagination')?.remove()
+
+		const nav = document.createElement('nav')
+		nav.className = 'col-12 d-flex justify-content-center align-items-center mt-4 mb-4 custom-pag-wrapper od-search-pagination'
+
+		const pageNumbers = getSearchPageNumbers(currentPage, totalPages)
+		pageNumbers.forEach(number => {
+			if (number === '...') {
+				const span = document.createElement('span')
+				span.className = 'custom-pag-btn'
+				span.style.cursor = 'default'
+				span.style.border = 'none'
+				span.textContent = '…'
+				nav.appendChild(span)
+				return
+			}
+			const btn = document.createElement('button')
+			btn.type = 'button'
+			btn.className = 'custom-pag-btn'
+			if (number === currentPage) btn.classList.add('active')
+			btn.textContent = number
+			btn.setAttribute('aria-label', `Página ${number}`)
+			btn.addEventListener('click', () => {
+				currentPage = number
+				showPage(currentPage)
+				renderPagination()
+			})
+			nav.appendChild(btn)
+		})
+
+		if (currentPage < totalPages) {
+			const nextBtn = document.createElement('button')
+			nextBtn.type = 'button'
+			nextBtn.className = 'custom-pag-btn'
+			nextBtn.setAttribute('aria-label', 'Siguiente página')
+			nextBtn.innerHTML = '<i class="fal fa-chevron-right"></i>'
+			nextBtn.addEventListener('click', () => {
+				currentPage = currentPage + 1
+				showPage(currentPage)
+				renderPagination()
+			})
+			nav.appendChild(nextBtn)
+		}
+
+		const lastBtn = document.createElement('button')
+		lastBtn.type = 'button'
+		lastBtn.className = 'custom-pag-btn'
+		lastBtn.setAttribute('aria-label', 'Última página')
+		lastBtn.innerHTML = '<i class="fal fa-chevron-double-right"></i>'
+		lastBtn.addEventListener('click', () => {
+			currentPage = totalPages
+			showPage(currentPage)
+			renderPagination()
+		})
+		nav.appendChild(lastBtn)
+
+		$resultTemplate.appendChild(nav)
+	}
+
+	showPage(1)
+	renderPagination()
 }
 
 function checkInputFile() {

@@ -16,3 +16,10 @@
 # Node.js dependencies:
 node_modules/
 contenido-osnv-prod/
+
+# Secretos y credenciales (NUNCA subir a GCP):
+.env
+.env.*
+utils/keys/
+*.pem
+cookies.txt

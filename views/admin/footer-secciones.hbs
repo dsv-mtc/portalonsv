@@ -1,0 +1,144 @@
+<style>
+  .admin-page { max-width: 1200px; margin: 0 auto; padding: 20px; font-family: "Barlow", sans-serif; }
+  .admin-page h1 { color: var(--navy); font-family: "Barlow Condensed", sans-serif; font-size: 24px; text-transform: uppercase; margin-bottom: 24px; }
+  .admin-page h2 { color: var(--navy); font-family: "Barlow Condensed", sans-serif; font-size: 20px; text-transform: uppercase; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+  
+  .section-card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .section-card h3 { color: var(--navy); font-family: "Barlow Condensed", sans-serif; font-size: 16px; text-transform: uppercase; margin: 0 0 12px; }
+  
+  .link-row { display: grid; grid-template-columns: 1fr 150px 1fr; gap: 12px; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .link-row .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .link-row .form-group label { font-size: 14px; color: #555; }
+  .link-row .form-group input, .link-row .form-group select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+  .link-row .form-group input:focus, .link-row .form-group select:focus { outline: none; border-color: var(--navy); }
+  .link-row .btn-add { background: none; border: none; color: var(--blue-2); cursor: pointer; font-size: 14px; padding: 0; }
+  .link-row .btn-add:hover { text-decoration: underline; }
+  .link-row .btn-delete { margin-left: 8px; padding: 4px 8px; background: #fff0f0; border: 1px solid #d00; color: #d00; border-radius: 4px; cursor: pointer; font-size: 12px; }
+  .link-row .btn-delete:hover { background: #e00; color: #fff; }
+  
+  .empty-state { padding: 40px; text-align: center; color: #888; }
+  .empty-state i { font-size: 48px; margin-bottom: 12px; display: block; }
+  
+  .btn-save { display: inline-block; padding: 10px 24px; background: var(--navy); color: #fff; border: none; border-radius: 4px; font-family: "Barlow Semi Condensed", sans-serif; font-size: 14px; text-transform: uppercase; cursor: margin-top: 24px; }
+  .btn-save:hover { background: var(--red); }
+  .btn-cancel { display: inline-block; padding: 10px 24px; background: #fff; color: var(--navy); border: 1px solid var(--navy); border-radius: 4px; font-family: "Barlow Semi Condensed", sans-serif; font-size: 14px; cursor: margin-top: 24px; }
+  .btn-cancel:hover { background: var(--mist); }
+</style>
+
+<div class="admin-page">
+  <h1>Secciones del Footer</h1>
+  
+  {{#if seccionesData.secciones}}
+  <div>
+    <h2>Enlaces actuales ({{seccionesData.secciones.length}})</h2>
+    <div class="section-card">
+      <ul class="link-list">
+        {{#each seccionesData.secciones}}
+        <li><a href="{{enlace}}">{{titulo}}</a> <a href="#" class="btn-delete" data-index="{{@index}}">×</a></li>
+        {{/each}}
+      </ul>
+    </div>
+  </div>
+  {{else}}
+  <div class="empty-state">
+    <i class="fas fa-folder"></i>
+    <p>Aún no hay secciones configuradas</p>
+  </div>
+  {{/if}}
+  
+  {{#unless seccionesData.secciones}}
+  <div style="margin-top: 20px;">
+    <h3>Añadir nuevo enlace</h3>
+    <div class="section-card">
+      <div class="link-row">
+        <div class="form-group">
+          <label>Título del enlace</label>
+          <input type="text" id="seccion-titulo" placeholder="Ej: Publicaciones">
+        </div>
+        <div class="form-group">
+          <label>Enlace (URL)</label>
+          <input type="text" id="seccion-enlace" placeholder="Ej: /publicaciones">
+        </div>
+        <button type="button" class="btn-add" onclick="addSection()">Añadir</button>
+      </div>
+    </div>
+  </div>
+  {{/unless}}
+  
+  <div style="margin-top: 24px;">
+    <button class="btn-save" onclick="saveSections()">Guardar cambios</button>
+    <button class="btn-cancel" onclick="location.reload()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // No need to load - datos ya vienen en la plantilla
+});
+
+// Eliminar enlace
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('btn-delete')) {
+    e.preventDefault();
+    if (confirm('¿Seguro que quieres eliminar este enlace?')) {
+      const index = parseInt(e.target.getAttribute('data-index'));
+      removeSection(index);
+    }
+  }
+});
+
+// Guardar nueva sección
+async function removeSection(index) {
+  try {
+    const resp = await fetch('/administrador/api/footer', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({ secciones: [] })
+    });
+    const data = await resp.json();
+    if (data.success) {
+      location.reload();
+    }
+  } catch (err) {
+    console.error('Error eliminando sección:', err);
+  }
+}
+
+// Guardar sección
+async function saveSections() {
+  const titulo = document.getElementById('seccion-titulo').value.trim();
+  const enlace = document.getElementById('seccion-enlace').value.trim();
+  
+  if (!titulo || !enlace) {
+    alert('Por favor completa ambos campos');
+    return;
+  }
+  
+  try {
+    const resp = await fetch('/administrador/api/footer', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({
+        telefono: '', email: '', direccion: '', descripcion: '', horario: '',
+        secciones: [{titulo, enlace}]
+      })
+    });
+    const data = await resp.json();
+    if (data.success) {
+      alert('Sección guardada correctamente');
+      location.reload();
+    } else {
+      alert('Error al guardar: ' + (data.message || 'Unknown error'));
+    }
+  } catch (err) {
+    console.error('Error guardando sección:', err);
+    alert('Error de conexión');
+  }
+}
+</script>

@@ -25,14 +25,14 @@
 {{>admin/navigation secondary_navigation=secondary_navigation}}
 
 <main class="container-fluid mt-3 mb-3" id="datos-abiertos-crud">
-	<h3 class="rsp-title ft-bold mb-5 text-center">
+	<h3 class="rsp-title ft-bold admin-title mb-5 text-center">
 		Datos abiertos
 	</h3>
 
 	<form class="filters d-flex justify-content-between" method="GET">
 			
 		<div class="form-group row col-12 col-md-2">
-			<label for="searchedTitulo" class="col-3 col-form-label">
+			<label for="searchedTitulo" class="col-3 col-form-label admin-label">
 				Título:
 			</label>
 			<div class="col-9">
@@ -40,14 +40,14 @@
 					type="text" 
 					id="searchedTitulo"  
 					name="searchedTitulo" 
-					class="form-control"
+					class="form-control admin-input"
 					value="{{searched.titulo}}"
 				>
 			</div>
 		</div>
 
 		<div class="form-group row col-12 col-md-4">
-			<label for="searchedDescripcion" class="col-3 col-form-label">
+			<label for="searchedDescripcion" class="col-3 col-form-label admin-label">
 				Descripción:
 			</label>
 			<div class="col-9">
@@ -55,18 +55,18 @@
 					type="text"
 					id="searchedDescripcion"
 					name="searchedDescripcion"
-					class="form-control"
+					class="form-control admin-input"
 					value="{{searched.descripcion}}"
 				>
 			</div>
 		</div>
 
 		<div class="form-group row col-12 col-md-3">
-			<label for="searchedCategoria" class="col-3 col-form-label">
+			<label for="searchedCategoria" class="col-3 col-form-label admin-label">
 				Categoria:
 			</label>
 			<div class="col-9">
-				<select class="form-control" name="searchedCategoria" id="searchedCategoria">
+				<select class="form-control admin-input" name="searchedCategoria" id="searchedCategoria">
 					<option value="">Selecione una opción</option>
 					{{#each categorias}}
 						<option value="{{id}}"  {{#if selected}} selected {{/if}} >{{value}}</option>
@@ -77,7 +77,7 @@
 		</div>
 
 		<div class="form-group row col-12 col-md-2">
-			<label for="searchedFecha" class="col-3 col-form-label">
+			<label for="searchedFecha" class="col-3 col-form-label admin-label">
 				Fecha:
 			</label>
 			<div class="col-8">
@@ -85,7 +85,7 @@
 					type="date"
 					id="searchedFecha"
 					name="searchedFecha"
-					class="form-control"
+					class="form-control admin-input"
 					value="{{searched.fecha}}"
 				>
 			</div>

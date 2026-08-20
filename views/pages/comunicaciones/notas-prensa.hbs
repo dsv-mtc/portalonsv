@@ -3,40 +3,113 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-4">
-				<h3 class="rsp-title ft-bold">
-					Notas de Prensa
-				</h3>
-			</div>
-			<div class="col-md-8 mx-auto">
-				<div class="input-group">
-					<input type="text" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" >
-					<div class="input-group-append">
-						<span id="search-button" class="input-group-text search-input">
-							<i class="fal fa-search"></i>
-						</span>
-					</div>
+				<div class="noticias-tab-row">
+					<span class="noticias-tab">{{t lang "Nota de prensa"}}</span>
 				</div>
 			</div>
-		</div>
-		<div id="search-alert" class="alert alert-danger alert-dismissible fade hide" role="alert">
-			{{t lang "no-results"}}
+			<div class="col-md-5 ml-auto">
+				<form method="GET" class="input-group">
+					<input type="text" name="title" id="search-input" class="form-control main-search" placeholder="{{t lang "buscar"}}" value="{{title}}">
+					<div class="input-group-append">
+						<button type="submit" id="search-button" class="input-group-text search-input">
+							<i class="fal fa-search"></i>
+						</button>
+					</div>
+				</form>
+			</div>
 		</div>
 		<div class="row" id="default">
 			{{#each post}}
-				{{#if @first}}
-					{{> noticias-eventos/noticias-eventos-card-head lang=../lang}}
-					{{else}}
-						{{> noticias-eventos/noticias-eventos-card-body lang=../lang}}
-				{{/if}}
+				{{> noticias-eventos/noticias-eventos-card-body lang=../lang}}
 			{{/each}}
-			<div class="col-12 d-flex justify-content-center pagination-wrapper" >
-				{{#if pagination}}
-					{{> pagination pag=pagination}}
-				{{/if}}
-			</div>  
+			<style>
+        .custom-pag-wrapper {
+          gap: 8px;
+        }
+        .custom-pag-btn {
+          width: 42px;
+          height: 42px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 17px;
+          border: 1px solid transparent;
+          background: transparent;
+          color: #1d3557;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          cursor: pointer;
+        }
+        .custom-pag-btn:hover {
+          background-color: transparent;
+          color: #C8102E;
+          border: 1px solid #C8102E;
+        }
+        .custom-pag-btn.active {
+          background-color: #C8102E;
+          color: white;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .custom-pag-btn.active:hover {
+          background-color: #C8102E;
+          color: white;
+          border: 1px solid transparent;
+        }
+        .custom-pag-btn i {
+          font-size: 20px;
+        }
+
+        .pd-desc .cl {
+          font-family: "Barlow Semi Condensed", sans-serif;
+          font-weight: bold;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+      </style>
+
+      <div class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
+        {{#if pagination}}
+          {{#each pagination.pages_list}}
+            {{#if (eq this '...')}}
+              <span class="custom-pag-btn" style="cursor:default;border:none;">…</span>
+            {{else}}
+              <a href="{{page_url ../pagination.url_page this ../lang}}" class="custom-pag-btn{{#if (eq this ../pagination.page)}} active{{/if}}" aria-label="Página {{this}}">{{this}}</a>
+            {{/if}}
+          {{/each}}
+          {{#if pagination.next}}
+            <a href="{{page_url pagination.url_page pagination.next lang}}" class="custom-pag-btn" aria-label="Siguiente página">
+              <i class="fal fa-chevron-right"></i>
+            </a>
+          {{/if}}
+          <a href="{{page_url pagination.url_page pagination.pages lang}}" class="custom-pag-btn" aria-label="Última página">
+            <i class="fal fa-chevron-double-right"></i>
+          </a>
+        {{/if}}
+      </div>
 		</div>
 		<div class="row" id="results-template">
 			
 		</div>                 
 	</div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".share-card-btn").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var url = btn.getAttribute("data-url") || window.location.href;
+        var title = btn.getAttribute("data-title") || document.title;
+        if (navigator.share) {
+          navigator.share({ title: title, url: url }).catch(function () {});
+        } else {
+          window.open("whatsapp://send?text=" + encodeURIComponent(title + " " + url), "_blank");
+        }
+      });
+    });
+  });
+</script>

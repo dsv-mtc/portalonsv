@@ -1,0 +1,42 @@
+<section class="rsp-wrap entv-section">
+	<div class="container">
+
+		<div class="entv-tab-row">
+			<span class="entv-tab">{{t lang "Entornos viales"}}</span>
+		</div>
+
+		{{#if tieneCarrusel}}
+		<div class="owl-carousel owl-theme" id="entornos-carousel">
+			{{#each tarjetas}}
+			<div class="entv-card">
+				<div class="entv-ph" {{#if imagen_url}}style="background-image:url('{{imagen_url}}');background-size:cover;background-position:center;"{{else}}style="background:linear-gradient(135deg,#2E5C99,#14213D)"{{/if}}>
+					<span class="entv-lbl">{{badge}}</span>
+				</div>
+				<div class="entv-body">
+					<div class="entv-dt">{{t lang "Entornos Viales"}}</div>
+					<h3>{{titulo}}</h3>
+					<p>{{descripcion}}</p>
+					<div class="entv-rd">{{t lang "Conocer más →"}}</div>
+				</div>
+			</div>
+			{{/each}}
+		</div>
+		{{else}}
+		<div class="entv-grid">
+			{{#each tarjetas}}
+			<div class="entv-card">
+				<div class="entv-ph" {{#if imagen_url}}style="background-image:url('{{imagen_url}}');background-size:cover;background-position:center;"{{else}}style="background:linear-gradient(135deg,#2E5C99,#14213D)"{{/if}}>
+					<span class="entv-lbl">{{badge}}</span>
+				</div>
+				<div class="entv-body">
+					<div class="entv-dt">{{t lang "Entornos Viales"}}</div>
+					<h3>{{titulo}}</h3>
+					<p>{{descripcion}}</p>
+					<div class="entv-rd">{{t lang "Conocer más →"}}</div>
+				</div>
+			</div>
+			{{/each}}
+		</div>
+		{{/if}}
+	</div>
+</section>

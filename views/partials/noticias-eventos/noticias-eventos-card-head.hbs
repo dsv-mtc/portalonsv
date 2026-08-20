@@ -1,24 +1,26 @@
 <div class="col-md-6 pb-5">
     <div class="rsp-res-img">
+        <div class="card-badge">{{parseRegion tags}}</div>
         <a href="{{endpointPostParse (parseHttp url) lang}}">
             <img class="noticias-p-img" src="{{parseHttpImage feature_image}}" alt="imagen">
         </a>
     </div>
 </div>
-<div class="col-md-6 pb-5">
+<div class="col-md-6 pb-5 noticias-text-offset">
+    <span class="noticias-featured-label">{{t lang "Destacada"}}</span>
     <div class="rsp-res-blk rsp-nye-desc">
         <a href="{{ endpointPostParse (parseHttp url) lang }}">
             <h6 class="ft-bold"><a href="{{ endpointPostParse (parseHttp url) lang  }}">{{ title}}</h6>
         </a>
     </div>
     <div class="rsp-pro-det">
-        <div class="pd-desc">
-            <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
-        </div>
+    <div class="pd-desc noticias-pd-desc">
+        <div class="cl"><i class="fas fa-calendar-alt"></i> {{parseDate created_at }} </div>
     </div>
-    <p>
-        {{excerpt}}
-    </p>
+</div>
+    <p class="noticias-excerpt-offset">
+    {{excerpt}}
+</p>
     <div class="nye-link-blk">
         <div class="ny-btn">
             <a href="{{endpointPostParse (parseHttp url) lang}}" class="btn btn-rsp ft-bold">
@@ -26,16 +28,15 @@
             </a>
         </div>
         <div class="ny-link">
-            <!--TODO cambiar la url por la url de la web-->
             <ul class="so-links">
                 <li>
-                    <a  href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="{{@root.popupSocial.facebook}}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                 </li>
                 <li>
-                    <a href="https://twitter.com/intent/tweet?text={{title}}&url={{url }}" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="{{@root.popupSocial.twitter}}" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                 </li>
                 <li>
-                    <a href="whatsapp://send?text={{url }}" data-action="share/whatsapp/share"  target="_blank"><i class="fas fa-share-alt"></i></a>
+                    <a href="#" role="button" class="share-card-btn" data-url="{{url}}" data-title="{{title}}" aria-label="Compartir"><i class="fas fa-share-alt"></i></a>
                 </li>
             </ul>
         </div>

@@ -3,10 +3,19 @@ node_modules
 app.yaml
 ignore-templates
 utils/keys/pruebasfiisuni-3cd345507254.json
+utils/keys/
+*.pem
+cookies.txt
 docs/*
 
 status.json
 status.mjs
 public/estaticos/
-
+AGENTS.md
 .env
+.gitignore
+# Artefactos de despliegue
+*.tar
+2. script_update.sql - Modificaciones (ALTER TABLE)
+informe-avances.docx
+manual-admin-panel.docx

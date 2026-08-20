@@ -1,34 +1,11 @@
-<section class="rsp-navbar banner">
-	<div class="d-flex justify-content-between">
-		
-		<div class="logo">
-			<!--Cambiar la imagen-->
-			<a class="navbar-brand" href="{{endpointRebase settings.url}}"><img class="logo-img-open-data" src="/img/logo-datos.png" alt="{{ settings.title }}"></a>
-		</div>
-		
-		<div class="d-flex align-items-center mr-3">
-			<div class="navbar-nav">
-				<div class="nav-item">
-					<a href="/administrador/logout" style="color: white;" class="nav-link">
-						{{#if secondary_navigation}}
-							Logout
-						{{else}}
-							Cerrar sesión
-						{{/if}}
-					</a>
-				</div>
-			</div>
-		</div>
-
-	</div>
-</section>
+{{>admin/banner secondary_navigation=secondary_navigation}}
 
 {{>admin/navigation secondary_navigation=secondary_navigation}}
 
 <main class="container mt-5 mb-5">
 	<div class="row">
 		<div class="col-12" id="sectionContainer">
-		<h3 class="rsp-title ft-bold mb-4 text-center">
+		<h3 class="rsp-title ft-bold admin-title mb-4 text-center">
 			{{#if secondary_navigation}}
 				Update figures
 			{{else}}
@@ -51,7 +28,7 @@
 			<form id="datosabiertos-form" action="/administrador/cifras" method="POST" class="needs-validation" novalidate >
 				
 				<div class="form-group row">
-					<label for="lesionados" class="col-12 col-md-2 col-form-label">
+					<label for="lesionados" class="col-12 col-md-2 col-form-label admin-label">
 						*{{#if secondary_navigation}}
 							Harmed
 						{{else}}
@@ -65,7 +42,7 @@
 								name="lesionados" 
 								maxlength="200" 
 								placeholder="Ingrese el número de lesionados" 
-								class="form-control"
+								class="form-control admin-input"
 								required
 								pattern="\d*"
 								value="{{lesionados}}"
@@ -81,7 +58,7 @@
 				</div>
 
 				<div class="form-group row">
-					<label for="accidentados" class="col-12 col-md-2 col-form-label">
+					<label for="accidentados" class="col-12 col-md-2 col-form-label admin-label">
 						*{{#if secondary_navigation}}
 							Injured
 						{{else}}
@@ -95,7 +72,7 @@
 								name="accidentados" 
 								maxlength="200" 
 								placeholder="Ingrese el número de accidentados"
-								class="form-control" required
+								class="form-control admin-input" required
 								pattern="\d*"
 								value="{{accidentados}}"
 							>
@@ -110,7 +87,7 @@
 				</div>
 
 				<div class="form-group row">
-					<label for="fallecidos" class="col-12 col-md-2 col-form-label">
+					<label for="fallecidos" class="col-12 col-md-2 col-form-label admin-label">
 						*Fallecidos:
 					</label>
 					<div class="col-12 col-md-10">
@@ -120,7 +97,7 @@
 								name="fallecidos" 
 								maxlength="200"
 								placeholder="Ingrese el número de fallecidos"
-								class="form-control" 
+								class="form-control admin-input" 
 								required
 								pattern="\d*"
 								value="{{fallecidos}}"
@@ -136,7 +113,7 @@
 				</div>
 
 				<div class="form-group row">
-					<label for="mensaje1" class="col-12 col-md-2 col-form-label">
+					<label for="mensaje1" class="col-12 col-md-2 col-form-label admin-label">
 						*1° Mensaje:
 					</label>
 					<div class="col-12 col-md-10">
@@ -146,7 +123,7 @@
 							name="mensaje1" 
 							maxlength="200"
 							placeholder="Ingresa el primer mensaje"
-							class="form-control" 
+							class="form-control admin-input" 
 							required
 							value="{{mensaje1}}"
 						>
@@ -154,7 +131,7 @@
 				</div>
 
 				<div class="form-group row">
-					<label for="mensaje2" class="col-12 col-md-2 col-form-label">
+					<label for="mensaje2" class="col-12 col-md-2 col-form-label admin-label">
 						*2° Mensaje:
 					</label>
 					<div class="col-12 col-md-10">
@@ -164,7 +141,7 @@
 								name="mensaje2" 
 								maxlength="200"
 								placeholder="Ingresa el segundo mensaje"
-								class="form-control" 
+								class="form-control admin-input" 
 								required
 								value="{{mensaje2}}"
 							>
@@ -172,7 +149,7 @@
 				</div>
 
 				<div style="margin-top: 20px;">
-					<p style="color: #ee1d27;">*: {{#if secondary_navigation}}
+					<p class="admin-required-note">*: {{#if secondary_navigation}}
 							Required fields
 						{{else}}
 							Campos obligatorios
@@ -180,7 +157,7 @@
 				</div>
 				
 				<div class="form-group d-flex flex-row-reverse mt-5">
-					<button type="submit" class="btn btn-rsp ft-bold">
+					<button type="submit" class="btn btn-admin-primary">
 						{{#if secondary_navigation}}
 							Send
 						{{else}}

@@ -1,0 +1,41 @@
+# ONSV — Observatorio Nacional de Seguridad Vial (Perú)
+
+> El Observatorio Nacional de Seguridad Vial (ONSV), adscrito al Ministerio de Transportes y Comunicaciones del Perú, sistematiza, analiza y difunde información sobre siniestros viales para fortalecer las políticas de prevención, fiscalización y respuesta en seguridad vial. El sitio pone a disposición datos georreferenciados, analítica, publicaciones, normas legales y datos abiertos.
+
+## Sobre la entidad
+- Sitio institucional (español): https://www.onsv.gob.pe/
+- Sitio institucional (inglés): https://www.onsv.gob.pe/en/
+- Quiénes somos: https://www.onsv.gob.pe/quienes-somos
+- Contacto: https://www.onsv.gob.pe/contacto
+- Ministerio de Transportes y Comunicaciones del Perú (entidad padre): https://www.gob.pe/mtc
+
+## Cobertura y capacidades
+- Datos de siniestralidad vial a nivel nacional, con monitoreo georreferenciado en tiempo cercano al real (SRAT).
+- Analítica e indicadores de siniestros, lesiones y muertes en las vías del Perú.
+- Publicaciones técnicas, revistas institucionales y normas legales en materia de seguridad vial.
+- Datos abiertos descargables sobre siniestralidad vial.
+- Comunicaciones: noticias, notas de prensa, eventos, campañas, entrevistas y webinars.
+- Programas de educación vial, formación y orientación a víctimas de siniestros de tránsito.
+
+## Secciones principales
+- Inicio (es): https://www.onsv.gob.pe/
+- Noticias y eventos: https://www.onsv.gob.pe/comunicaciones/todos
+- Regiones: https://www.onsv.gob.pe/regiones
+- Analítica: https://www.onsv.gob.pe/analitica
+- Publicaciones: https://www.onsv.gob.pe/publicaciones
+- Revistas: https://www.onsv.gob.pe/revistas
+- Normas legales: https://www.onsv.gob.pe/normas-legales
+- Datos abiertos: https://www.onsv.gob.pe/datosabiertos
+- Webinars: https://www.onsv.gob.pe/webinars
+- Capacitaciones: https://www.onsv.gob.pe/capacitaciones
+- Entornos viales: https://www.onsv.gob.pe/entornos-viales
+- Buscar: https://www.onsv.gob.pe/buscar
+- Mapa del sitio (XML): https://www.onsv.gob.pe/sitemap.xml
+
+## Datos de contacto
+- Teléfono: (01) 615 7800 – Anexo 6102
+- Línea gratuita: 111
+- Correo electrónico: orientacionvictimas@mtc.gob.pe
+- WhatsApp: +51 905 461 611
+- Dirección: Jr. Zorritos 1203, Cercado de Lima, Perú
+- Horario de atención: Lunes a viernes, de 8:30 a. m. a 5:30 p. m.

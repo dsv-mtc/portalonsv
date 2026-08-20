@@ -1,8 +1,12 @@
 {{#each post}}
-    {{#if @first}}
-        {{>noticias-eventos-card-head lang=../lang}}
+    {{#if ../featured}}
+        {{#if @first}}
+            {{>noticias-eventos-card-head lang=../lang}}
         {{else}}
             {{>noticias-eventos-card-body lang=../lang}}
+        {{/if}}
+    {{else}}
+        {{>noticias-eventos-card-body lang=../lang}}
     {{/if}}
 {{/each}}
 <div class="col-12 d-flex justify-content-center pagination-wrapper">

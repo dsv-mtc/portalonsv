@@ -4,107 +4,74 @@
 
 <section class="normas-legales-section">
 
-	<div class="filters">
+	<div>
+		<div class="pub-title">
+			<h1>{{t lang "Normas legales"}}</h1>
+		</div>
 
-		<form id="searchForm" method="GET">
+		<div class="filters pub-filterbox">
 
-			<div class="input-group mb-4">
-				<input 
-					type="text" 
-					id="title" 
-					name="title" 
-					class="form-control main-search" 
-					placeholder="{{t lang "buscar"}}"
-					{{#if title}}
-						value="{{title}}"
-					{{/if}}
-				>
-				<div class="input-group-append">
-					<button class="input-group-text search-input" type="submit">
-						<i class="fal fa-search"></i>
+			<form id="searchForm" method="GET">
+
+				<div class="input-group mb-4">
+					<input type="text" id="title" name="title"
+					       class="form-control main-search"
+					       placeholder="{{t lang "buscar"}}"
+					       {{#if title}}
+					       	value="{{title}}"
+					       {{/if}}>
+
+					<div class="input-group-append">
+						<button class="input-group-text search-input" type="submit">
+							<i class="fal fa-search"></i>
+						</button>
+					</div>
+				</div>
+
+				<div class="pub-field">
+					<label for="categoria">{{t lang "Categoria"}}</label>
+					<select name="categoria" id="categoria" class="form-control">
+						<option {{#if categoria}} {{else}} selected {{/if}} value=''>{{t lang "Seleccionar categoría"}}</option>
+						{{#each allTags}}
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
+						{{/each}}
+					</select>
+				</div>
+
+				<div class="pub-field">
+					<label for="region">{{t lang "Región"}}</label>
+					<select name="region" id="region" class="form-control">
+						<option {{#if region}} {{else}} selected {{/if}} value=''>{{t lang "Seleccionar región"}}</option>
+						{{#each regiones}}
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.value}}</option>
+						{{/each}}
+					</select>
+				</div>
+
+				<div class="pub-field">
+					<label for="year">{{t lang "Año"}}</label>
+					<select name="year" id="year" class="form-control">
+						<option {{#if year}} {{else}} selected {{/if}} value=''>{{t lang "Seleccionar año"}}</option>
+						{{#each years}}
+							<option value="{{this.slug}}" {{#if this.estaSeleccionado}} selected {{/if}}>{{this.name}}</option>
+						{{/each}}
+					</select>
+				</div>
+
+				<div class="pub-fbtns">
+					<button class="pub-btn-buscar" type="submit">
+						{{t lang "Buscar"}}
+					</button>
+					<button class="pub-btn-limpiar" id="clearButton">
+						{{t lang "Limpiar"}}
 					</button>
 				</div>
-			</div>
 
-			<div class="form-group row">
-				<label for="categoria" class="col-3 col-form-label">
-					Categoría
-				</label>
-				<div class="col-9">
-					<select name="categoria" id="categoria" class="form-control">
-						<option {{#if categoria}} {{else}} selected {{/if}} value=''>Selecione una categoría</option>
-						{{#each allTags}}
-							<option 
-								value="{{this.slug}}"
-								{{#if this.estaSeleccionado}}
-									selected
-								{{/if}}
-							>
-								{{this.name}}
-							</option>
-						{{/each}}
-					</select>
-				</div>
-			</div>
+			</form>
 
-			<div class="form-group row">
-				<label for="region" class="col-3 col-form-label">
-					Región
-				</label>
-				<div class="col-9">
-					<select name="region" id="region" class="form-control">
-						<option {{#if region}} {{else}} selected {{/if}} value=''>Selecione una región</option>
-						{{#each regiones}}
-							<option 
-								value="{{this.slug}}"
-								{{#if this.estaSeleccionado}}
-									selected
-								{{/if}}
-							>
-								{{this.value}}
-							</option>
-						{{/each}}
-					</select>
-				</div>
-			</div>
+			{{>sidebar-widgets/subscribers lang=lang}}
 
-			<div class="form-group row">
-				<label for="year" class="col-3 col-form-label">
-					Año
-				</label>
-				<div class="col-9">
-					<select name="year" id="year" class="form-control">
-						<option {{#if year}} {{else}} selected {{/if}} value=''>Selecione un año</option>
-						{{#each years}}
-							<option 
-								value="{{this.slug}}"
-								{{#if this.estaSeleccionado}}
-									selected
-								{{/if}}
-							>
-								{{this.name}}
-							</option>
-						{{/each}}
-					</select>
-				</div>
-			</div>
-
-			<div class="d-flex justify-content-center " style="gap: 1rem;">
-				<button class="ny-btn btn btn-rsp ft-bold" type="submit">
-					<i class="fal fa-search"></i>
-					Buscar
-				</button>
-				
-				<button class="ny-btn btn btn-rsp ft-bold" id="clearButton">
-					<i class="fas fa-broom"></i>
-					Limpiar
-				</button>
-			</div>
-
-
-		</form>
-
-		{{>sidebar-widgets/subscribers lang=lang}}
+		</div>
 
 	</div>
 
@@ -114,14 +81,68 @@
 				{{>normas-legales/normas-legales-card-body lang=../lang}}
 			{{/each}}
 
-			<nav class="col-12 d-flex justify-content-center ">
-				{{#if pagination}}
-					{{> pagination pag=pagination}}
-				{{/if}}
-			</div>
+			{{#if pagination}}
+        <style>
+        .custom-pag-wrapper {
+          gap: 8px;
+        }
+        .custom-pag-btn {
+          width: 42px;
+          height: 42px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 17px;
+          border: 1px solid transparent;
+          background: transparent;
+          color: #1d3557;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          cursor: pointer;
+        }
+        .custom-pag-btn:hover {
+          background-color: transparent;
+          color: #C8102E;
+          border: 1px solid #C8102E;
+        }
+        .custom-pag-btn.active {
+          background-color: #C8102E;
+          color: white;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .custom-pag-btn.active:hover {
+          background-color: #C8102E;
+          color: white;
+          border: 1px solid transparent;
+        }
+        .custom-pag-btn i {
+          font-size: 20px;
+        }
+      </style>
+
+        <nav class="col-12 d-flex justify-content-center align-items-center mt-5 mb-4 custom-pag-wrapper">
+          {{#each pagination.pages_list}}
+            {{#if (eq this '...')}}
+              <span class="custom-pag-btn" style="cursor:default;border:none;">…</span>
+            {{else}}
+              <a href="{{page_url ../pagination.url_page this ../lang}}" class="custom-pag-btn{{#if (eq this ../pagination.page)}} active{{/if}}" aria-label="Página {{this}}">{{this}}</a>
+            {{/if}}
+          {{/each}}
+          {{#if pagination.next}}
+            <a href="{{page_url pagination.url_page pagination.next lang}}" class="custom-pag-btn" aria-label="Siguiente página">
+              <i class="fal fa-chevron-right"></i>
+            </a>
+          {{/if}}
+          <a href="{{page_url pagination.url_page pagination.pages lang}}" class="custom-pag-btn" aria-label="Última página">
+            <i class="fal fa-chevron-double-right"></i>
+          </a>
+        </nav>
+        {{/if}}
 		{{else}}
 			<h3 style="margin: .75em 0 1.25em; font-size:1.25em; font-weight:bold!important;">
-				No se encontraron resultados
+				{{t lang "No se encontraron resultados"}}
 			</h3>
 		{{/if}}
 	</div>

@@ -1,0 +1,1 @@
+ALTER TABLE files ADD COLUMN shapefile VARCHAR(500) AFTER csvfile;

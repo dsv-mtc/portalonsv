@@ -141,21 +141,93 @@ const deleteDiacritics = (text) => {
 		.normalize();
 }
 
-const serviceMap = (region, dataGhost) => {
-	let data = { regionData: {}, template: '' }
-	let condicion = region;
-	if (condicion === 'san-martin') region = 'SAN MARTIN';
-	if (condicion === 'la-libertad') region = 'LA LIBERTAD';
-	region = deleteDiacritics(region).toUpperCase();
-	//console.log(region)
-	regions.REGIONES.forEach(x => {
-		//console.log(x.REGION,region)
-		if (x.REGION == region) {
-			data.regionData = x;
+const extractDepartmentFromText = (text, regiones) => {
+	if (!text) return null;
+	const normalizedText = deleteDiacritics(text).toLowerCase();
+	const sortedRegiones = [...regiones].sort((a, b) => b.value.length - a.value.length);
+	for (const region of sortedRegiones) {
+		const normalizedRegion = deleteDiacritics(region.value).toLowerCase();
+		if (normalizedText.includes(normalizedRegion)) {
+			return region.value;
 		}
-	})
-	data.template = renderCarouselRegions(dataGhost);
-	return data;
+	}
+	return null;
+}
+
+const serviceMap = async (region, dataGhost) => {
+    let data = { regionData: {}, template: '' }
+    if (!region) return data;
+
+    let originalRegion = region;
+    let cleanText = deleteDiacritics(originalRegion).toLowerCase().trim().replace(/\s+/g, '-');
+    let upperVersion = deleteDiacritics(originalRegion).toUpperCase().trim();
+
+    let regionRow = null;
+    let isSanMartin = cleanText.includes('san-martin') || cleanText.includes('san martin') || cleanText.includes('san-martín');
+
+    try {
+        let keysToTry = [originalRegion, cleanText, upperVersion];
+        
+        if (isSanMartin) {
+            keysToTry = ['san-martin', 'san martin', 'San Martín', 'San Martin', 'SAN MARTIN', 'SAN MARTÍN', originalRegion];
+        }
+
+        for (let key of keysToTry) {
+            let res = await mysqlClient.getRegion(key);
+            if (res && res.data) {
+                regionRow = res.data;
+                break;
+            }
+        }
+    } catch (error) {
+        console.error("Error en serviceMap:", error);
+    }
+
+    // Respaldo de seguridad estricto para San Martín si la BD no lo devuelve
+    if (!regionRow && isSanMartin) {
+        regionRow = {
+            value: 'San Martín',
+            nombreEncargado: 'No disponible',
+            celularEncargado: 'No disponible',
+            correoEncargado: 'No disponible',
+            pageLink: '#',
+            imageUrl: '/assets/san martin.png',
+            slug: 'san-martin'
+        };
+    }
+
+    // Manejo correcto de la imagen (respetando el espacio tal como La Libertad)
+    let imageUrl = '';
+    if (isSanMartin) {
+        imageUrl = `/assets/san martin.png`;
+    } else if (regionRow && regionRow.imageUrl) {
+        imageUrl = regionRow.imageUrl.trim().replace(/ /g, '%20');
+    } else {
+        imageUrl = `/assets/${cleanText}.png`;
+    }
+
+    // Se mantiene la ruta intacta pero se rompe la caché del navegador con un timestamp
+    const versionBuster = Date.now();
+    const baseUrl = imageUrl.split('?')[0];
+    imageUrl = `${baseUrl}?v=${versionBuster}`;
+
+    let regionName = regionRow ? regionRow.value : originalRegion;
+    if (isSanMartin) {
+        regionName = 'San Martín';
+    }
+
+    data.regionData = {
+        REGION: regionName,
+        NOMBRE: regionRow ? regionRow.nombreEncargado : 'No disponible',
+        TELEFONO: regionRow ? regionRow.celularEncargado : 'No disponible',
+        'E-MAIL': regionRow ? regionRow.correoEncargado : 'No disponible',
+        WEBSITE: regionRow ? regionRow.pageLink : '#',
+        imageUrl: imageUrl,
+        slug: regionRow ? regionRow.slug : cleanText
+    };
+    
+    data.template = renderCarouselRegions(dataGhost);
+    return data;
 }
 
 const renderCarouselRegions = (data) => {
@@ -317,7 +389,11 @@ const getImagesFiles = async (prefixName) => {
 	const imagesRequest = imageFilesName.filter(filename => {
 		if (filename.match(prefixName)) return filename
 	})
-	return imagesRequest;
+	const imagesWithVersion = await Promise.all(imagesRequest.map(async (filename) => {
+		const { mtimeMs } = await fs.promises.stat(path.join(__dirname, `../public/assets/${filename}`));
+		return `${filename}?v=${Math.floor(mtimeMs)}`;
+	}))
+	return imagesWithVersion;
 }
 
 
@@ -360,6 +436,7 @@ module.exports = {
 	unSubscribeUser: unSubscribeUser,
 	constants,
 	capitalizeNameRecursive,
+	extractDepartmentFromText,
 	saveDocument: saveDocument,
 	filterTags: filterTags,
 	renderTemplate,

@@ -1,0 +1,6 @@
+allowBuilds:
+  '@parcel/watcher': true
+  gifsicle: true
+  jpegtran-bin: true
+  optipng-bin: true
+  protobufjs: true

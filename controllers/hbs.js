@@ -19,7 +19,8 @@ moment.locale("es");
  * @description: Referido a traducir en otro idioma de turno
  */
 function t(lang, text) {
-	let rawData = fs.readFileSync(path.join(__dirname, `../utils/locales/${lang}.json`))
+	const locale = lang || 'es';
+	let rawData = fs.readFileSync(path.join(__dirname, `../utils/locales/${locale}.json`))
 	let data = JSON.parse(rawData);
 	return data[text];
 }
@@ -39,258 +40,234 @@ function ifCond(v1, v2, options) {
  * @returns 
  */
 function getMenuSelected(url_selected, label) {
-	if (url_selected == '/') {
-		if (label === 'inicio') {
-			return 'add-color';
-		}
-		return '';
-	} else {
-		let getLabel = url_selected.split('/')[1]
-		if (getLabel === label) {
-			return 'add-color';
-		} else {
-			let afterLabel = '';
-			if (label == 'noticias y eventos') afterLabel = "noticias-eventos";
-			if (label == 'normas legales') afterLabel = "normas-legales";
-			if (getLabel === afterLabel) {
-				return 'add-color';
-			}
-		}
-	}
+    if (url_selected === '/' || url_selected === '/en/' || url_selected === '/en') {
+        if (label && label.toLowerCase() === 'inicio') return 'add-color';
+        return '';
+    }
+
+    const segments = url_selected.split('/');
+    const slug = (segments[1] === 'en' ? segments[2] : segments[1] || '').toLowerCase();
+
+    const normalized = (label || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-')
+        .trim();
+
+    const LABEL_TO_SLUG = {
+        'laws': 'normas-legales',
+        'legal-standards': 'normas-legales',
+        'normas-legales': 'normas-legales',
+        'regions': 'regiones',
+        'regiones': 'regiones',
+        'news-and-events': 'noticias-eventos',
+        'noticias-y-eventos': 'noticias-eventos',
+        'analytics': 'analitica',
+        'analitica': 'analitica',
+        'publications': 'publicaciones',
+        'publicaciones': 'publicaciones',
+        'journals': 'revistas',
+        'revistas': 'revistas',
+        'news': 'comunicaciones',
+        'noticias': 'comunicaciones',
+        'events': 'comunicaciones',
+        'eventos': 'comunicaciones',
+        'contact': 'contacto',
+        'contacto': 'contacto',
+        'who-we-are': 'quienes-somos',
+        'quienes-somos': 'quienes-somos',
+        'inicio': 'inicio',
+        'home': 'inicio',
+    };
+
+    const expectedSlug = LABEL_TO_SLUG[normalized] || normalized;
+    return slug === expectedSlug ? 'add-color' : '';
 }
 
-function createMenu(menuList, secondary_navigation, url_selected) {
+function createMenu(menuList, secondary_navigation, url_selected, programas, menuSubitems) {
 	let htmlMenu = "";
-	menuList.forEach(menuObj => {
-		const target = setTarget(menuObj.label);
-		const addColor = getMenuSelected(url_selected, menuObj.label)
 
-		//inicio //home
-		if (menuObj.label == 'inicio' || menuObj.label == 'home') {
-			const menu = {
-				title: secondary_navigation ? 'WHO ARE WE' : 'QUIENES SOMOS',
-				urls: {
-					url1: "/quienes-somos"
+	function findGhost(label) {
+		return menuList.find(function (m) { return m.label === label; });
+	}
 
-				},
-				labels: {
-					label1: secondary_navigation ? 'What is ONSV' : "QUIENES SOMOS"
+	function findGhostCI(label) {
+		return menuList.find(function (m) { return m.label.toLowerCase() === label.toLowerCase(); });
+	}
+
+	function renderGhostItem(menuObj) {
+		var target = setTarget(menuObj.label);
+		var addColor = getMenuSelected(url_selected, menuObj.label);
+		return '<li class="nav-item nav-special ' + addColor + '"><a class="nav-link" href="' + menuObj.url + '" target="' + target + '">' + menuObj.label + '</a></li>';
+	}
+
+	function renderDropdownItem(i) {
+		var cls = 'dropdown-item' + (i.wrap ? ' dropdown-item-wrap' : '');
+		if (!i.url || i.url === '#') {
+			return '<span class="' + cls + '" aria-disabled="true">' + i.label + '</span>';
+		}
+		var external = (i.external === true || i.external === 1) || /^https?:\/\//i.test(i.url || '');
+		var t = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+		return '<a class="' + cls + '" href="' + i.url + '"' + t + '>' + i.label + '</a>';
+	}
+
+	function renderSectionDropdown(seccion, label, activeCls) {
+		var items = (menuSubitems || [])
+			.filter(function (m) { return m.seccion === seccion && m.isActive; })
+			.sort(function (a, b) { return (a.orden || 0) - (b.orden || 0); })
+			.map(function (m) {
+				var url = m.url || '#';
+				if (secondary_navigation && url.charAt(0) === '/' && !/^\/en\//.test(url) && !/^https?:/i.test(url)) {
+					url = '/en' + url;
 				}
-			}
+				return renderDropdownItem({
+					label: secondary_navigation ? (m.label_en || m.label_es || '') : (m.label_es || m.label_en || ''),
+					url: url,
+					wrap: true,
+					external: m.external
+				});
+			});
+		if (items.length === 0) return '';
+		return '<li class="nav-item nav-special ' + activeCls + ' dropdown">' +
+			'<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + label + '</a>' +
+			'<div class="dropdown-menu">' + items.join('') + '</div>' +
+			'</li>';
+	}
 
-			const tablero = secondary_navigation ? 'home' : 'inicio'
-
-			htmlMenu += `
-			<li class="nav-item nav-special ${addColor}">
-				<a 
-					class="nav-link" 
-					href="${menuObj.url}" 
-					target="${target}"
-				>
-					<svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-						<path id="homeSVGPath"
-							d="M 12 2 A 1 1 0 0 0 11.289062 2.296875 L 1.203125 11.097656 A 0.5 0.5 0 0 0 1 11.5 A 0.5 0.5 0 0 0 1.5 12 L 4 12 L 4 20 C 4 20.552 4.448 21 5 21 L 9 21 C 9.552 21 10 20.552 10 20 L 10 14 L 14 14 L 14 20 C 14 20.552 14.448 21 15 21 L 19 21 C 19.552 21 20 20.552 20 20 L 20 12 L 22.5 12 A 0.5 0.5 0 0 0 23 11.5 A 0.5 0.5 0 0 0 22.796875 11.097656 L 12.716797 2.3027344 A 1 1 0 0 0 12.710938 2.296875 A 1 1 0 0 0 12 2 z" />
-					</svg>
-				</a>
-			</li>
-			<li 
-				class="nav-item nav-special dropdown"
-			>
-				<a 
-					class="nav-link dropdown-toggle" 
-					href="#" 
-					id="menudrop1" 
-					role="button" 
-					data-toggle="dropdown" 
-					aria-haspopup="true" 
-					aria-expanded="false"
-				>
-					${tablero}
-				</a>
-				<div 
-					class="dropdown-menu" 
-					aria-labelledby="menudrop1"
-				>
-					<a 
-						class="dropdown-item" 
-						href="${secondary_navigation ? "/en" : ""}${menu.urls.url1}" 
-						target="_self"
-					>
-						${menu.labels.label1}
-					</a>
-				</div>
-			</li>`;
-
-			return;
+	function prefixedInternalUrl(url) {
+		if (secondary_navigation && url && url.charAt(0) === '/' && !/^\/en\//.test(url) && !/^https?:/i.test(url)) {
+			return '/en' + url;
 		}
-		// terminos de home
+		return url;
+	}
 
-		if (menuObj.label == 'analítica' || menuObj.label == 'analytics') {
-			const tablero = secondary_navigation ? 'Applications' : 'Aplicaciones'
-			const srat = menuList.find(menu => { if (menu.label == 'srat') return menu });
-			const peruWorld = menuList.find(menu => { if (menu.label == 'peru-in-world') return menu });
-			const datosabiertosurl = "/datosabiertos";
-			const auxTarget = setTarget(srat.label);//SRAT
-			const auxTarget2 = setTarget(srat.label)
-			htmlMenu += `
-				<li class="nav-item nav-special dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${tablero}</a>
-					<div class="dropdown-menu" aria-labelledby="menudrop1">
-						<a class="dropdown-item" href="${menuObj.url}" target="${target}">${menuObj.label}</a>
-						<a class="dropdown-item" href="${srat.url}" target="${auxTarget}">${srat.label}</a>
-						<a class="dropdown-item" href="${datosabiertosurl}" target="${auxTarget2}">datos abiertos</a>
-					</div>
-				</li>`;
-			return;
-		}
-		
-		if (menuObj.label == 'noticias y eventos' || menuObj.label == 'news and events') {
-			const tablero = secondary_navigation ? 'Comunications' : 'Comunicaciones'
-			const news = {
-				label: secondary_navigation ? 'News' : 'Noticias',
-				url: secondary_navigation ? '/en/comunicaciones/noticias' : '/comunicaciones/noticias'
-			}
-			const campaing = {
-				label: secondary_navigation ? 'Campaing' : 'Campaña',
-				url: secondary_navigation ? '/en/comunicaciones/campania' : '/comunicaciones/campanias'
-			}
-			const events = {
-				label: secondary_navigation ? 'Events' : 'Eventos',
-				url: secondary_navigation ? '/en/comunicaciones/eventos' : '/comunicaciones/eventos'
-			}
-			const pressRelease = {
-				label: secondary_navigation ? 'Press release' : 'Nota de prensa',
-				url: secondary_navigation ? '/en/comunicaciones/nota-prensa' : '/comunicaciones/nota-prensa'
-			}
-			const interview = {
-				label: secondary_navigation ? 'Interview' : 'Entrevista',
-				url: secondary_navigation ? '/en/comunicaciones/entrevistas' : '/comunicaciones/entrevistas'
-			}
-			htmlMenu += `
-				<li class="nav-item nav-special dropdown">
-					<a 
-						class="nav-link dropdown-toggle" 
-						role="button" 
-						data-toggle="dropdown" 
-						aria-haspopup="true" 
-						aria-expanded="false"
-					>
-						${tablero}
-					</a>
-					<div class="dropdown-menu" aria-labelledby="menudrop1">
-						<a class="dropdown-item" href="${news.url}">${news.label}</a>
-						<a class="dropdown-item" href="${pressRelease.url}">${pressRelease.label}</a>
-						<a class="dropdown-item" href="${campaing.url}">${campaing.label}</a>
-						<a class="dropdown-item" href="${events.url}">${events.label}</a>
-						<a class="dropdown-item" href="${interview.url}">${interview.label}</a>
-					</div>
-				</li>`;
-			return;
-		} 
-		
-		if (menuObj.label == 'srat' || menuObj.label == 'peru-in-world') {
-			return;
-		} 
+	// 1. Home icon (always first, sin dropdown)
+	var homeActive = url_selected === '/' || url_selected === '/en/' ? 'add-color' : '';
+	htmlMenu += `
+		<li class="nav-item nav-special ${homeActive}">
+			<a class="nav-link" href="${secondary_navigation ? '/en/' : '/'}">
+				<svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+					<path d="M 12 2 A 1 1 0 0 0 11.289062 2.296875 L 1.203125 11.097656 A 0.5 0.5 0 0 0 1 11.5 A 0.5 0.5 0 0 0 1.5 12 L 4 12 L 4 20 C 4 20.552 4.448 21 5 21 L 9 21 C 9.552 21 10 20.552 10 20 L 10 14 L 14 14 L 14 20 C 14 20.552 14.448 21 15 21 L 19 21 C 19.552 21 20 20.552 20 20 L 20 12 L 22.5 12 A 0.5 0.5 0 0 0 23 11.5 A 0.5 0.5 0 0 0 22.796875 11.097656 L 12.716797 2.3027344 A 1 1 0 0 0 12.710938 2.296875 A 1 1 0 0 0 12 2 z" />
+				</svg>
+			</a>
+		</li>`;
 
-		htmlMenu += `
-			<li class="nav-item nav-special ${addColor}">
-				<a class="nav-link" href="${menuObj.url}" target="${target}">
-					${menuObj.label}
-				</a>
-			</li>
-		`;
+	// 2. Quiénes somos (desde BD)
+	var qsLabel = secondary_navigation ? 'Who we are' : 'Quiénes somos';
+	var qsActive = url_selected === '/quienes-somos' || url_selected === '/en/quienes-somos' ? 'add-color' : '';
+	htmlMenu += renderSectionDropdown('quienes-somos', qsLabel, qsActive);
 
+	// 3. Comunicaciones (desde BD)
+	var commLabel = secondary_navigation ? 'Communications' : 'Comunicaciones';
+	var commActive = url_selected.startsWith('/comunicaciones/') || url_selected.startsWith('/en/comunicaciones/') ? 'add-color' : '';
+	htmlMenu += renderSectionDropdown('comunicaciones', commLabel, commActive);
+
+	// 4. Publicaciones (desde BD)
+	var pubLabel = secondary_navigation ? 'Publications' : 'Publicaciones';
+	var pubActive = url_selected === '/publicaciones' || url_selected.startsWith('/publicaciones/') || url_selected === '/revistas' || url_selected.startsWith('/revistas/') || url_selected === '/en/publicaciones' || url_selected.startsWith('/en/publicaciones/') || url_selected === '/en/revistas' || url_selected.startsWith('/en/revistas/') ? 'add-color' : '';
+	htmlMenu += renderSectionDropdown('publicaciones', pubLabel, pubActive);
+
+	// 5. Aplicaciones (hardcoded dropdown + subitems BD)
+	var appGhost = findGhost('analítica') || findGhost('analytics');
+	var sratGhost = findGhost('srat');
+	var appLabel = secondary_navigation ? 'Applications' : 'Aplicaciones';
+	var appLabelItem = appGhost ? appGhost.label : (secondary_navigation ? 'Analytics' : 'Analítica');
+	var sratLabelItem = sratGhost ? sratGhost.label : 'SRAT';
+	var sratUrl = sratGhost ? sratGhost.url : '#';
+	var sratTarget = setTarget(sratGhost ? sratGhost.label : 'srat');
+	var appActive = (url_selected === '/analitica' || url_selected === '/analitica/' ||
+		url_selected === '/srat' || url_selected === '/srat/' ||
+		url_selected === '/datosabiertos' || url_selected.startsWith('/datosabiertos/') ||
+		url_selected === '/en/analitica' || url_selected === '/en/analitica/' ||
+		url_selected === '/en/srat' || url_selected === '/en/srat/' ||
+		url_selected === '/en/datosabiertos' || url_selected.startsWith('/en/datosabiertos/'))
+		? 'add-color' : '';
+	var appSubItems = (menuSubitems || [])
+		.filter(function (m) { return m.seccion === 'aplicaciones' && m.isActive; })
+		.sort(function (a, b) { return (a.orden || 0) - (b.orden || 0); })
+		.map(function (m) {
+			var url = m.url || '#';
+			if (secondary_navigation && url.charAt(0) === '/' && !/^\/en\//.test(url) && !/^https?:/i.test(url)) {
+				url = '/en' + url;
+			}
+			return renderDropdownItem({
+				label: secondary_navigation ? (m.label_en || m.label_es || '') : (m.label_es || m.label_en || ''),
+				url: url,
+				wrap: true,
+				external: m.external
+			});
+		});
+	htmlMenu += `
+		<li class="nav-item nav-special ${appActive} dropdown">
+			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${appLabel}</a>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="${appGhost ? appGhost.url : '#'}" target="${appGhost ? setTarget(appGhost.label) : '_self'}">${appLabelItem}</a>
+				<a class="dropdown-item" href="${sratUrl}" target="${sratTarget}">${sratLabelItem}</a>
+				<a class="dropdown-item" href="/datosabiertos" target="_self">${secondary_navigation ? 'Open Data' : 'Datos abiertos'}</a>
+				${appSubItems.join('')}
+			</div>
+		</li>`;
+
+	// 6. Normas legales (Ghost como item unico; si hay subitems BD, se muestran como dropdown)
+	var normasGhost = secondary_navigation
+		? findGhostCI('laws') || findGhostCI('Normas legales') || findGhostCI('normas legales')
+		: findGhostCI('Normas legales') || findGhostCI('normas legales') || findGhostCI('laws');
+	var normasActive = (url_selected === '/normas-legales' || url_selected.startsWith('/normas-legales/') ||
+		url_selected === '/en/normas-legales' || url_selected.startsWith('/en/normas-legales/'))
+		? 'add-color' : '';
+	var normasDropdown = renderSectionDropdown('normas-legales', secondary_navigation ? 'Legal Standards' : 'Normas legales', normasActive);
+	if (normasDropdown) {
+		htmlMenu += normasDropdown;
+	} else if (normasGhost) {
+		htmlMenu += renderGhostItem(normasGhost);
+	}
+
+	// 7. Regiones (Ghost)
+	var regionGhost = secondary_navigation
+		? findGhostCI('regions') || findGhostCI('Regions') || findGhostCI('Regiones') || findGhostCI('regiones')
+		: findGhostCI('Regiones') || findGhostCI('regiones') || findGhostCI('regions') || findGhostCI('Regions');
+	if (regionGhost) htmlMenu += renderGhostItem(regionGhost);
+
+	// 8. Programas (dropdown)
+	var progLabel = secondary_navigation ? 'Programs' : 'Programas';
+	var progActive = url_selected.includes('/programas/') ? 'add-color' : '';
+	var progItems = (programas || []).map(function (p) {
+		var titulo = p.titulo || '';
+		return { label: titulo, url: '/programas/' + p.slug, wrap: titulo.length > 22 };
+	});
+	htmlMenu += `
+		<li class="nav-item nav-special ${progActive} dropdown">
+			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${progLabel}</a>
+			<div class="dropdown-menu">
+				${progItems.map(renderDropdownItem).join('')}
+			</div>
+		</li>`;
+
+	// 10. Educación Vial (desde BD)
+	var eduLabel = secondary_navigation ? 'Road Education' : 'Educación Vial';
+	htmlMenu += renderSectionDropdown('educacion-vial', eduLabel, getMenuSelected2(url_selected));
+
+	// Resto de items Ghost no incluidos arriba
+	var skip = ['inicio', 'home', 'analítica', 'analytics', 'noticias y eventos', 'news and events', 'srat', 'peru-in-world', 'PERU-IN-world', 'contacto', 'contact', 'Publicaciones', 'publicaciones', 'Publications', 'publications', 'Normas legales', 'normas legales', 'Legal Standards', 'legal standards', 'laws', 'Regiones', 'regiones', 'Regions', 'regions'];
+	menuList.forEach(function (menuObj) {
+		if (skip.indexOf(menuObj.label) !== -1) return;
+		var target = setTarget(menuObj.label);
+		var addColor = getMenuSelected(url_selected, menuObj.label);
+		htmlMenu += '<li class="nav-item nav-special ' + addColor + '"><a class="nav-link" href="' + menuObj.url + '" target="' + target + '">' + menuObj.label + '</a></li>';
 	});
 
-	if (secondary_navigation) {
-		const menu = {
-			title: 'Vial Education',
-			urls: [
-				{
-					link: "/en/webinars",
-					label: "Webinars",
-					target: "_self",
-				},
-				{
-					link: "/en/capacitaciones",
-					label: "Trainings",
-					target: "_self",
-				},
-				{
-					link: "https://aulavirtual.mtc.gob.pe/seguridadvial/",
-					label: "Virtual Room",
-					target: "_blank",
-				},
-				{
-					link: "/en/peru-in-world/",
-					label: "PERU-IN-world",
-					target: "_blank",
-				}
-			]
-		}
-		htmlMenu += `
-			<li class="nav-item dropdown ${getMenuSelected(url_selected)}">
-				<a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
-				<div class="dropdown-menu" aria-labelledby="menudrop1">
-					${
-						menu.urls
-							.map(url => 
-								`<a class="dropdown-item" href="${url.link}" target="${url.target}">${url.label}</a>`
-							)
-							.join('')
-					}
-				</div>
-			</li>
-		`
-	} else {
-		const menu = {
-			title: 'Educación Vial',
-			urls: [
-				{
-					link: "/webinars",
-					label: "Webinars",
-					target: "_self",
-				},
-				{
-					link: "/capacitaciones",
-					label: "Capacitaciones",
-					target: "_self",
-				},
-				{
-					link: "https://aulavirtual.mtc.gob.pe/seguridadvial/",
-					label: "Aula Virtual",
-					target: "_blank",
-				},
-				{
-					link: "/peru-in-world/",
-					label: "peru-in-world",
-					target: "_blank",
-				}
-			],
-		}
-		htmlMenu += `
-			<li class="nav-item ${getMenuSelected2(url_selected)} dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="menudrop1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${menu.title}</a>
-				<div class="dropdown-menu" aria-labelledby="menudrop1">
-					${
-						menu.urls
-							.map(url =>
-								`<a class="dropdown-item" href="${url.link}" target="${url.target}">${url.label}</a>`
-							)
-							.join('')
-					}
-				</div>
-			</li>
-		`
-	}
 	return htmlMenu;
 }
 
 function getMenuSelected2(url_selected) {
-	if (url_selected === '/webinars') {
+	if (url_selected === '/webinars' || url_selected === '/en/webinars') {
 		return "add-color"
 	}
-	if (url_selected === '/capacitaciones') {
+	if (url_selected === '/capacitaciones' || url_selected === '/en/capacitaciones') {
+		return "add-color"
+	}
+	if (url_selected.startsWith('/peru-in-world') || url_selected.startsWith('/en/peru-in-world')) {
 		return "add-color"
 	}
 }
@@ -339,20 +316,18 @@ function assets(pathImg) {
 }
 //Usado solo en la paginación
 function page_url(url_page, index, lang) {
-	const url = process.env.URL_PATH
 	if (lang == "es") {
-		return `${url}/${url_page}/${index}`
+		return `/${url_page}/${index}`
 	} else {
-		return `${url}/${lang}/${url_page}/${index}`
+		return `/${lang}/${url_page}/${index}`
 	}
 
 }
 function page_url_search(url_page, index, lang, keyword) {
-	const url = process.env.URL_PATH
 	if (lang == "es") {
-		return `${url}/${url_page}/${index}?keyword=${keyword}`
+		return `/${url_page}/${index}?keyword=${keyword}`
 	} else {
-		return `${url}/${lang}/${url_page}/${index}?keyword=${keyword}`
+		return `/${lang}/${url_page}/${index}?keyword=${keyword}`
 	}
 }
 
@@ -362,11 +337,11 @@ function endpointPostParse(url, lang) {
 	const pattern = process.env.URL_PATH_API3
 
 	if (lang == "es") {
-		return url.replace(pattern, `${process.env.URL_PATH_POSTS}/post`);
+		return url.replace(pattern, `/post`);
 	}
 
 	if (lang == "en") {
-		return url.replace(pattern, `${process.env.URL_PATH_POSTS}/en/post`);
+		return url.replace(pattern, `/en/post`);
 	}
 
 
@@ -402,7 +377,7 @@ function checkTagsVisible(url) {
 }
 
 function setTarget(label) {
-	if (label == "srat" || label == "analítica") {
+	if (label == "srat") {
 		return "_blank"
 	}
 	return "_self"
@@ -482,6 +457,29 @@ function parseIcon(categoryValue) {
 	return iconToSend;
 }
 
+function normalizeText(str) {
+	return (str || "")
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toUpperCase()
+		.trim();
+}
+
+function parseRegion(tags) {
+	var regionesList = require('../utils/regiones').REGIONES;
+	if (!tags || !Array.isArray(tags)) return 'Regional';
+	var match = null;
+	tags.forEach(function (tag) {
+		if (match) return;
+		var tagNormalized = normalizeText(tag.name);
+		var found = regionesList.find(function (r) {
+			return normalizeText(r.REGION) === tagNormalized;
+		});
+		if (found) match = tag.name; // se devuelve el nombre TAL CUAL viene de Ghost (ya con su tilde/mayúscula correcta), no el de regiones.js
+	});
+	return match || 'Regional';
+}
+
 function _createTemplate(foldername, filename) {
 	const basePathPartial = path.join(__dirname, '../views/partials/');
 	let template = fs.readFileSync(`${basePathPartial}${foldername}/${filename}.hbs`, 'utf-8')
@@ -540,8 +538,27 @@ var hbs = exphbs.create({
 		parseClassToDownloadCol: parseClassToDownloadCol,
 		parseClassToDownload: parseClassToDownload,
 		checkTagsVisible: checkTagsVisible,
-		ifCond: ifCond
-	}
+		ifCond: ifCond,
+		parseCategory: parseCategory,
+		parseIcon: parseIcon,
+		parseRegion: parseRegion,
+		lower: str => (str || '').toLowerCase(),
+	eq: (a, b) => a === b,
+	gt: (a, b) => a > b,
+	range: (start, end) => [...Array(end - start + 1).keys()].map(i => i + start),
+	paginate: (current, total, delta = 3) => {
+		if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+		const range = [];
+		const left  = Math.max(2, current - delta);
+		const right = Math.min(total - 1, current + delta);
+		range.push(1);
+		if (left > 2) range.push('...');
+		for (let i = left; i <= right; i++) range.push(i);
+		if (right < total - 1) range.push('...');
+		range.push(total);
+		return range;
+	},
+}
 });
 
 var hbs2 = handlebars.create()
@@ -565,7 +582,25 @@ hbs2.registerHelper({
 	parseUrlToDownload: parseUrlToDownload,
 	parseClassToDownloadCol: parseClassToDownloadCol,
 	parseClassToDownload: parseClassToDownload,
-	checkTagsVisible: checkTagsVisible
+	checkTagsVisible: checkTagsVisible,
+	parseCategory: parseCategory,
+	parseIcon: parseIcon,
+	parseRegion: parseRegion,
+	lower: str => (str || '').toLowerCase(),
+	eq: (a, b) => a === b,
+	range: (start, end) => [...Array(end - start + 1).keys()].map(i => i + start),
+	paginate: (current, total, delta = 3) => {
+		if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+		const range = [];
+		const left  = Math.max(2, current - delta);
+		const right = Math.min(total - 1, current + delta);
+		range.push(1);
+		if (left > 2) range.push('...');
+		for (let i = left; i <= right; i++) range.push(i);
+		if (right < total - 1) range.push('...');
+		range.push(total);
+		return range;
+	},
 })
 
 

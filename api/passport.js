@@ -32,8 +32,14 @@ passport.use('local-login', new Strategy({
 		return done(null, false, req.flash('login', 'Usuario no encontrado'))
 	}
 
-	if (!client.comparePassword(password, result.data['password'])) {
+	const cmp = await client.comparePassword(password, result.data['password']);
+	if (!cmp.ok) {
 		return done(null, false, req.flash('login', 'Usuario o clave incorrecto'))
+	}
+
+	// Migración transparente: hashes AES legacy pasan a bcrypt al iniciar sesión
+	if (cmp.rehash && typeof client.rehashPassword === 'function') {
+		await client.rehashPassword(result.data['id'], password).catch(() => {});
 	}
 
 	const userEncript = criptoUtils.encryptUserId(result.data['id']);
@@ -45,8 +51,16 @@ passport.serializeUser((userIdEncript, done) => {
 	done(null, userIdEncript)
 })
 passport.deserializeUser(async (userEncript, done) => {
-	const userId = criptoUtils.decryptUserId(userEncript);
-	const result = await client.getUserById(userId);
-	const userEncript2 = criptoUtils.encryptUserId(result.data['id']);
-	done(null, userEncript2);
+	try {
+		const userId = criptoUtils.decryptUserId(userEncript);
+		const result = await client.getUserById(userId);
+		if (!result.success || !result.data || !result.data.id) {
+			return done(null, false);
+		}
+		const userEncript2 = criptoUtils.encryptUserId(result.data['id']);
+		done(null, userEncript2);
+	} catch (error) {
+		console.error(error);
+		done(null, false);
+	}
 })

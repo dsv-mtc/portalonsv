@@ -72,13 +72,19 @@
 			<div class="col-md-6 col-8">
 				<div class="logo">
 					<!--Cambiar la imagen-->
-					<a class="navbar-brand" href="{{endpointRebase settings.url}}">
+					<a class="navbar-brand navbar-brand-text" href="{{#if secondary_navigation}}/en/{{else}}/{{/if}}">
 						<img
-							class="logo-img"
-							src="{{parseHttpImage settings.logo}}"
-							alt="{{settings.title}}"
+								class="logo-icon-img"
+								src="/img/logo-1.svg"
+								alt=""
+								aria-hidden="true"
 						/>
-					</a>
+						<span class="logo-text">
+								<span class="logo-text-title">OBSERVATORIO</span>
+								<span class="logo-text-subtitle">NACIONAL DE SEGURIDAD VIAL</span>
+						</span>
+						<span class="sr-only">{{settings.title}}</span>
+				</a>
 				</div>
 			</div>
 			<div class="col-md-6 col-4">
@@ -110,7 +116,7 @@
 		</div>
 	</div>
 </section>
-<section class="rsp-navbar">
+<section class="rsp-navbar{{#if secondary_navigation}} lang-en{{/if}}">
 	<nav class="navbar navbar-expand-lg" id="mainNav">
 		<div class="container-fluid">
 			<button
@@ -133,10 +139,12 @@
 							settings.secondary_navigation
 							secondary_navigation
 							url_selected
+							programas
+							menuSubitems
 						}}}
 					{{else}}
 						{{{createMenu settings.navigation secondary_navigation url_selected
-						}}}
+						programas menuSubitems}}}
 					{{/if}}
 				</ul>
 			</div>
@@ -144,3 +152,23 @@
 	</nav>
 </section>
 <!--================ End header top Area =================-->
+
+<script>
+document.addEventListener('click', function(e) {
+  var item = e.target.closest('.dropdown-item[href*="#"]');
+  if (item) {
+    var dropdown = item.closest('.dropdown');
+    if (dropdown) {
+      var toggle = dropdown.querySelector('[data-toggle="dropdown"]');
+      if (toggle) {
+        if (window.bootstrap && bootstrap.Dropdown) {
+          var bs = bootstrap.Dropdown.getInstance(toggle) || new bootstrap.Dropdown(toggle);
+          bs.hide();
+        } else if (window.$ && $.fn.dropdown) {
+          $(toggle).dropdown('hide');
+        }
+      }
+    }
+  }
+});
+</script>

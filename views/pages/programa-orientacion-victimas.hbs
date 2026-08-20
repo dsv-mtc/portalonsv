@@ -1,0 +1,450 @@
+<section class="orv-wrap">
+
+  <!-- Floating Contact Bubble -->
+  <a href="#orv-contacto" id="orv-bubble" class="orv-bubble is-hidden" aria-label="{{t lang "orv.bubble.cta"}}">
+    <span class="orv-bubble-icon"><i class="fas fa-phone"></i></span>
+    <span class="orv-bubble-text">
+      <span class="orv-bubble-title">{{t lang "orv.bubble.title"}}</span>
+      <span class="orv-bubble-cta">{{t lang "orv.bubble.cta"}}</span>
+    </span>
+  </a>
+
+  <!-- Hero -->
+  <section id="orv-inicio" class="orv-hero">
+    <div class="container orv-hero-grid">
+      <div class="orv-hero-copy">
+        <h1 class="orv-hero-title">{{t lang "orv.hero.title"}}</h1>
+        <p class="orv-hero-lead">{{t lang "orv.hero.p1"}}<br><br>{{t lang "orv.hero.p2"}}<br><br>{{t lang "orv.hero.p3"}}</p>
+      </div>
+      <div class="orv-hero-media">
+        <div class="orv-hero-img">
+          <img src="/orientacion-victimas/hero-apoyo-victimas.png" alt="{{t lang "orv.hero.title"}}">
+        </div>
+        <div class="orv-hero-badge">
+          <span class="orv-hero-badge-icon"><i class="fas fa-shield-alt"></i></span>
+          <span>
+            <span class="orv-hero-badge-title">{{t lang "orv.hero.badge.title"}}</span>
+            <span class="orv-hero-badge-sub">{{t lang "orv.hero.badge.sub"}}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="container orv-hero-cta-grid">
+      <a href="#orv-seguros" class="orv-hero-cta">
+        <span class="orv-hero-cta-title">{{t lang "orv.hero.cta1.title"}}</span>
+        <span class="orv-hero-cta-sub">{{t lang "orv.hero.cta1.sub"}}</span>
+      </a>
+      <a href="#orv-fondo-soat" class="orv-hero-cta">
+        <span class="orv-hero-cta-title">{{t lang "orv.hero.cta2.title"}}</span>
+        <span class="orv-hero-cta-sub">{{t lang "orv.hero.cta2.sub"}}</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Seguros Obligatorios -->
+  <section id="orv-seguros" class="orv-seguros">
+    <div class="container">
+      <span class="orv-eyebrow">{{t lang "orv.seguros.eyebrow"}}</span>
+      <h2 class="orv-section-title">{{t lang "orv.seguros.title"}}</h2>
+      <div class="orv-seguros-grid">
+        <ul class="orv-cobertura-list">
+          <li class="orv-cobertura-item"><span class="orv-dot"></span>{{t lang "orv.seguros.coverage1"}}</li>
+          <li class="orv-cobertura-item"><span class="orv-dot"></span>{{t lang "orv.seguros.coverage2"}}</li>
+          <li class="orv-cobertura-item"><span class="orv-dot"></span>{{t lang "orv.seguros.coverage3"}}</li>
+          <li class="orv-cobertura-item"><span class="orv-dot"></span>{{t lang "orv.seguros.coverage4"}}</li>
+          <li class="orv-cobertura-item"><span class="orv-dot"></span>{{t lang "orv.seguros.coverage5"}}</li>
+        </ul>
+        <div class="orv-card-panel">
+          <a href="https://www.apeseg.org.pe/consultas-soat/" target="_blank" rel="noopener" class="orv-btn-soat">
+            <span>{{t lang "orv.seguros.soat"}}</span>
+            <i class="fas fa-external-link-alt"></i>
+          </a>
+          <div class="orv-cat-block">
+            <p class="orv-cat-title">{{t lang "orv.seguros.cat.title"}}</p>
+            <div class="orv-select-wrap">
+              <select id="orv-region-selector" class="orv-select">
+                <option value="" disabled selected>{{t lang "orv.seguros.cat.placeholder"}}</option>
+              </select>
+              <span class="orv-select-chevron"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div id="orv-afocat-results" class="orv-afocat-results orv-hidden"></div>
+            <p class="orv-cat-hint">{{t lang "orv.seguros.cat.hint"}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servicios -->
+  <section id="orv-servicios" class="orv-servicios">
+    <div class="container">
+      <div class="orv-section-head">
+        <h2 class="orv-section-title orv-center">{{t lang "orv.servicios.title"}}</h2>
+        <p class="orv-section-lead orv-center">{{t lang "orv.servicios.lead"}}</p>
+      </div>
+      <div class="orv-servicios-grid">
+        <div class="orv-servicio-card">
+          <span class="orv-servicio-icon"><i class="fas fa-shield-alt"></i></span>
+          <h3 class="orv-servicio-title">{{t lang "orv.servicios.1.title"}}</h3>
+          <p class="orv-servicio-desc">{{t lang "orv.servicios.1.desc"}}</p>
+        </div>
+        <div class="orv-servicio-card">
+          <span class="orv-servicio-icon"><i class="fas fa-heartbeat"></i></span>
+          <h3 class="orv-servicio-title">{{t lang "orv.servicios.2.title"}}</h3>
+          <p class="orv-servicio-desc">{{t lang "orv.servicios.2.desc"}}</p>
+        </div>
+        <div class="orv-servicio-card">
+          <span class="orv-servicio-icon"><i class="fas fa-stethoscope"></i></span>
+          <h3 class="orv-servicio-title">{{t lang "orv.servicios.3.title"}}</h3>
+          <p class="orv-servicio-desc">{{t lang "orv.servicios.3.desc"}}</p>
+        </div>
+        <div class="orv-servicio-card">
+          <span class="orv-servicio-icon"><i class="fas fa-gavel"></i></span>
+          <h3 class="orv-servicio-title">{{t lang "orv.servicios.4.title"}}</h3>
+          <p class="orv-servicio-desc">{{t lang "orv.servicios.4.desc"}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guía / Pasos -->
+  <section id="orv-guia" class="orv-guia">
+    <div class="container">
+      <div class="orv-guia-head">
+        <span class="orv-guia-badge">{{t lang "orv.guia.badge"}}</span>
+        <h2 class="orv-guia-title">{{t lang "orv.guia.title"}}</h2>
+        <div class="orv-guia-dash"><span></span><span></span></div>
+        <h3 class="orv-guia-subtitle">{{t lang "orv.guia.subtitle"}}</h3>
+        <p class="orv-guia-lead">{{t lang "orv.guia.lead"}}</p>
+      </div>
+      <div class="orv-pasos-grid">
+        <div class="orv-paso">
+          <div class="orv-paso-img"><img src="/orientacion-victimas/paso-1-denuncia.png" alt="{{t lang "orv.guia.1.title"}}"></div>
+          <div class="orv-paso-copy">
+            <span class="orv-paso-num">1</span>
+            <div>
+              <h3 class="orv-paso-title">{{t lang "orv.guia.1.title"}}</h3>
+              <p class="orv-paso-desc">{{t lang "orv.guia.1.desc"}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="orv-paso">
+          <div class="orv-paso-img"><img src="/orientacion-victimas/plataforma-rvvst.png" alt="{{t lang "orv.guia.2.title"}}"></div>
+          <div class="orv-paso-copy">
+            <span class="orv-paso-num">2</span>
+            <div>
+              <h3 class="orv-paso-title">{{t lang "orv.guia.2.title"}}</h3>
+              <p class="orv-paso-desc">{{t lang "orv.guia.2.desc"}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="orv-paso">
+          <div class="orv-paso-img"><img src="/orientacion-victimas/paso-3-seguimiento.png" alt="{{t lang "orv.guia.3.title"}}"></div>
+          <div class="orv-paso-copy">
+            <span class="orv-paso-num">3</span>
+            <div>
+              <h3 class="orv-paso-title">{{t lang "orv.guia.3.title"}}</h3>
+              <p class="orv-paso-desc">{{t lang "orv.guia.3.desc"}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registro Voluntario (CTA rojo) -->
+  <section id="orv-registro" class="orv-registro">
+    <div class="container orv-registro-grid">
+      <div class="orv-registro-copy">
+        <h2 class="orv-registro-title">{{t lang "orv.registro.title"}}</h2>
+        <p class="orv-registro-lead">{{t lang "orv.registro.lead"}}</p>
+        <a href="https://victimasviales.mtc.gob.pe/Consultar" target="_blank" rel="noopener" class="orv-btn-light">
+          <span>{{t lang "orv.registro.cta"}}</span>
+          <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+      <div class="orv-registro-media">
+        <div class="orv-registro-img-wrap">
+          <img src="/orientacion-victimas/plataforma-rvvst.png" alt="{{t lang "orv.registro.title"}}">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marco Legal -->
+  <section class="orv-marco-legal">
+    <div class="container orv-marco-row">
+      <div class="orv-marco-item"><i class="fas fa-shield-alt"></i><span>{{t lang "orv.marco.1"}}</span></div>
+      <div class="orv-marco-item"><i class="fas fa-shield-alt"></i><span>{{t lang "orv.marco.2"}}</span></div>
+    </div>
+  </section>
+
+  <!-- Fondo SOAT -->
+  <section id="orv-fondo-soat" class="orv-fondo">
+    <div class="container orv-fondo-grid">
+      <div class="orv-fondo-copy">
+        <span class="orv-fondo-badge"><i class="fas fa-exclamation-triangle"></i>{{t lang "orv.fondo.badge"}}</span>
+        <h2 class="orv-fondo-title">{{t lang "orv.fondo.title"}}</h2>
+        <p class="orv-fondo-lead">{{t lang "orv.fondo.lead"}}</p>
+        <div class="orv-faqs">
+          <div class="orv-faq">
+            <span class="orv-faq-icon"><i class="fas fa-question-circle"></i></span>
+            <div>
+              <h4 class="orv-faq-q">{{t lang "orv.fondo.q1"}}</h4>
+              <p class="orv-faq-a">{{t lang "orv.fondo.a1"}}</p>
+            </div>
+          </div>
+          <div class="orv-faq">
+            <span class="orv-faq-icon"><i class="fas fa-file-alt"></i></span>
+            <div>
+              <h4 class="orv-faq-q">{{t lang "orv.fondo.q2"}}</h4>
+              <p class="orv-faq-a">{{t lang "orv.fondo.a2"}}</p>
+            </div>
+          </div>
+        </div>
+        <a href="https://fondosoatycat.mtc.gob.pe/" target="_blank" rel="noopener" class="orv-btn-fondo">
+          <span>{{t lang "orv.fondo.cta"}}</span>
+          <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+      <div class="orv-fondo-gal">
+        <div class="orv-fondo-col">
+          <img src="/orientacion-victimas/fondo-soat-1.png" alt="Paso 1">
+          <img src="/orientacion-victimas/fondo-soat-2.png" alt="Paso 2">
+        </div>
+        <div class="orv-fondo-col">
+          <img src="/orientacion-victimas/fondo-soat-3.png" alt="Paso 3">
+          <img src="/orientacion-victimas/fondo-soat-4.png" alt="Paso 4">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="orv-contacto" class="orv-contacto">
+    <div class="container orv-contacto-grid">
+      <div class="orv-contacto-info">
+        <h2 class="orv-contacto-title">{{t lang "orv.contacto.title"}}</h2>
+        <p class="orv-contacto-lead">{{t lang "orv.contacto.lead"}}</p>
+        <div class="orv-canales">
+          <div class="orv-canal">
+            <span class="orv-canal-icon"><i class="fas fa-phone"></i></span>
+            <div>
+              <h4 class="orv-canal-title">{{t lang "orv.contacto.1.title"}}</h4>
+              <p class="orv-canal-desc">{{t lang "orv.contacto.1.desc"}}</p>
+              <p class="orv-canal-line"><strong>{{t lang "orv.contacto.1.tel"}}</strong> {{t lang "orv.contacto.1.tel.val"}}</p>
+              <p class="orv-canal-line"><strong>{{t lang "orv.contacto.1.gratuita"}}</strong> {{t lang "orv.contacto.1.gratuita.val"}}</p>
+            </div>
+          </div>
+          <div class="orv-canal">
+            <span class="orv-canal-icon"><i class="fas fa-envelope"></i></span>
+            <div>
+              <h4 class="orv-canal-title">{{t lang "orv.contacto.2.title"}}</h4>
+              <p class="orv-canal-desc">{{t lang "orv.contacto.2.desc"}}</p>
+              <p class="orv-canal-line"><strong>{{t lang "orv.contacto.2.email"}}</strong> {{t lang "orv.contacto.2.email.val"}}</p>
+              <p class="orv-canal-line"><strong>{{t lang "orv.contacto.2.wa"}}</strong> {{t lang "orv.contacto.2.wa.val"}}</p>
+            </div>
+          </div>
+          <div class="orv-canal">
+            <span class="orv-canal-icon"><i class="fas fa-map-marker-alt"></i></span>
+            <div>
+              <h4 class="orv-canal-title">{{t lang "orv.contacto.3.title"}}</h4>
+              <p class="orv-canal-desc">{{t lang "orv.contacto.3.desc"}}</p>
+              <p class="orv-canal-line"><strong>{{t lang "orv.contacto.3.dir"}}</strong> {{t lang "orv.contacto.3.dir.val"}}</p>
+              <p class="orv-canal-line"><strong>{{t lang "orv.contacto.3.horario"}}</strong> {{t lang "orv.contacto.3.horario.val"}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="orv-form-panel">
+        <h3 class="orv-form-title">{{t lang "orv.form.title"}}</h3>
+        <p class="orv-form-lead">{{t lang "orv.form.lead"}}</p>
+        <form id="orv-contact-form" class="orv-form">
+          <div class="orv-form-row">
+            <div class="orv-field">
+              <label class="orv-label">{{t lang "orv.form.nombre"}}</label>
+              <input name="nombre" type="text" required class="orv-input" placeholder="{{t lang "orv.form.nombre.ph"}}">
+            </div>
+            <div class="orv-field">
+              <label class="orv-label">{{t lang "orv.form.dni"}}</label>
+              <input name="dni" type="text" required class="orv-input" placeholder="{{t lang "orv.form.dni.ph"}}">
+            </div>
+          </div>
+          <div class="orv-field">
+            <label class="orv-label">{{t lang "orv.form.email"}}</label>
+            <input name="email" type="email" required class="orv-input" placeholder="{{t lang "orv.form.email.ph"}}">
+          </div>
+          <div class="orv-field">
+            <label class="orv-label">{{t lang "orv.form.mensaje"}}</label>
+            <textarea name="mensaje" rows="4" required class="orv-textarea" placeholder="{{t lang "orv.form.mensaje.ph"}}"></textarea>
+          </div>
+          <button id="orv-submit-btn" type="submit" class="orv-submit">
+            <span class="orv-submit-text">{{t lang "orv.form.submit"}}</span>
+            <i class="fas fa-paper-plane"></i>
+          </button>
+          <div id="orv-form-message" class="orv-form-msg orv-hidden"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  // AFOCAT dataset (same as original repo)
+  var afocatData = [
+    { nombre: "AFOCAT CHIMBOTE REGION ANCASH", link: "https://www.afocatchimboteancash.org/", region: "ANCASH" },
+    { nombre: "AFORCAT - ANCASH", link: "https://www.aforcatancash.com/", region: "ANCASH" },
+    { nombre: "AFOCAT LA UNICA", link: "https://www.afocat-launica.com/", region: "AREQUIPA" },
+    { nombre: "AFOCAT FUTUIRA", link: "https://afocatfutuira.com/", region: "AREQUIPA" },
+    { nombre: "AFOCAT RAVISUR", link: "https://www.ravisur.org.pe/", region: "AREQUIPA" },
+    { nombre: "AFOCAT - REGION CAJAMARCA", link: "https://www.afocatregioncajamarca.net/index/", region: "CAJAMARCA" },
+    { nombre: "AFOCATDC", link: "https://afocatdelcumbe.org/", region: "CAJAMARCA" },
+    { nombre: "AFOCAT REGION CUSCO", link: "http://www.afocatregioncusco.pe/", region: "CUSCO" },
+    { nombre: "AFOCAT LA SOLUCIÓN CUSCO", link: "https://afocatlasolucion.org.pe/", region: "CUSCO" },
+    { nombre: "AFOCAT REGIONAL BELLA DURMIENTE", link: "https://www.afocatbelladurmiente.com/", region: "HUANUCO" },
+    { nombre: "AFOCAT REGIONAL LEÓN DE HUÁNUCO", link: "https://afocat-regionalleondehuanuco.com/index.php", region: "HUANUCO" },
+    { nombre: "AFOCAT ICA", link: "https://www.afocatregionica.org/", region: "ICA" },
+    { nombre: "AFOCAT EL ANGEL", link: "http://www.afocatelangel.com", region: "ICA" },
+    { nombre: "AFOCAT - JUNIN", link: "https://afocatjunin.com/", region: "JUNIN" },
+    { nombre: "AFOCATU", link: "https://www.afocatu.pe/", region: "JUNIN" },
+    { nombre: "AFOCAT R.J.P.H.", link: "https://afocatdelostransportistas.com/", region: "JUNIN" },
+    { nombre: "AFOCAT REGIÓN CENTRO", link: "https://www.afocatregioncentro.pe/", region: "JUNIN" },
+    { nombre: "AFOCAT - TRUJILLO - REGION LA LIBERTAD", link: "https://www.afocat-trujillo.com/", region: "LA LIBERTAD" },
+    { nombre: "AFOCAT - LA LIBERTAD", link: "https://www.afocat.org.pe/", region: "LA LIBERTAD" },
+    { nombre: "AFOCAT NUEVO HORIZONTE REGION LA LIBERTAD", link: "https://www.afocatnuevohorizonte.com/", region: "LA LIBERTAD" },
+    { nombre: "FORCAT", link: "https://www.forcat-lambayeque.com/", region: "LAMBAYEQUE" },
+    { nombre: "AFOCAT LÍDER PERÚ", link: "https://www.liderperuafocat.org/", region: "LIMA METROPOLITANA" },
+    { nombre: "AFOCAT CONFIANZA", link: "https://afocatconfianza.org/", region: "LIMA METROPOLITANA" },
+    { nombre: "AUTOSEGURO AFOCAT", link: "https://autoseguro.pe/", region: "LIMA METROPOLITANA" },
+    { nombre: "AFOCAT LIMA METROPOLITANA", link: "http://www.afocatlimam.org/", region: "LIMA METROPOLITANA" },
+    { nombre: "NUESTRA SEÑORA DE LA ASUNCION", link: "https://afocatsradelaasuncion.org.pe/", region: "LIMA PROVINCIAS" },
+    { nombre: "AFOCAT DEL ORIENTE - REGION LORETO", link: "http://www.afocatdeloriente.org/login", region: "LORETO" },
+    { nombre: "AFOCAT MOQUEGUA", link: "https://www.afocat-moquegua.com.pe/", region: "MOQUEGUA" },
+    { nombre: "AFOCAT TRANS REGION PIURA", link: "https://www.afocattransregionpiura.com/", region: "PIURA" },
+    { nombre: "AFOCAT - PIURA", link: "https://afocatpiura.com/", region: "PIURA" },
+    { nombre: "AFOCAT LA PRIMERA", link: "https://afocatlaprimera.com/", region: "PUNO" },
+    { nombre: "AFOCAT EL ALTIPLANO", link: "https://afocatelaltiplano.org/", region: "PUNO" },
+    { nombre: "AFOCAT REGION SAN MARTIN", link: "https://www.afocat-sanmartin.com/", region: "SAN MARTIN" },
+    { nombre: "AFOCAT - AFOSECAT - SAN MARTÍN", link: "https://www.afosecatsanmartin.com/", region: "SAN MARTIN" },
+    { nombre: "AFOCAT SUR PERÚ REGIÓN TACNA", link: "https://afocatsurperu.com.pe/", region: "TACNA" },
+    { nombre: "AFOCAT REGION TACNA", link: "https://www.afocattacna.com/", region: "TACNA" },
+    { nombre: "FASMOT", link: "https://afocatfasmot.pe/", region: "TUMBES" },
+    { nombre: "AFOCAT UCAYALINO REGIÓN UCAYALI", link: "https://afocat-regionalucayalino.com/", region: "UCAYALI" }
+  ];
+
+  // Populate region selector
+  var regionSelector = document.getElementById('orv-region-selector');
+  var afocatResults = document.getElementById('orv-afocat-results');
+  if (regionSelector) {
+    var regions = [];
+    afocatData.forEach(function (item) {
+      if (regions.indexOf(item.region) === -1) regions.push(item.region);
+    });
+    regions.sort().forEach(function (region) {
+      var opt = document.createElement('option');
+      opt.value = region;
+      opt.textContent = region;
+      regionSelector.appendChild(opt);
+    });
+
+    regionSelector.addEventListener('change', function (e) {
+      var selected = e.target.value;
+      afocatResults.innerHTML = '';
+      afocatData.filter(function (i) { return i.region === selected; }).forEach(function (item) {
+        var a = document.createElement('a');
+        a.href = item.link;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'orv-afocat-btn';
+        a.innerHTML = '<span class="orv-afocat-name">' + item.nombre + '</span><i class="fas fa-external-link-alt"></i>';
+        afocatResults.appendChild(a);
+      });
+      afocatResults.classList.remove('orv-hidden');
+    });
+  }
+
+  // Smooth scroll for in-page anchors (#orv-*)
+  document.querySelectorAll('.orv-wrap a[href^="#orv-"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if (el) {
+        e.preventDefault();
+        var top = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Contact form — post to Google Apps Script (same endpoint as original repo)
+  var contactForm = document.getElementById('orv-contact-form');
+  var formMessage = document.getElementById('orv-form-message');
+  var submitBtn = document.getElementById('orv-submit-btn');
+  var submitText = submitBtn ? submitBtn.querySelector('.orv-submit-text') : null;
+  var submitIcon = submitBtn ? submitBtn.querySelector('i') : null;
+  var submitLabel = submitText ? submitText.textContent : '';
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCE9BYp031DtOacE9It6-cF6HYw6XbZ7MAovJ8Qura4a3bx_8Ou83Xf4Ar6HvdjRSh/exec";
+
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitText) submitText.textContent = "{{t lang "orv.form.sending"}}";
+      if (submitIcon) { submitIcon.className = 'fas fa-spinner fa-spin'; }
+
+      var formData = new FormData(contactForm);
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: new URLSearchParams(formData)
+      })
+      .then(function () {
+        if (formMessage) {
+          formMessage.textContent = "{{t lang "orv.form.success"}}";
+          formMessage.classList.remove('orv-hidden', 'orv-msg-error');
+          formMessage.classList.add('orv-msg-success');
+        }
+        contactForm.reset();
+      })
+      .catch(function () {
+        if (formMessage) {
+          formMessage.textContent = "{{t lang "orv.form.error"}}";
+          formMessage.classList.remove('orv-hidden', 'orv-msg-success');
+          formMessage.classList.add('orv-msg-error');
+        }
+      })
+      .finally(function () {
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitText) submitText.textContent = submitLabel;
+        if (submitIcon) { submitIcon.className = 'fas fa-paper-plane'; }
+        if (formMessage) {
+          setTimeout(function () { formMessage.classList.add('orv-hidden'); }, 5000);
+        }
+      });
+    });
+  }
+
+  // Floating bubble — hide when contacto section visible
+  var bubble = document.getElementById('orv-bubble');
+  var contacto = document.getElementById('orv-contacto');
+  if (bubble && contacto && 'IntersectionObserver' in window) {
+    // Show bubble after slight scroll
+    function showBubble() { bubble.classList.add('orv-bubble-visible'); bubble.classList.remove('orv-hidden'); }
+    function hideBubble() { bubble.classList.remove('orv-bubble-visible'); bubble.classList.add('orv-hidden'); }
+    setTimeout(showBubble, 600);
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { hideBubble(); } else { /* keep current state */ }
+      });
+    }, { root: null, threshold: 0.1 });
+    observer.observe(contacto);
+  }
+})();
+</script>
