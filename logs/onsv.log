@@ -8,3 +8,4 @@
 [31m[2022-09-01T22:56:57.701Z] error connect ECONNREFUSED 127.0.0.1:3306[39m
 [31m[2026-06-19T20:16:11.697Z] error ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; consider upgrading MySQL client[39m
 [31m[2026-06-19T20:17:42.664Z] error ER_BAD_DB_ERROR: Unknown database 'onsv-local'[39m
+[31m[2026-08-20T21:59:34.366Z] error ENOENT: no such file or directory, open 'C:\Users\user\proyectos\onsv-express-2023-03-23\utils\keys\id_rsa_pub.pem'[39m
