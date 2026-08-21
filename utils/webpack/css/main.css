@@ -1129,9 +1129,13 @@ footer {
 
 .logo-img{
     width: 421px;
+    max-width: 100%;
+    height: auto;
 }
 .logo-img-open-data{
     width: 221px;
+    max-width: 100%;
+    height: auto;
 }
 
 .navbar-brand-text {
