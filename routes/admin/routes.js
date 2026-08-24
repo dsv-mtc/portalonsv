@@ -15,11 +15,19 @@ router.get("/login", isNotAuthenticated, (req, res) => {
 	res.render("pages/administrador-login", { info_login });
 })
 
-router.post("/login", loginLimiter, passport.authenticate('local-login', {
-	successRedirect: "/administrador",
-	failureRedirect: "/administrador/login",
-	passReqToCallback: true
-}))
+router.post("/login", loginLimiter, (req, res, next) => {
+	passport.authenticate('local-login', (err, user, info) => {
+		if (err) return next(err);
+		if (!user) {
+			// Asegurar que flash se persista en MySQLStore antes del redirect (evita race del 1er intento)
+			return req.session.save(() => res.redirect('/administrador/login'));
+		}
+		req.logIn(user, (err) => {
+			if (err) return next(err);
+			return req.session.save(() => res.redirect('/administrador'));
+		});
+	})(req, res, next);
+})
 
 router.get("/logout", (req, res) => {
 	req.logOut(function (err) {

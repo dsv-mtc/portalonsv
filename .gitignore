@@ -19,3 +19,6 @@ AGENTS.md
 2. script_update.sql - Modificaciones (ALTER TABLE)
 informe-avances.docx
 manual-admin-panel.docx
+*.tgz
+node_modules.tar.gz
+backup_node_modules*.tar.gz

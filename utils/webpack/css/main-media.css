@@ -108,6 +108,9 @@
         padding-right: 14px;
         margin-top: -8px;
         top: 0;
+        width: 35%;
+        margin-left: calc(65% + 8px);
+        margin-right: auto;
     }
     i.fal.fa-bars {
         color: #fff;
@@ -170,21 +173,42 @@
         width: 150px;
     }
     .logo-icon-img {
-        height: 34px;
-        margin-left: 4px;
+        height: 24px;
+        max-height: 24px;
+        margin-left: 3px;
+        width: auto;
+        flex-shrink: 0;
+        transform: scaleX(0.85);
+        transform-origin: left center;
+        display: none;
     }
     .logo-text {
-        margin-left: 8px;
+        margin-left: 0;
+        white-space: nowrap;
+        flex-shrink: 1;
+        min-width: 0;
+        transform: translateY(17px);
     }
     .logo-text-title {
-        font-size: 14px;
+        font-size: clamp(20px, 3.2vw, 14px);
+        white-space: nowrap;
     }
     .logo-text-subtitle {
-        font-size: 7px;
-        letter-spacing: 0.5px;
+        font-size: clamp(12px, 1.8vw, 8px);
+        letter-spacing: 0.3px;
+        white-space: nowrap;
     }
     .navbar-brand-text {
         transform: none;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        min-width: 0;
+    }
+    .logo {
+        display: flex;
+        align-items: center;
+        min-width: 0;
     }
     .logo-sm img {
         width: 75px;
@@ -219,10 +243,14 @@
     body .logo-container .d-flex.flex-row-reverse {
         transform: none;
         position: static;
-        justify-content: flex-end;
-        padding-right: 8px;
-        padding-top: 6px;
+        justify-content: center;
+        padding-right: 0;
+        padding-left: 0;
+        padding-top: 4px;
         top: 0;
+        width: 35%;
+        margin-left: calc(65% + 35px);
+        margin-right: auto;
     }
     .rsp-ban-desc {
         top: 0;
@@ -325,6 +353,21 @@
     }
     .logo-img-open-data{
         width: 135px;
+    }
+    .logo-icon-img {
+        height: 20px;
+        max-height: 20px;
+        margin-left: 2px;
+        width: auto;
+        flex-shrink: 0;
+        transform: scaleX(0.75);
+        transform-origin: left center;
+    }
+    .logo-text-title {
+        font-size: clamp(20px, 3.2vw, 14px);
+    }
+    .logo-text-subtitle {
+        font-size: clamp(12px, 1.8vw, 8px);
     }
 }
 

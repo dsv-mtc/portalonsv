@@ -12,51 +12,55 @@ const dataConnection = {
 	host: process.env.DATABASE_HOST,
 	user: process.env.DATABASE_USER,
 	password: process.env.DATABASE_PASSWORD,
-	database: process.env.DATABASE_NAME
+	database: process.env.DATABASE_NAME,
+	waitForConnections: true,
+	connectionLimit: 10,
+	queueLimit: 0,
+	enableKeepAlive: true,
+	keepAliveInitialDelay: 10000
 }
 
-const client = mysql.createConnection(dataConnection)
+const pool = mysql.createPool(dataConnection)
 
-function handleDisconnect() {
-        client.on('error', (err) => {
-                logger.error('Error de conexión MySQL: ' + err.message);
-                if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.fatal) {
-                        logger.info('Intentando reconectar a la base de datos...');
-                        client.connect((error) => {
-                                if (error) {
-                                        logger.error('Fallo al reconectar: ' + error.message);
-                                } else {
-                                        logger.info('Reconexión exitosa a la base de datos');
-                                }
-                        });
-                }
-        });
-}
-handleDisconnect();
+// Compat: código legacy usa `client`; apuntamos al pool
+const client = pool
+
+// Pool maneja reconexión automática; logueamos errores del pool
+pool.on('connection', (conn) => {
+	logger.debug(`Nueva conexión MySQL establecida: ${conn.threadId}`);
+});
+pool.on('error', (err) => {
+	logger.error('Error en pool MySQL: ' + err.message);
+});
 
 
 class DataBase {
 	constructor() {
 		this.query = null;
+		this.pool = pool;
 	}
 	getConnection = () => {
-		client.connect(
-			(error) => {
-				if (!error) {
-					logger.info('La base de datos está conectada');
-
-				}
-				else {
-					logger.error(error);
-					throw error
-				}
+		// Pool no requiere connect explícito; verificamos con ping
+		pool.getConnection((err, conn) => {
+			if (err) {
+				logger.error('Error al obtener conexión del pool: ' + err.message);
+				return;
 			}
-		)
+			logger.info('Pool MySQL listo (conexión ' + conn.threadId + ' verificada)');
+			conn.release();
+		});
 	}
 	setQuery() {
-		//Habilitamos el uso de asyn await
-		this.query = util.promisify(client.query).bind(client);
-		this.beginTransaction = util.promisify(client.beginTransaction).bind(client);
+		//Habilitamos el uso de async/await con pool
+		this.query = util.promisify(pool.query).bind(pool);
+		this.getConnection_fromPool = util.promisify(pool.getConnection).bind(pool);
+		// beginTransaction requiere conexión dedicada; se obtiene por demanda
+		this.beginTransaction = async () => {
+			const conn = await this.getConnection_fromPool();
+			const beginTx = util.promisify(conn.beginTransaction).bind(conn);
+			await beginTx();
+			return conn;
+		};
 	}
 
 	async getRoles() {
@@ -576,7 +580,22 @@ class DataBase {
 
 	sessionStore(session) {
 		const MySQLStore = require('express-mysql-session')(session);
-		let sessionStoreVar = new MySQLStore(dataConnection);
+		// express-mysql-session puede recibir el pool directamente o crear su propio pool a partir de options.
+		// Para evitar doble pool, le pasamos las mismas credenciales pero con createDatabaseTable habilitado.
+		const options = {
+			host: process.env.DATABASE_HOST,
+			user: process.env.DATABASE_USER,
+			password: process.env.DATABASE_PASSWORD,
+			database: process.env.DATABASE_NAME,
+			clearExpired: true,
+			checkExpirationInterval: 900000,
+			expiration: 86400000,
+			createDatabaseTable: true,
+			schema: {
+				tableName: 'sessions'
+			}
+		};
+		let sessionStoreVar = new MySQLStore(options);
 		return sessionStoreVar;
 	}
 
