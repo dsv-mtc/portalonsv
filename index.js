@@ -96,10 +96,8 @@ if (process.env.STRATEGY_MODE === 'ON_PREMISE') {
     }));
     app.use(passport.initialize());
     app.use(passport.session());
-    app.use(flash()); // <--- MUEVELO AQUÍ TAMBIÉN
+    app.use(flash());
 }
-
-app.use(flash());
 //reference:https://expressjs.com/es/4x/api.html#express.static
 const cspDirectives = {
     defaultSrc: ["'self'"],

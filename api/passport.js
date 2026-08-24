@@ -3,6 +3,7 @@ const passport = require("passport");
 const Strategy = require("passport-local").Strategy;
 const DataBase = require("./mysql");
 const criptoUtils = require("../utils/criptoUtils");
+const logger = require("../controllers/logger");
 
 dotenv.config();
 
@@ -29,6 +30,11 @@ passport.use('local-login', new Strategy({
 }, async (req, email, password, done) => {
 	const result = await client.getUserByEmail(email);
 	if (!result.success) {
+		// Distinguir error de BD vs usuario inexistente (antes ambos daban "Usuario no encontrado")
+		if (result.message === 'Cannot get user') {
+			logger.error(`getUserByEmail error para ${email}: ${result.message}`);
+			return done(null, false, req.flash('login', 'Error interno, intente de nuevo'))
+		}
 		return done(null, false, req.flash('login', 'Usuario no encontrado'))
 	}
 
