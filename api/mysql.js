@@ -3373,7 +3373,7 @@ async updateTipo({
 
 	// --- Banners ---
 	async getBanners() {
-		const queryString = `SELECT id, posicion, archivo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
+		const queryString = `SELECT id, posicion, archivo, activo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
 		try {
 			const results = await this.query(queryString);
 			return { success: true, data: results };
@@ -3437,8 +3437,19 @@ async updateTipo({
 		}
 	}
 
+	async updateBannerActivo(id, activo) {
+		const queryString = `UPDATE banners SET activo = ? WHERE id = ?`;
+		try {
+			await this.query(queryString, [activo ? 1 : 0, id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el estado del banner" };
+		}
+	}
+
 	async getAllBanners() {
-		const queryString = `SELECT id, posicion, archivo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
+		const queryString = `SELECT id, posicion, archivo, activo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
 		try {
 			const results = await this.query(queryString);
 			return { success: true, data: results };

@@ -1398,6 +1398,18 @@ router.put("/banners/textos/:id", isAuthenticated, async (req, res) => {
   res.json({ ...result, log: log || undefined });
 });
 
+router.put("/banners/activo/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { activo } = req.body || {};
+  if (!id || (activo !== 0 && activo !== 1 && activo !== true && activo !== false)) {
+    return res.status(400).json({ success: false, message: "Parámetros inválidos" });
+  }
+  const valor = activo === true || activo === 1 ? 1 : 0;
+  const result = await mysql.updateBannerActivo(id, valor);
+  const log = await logAction('updated', 'Banner', id, `Se ${valor ? 'activó' : 'desactivó'} el banner`, req);
+  res.json({ ...result, activo: valor, log: log || undefined });
+});
+
 // --- Subitems del navbar (menu_subitems) ---
 const MENU_SECCIONES = ['quienes-somos', 'comunicaciones', 'publicaciones', 'educacion-vial', 'aplicaciones', 'normas-legales'];
 

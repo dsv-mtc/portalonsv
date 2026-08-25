@@ -83,7 +83,7 @@
 
 <section id="heroCarousel" class="carousel slide carousel-fade hero">
   <div class="carousel-inner slides">
-      <div class="carousel-item slide active">
+      <div class="carousel-item slide {{#if banners.[0].archivo}}active{{/if}}">
         <div class="bg" style="background-image: url('{{banners.[0].archivo}}');"></div>
         <div class="veil"></div>
         
@@ -100,7 +100,8 @@
         </div>
       </div>
 
-      <div class="carousel-item slide">
+      {{#if banners.[1].archivo}}
+      <div class="carousel-item slide{{#unless banners.[0].archivo}} active{{/unless}}">
         <div class="bg" style="background-image: url('{{banners.[1].archivo}}');"></div>
         <div class="veil"></div>
         
@@ -116,8 +117,10 @@
           </div>
         </div>
       </div>
+      {{/if}}
 
-      <div class="carousel-item slide">
+      {{#if banners.[2].archivo}}
+      <div class="carousel-item slide{{#unless banners.[0].archivo}}{{#unless banners.[1].archivo}} active{{/unless}}{{/unless}}">
         <div class="bg" style="background-image: url('{{banners.[2].archivo}}');"></div>
         <div class="veil"></div>
         
@@ -133,6 +136,7 @@
           </div>
         </div>
       </div>
+      {{/if}}
   </div>
 
   <ol class="hero-capsules" id="heroCapsules">

@@ -210,7 +210,7 @@ routes.get("/", async (req, res) => {
 		es: { kicker: 'kicker_es', titulo: 'titulo_es', parrafo: 'parrafo_es', btn1_label: 'btn1_label_es', btn2_label: 'btn2_label_es' },
 		en: { kicker: 'kicker_en', titulo: 'titulo_en', parrafo: 'parrafo_en', btn1_label: 'btn1_label_en', btn2_label: 'btn2_label_en' },
 	}[lang];
-	const banners = (bannersData || []).map(b => ({
+	const banners = (bannersData || []).filter(b => b.activo).map(b => ({
 		archivo: b.archivo,
 		kicker:     b[langFields.kicker],
 		titulo:     b[langFields.titulo],

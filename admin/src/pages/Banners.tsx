@@ -10,6 +10,7 @@ type Banner = {
   id: number;
   posicion: number;
   archivo: string;
+  activo: number;
   kicker_es: string; kicker_en: string;
   titulo_es: string; titulo_en: string;
   parrafo_es: string; parrafo_en: string;
@@ -48,6 +49,20 @@ export function Banners() {
     fd.append("file", file);
     const r: any = await apiUpload(`/banners/upload/${id}`, fd);
     if (r.success) { load(); showMsg("Imagen subida"); } else { showMsg(r.message || "Error"); }
+  };
+
+  const toggleActivo = async (banner: Banner) => {
+    const next = banner.activo ? 0 : 1;
+    setBanners(prev => prev.map(b => b.id === banner.id ? { ...b, activo: next } : b));
+    const r = await apiPut(`/banners/activo/${banner.id}`, { activo: next });
+    if (r.success) {
+      showMsg(lang === "es"
+        ? (next ? `Banner ${banner.posicion} activado` : `Banner ${banner.posicion} desactivado`)
+        : (next ? `Banner ${banner.posicion} activated` : `Banner ${banner.posicion} deactivated`));
+    } else {
+      setBanners(prev => prev.map(b => b.id === banner.id ? { ...b, activo: banner.activo } : b));
+      showMsg(r.message || "Error");
+    }
   };
 
   const move = (index: number, direction: -1 | 1) => {
@@ -113,7 +128,7 @@ export function Banners() {
       <Panel>
         <div className="space-y-5">
           {banners.map((banner, i) => (
-            <div key={banner.id} className="p-4 rounded-lg border-2 bg-white space-y-4" style={{ borderColor: "var(--brand-line)" }}>
+            <div key={banner.id} className={"p-4 rounded-lg border-2 bg-white space-y-4 transition-opacity " + (banner.activo ? "" : "opacity-50")} style={{ borderColor: "var(--brand-line)" }}>
               <div className="flex items-center gap-4">
                 <div className="flex flex-col gap-1">
                   <button type="button" onClick={() => move(i, -1)} disabled={i === 0} className="w-8 h-8 rounded-lg border grid place-items-center hover:bg-[color:var(--brand-mist)] transition disabled:opacity-30" style={{ borderColor: "var(--brand-line)" }}>
@@ -130,6 +145,12 @@ export function Banners() {
                   <div className="text-[13px] font-bold font-[family-name:var(--font-cond)] uppercase tracking-wide" style={{ color: "var(--brand-navy)" }}>Banner {banner.posicion}</div>
                   <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--muted-foreground)" }}>{banner.archivo}</div>
                 </div>
+                <label className="flex-shrink-0 flex items-center gap-2 cursor-pointer select-none">
+                  <input type="checkbox" checked={!!banner.activo} onChange={() => toggleActivo(banner)} className="w-4 h-4 cursor-pointer accent-[color:var(--brand-navy)]" />
+                  <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold font-[family-name:var(--font-cond)]">
+                    {lang === "es" ? "Activo" : "Active"}
+                  </span>
+                </label>
                 <div className="flex-shrink-0">
                   <input ref={el => { fileRefs.current[i] = el; }} type="file" accept="image/*" onChange={e => handleFile(banner.id, e)} className="hidden" />
                   <button type="button" onClick={() => fileRefs.current[i]?.click()} className="h-10 px-4 rounded-lg border-2 text-[12px] font-bold uppercase tracking-wider font-[family-name:var(--font-cond)] inline-flex items-center gap-2 hover:bg-[color:var(--brand-mist)] transition" style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
