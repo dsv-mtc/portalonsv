@@ -22,3 +22,4 @@ manual-admin-panel.docx
 *.tgz
 node_modules.tar.gz
 backup_node_modules*.tar.gz
+*.tar.gz

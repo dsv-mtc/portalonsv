@@ -317,7 +317,7 @@ routes.get("/comunicaciones/noticias/:page?", async (req, res) => {
 	const { title } = req.query;
 	const page = parseInt(req.params.page) || 1;
 	const allPosts = await apiGhost.getPosts('all', "tags,authors", "tag:noticias-eventos", "published_at DESC");
-	const { data: disabledIds } = await mysql.getDisabledGhostIds('noticias');
+	const { data: disabledIds = [] } = await mysql.getDisabledGhostIds('noticias');
 	let enabledPosts = (allPosts || []).filter(p => !disabledIds.includes(p.id));
 	if (title) {
 		enabledPosts = enabledPosts.filter(p => `${p.slug} ${p.title}`.toLowerCase().includes(title.toLowerCase()));
@@ -337,7 +337,7 @@ routes.get("/comunicaciones/nota-prensa/:page?", async (req, res) => {
 	const { title } = req.query;
 	const page = parseInt(req.params.page) || 1;
 	const allPosts = await apiGhost.getPosts('all', "tags,authors", "tag:notas-prensa", "published_at DESC");
-	const { data: disabledIds } = await mysql.getDisabledGhostIds('notas-prensa');
+	const { data: disabledIds = [] } = await mysql.getDisabledGhostIds('notas-prensa');
 	let enabledPosts = (allPosts || []).filter(p => !disabledIds.includes(p.id));
 	if (title) {
 		enabledPosts = enabledPosts.filter(p => `${p.slug} ${p.title}`.toLowerCase().includes(title.toLowerCase()));
@@ -393,10 +393,10 @@ routes.get("/comunicaciones/:slug", async (req, res) => {
 	}
 
 	const [
-		{ data: all },
-		{ data: allNear },
-		{ data: eventos },
-		{ data: eventosProximos },
+		{ data: all = [] },
+		{ data: allNear = [] },
+		{ data: eventos = [] },
+		{ data: eventosProximos = [] },
 	] = await Promise.all([
 		mysql.getComunications({
 			conditions: {
@@ -528,9 +528,9 @@ routes.get("/region/:name", async (req, res) => {
 	const { name } = req.params;
 
 	const { data: region, success } = await mysql.getRegion(name);
-	const { data: planesRegionales } = await mysql.getPlanesRegionales({
+	const { data: planesRegionales = [] } = await mysql.getPlanesRegionales({
 		conditions: {
-			idRegion: region.id
+			idRegion: region?.id
 		}
 	})
 
@@ -692,7 +692,7 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 		console.error(error)
 	}
 
-	const { data: disabledIdsPub } = await mysql.getDisabledGhostIds('publicaciones');
+	const { data: disabledIdsPub = [] } = await mysql.getDisabledGhostIds('publicaciones');
 	posts = (posts || []).filter(p => !disabledIdsPub.includes(p.id));
 
 	const categoriaQuery = categoria ? `categoria=${categoria}&` : '';
@@ -741,7 +741,7 @@ routes.get("/publicaciones/:page?", async (req, res) => {
 		return
 	}
 
-	const { data: regiones } = await mysql.getRegiones();
+	const { data: regiones = [] } = await mysql.getRegiones();
 
 	let seccionPosts = [];
 	try {
@@ -934,7 +934,7 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 		console.error(error)
 	}
 
-	const { data: disabledIdsNormas } = await mysql.getDisabledGhostIds('normas-legales');
+	const { data: disabledIdsNormas = [] } = await mysql.getDisabledGhostIds('normas-legales');
 	posts = (posts || []).filter(p => !disabledIdsNormas.includes(p.id));
 
 	const categoriaQuery = categoria ? `categoria=${categoria}&` : '';
@@ -983,7 +983,7 @@ routes.get("/normas-legales/:page?", async (req, res) => {
 		return
 	}
 
-	const { data: regiones } = await mysql.getRegiones();
+	const { data: regiones = [] } = await mysql.getRegiones();
 
 	let seccionPosts = [];
 	try {
@@ -1123,7 +1123,7 @@ routes.get("/datosabiertos/:page?", async (req, res) => {
 	res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
 	const page = req.params.page ? Number(req.params.page) : 1;
 	const pageLength = 5
-	const { data: pages } = await mysql.getDatosAbiertosPages({
+	const { data: pages = 0 } = await mysql.getDatosAbiertosPages({
 		pageLength,
 		conditions: { estaActivo: 1 }
 	})
@@ -1268,7 +1268,7 @@ routes.post("/search", async (req, res) => {
 		const tipo = TIPO_MAP[filter];
 		let filteredPosts = results.posts;
 		if (tipo) {
-			const { data: disabledIds } = await mysql.getDisabledGhostIds(tipo);
+			const { data: disabledIds = [] } = await mysql.getDisabledGhostIds(tipo);
 			filteredPosts = (results.posts || []).filter(p => !disabledIds.includes(p.id));
 		}
 		const { page, prev, next, step } = req.body;
