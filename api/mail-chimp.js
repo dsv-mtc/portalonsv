@@ -106,8 +106,8 @@ class MailChimp{
                 email_address:email,
                 status:'subscribed',
                 merge_fields:{
-                    FNAME:name,
-                    LNAME:lastname
+                    FNAME:name || "",
+                    LNAME:lastname || ""
                 }
 
             });

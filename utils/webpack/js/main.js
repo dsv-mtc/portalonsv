@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 	search();
 	getMap();
 	modal();
+	inlineNewsletter();
 	modalCampaign();
 	modalAnalytics();
 	openDataForm();
@@ -409,23 +410,77 @@ function modal(){
 	$("#suscriber-modal-form").on("hidden.bs.modal",function(event){
 		$("#subscriber-form").trigger("reset");
 		$("#subscriber-form").removeClass("was-validated");
+		$("#subscriber-form").show();
+		$("#nl-success").removeClass("show");
+		$("#nl-error").removeClass("show");
 	});
 	if(document.getElementById('subscriber-form')) document.getElementById('subscriber-form').addEventListener('submit',(e)=>{
 		e.preventDefault();
-		const email =$("#mail-subscriber").val()
+		const $form=$("#subscriber-form");
+		const email=($("#mail-subscriber").val()||"").trim();
 		let regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		$form.addClass("was-validated");
+		$("#nl-error").removeClass("show");
 		if(email!=""  && regex.test(email)){
-		let dataToSend={
-			email:email,
-			name:$("#name-subscriber").val(),
-			lastname:$("#lastname-subscriber").val()
+			const $btn=$form.find('[type="submit"]');
+			$btn.prop('disabled',true);
+			let dataToSend={
+				email:email,
+				name:$("#name-subscriber").val(),
+				lastname:$("#lastname-subscriber").val()
+			}
+			$.post("/subscribe",dataToSend)
+				.done(function(response){
+					$("#nl-success-msg").text(response);
+					$form.hide();
+					$("#nl-success").addClass("show");
+					setTimeout(function(){ $("#suscriber-modal-form").modal("hide"); },2600);
+				})
+				.fail(function(){
+					$("#nl-error-msg").text('Ocurrió un error. Por favor, inténtalo nuevamente.');
+					$("#nl-error").addClass("show");
+				})
+				.always(function(){
+					$btn.prop('disabled',false);
+				});
 		}
-		$.post("/subscribe",dataToSend).done(function(response){
-			alert(response); 
-			$("#suscriber-modal-form").modal("hide");
-		})
-	}
 	});
+}
+
+/**
+ * @description: Suscripción inline del inicio (.news-form): intercepta el envío para no navegar a /subscribe
+ *  y muestra la misma confirmación estilizada del newsletter (clases nl-* globales).
+ */
+function inlineNewsletter(){
+	if(document.querySelector('.news-form')){
+		document.querySelectorAll('.news-form').forEach(f=>{
+			f.addEventListener('submit',(e)=>{
+				e.preventDefault();
+				const input=f.querySelector('input[type="email"]');
+				const email=(input&&input.value||"").trim();
+				let regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+				$("#news-error").removeClass("show");
+				if(email==="" || !regex.test(email)){
+					$("#news-error-msg").text('Por favor ingrese un correo válido');
+					$("#news-error").addClass("show");
+					return;
+				}
+				const $btn=$(f).find('[type="submit"]');
+				$btn.prop('disabled',true);
+				$.post("/subscribe",{email:email})
+					.done(function(response){
+						$("#news-success-msg").text(response);
+						$(f).hide();
+						$("#news-success").addClass("show");
+					})
+					.fail(function(){
+						$btn.prop('disabled',false);
+						$("#news-error-msg").text('Ocurrió un error. Por favor, inténtalo nuevamente.');
+						$("#news-error").addClass("show");
+					});
+			});
+		});
+	}
 }
 
 /**
