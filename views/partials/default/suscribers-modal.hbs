@@ -1,25 +1,29 @@
-<div class="modal fade" 
-    id="suscriber-modal-form" 
-    data-backdrop="static" 
+<div class="modal fade nl-modal"
+    id="suscriber-modal-form"
+    data-backdrop="static"
     data-keyboard="false"
     tabindex="-1"
     aria-labelledby="title-modal"
     aria-hidden="true"
 >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title admin-modal-title" id="title-modal">{{t lang "form-subs"}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times</span>
-                </button>
+            <button type="button" class="nl-close" data-dismiss="modal" aria-label="{{t lang "Cerrar"}}">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <div class="nl-head">
+                <span class="nl-icon"><i class="fas fa-paper-plane"></i></span>
+                <h5 class="modal-title nl-title" id="title-modal">{{t lang "form-subs"}}</h5>
+                <p class="nl-sub">{{t lang 'news-text'}}</p>
             </div>
+
             <div class="modal-body">
-                 {{#if info_document}}
+                {{#if info_document}}
                     {{#each info_document}}
-                        <div class="col-12">
+                        <div class="col-12 px-0 mb-3">
                             <div class="{{style}}" role="alert">
-                                <strong>{{message}}</strong> 
+                                <strong>{{message}}</strong>
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -27,38 +31,33 @@
                         </div>
                     {{/each}}
                 {{/if}}
+
                 <form id="subscriber-form" class="needs-validation" novalidate>
-                     <div class="row mt-5">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="name-subscriber" id="name-subscriber" placeholder="{{t lang "Nombre"}}">
-                            </div>
-                        </div>
+                    <div class="nl-field">
+                        <input type="text" class="form-control" name="name-subscriber" id="name-subscriber" placeholder="{{t lang "Nombre"}}">
                     </div>
-                    <div class="row mt-5">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="lastname-subscriber" id="lastname-subscriber" placeholder="{{t lang "Apellido"}}">
-                            </div>
-                        </div>
+                    <div class="nl-field">
+                        <input type="text" class="form-control" name="lastname-subscriber" id="lastname-subscriber" placeholder="{{t lang "Apellido"}}">
                     </div>
-                    <div class="row mt-5">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <input type="email" class="form-control" name="mail-subscriber" id="mail-subscriber" placeholder="{{t lang "Correo"}}" required>
-                                <small class="invalid-feedback">{{t lang "ingrese_correo"}}</small>
-                            </div>
-                        </div>
+                    <div class="nl-field">
+                        <input type="email" class="form-control" name="mail-subscriber" id="mail-subscriber" placeholder="{{t lang "Correo"}}" required>
+                        <small class="invalid-feedback">{{t lang "ingrese_correo"}}</small>
                     </div>
-                   
-                    <div class="row mt-5">
-                        <div class="col-md-12">
-                            <button  type="submit" class="btn btn-rsp ft-bold">
-                                {{t lang "Enviar"}} <i class="fal fa-long-arrow-right pl-2"></i>
-                            </button>
-                        </div>
-                    </div>     
+
+                    <button type="submit" class="btn btn-rsp ft-bold nl-submit">
+                        {{t lang "Enviar"}} <i class="fal fa-long-arrow-right"></i>
+                    </button>
                 </form>
+
+                <div id="nl-success" class="nl-state" role="status">
+                    <span class="nl-success-icon"><i class="fas fa-check"></i></span>
+                    <p id="nl-success-msg"></p>
+                </div>
+
+                <div id="nl-error" class="nl-error" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="nl-error-msg"></span>
+                </div>
             </div>
         </div>
     </div>

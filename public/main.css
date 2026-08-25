@@ -14391,6 +14391,48 @@ border: 1px solid #a2a2a2;
   }
 }
 
+/* ---- Modal newsletter (suscripción) ---- */
+#suscriber-modal-form .modal-dialog{max-width:430px}
+#suscriber-modal-form .modal-content{border:none;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(20,33,61,.35)}
+.nl-close{position:absolute;top:14px;right:14px;z-index:5;width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;transition:.25s}
+.nl-close:hover{background:#C8102E;color:#fff;transform:rotate(90deg)}
+.nl-close:focus{outline:none}
+.nl-head{position:relative;background:linear-gradient(135deg,#14213D 0%,#1d3557 100%);padding:30px 28px 24px;text-align:center;color:#fff;overflow:hidden}
+.nl-head::before{content:"";position:absolute;top:-45px;left:-45px;width:130px;height:130px;border-radius:50%;background:rgba(200,16,46,.28)}
+.nl-head::after{content:"";position:absolute;bottom:-55px;right:-35px;width:120px;height:120px;border-radius:50%;background:rgba(250,180,30,.2)}
+.nl-icon{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:16px;background:#C8102E;color:#fff;font-size:25px;margin-bottom:14px;box-shadow:0 10px 20px rgba(200,16,46,.4);position:relative;z-index:1}
+.nl-title{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.03em;line-height:1.1;margin:0;position:relative;z-index:1}
+.nl-title::after{content:"";display:block;width:44px;height:4px;border-radius:2px;background:#fab41e;margin:10px auto 0}
+.nl-sub{margin:10px 0 0;font-family:"Barlow",sans-serif;font-size:13.5px;color:rgba(255,255,255,.75);position:relative;z-index:1}
+#suscriber-modal-form .modal-body{padding:26px 28px 28px}
+#suscriber-modal-form .nl-field{margin-bottom:16px}
+#suscriber-modal-form .nl-field .form-control{height:auto;background:#f1f4f9;border:1.5px solid transparent;border-radius:10px;padding:11px 16px;font-size:15px;color:#14213D;transition:.2s;box-shadow:none}
+#suscriber-modal-form .nl-field .form-control::-moz-placeholder{color:#8a94a6}
+#suscriber-modal-form .nl-field .form-control::placeholder{color:#8a94a6}
+#suscriber-modal-form .nl-field .form-control:focus{background:#fff;border-color:#C8102E;box-shadow:0 0 0 4px rgba(200,16,46,.12)}
+#suscriber-modal-form .was-validated .nl-field .form-control:invalid,
+#suscriber-modal-form .nl-field .form-control.is-invalid{background:#fff;border-color:#C8102E}
+#suscriber-modal-form .nl-field .invalid-feedback{display:block;margin-top:6px;font-size:12.5px;color:#9E0C24}
+#suscriber-modal-form .nl-submit{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;padding:11px 30px;font-size:17px;border-radius:100px;background:#C8102E;border-color:#C8102E;transition:.25s}
+#suscriber-modal-form .nl-submit:hover,#suscriber-modal-form .nl-submit:focus{background:#9E0C24;border-color:#9E0C24;color:#fff;transform:translateY(-1px);box-shadow:0 8px 18px rgba(200,16,46,.32)}
+#suscriber-modal-form .nl-submit:disabled{opacity:.65;transform:none;box-shadow:none}
+#suscriber-modal-form .alert{border-radius:10px}
+.nl-state{display:none;text-align:center;padding:16px 6px 8px}
+.nl-state.show{display:block;animation:nlPop .45s var(--fx-ease,cubic-bezier(.16,1,.3,1))}
+.nl-success-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:74px;height:74px;border-radius:50%;background:#e6f7ee;color:#1e9e57;font-size:32px;margin-bottom:16px}
+.nl-success-icon::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(30,158,87,.35);animation:nlRing 1.6s ease-out infinite}
+.nl-state p{margin:0;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:20px;color:#14213D}
+.nl-error{display:none;align-items:flex-start;gap:10px;background:#fdecee;border:1px solid #f5c2cb;color:#9E0C24;border-radius:10px;padding:12px 16px;font-size:14px;margin-top:14px}
+.nl-error.show{display:flex}
+.nl-error i{margin-top:2px}
+@keyframes nlPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+@keyframes nlRing{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.15);opacity:0}}
+@media (max-width:576px){
+  #suscriber-modal-form .modal-dialog{margin:.5rem}
+  #suscriber-modal-form .modal-body{padding:22px 20px 24px}
+  .nl-head{padding:26px 20px 20px}
+}
+
 
 @media screen and (min-width: 2388px) {
     .disclaimer{
