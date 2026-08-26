@@ -1,18 +1,13 @@
 <div class="col-lg-4 col-md-6 mb-4">
   <article class="rsp-res-blk new-card">
     
-    <div class="card-badge">{{#if primary_tag.name}}{{primary_tag.name}}{{else}}{{t lang "Informe"}}{{/if}}</div>
-    
     <a href="{{endpointPostParse (parseHttp url) lang }}" class="m-gap">
       <img class="pu-3-extend card-img" src="{{parseHttpImage feature_image }}" alt="Publicación">
     </a>
     
     <div class="card-content">
       <div class="card-meta">
-        <span>
-          <i class="fal fa-calendar-alt"></i> 
-          {{parseDate published_at }}
-        </span>
+        <i class="fal fa-calendar-alt"></i> {{parseDate published_at }} - <span class="card-region">{{#if primary_tag.name}}{{primary_tag.name}}{{else}}{{t lang "Informe"}}{{/if}}</span>
       </div>
       
       <h3 class="card-title">
