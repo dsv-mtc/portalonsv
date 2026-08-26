@@ -210,18 +210,39 @@ routes.get("/", async (req, res) => {
 		es: { kicker: 'kicker_es', titulo: 'titulo_es', parrafo: 'parrafo_es', btn1_label: 'btn1_label_es', btn2_label: 'btn2_label_es' },
 		en: { kicker: 'kicker_en', titulo: 'titulo_en', parrafo: 'parrafo_en', btn1_label: 'btn1_label_en', btn2_label: 'btn2_label_en' },
 	}[lang];
-	const banners = (bannersData || []).filter(b => b.activo).map(b => ({
-		archivo: b.archivo,
-		kicker:     b[langFields.kicker],
-		titulo:     b[langFields.titulo],
-		parrafo:    b[langFields.parrafo],
-		btn1_label: b[langFields.btn1_label],
-		btn1_href:  b.btn1_href,
-		btn1_externo: /^https?:\/\//.test(b.btn1_href || ''),
-		btn2_label: b[langFields.btn2_label],
-		btn2_href:  b.btn2_href,
-		btn2_externo: /^https?:\/\//.test(b.btn2_href || ''),
-	}));
+  const banners = (bannersData || []).filter(b => b.activo).map(b => {
+    const isVideoFile = /\.(mp4|webm|mov)$/i.test(b.archivo || '');
+    const videoEmbed = (() => {
+      if (!b.video_url) return null;
+      const url = b.video_url.trim();
+      const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+      if (ytMatch) {
+        const id = ytMatch[1];
+        return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playsinline=1&playlist=${id}`;
+      }
+      const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+      if (vimeoMatch) {
+        const id = vimeoMatch[1];
+        return `https://player.vimeo.com/video/${id}?autoplay=1&muted=1&loop=1`;
+      }
+      return null;
+    })();
+    return {
+      archivo: b.archivo,
+      video_url: b.video_url || null,
+      video_embed: videoEmbed,
+      is_video_file: isVideoFile,
+      kicker:     b[langFields.kicker],
+      titulo:     b[langFields.titulo],
+      parrafo:    b[langFields.parrafo],
+      btn1_label: b[langFields.btn1_label],
+      btn1_href:  b.btn1_href,
+      btn1_externo: /^https?:\/\//.test(b.btn1_href || ''),
+      btn2_label: b[langFields.btn2_label],
+      btn2_href:  b.btn2_href,
+      btn2_externo: /^https?:\/\//.test(b.btn2_href || ''),
+    };
+  });
 	const modalinfo = await apiGhost.getModalPosts();
 
 	const { data: cifras } = await mysql.getCifras();
@@ -271,6 +292,14 @@ routes.get("/", async (req, res) => {
 		imagen: c.imagen,
 	}));
 
+	const { data: institucionesRaw } = await mysql.getInstitucionesAliadas();
+	const instituciones = (institucionesRaw || []).map(i => ({
+		id: i.id,
+		nombre: i.nombre,
+		enlace: i.enlace,
+		logo_url: i.logo_url
+	}));
+
 	res.render("index", {
 		post3,
 		post2,
@@ -283,7 +312,8 @@ routes.get("/", async (req, res) => {
 		popupSocial,
 		popupStatus: JSON.stringify(popupEstado),
 		youtubeTopVideos,
-		accesosRapidos
+		accesosRapidos,
+		instituciones
 	});
 })
 

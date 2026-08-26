@@ -11,6 +11,7 @@ type Banner = {
   posicion: number;
   archivo: string;
   activo: number;
+  video_url?: string | null;
   kicker_es: string; kicker_en: string;
   titulo_es: string; titulo_en: string;
   parrafo_es: string; parrafo_en: string;
@@ -97,6 +98,7 @@ export function Banners() {
       btn1_href:  f("btn1_href"),
       btn2_label: f(`btn2_label_${lang}`),
       btn2_href:  f("btn2_href"),
+      video_url: banner.video_url ?? "",
     });
     setSavingId(null);
     showMsg(r.success ? `Banner ${banner.posicion} guardado (${lang.toUpperCase()})` : (r.message || "Error"));
@@ -139,7 +141,11 @@ export function Banners() {
                   </button>
                 </div>
                 <div className="w-[140px] h-[80px] rounded-lg overflow-hidden border" style={{ borderColor: "var(--brand-line)", background: "#f8fafc" }}>
-                  <img src={encodeURI(banner.archivo)} alt={`Banner ${banner.posicion}`} className="w-full h-full object-contain" />
+                  {/\\.(mp4|webm|mov)$/i.test(banner.archivo) ? (
+                    <video src={encodeURI(banner.archivo)} className="w-full h-full object-contain" muted playsInline />
+                  ) : (
+                    <img src={encodeURI(banner.archivo)} alt={`Banner ${banner.posicion}`} className="w-full h-full object-contain" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[13px] font-bold font-[family-name:var(--font-cond)] uppercase tracking-wide" style={{ color: "var(--brand-navy)" }}>Banner {banner.posicion}</div>
@@ -152,7 +158,7 @@ export function Banners() {
                   </span>
                 </label>
                 <div className="flex-shrink-0">
-                  <input ref={el => { fileRefs.current[i] = el; }} type="file" accept="image/*" onChange={e => handleFile(banner.id, e)} className="hidden" />
+                  <input ref={el => { fileRefs.current[i] = el; }} type="file" accept="image/*,video/*" onChange={e => handleFile(banner.id, e)} className="hidden" />
                   <button type="button" onClick={() => fileRefs.current[i]?.click()} className="h-10 px-4 rounded-lg border-2 text-[12px] font-bold uppercase tracking-wider font-[family-name:var(--font-cond)] inline-flex items-center gap-2 hover:bg-[color:var(--brand-mist)] transition" style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
                     <Upload className="w-3.5 h-3.5" /> Subir
                   </button>
@@ -173,6 +179,14 @@ export function Banners() {
               <label className="block pl-0 sm:pl-[44px]">
                 <span className={labelCls}>{fieldLabel("Párrafo", "Paragraph", lang)}</span>
                 <textarea className={textareaCls} rows={3} maxLength={2000} value={lang === "es" ? (banner.parrafo_es ?? "") : (banner.parrafo_en ?? "")} onChange={e => updateField(banner.id, lang === "es" ? "parrafo_es" : "parrafo_en", e.target.value)} />
+              </label>
+
+              <label className="block pl-0 sm:pl-[44px]">
+                <span className={labelCls}>{lang === "es" ? "Link de video de YouTube" : "YouTube video link"}</span>
+                <input type="text" className={inputCls + " h-[42px]"} maxLength={500} placeholder={lang === "es" ? "https://youtu.be/... o youtube.com/..." : "https://youtu.be/... or youtube.com/..."} value={banner.video_url ?? ""} onChange={e => updateField(banner.id, "video_url", e.target.value)} />
+                <span className="text-[10.5px] text-[color:var(--muted-foreground)] font-[family-name:var(--font-cond)]">
+                  {lang === "es" ? "Opcional. Si se define, el slide usa este video en la home. Mantén el archivo de imagen o video subido como respaldo." : "Optional. If set, the slide will use this video on home. Keep the uploaded image/video as fallback."}
+                </span>
               </label>
 
               <div className="grid sm:grid-cols-2 gap-4 pl-0 sm:pl-[44px]">

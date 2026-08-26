@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate, useLocation, Link, matchPath } from "react-router-dom";
-import { LayoutDashboard, PanelBottom, BarChart3, Map, Image as ImageIcon, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel, LayoutGrid, MonitorPlay, GraduationCap, Zap, Navigation } from "lucide-react";
+import { LayoutDashboard, PanelBottom, BarChart3, Map, Image as ImageIcon, Megaphone, Target, LineChart, Sparkles, Database, Users, ChevronDown, LogOut, Menu, Activity, Home, ChevronRight, Newspaper, Gavel, LayoutGrid, MonitorPlay, GraduationCap, Zap, Navigation, Handshake } from "lucide-react";
 import { cn } from "../lib/utils";
 import { OnsvLogo } from "./OnsvLogo";
 import { apiGet } from "../lib/api";
@@ -24,6 +24,7 @@ const NAV: NavItem[] = [
   { label: "Datos Abiertos", icon: Database, children: [{ label: "Datos", to: "/datos" }, { label: "Categorías", to: "/datos-categorias" }, { label: "Tipos", to: "/datos-tipos" }] },
   { label: "Programas", icon: LayoutGrid, to: "/programas" },
   { label: "Educación Vial", icon: GraduationCap, to: "/educacion-vial" },
+  { label: "Instituciones Aliadas", icon: Handshake, to: "/instituciones-aliadas" },
   { label: "Pie de página", icon: PanelBottom, to: "/pie" },
   { label: "Usuarios", icon: Users, to: "/usuarios" },
 ];

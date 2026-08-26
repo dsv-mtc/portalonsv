@@ -17,6 +17,7 @@ const assetsDir = path.join(__dirname, '../../public/assets');
 
 // --- Filtros seguros de subida (anti XSS por archivos ejecutables) ---
 const ALLOWED_IMAGE_EXTS = /\.(png|jpe?g|gif|webp)$/i;
+const ALLOWED_VIDEO_EXTS = /\.(mp4|webm|mov)$/i;
 const ALLOWED_DOC_EXTS = /\.(pdf|csv|xls|xlsx|zip|shp|dbf|prj|shx)$/i;
 const DANGEROUS_MIME = /^(text\/html|text\/javascript|application\/javascript|application\/xhtml\+xml|image\/svg\+xml|application\/xml)$/i;
 
@@ -26,6 +27,15 @@ function safeImageFilter(_req, file, cb) {
     return cb(null, true);
   }
   cb(new Error('Solo se permiten imágenes PNG, JPG, GIF o WebP'));
+}
+
+function safeBannerFilter(_req, file, cb) {
+  const ext = path.extname(file.originalname || '');
+  const okExt = ALLOWED_IMAGE_EXTS.test(ext) || ALLOWED_VIDEO_EXTS.test(ext);
+  if (okExt && !DANGEROUS_MIME.test(file.mimetype || '')) {
+    return cb(null, true);
+  }
+  cb(new Error('Solo se permiten imágenes PNG, JPG, GIF, WebP o videos MP4, WebM, MOV'));
 }
 
 function safeDocFilter(_req, file, cb) {
@@ -206,6 +216,25 @@ const uploadAccesoMw = multer({
     filename(_req, file, cb) {
       const ext = path.extname(file.originalname).toLowerCase() || '.png';
       cb(null, `acceso_${Date.now()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    if (/\.(png|jpg|jpeg|gif|webp)$/i.test(path.extname(file.originalname))) return cb(null, true);
+    cb(new Error('Solo imágenes PNG, JPG, GIF o WebP'));
+  }
+}).single('image');
+
+// --- Upload middleware para instituciones aliadas ---
+const institucionesAssetsDir = path.join(__dirname, '../../public/assets/instituciones');
+if (!fs.existsSync(institucionesAssetsDir)) fs.mkdirSync(institucionesAssetsDir, { recursive: true });
+
+const uploadInstitucionMw = multer({
+  storage: multer.diskStorage({
+    destination: institucionesAssetsDir,
+    filename(_req, file, cb) {
+      const ext = path.extname(file.originalname).toLowerCase() || '.png';
+      cb(null, `inst_${Date.now()}${ext}`);
     }
   }),
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -1261,6 +1290,48 @@ router.post("/accesos-rapidos/upload", isAuthenticated, async (req, res) => {
   }
 });
 
+// --- Instituciones Aliadas ---
+router.get("/instituciones-aliadas", isAuthenticated, async (req, res) => {
+  const { data: instituciones } = await mysql.getInstitucionesAliadas();
+  res.json({ success: true, data: instituciones });
+});
+
+router.post("/instituciones-aliadas", isAuthenticated, async (req, res) => {
+  const { nombre, enlace, logo_url } = req.body;
+  const result = await mysql.createInstitucionAliada({ nombre, enlace, logo_url });
+  const log = await logAction('created', 'Institución aliada', result.data?.insertId, `Se creó la institución '${nombre || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.put("/instituciones-aliadas/:id", isAuthenticated, async (req, res) => {
+  const { nombre, enlace, logo_url, activo } = req.body;
+  const result = await mysql.updateInstitucionAliada(Number(req.params.id), { nombre, enlace, logo_url, activo });
+  const log = await logAction('updated', 'Institución aliada', Number(req.params.id), `Se actualizó la institución '${nombre || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.delete("/instituciones-aliadas/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  const { data: all } = await mysql.getInstitucionesAliadas();
+  const inst = (all || []).find(i => i.id === id);
+  const result = await mysql.deleteInstitucionAliada(id);
+  const log = await logAction('deleted', 'Institución aliada', id, `Se eliminó la institución '${inst?.nombre || ''}'`, req);
+  res.json({ ...result, log: log || undefined });
+});
+
+router.post("/instituciones-aliadas/upload", isAuthenticated, async (req, res) => {
+  try {
+    uploadInstitucionMw(req, res, (err) => {
+      if (err) return res.status(400).json({ success: false, message: err.message });
+      if (!req.file) return res.status(400).json({ success: false, message: "Selecciona una imagen" });
+      res.json({ success: true, url: `/assets/instituciones/${req.file.filename}` });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
+});
+
 router.post("/entornos-viales/upload", isAuthenticated, async (req, res) => {
   try {
     uploadEntornoMw(req, res, (err) => {
@@ -1320,8 +1391,8 @@ router.put("/publicaciones-estado", isAuthenticated, async (req, res) => {
 const bannersAssetsDir = path.join(__dirname, '../../public/assets');
 const bannersUpload = multer({
   dest: bannersAssetsDir,
-  limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: safeImageFilter
+  limits: { fileSize: 100 * 1024 * 1024 },
+  fileFilter: safeBannerFilter
 });
 
 // Transforma <em>palabra</em> <-> *palabra* para edición bilingüe del admin.
@@ -1377,12 +1448,18 @@ router.post("/banners/upload/:id", isAuthenticated, bannersUpload.single('file')
 
 router.put("/banners/textos/:id", isAuthenticated, async (req, res) => {
   const id = Number(req.params.id);
-  const { idioma, kicker, titulo, parrafo, btn1_label, btn1_href, btn2_label, btn2_href } = req.body || {};
+  const { idioma, kicker, titulo, parrafo, btn1_label, btn1_href, btn2_label, btn2_href, video_url } = req.body || {};
   if (!id) {
     return res.status(400).json({ success: false, message: "ID inválido" });
   }
   if (idioma !== 'es' && idioma !== 'en') {
     return res.status(400).json({ success: false, message: "Idioma inválido" });
+  }
+  // Validación básica de URL de video externo (opcional)
+  let vurl = null;
+  if (video_url != null) {
+    const s = String(video_url).trim();
+    vurl = s && /^https?:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)/i.test(s) ? s : null;
   }
   const datos = {
     kicker:    asteriskToEm(kicker),
@@ -1392,6 +1469,7 @@ router.put("/banners/textos/:id", isAuthenticated, async (req, res) => {
     btn1_href:  (btn1_href == null ? null : String(btn1_href).trim() || null),
     btn2_label: asteriskToEm(btn2_label),
     btn2_href:  (btn2_href == null ? null : String(btn2_href).trim() || null),
+    video_url: vurl,
   };
   const result = await mysql.updateBannerTextos(id, idioma, datos);
   const log = await logAction('updated', 'Banner', id, `Se actualizaron los textos del banner (${idioma})`, req);
