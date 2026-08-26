@@ -25,6 +25,7 @@ import { YoutubeVideos } from "./pages/YoutubeVideos";
 import { EducacionVial } from "./pages/EducacionVial";
 import { AccesosRapidos } from "./pages/AccesosRapidos";
 import { MenuSitio } from "./pages/MenuSitio";
+import { InstitucionesAliadas } from "./pages/InstitucionesAliadas";
 
 export default function App() {
   return (
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="programas" element={<Programas />} />
           <Route path="banners" element={<Banners />} />
           <Route path="accesos-rapidos" element={<AccesosRapidos />} />
+          <Route path="instituciones-aliadas" element={<InstitucionesAliadas />} />
           <Route path="youtube" element={<YoutubeVideos />} />
           <Route path="educacion-vial" element={<EducacionVial />} />
         </Route>

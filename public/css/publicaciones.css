@@ -95,8 +95,6 @@
   align-self: flex-start;
 }
 
-.publicaciones-section .new-card .card-badge { font-size: 9px; padding: 1px 5px; top: 10px; left: 10px; }
-
 .publicaciones-section .so-links li {
 	margin: 0;
 	gap: 1.5rem;

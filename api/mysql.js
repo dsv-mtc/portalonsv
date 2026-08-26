@@ -3372,8 +3372,8 @@ async updateTipo({
 	}
 
 	// --- Banners ---
-	async getBanners() {
-		const queryString = `SELECT id, posicion, archivo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
+  async getBanners() {
+    const queryString = `SELECT id, posicion, archivo, activo, video_url, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
 		try {
 			const results = await this.query(queryString);
 			return { success: true, data: results };
@@ -3383,29 +3383,31 @@ async updateTipo({
 		}
 	}
 
-	async updateBannerTextos(id, idioma, datos) {
-		const lang = idioma === 'en' ? 'en' : 'es';
-		const { kicker, titulo, parrafo, btn1_label, btn1_href, btn2_label, btn2_href } = datos;
-		const queryString = `UPDATE banners SET
-			kicker_${lang} = ?,
-			titulo_${lang} = ?,
-			parrafo_${lang} = ?,
-			btn1_label_${lang} = ?,
-			btn1_href = ?,
-			btn2_label_${lang} = ?,
-			btn2_href = ?
-		WHERE id = ?`;
-		try {
-			await this.query(queryString, [
-				kicker || null,
-				titulo || null,
-				parrafo || null,
-				btn1_label || null,
-				btn1_href || null,
-				btn2_label || null,
-				btn2_href || null,
-				id
-			]);
+  async updateBannerTextos(id, idioma, datos) {
+    const lang = idioma === 'en' ? 'en' : 'es';
+    const { kicker, titulo, parrafo, btn1_label, btn1_href, btn2_label, btn2_href, video_url } = datos;
+    const queryString = `UPDATE banners SET
+      kicker_${lang} = ?,
+      titulo_${lang} = ?,
+      parrafo_${lang} = ?,
+      btn1_label_${lang} = ?,
+      btn1_href = ?,
+      btn2_label_${lang} = ?,
+      btn2_href = ?,
+      video_url = ?
+    WHERE id = ?`;
+    try {
+      await this.query(queryString, [
+        kicker || null,
+        titulo || null,
+        parrafo || null,
+        btn1_label || null,
+        btn1_href || null,
+        btn2_label || null,
+        btn2_href || null,
+        video_url || null,
+        id
+      ]);
 			return { success: true };
 		} catch (error) {
 			console.error(error);
@@ -3437,8 +3439,19 @@ async updateTipo({
 		}
 	}
 
+	async updateBannerActivo(id, activo) {
+		const queryString = `UPDATE banners SET activo = ? WHERE id = ?`;
+		try {
+			await this.query(queryString, [activo ? 1 : 0, id]);
+			return { success: true };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar el estado del banner" };
+		}
+	}
+
 	async getAllBanners() {
-		const queryString = `SELECT id, posicion, archivo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
+		const queryString = `SELECT id, posicion, archivo, activo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
 		try {
 			const results = await this.query(queryString);
 			return { success: true, data: results };
@@ -3649,6 +3662,59 @@ async updateTipo({
 		} catch (error) {
 			console.error(error);
 			return { success: false, message: "No se pudo actualizar el orden" };
+		}
+	}
+
+	// --- Instituciones Aliadas ---
+	async getInstitucionesAliadas() {
+		const queryString = `SELECT id, nombre, enlace, logo_url, activo FROM instituciones_aliadas WHERE activo = 1 ORDER BY id ASC`;
+		try {
+			const results = await this.query(queryString);
+			return { success: true, data: results };
+		} catch (error) {
+			console.error(error);
+			return { success: false, data: [] };
+		}
+	}
+
+	async createInstitucionAliada({ nombre, enlace, logo_url }) {
+		const queryString = `INSERT INTO instituciones_aliadas (nombre, enlace, logo_url, activo) VALUES (?, ?, ?, 1)`;
+		try {
+			const result = await this.query(queryString, [nombre || '', enlace || '', logo_url || '']);
+			return { success: true, data: { insertId: result.insertId }, message: "Institución aliada creada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear la institución aliada" };
+		}
+	}
+
+	async updateInstitucionAliada(id, { nombre, enlace, logo_url, activo }) {
+		const setParts = [];
+		const params = [];
+		if (nombre !== undefined) { setParts.push('nombre = ?'); params.push(nombre || ''); }
+		if (enlace !== undefined) { setParts.push('enlace = ?'); params.push(enlace || ''); }
+		if (logo_url !== undefined) { setParts.push('logo_url = ?'); params.push(logo_url || ''); }
+		if (activo !== undefined) { setParts.push('activo = ?'); params.push(activo ? 1 : 0); }
+		if (setParts.length === 0) return { success: true, message: "Nada que actualizar" };
+		params.push(id);
+		const queryString = `UPDATE instituciones_aliadas SET ${setParts.join(', ')} WHERE id = ?`;
+		try {
+			await this.query(queryString, params);
+			return { success: true, message: "Institución aliada actualizada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo actualizar la institución aliada" };
+		}
+	}
+
+	async deleteInstitucionAliada(id) {
+		const queryString = `DELETE FROM instituciones_aliadas WHERE id = ?`;
+		try {
+			await this.query(queryString, [id]);
+			return { success: true, message: "Institución aliada eliminada" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar la institución aliada" };
 		}
 	}
 

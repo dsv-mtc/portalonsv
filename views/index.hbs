@@ -25,7 +25,10 @@
   .slides.carousel-inner { height: clamp(420px,56vh,560px); }
   .hero .slide.carousel-item { height: 100%; border:none; }
   .hero .bg { position: absolute; inset: 0; background-size: cover; background-position: center; transform: scale(1.06); }
+  .hero .video-bg { position: absolute; inset: 0; overflow: hidden; background:#000; pointer-events:none; }
+  .hero .video-bg iframe, .hero .video-bg video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 85%; background:#000; }
   .hero .active .bg { animation: kb 7s ease forwards; }
+  .hero .video-bg, .hero .video-bg * { animation:none !important; transform:none !important; }
   @keyframes kb { to { transform: scale(1); } }
   .hero .veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,21,40,0) 48%, rgba(13,21,40,.5) 58%, rgba(13,21,40,.5) 100%); }
   
@@ -83,8 +86,14 @@
 
 <section id="heroCarousel" class="carousel slide carousel-fade hero">
   <div class="carousel-inner slides">
-      <div class="carousel-item slide active">
+      <div class="carousel-item slide {{#if banners.[0].archivo}}active{{/if}}">
+        {{#if banners.[0].video_embed}}
+        <div class="bg video-bg"><iframe src="{{banners.[0].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+        {{else if banners.[0].is_video_file}}
+        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[0].preview_url}}" src="{{banners.[0].archivo}}"></video></div>
+        {{else}}
         <div class="bg" style="background-image: url('{{banners.[0].archivo}}');"></div>
+        {{/if}}
         <div class="veil"></div>
         
         <div class="hero-in">
@@ -100,8 +109,15 @@
         </div>
       </div>
 
-      <div class="carousel-item slide">
+      {{#if banners.[1].archivo}}
+      <div class="carousel-item slide{{#unless banners.[0].archivo}} active{{/unless}}">
+        {{#if banners.[1].video_embed}}
+        <div class="bg video-bg"><iframe src="{{banners.[1].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+        {{else if banners.[1].is_video_file}}
+        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[1].preview_url}}" src="{{banners.[1].archivo}}"></video></div>
+        {{else}}
         <div class="bg" style="background-image: url('{{banners.[1].archivo}}');"></div>
+        {{/if}}
         <div class="veil"></div>
         
         <div class="hero-in">
@@ -116,9 +132,17 @@
           </div>
         </div>
       </div>
+      {{/if}}
 
-      <div class="carousel-item slide">
+      {{#if banners.[2].archivo}}
+      <div class="carousel-item slide{{#unless banners.[0].archivo}}{{#unless banners.[1].archivo}} active{{/unless}}{{/unless}}">
+        {{#if banners.[2].video_embed}}
+        <div class="bg video-bg"><iframe src="{{banners.[2].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+        {{else if banners.[2].is_video_file}}
+        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[2].preview_url}}" src="{{banners.[2].archivo}}"></video></div>
+        {{else}}
         <div class="bg" style="background-image: url('{{banners.[2].archivo}}');"></div>
+        {{/if}}
         <div class="veil"></div>
         
         <div class="hero-in">
@@ -133,6 +157,7 @@
           </div>
         </div>
       </div>
+      {{/if}}
   </div>
 
   <ol class="hero-capsules" id="heroCapsules">
@@ -1207,33 +1232,11 @@ var xTimelineLoading = false;
     </div>
     <div class="d-flex justify-content-center">
       <div class="logos owl-carousel owl-theme" id="others">
-        <a class="logo" href="https://www.gob.pe/1013-solicitar-atencion-medida-en-caso-de-emergencia.samu" target="_blank">
-          <img src="/img/logosamu.png" alt="samu" />
+        {{#each instituciones}}
+        <a class="logo" href="{{enlace}}" target="_blank" rel="noopener">
+          <img src="{{logo_url}}" alt="{{nombre}}" />
         </a>
-        <a class="logo" href="https://www.gob.pe/pnp" target="_blank">
-          <img src="/img/logo-PNP.png" alt="pnp" />
-        </a>
-        <a class="logo" href="http://www.bomberosperu.gob.pe" target="_blank">
-          <img src="/img/logobombero.png" alt="cgbv" />
-        </a>
-        <a class="logo" href="https://www.gob.pe/mpfn" target="_blank">
-          <img src="/img/logomp.png" alt="mp" />
-        </a>
-        <a class="logo" href="https://www.gob.pe/atu" target="_blank">
-          <img src="/img/logoatu.png" alt="atu" />
-        </a>
-        <a class="logo" href="https://www.gob.pe/sutran" target="_blank">
-          <img src="/img/logo-sutran.png" alt="sutran" />
-        </a>
-        <a class="logo" href="https://www.gob.pe/minjus" target="_blank">
-          <img src="/img/minjus.png" alt="{{t lang "Ministerio de Justicia"}}" />
-        </a>
-        <a class="logo" href="https://www.gob.pe/mininter" target="_blank">
-          <img src="/img/PCM-Interior.png" alt="{{t lang "Ministerio del Interior"}}" />
-        </a>
-        <a class="logo" href="https://www.gob.pe/minsa" target="_blank">
-          <img src="/img/minsa.png" alt="{{t lang "Ministerio de Salud"}}" />
-        </a>
+        {{/each}}
       </div>
     </div>
   </section>
