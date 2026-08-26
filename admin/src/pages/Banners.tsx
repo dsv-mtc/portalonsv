@@ -30,6 +30,9 @@ export function Banners() {
   const [msgTimer, setMsgTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [savingId, setSavingId] = useState<number | null>(null);
   const fileRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [uploadModal, setUploadModal] = useState<{bannerId:number; open:boolean}|null>(null);
+  const [linkInput, setLinkInput] = useState("");
+
 
   const showMsg = (text: string) => {
     if (msgTimer) clearTimeout(msgTimer);
@@ -140,12 +143,17 @@ export function Banners() {
                     <ArrowDown className="w-4 h-4" style={{ color: "var(--brand-navy)" }} />
                   </button>
                 </div>
-                <div className="w-[140px] h-[80px] rounded-lg overflow-hidden border" style={{ borderColor: "var(--brand-line)", background: "#f8fafc" }}>
-                  {/\\.(mp4|webm|mov)$/i.test(banner.archivo) ? (
+                <div className="w-[140px] h-[80px] rounded-lg overflow-hidden border relative" style={{ borderColor: "var(--brand-line)", background: "#f8fafc" }}>
+                  {banner.video_url ? (() => {
+                    const ytMatch = banner.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+                    const thumb = ytMatch ? `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg` : null;
+                    return thumb ? <img src={thumb} alt="Video" className="w-full h-full object-cover" /> : <div className="w-full h-full grid place-items-center text-[10px]">Link video</div>;
+                  })() : /\\.(mp4|webm|mov)$/i.test(banner.archivo) ? (
                     <video src={encodeURI(banner.archivo)} className="w-full h-full object-contain" muted playsInline />
                   ) : (
                     <img src={encodeURI(banner.archivo)} alt={`Banner ${banner.posicion}`} className="w-full h-full object-contain" />
                   )}
+                  {banner.video_url && <div className="absolute inset-0 grid place-items-center bg-black/40 text-white text-[10px] font-bold">YT</div>}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[13px] font-bold font-[family-name:var(--font-cond)] uppercase tracking-wide" style={{ color: "var(--brand-navy)" }}>Banner {banner.posicion}</div>
@@ -159,7 +167,7 @@ export function Banners() {
                 </label>
                 <div className="flex-shrink-0">
                   <input ref={el => { fileRefs.current[i] = el; }} type="file" accept="image/*,video/*" onChange={e => handleFile(banner.id, e)} className="hidden" />
-                  <button type="button" onClick={() => fileRefs.current[i]?.click()} className="h-10 px-4 rounded-lg border-2 text-[12px] font-bold uppercase tracking-wider font-[family-name:var(--font-cond)] inline-flex items-center gap-2 hover:bg-[color:var(--brand-mist)] transition" style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
+                  <button type="button" onClick={() => { setUploadModal({bannerId: banner.id, open:true}); setLinkInput(banner.video_url ?? ""); }} className="h-10 px-4 rounded-lg border-2 text-[12px] font-bold uppercase tracking-wider font-[family-name:var(--font-cond)] inline-flex items-center gap-2 hover:bg-[color:var(--brand-mist)] transition" style={{ borderColor: "var(--brand-line)", color: "var(--brand-navy)" }}>
                     <Upload className="w-3.5 h-3.5" /> Subir
                   </button>
                 </div>
@@ -179,14 +187,6 @@ export function Banners() {
               <label className="block pl-0 sm:pl-[44px]">
                 <span className={labelCls}>{fieldLabel("Párrafo", "Paragraph", lang)}</span>
                 <textarea className={textareaCls} rows={3} maxLength={2000} value={lang === "es" ? (banner.parrafo_es ?? "") : (banner.parrafo_en ?? "")} onChange={e => updateField(banner.id, lang === "es" ? "parrafo_es" : "parrafo_en", e.target.value)} />
-              </label>
-
-              <label className="block pl-0 sm:pl-[44px]">
-                <span className={labelCls}>{lang === "es" ? "Link de video de YouTube" : "YouTube video link"}</span>
-                <input type="text" className={inputCls + " h-[42px]"} maxLength={500} placeholder={lang === "es" ? "https://youtu.be/... o youtube.com/..." : "https://youtu.be/... or youtube.com/..."} value={banner.video_url ?? ""} onChange={e => updateField(banner.id, "video_url", e.target.value)} />
-                <span className="text-[10.5px] text-[color:var(--muted-foreground)] font-[family-name:var(--font-cond)]">
-                  {lang === "es" ? "Opcional. Si se define, el slide usa este video en la home. Mantén el archivo de imagen o video subido como respaldo." : "Optional. If set, the slide will use this video on home. Keep the uploaded image/video as fallback."}
-                </span>
               </label>
 
               <div className="grid sm:grid-cols-2 gap-4 pl-0 sm:pl-[44px]">
@@ -235,6 +235,39 @@ export function Banners() {
           ))}
         </div>
       </Panel>
+
+      {uploadModal?.open && (
+        <div className="fixed inset-0 z-50 bg-black/60 grid place-items-center p-4">
+          <div className="bg-white rounded-xl border-2 p-5 w-full max-w-md" style={{borderColor:"var(--brand-line)"}}>
+            <div className="text-[16px] font-bold font-[family-name:var(--font-cond)] uppercase mb-3" style={{color:"var(--brand-navy)"}}>
+              {lang === "es" ? "Subir contenido" : "Upload content"}
+            </div>
+            <div className="grid gap-3">
+              <button type="button" onClick={() => { const idx = banners.findIndex(b=>b.id===uploadModal.bannerId); const el = fileRefs.current[idx]; el?.click(); setUploadModal(null); }} className="h-11 rounded-lg border-2 font-bold uppercase text-[12px] font-[family-name:var(--font-cond)] hover:bg-[color:var(--brand-mist)]" style={{borderColor:"var(--brand-line)",color:"var(--brand-navy)"}}>
+                {lang === "es" ? "Subir archivo imagen o video" : "Upload image or video file"}
+              </button>
+              <div className="text-[12px] text-center text-[color:var(--muted-foreground)]">— {lang === "es" ? "o" : "or"} —</div>
+              <input type="text" value={linkInput} onChange={e=>setLinkInput(e.target.value)} placeholder={lang==="es"?"https://youtu.be/... o vimeo.com/...":"https://youtu.be/... or vimeo.com/..."} className={inputCls+" h-[42px]"} />
+              <div className="flex gap-2 justify-end">
+                <button type="button" onClick={()=>setUploadModal(null)} className="h-10 px-4 rounded-lg border-2 text-[12px] font-bold uppercase" style={{borderColor:"var(--brand-line)"}}>{lang==="es"?"Cancelar":"Cancel"}</button>
+                <BrandButton type="button" variant="navy" onClick={async ()=>{
+                  const bannerId = uploadModal.bannerId;
+                  const url = linkInput.trim();
+                  if(!url){ showMsg(lang==="es"?"Ingresa un link":"Enter a link"); return; }
+                  const ok = /^https?:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)/i.test(url);
+                  if(!ok){ showMsg(lang==="es"?"Link no válido":"Invalid link"); return; }
+                  setBanners(prev=>prev.map(b=>b.id===bannerId? {...b, video_url:url}:b));
+                  await apiPut(`/banners/textos/${bannerId}`, { idioma: lang, video_url: url });
+                  setUploadModal(null);
+                  showMsg(lang==="es"?"Link guardado":"Link saved");
+                }}>
+                  {lang==="es"?"Guardar link":"Save link"}
+                </BrandButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
