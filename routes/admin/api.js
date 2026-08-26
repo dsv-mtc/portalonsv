@@ -1437,10 +1437,24 @@ router.post("/banners/upload/:id", isAuthenticated, bannersUpload.single('file')
     return res.status(400).json({ success: false, message: "Faltan parámetros" });
   }
   const ext = path.extname(req.file.originalname) || '.png';
-  const filename = `banner_${id}_${Date.now()}${ext}`;
+  const ts = Date.now();
+  const filename = `banner_${id}_${ts}${ext}`;
   const destPath = path.join(bannersAssetsDir, filename);
   fs.renameSync(req.file.path, destPath);
   const archivo = `/assets/${filename}`;
+  // Generar miniatura para videos
+  const isVideo = ALLOWED_VIDEO_EXTS.test(ext);
+  if (isVideo) {
+    try {
+      const ffmpegPath = require('ffmpeg-static');
+      const { execSync } = require('child_process');
+      const thumbName = `banner_${id}_${ts}_preview.jpg`;
+      const thumbPath = path.join(bannersAssetsDir, thumbName);
+      execSync(`"${ffmpegPath}" -y -ss 1 -i "${destPath}" -frames:v 1 -update 1 -q:v 2 "${thumbPath}"`);
+    } catch (e) {
+      console.warn('Error generando miniatura de video:', e.message);
+    }
+  }
   const result = await mysql.updateBannerArchivo(id, archivo);
   const log = await logAction('updated', 'Banner', id, `Se actualizó la imagen del banner`, req);
   res.json({ ...result, archivo, log: log || undefined });

@@ -148,8 +148,11 @@ export function Banners() {
                     const ytMatch = banner.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
                     const thumb = ytMatch ? `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg` : null;
                     return thumb ? <img src={thumb} alt="Video" className="w-full h-full object-cover" /> : <div className="w-full h-full grid place-items-center text-[10px]">Link video</div>;
-                  })() : /\\.(mp4|webm|mov)$/i.test(banner.archivo) ? (
-                    <video src={encodeURI(banner.archivo)} className="w-full h-full object-contain" muted playsInline />
+                  })() : /\.(mp4|webm|mov)$/i.test(banner.archivo) ? (
+                    (() => {
+                      const preview = banner.archivo.replace(/\.(mp4|webm|mov)$/i, '_preview.jpg');
+                      return <img src={encodeURI(preview)} alt={`Banner ${banner.posicion}`} className="w-full h-full object-cover" onError={(e)=>{ (e.currentTarget as HTMLImageElement).style.display='none'; }} />;
+                    })()
                   ) : (
                     <img src={encodeURI(banner.archivo)} alt={`Banner ${banner.posicion}`} className="w-full h-full object-contain" />
                   )}

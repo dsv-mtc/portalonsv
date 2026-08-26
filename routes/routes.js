@@ -212,6 +212,7 @@ routes.get("/", async (req, res) => {
 	}[lang];
   const banners = (bannersData || []).filter(b => b.activo).map(b => {
     const isVideoFile = /\.(mp4|webm|mov)$/i.test(b.archivo || '');
+    const previewUrl = isVideoFile ? (b.archivo.replace(/\.(mp4|webm|mov)$/i, '_preview.jpg')) : null;
     const videoEmbed = (() => {
       if (!b.video_url) return null;
       const url = b.video_url.trim();
@@ -232,6 +233,7 @@ routes.get("/", async (req, res) => {
       video_url: b.video_url || null,
       video_embed: videoEmbed,
       is_video_file: isVideoFile,
+      preview_url: previewUrl,
       kicker:     b[langFields.kicker],
       titulo:     b[langFields.titulo],
       parrafo:    b[langFields.parrafo],

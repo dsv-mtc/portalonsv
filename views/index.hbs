@@ -90,7 +90,7 @@
         {{#if banners.[0].video_embed}}
         <div class="bg video-bg"><iframe src="{{banners.[0].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
         {{else if banners.[0].is_video_file}}
-        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" src="{{banners.[0].archivo}}"></video></div>
+        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[0].preview_url}}" src="{{banners.[0].archivo}}"></video></div>
         {{else}}
         <div class="bg" style="background-image: url('{{banners.[0].archivo}}');"></div>
         {{/if}}
@@ -114,7 +114,7 @@
         {{#if banners.[1].video_embed}}
         <div class="bg video-bg"><iframe src="{{banners.[1].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
         {{else if banners.[1].is_video_file}}
-        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" src="{{banners.[1].archivo}}"></video></div>
+        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[1].preview_url}}" src="{{banners.[1].archivo}}"></video></div>
         {{else}}
         <div class="bg" style="background-image: url('{{banners.[1].archivo}}');"></div>
         {{/if}}
@@ -139,7 +139,7 @@
         {{#if banners.[2].video_embed}}
         <div class="bg video-bg"><iframe src="{{banners.[2].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
         {{else if banners.[2].is_video_file}}
-        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" src="{{banners.[2].archivo}}"></video></div>
+        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[2].preview_url}}" src="{{banners.[2].archivo}}"></video></div>
         {{else}}
         <div class="bg" style="background-image: url('{{banners.[2].archivo}}');"></div>
         {{/if}}
