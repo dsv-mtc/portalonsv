@@ -3450,6 +3450,44 @@ async updateTipo({
 		}
 	}
 
+	async createBanner({ idioma, archivo, kicker, titulo, parrafo, btn1_label, btn1_href, btn2_label, btn2_href, video_url }) {
+		const lang = idioma === 'en' ? 'en' : 'es';
+		const queryString = `INSERT INTO banners (posicion, archivo, activo, kicker_${lang}, titulo_${lang}, parrafo_${lang}, btn1_label_${lang}, btn1_href, btn2_label_${lang}, btn2_href, video_url) VALUES (1, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?)`;
+		try {
+			await this.query(`UPDATE banners SET posicion = posicion + 1`);
+			const result = await this.query(queryString, [
+				archivo || '',
+				kicker || null,
+				titulo || null,
+				parrafo || null,
+				btn1_label || null,
+				btn1_href || null,
+				btn2_label || null,
+				btn2_href || null,
+				video_url || null
+			]);
+			return { success: true, data: { insertId: result.insertId }, message: "Se creó el banner" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo crear el banner" };
+		}
+	}
+
+	async deleteBanner(id) {
+		try {
+			const rows = await this.query(`SELECT posicion FROM banners WHERE id = ?`, [id]);
+			const pos = rows && rows.length ? rows[0].posicion : null;
+			await this.query(`DELETE FROM banners WHERE id = ?`, [id]);
+			if (pos != null) {
+				await this.query(`UPDATE banners SET posicion = posicion - 1 WHERE posicion > ?`, [pos]);
+			}
+			return { success: true, message: "Se eliminó el banner" };
+		} catch (error) {
+			console.error(error);
+			return { success: false, message: "No se pudo eliminar el banner" };
+		}
+	}
+
 	async getAllBanners() {
 		const queryString = `SELECT id, posicion, archivo, activo, kicker_es, kicker_en, titulo_es, titulo_en, parrafo_es, parrafo_en, btn1_label_es, btn1_label_en, btn1_href, btn2_label_es, btn2_label_en, btn2_href FROM banners ORDER BY posicion ASC`;
 		try {

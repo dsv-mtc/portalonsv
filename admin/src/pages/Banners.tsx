@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowUp, ArrowDown, Upload, Languages, Send } from "lucide-react";
+import { ArrowUp, ArrowDown, Upload, Languages, Send, Trash2, Plus } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { Panel, BrandButton } from "../components/UIBits";
-import { apiGet, apiPut, apiUpload } from "../lib/api";
+import { apiGet, apiPut, apiPost, apiDelete, apiUpload } from "../lib/api";
 
 type Lang = "es" | "en";
 
@@ -32,6 +32,11 @@ export function Banners() {
   const fileRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [uploadModal, setUploadModal] = useState<{bannerId:number; open:boolean}|null>(null);
   const [linkInput, setLinkInput] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [nuevo, setNuevo] = useState({ kicker:"", titulo:"", parrafo:"", btn1_label:"", btn1_href:"", btn2_label:"", btn2_href:"", video_url:"" });
+  const [nuevoFile, setNuevoFile] = useState<File | null>(null);
+  const createFileRef = useRef<HTMLInputElement | null>(null);
 
 
   const showMsg = (text: string) => {
@@ -89,6 +94,38 @@ export function Banners() {
     setBanners(prev => prev.map(b => b.id === id ? { ...b, [key]: value } : b));
   };
 
+  const borrar = async (banner: Banner) => {
+    const ok = window.confirm(lang === "es"
+      ? `¿Eliminar el banner ${banner.posicion}? Esta acción no se puede deshacer.`
+      : `Delete banner ${banner.posicion}? This action cannot be undone.`);
+    if (!ok) return;
+    const r = await apiDelete(`/banners/${banner.id}`);
+    if (r.success) { load(); showMsg(lang === "es" ? "Banner eliminado" : "Banner deleted"); }
+    else { showMsg(r.message || "Error"); }
+  };
+
+  const crearBanner = async () => {
+    if (!nuevo.kicker.trim() && !nuevo.titulo.trim() && !nuevo.parrafo.trim() && !nuevoFile && !nuevo.video_url.trim()) {
+      showMsg(lang === "es" ? "Completa al menos un campo o sube un archivo" : "Fill at least one field or upload a file");
+      return;
+    }
+    setCreating(true);
+    const r = await apiPost<{ insertId?: number; id?: number }>("/banners", { idioma: lang, ...nuevo });
+    if (!r.success) { setCreating(false); showMsg(r.message || "Error"); return; }
+    const id = r.data?.insertId ?? r.data?.id;
+    if (nuevoFile && id) {
+      const fd = new FormData();
+      fd.append("file", nuevoFile);
+      await apiUpload(`/banners/upload/${id}`, fd);
+    }
+    setCreating(false);
+    setCreateOpen(false);
+    setNuevo({ kicker:"", titulo:"", parrafo:"", btn1_label:"", btn1_href:"", btn2_label:"", btn2_href:"", video_url:"" });
+    setNuevoFile(null);
+    load();
+    showMsg(lang === "es" ? "Banner creado" : "Banner created");
+  };
+
   const saveTextos = async (banner: Banner) => {
     setSavingId(banner.id);
     const f = (k: keyof Banner) => (banner[k] ?? "") as string;
@@ -118,14 +155,20 @@ export function Banners() {
           ? "Edita los textos, botones e imagen de cada slide del carrusel. Usa *palabra* para resaltarla (se verá en color en el portal)."
           : "Edit texts, buttons and image of each carousel slide. Use *word* to highlight it (shown in color on the portal)."} />
 
-      <div className="mb-5 inline-flex rounded-lg border-2 border-[color:var(--brand-line)] p-1 bg-white">
-        {(["es", "en"] as const).map((l) => (
-          <button key={l} onClick={() => setLang(l)}
-            className={"px-4 h-9 rounded-md text-[12px] uppercase font-bold tracking-wider transition font-[family-name:var(--font-cond)] inline-flex items-center gap-2 " +
-                (lang === l ? "bg-[color:var(--brand-navy)] text-white" : "text-[color:var(--brand-navy)] hover:bg-[color:var(--brand-mist)]")}>
-            <Languages className="w-3.5 h-3.5" /> {l === "es" ? "Español" : "English"}
-          </button>
-        ))}
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="inline-flex rounded-lg border-2 border-[color:var(--brand-line)] p-1 bg-white">
+          {(["es", "en"] as const).map((l) => (
+            <button key={l} onClick={() => setLang(l)}
+              className={"px-4 h-9 rounded-md text-[12px] uppercase font-bold tracking-wider transition font-[family-name:var(--font-cond)] inline-flex items-center gap-2 " +
+                  (lang === l ? "bg-[color:var(--brand-navy)] text-white" : "text-[color:var(--brand-navy)] hover:bg-[color:var(--brand-mist)]")}>
+              <Languages className="w-3.5 h-3.5" /> {l === "es" ? "Español" : "English"}
+            </button>
+          ))}
+        </div>
+        <BrandButton type="button" variant="red" onClick={() => setCreateOpen(true)}>
+          <Plus className="w-4 h-4" />
+          {lang === "es" ? "Nuevo banner" : "New banner"}
+        </BrandButton>
       </div>
 
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
@@ -162,6 +205,9 @@ export function Banners() {
                   <div className="text-[13px] font-bold font-[family-name:var(--font-cond)] uppercase tracking-wide" style={{ color: "var(--brand-navy)" }}>Banner {banner.posicion}</div>
                   <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--muted-foreground)" }}>{banner.archivo}</div>
                 </div>
+                <button type="button" onClick={() => borrar(banner)} title={lang === "es" ? "Eliminar banner" : "Delete banner"} className="flex-shrink-0 w-10 h-10 rounded-lg border-2 grid place-items-center text-[color:var(--brand-red)] hover:bg-red-50 transition" style={{ borderColor: "var(--brand-line)" }}>
+                  <Trash2 className="w-4 h-4" />
+                </button>
                 <label className="flex-shrink-0 flex items-center gap-2 cursor-pointer select-none">
                   <input type="checkbox" checked={!!banner.activo} onChange={() => toggleActivo(banner)} className="w-4 h-4 cursor-pointer accent-[color:var(--brand-navy)]" />
                   <span className="text-[11px] uppercase tracking-[0.08em] text-[color:var(--brand-navy)] font-bold font-[family-name:var(--font-cond)]">
@@ -208,23 +254,21 @@ export function Banners() {
                 </div>
               </div>
 
-              {banner.posicion === 1 && (
-                <div className="grid sm:grid-cols-2 gap-4 pl-0 sm:pl-[44px]">
-                  <div className="space-y-2">
-                    <span className={labelCls}>{fieldLabel("Botón 2 — Texto", "Button 2 — Label", lang)}</span>
-                    <input type="text" className={inputCls + " h-[42px]"} maxLength={100} value={lang === "es" ? (banner.btn2_label_es ?? "") : (banner.btn2_label_en ?? "")} onChange={e => updateField(banner.id, lang === "es" ? "btn2_label_es" : "btn2_label_en", e.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <span className={labelCls}>{fieldLabel("Botón 2 — Enlace", "Button 2 — Link", lang)}</span>
-                    <input type="text" className={inputCls + " h-[42px]"} maxLength={500} placeholder="https://... · /ruta · #ancla" value={banner.btn2_href ?? ""} onChange={e => updateField(banner.id, "btn2_href", e.target.value)} />
-                    <span className="text-[10.5px] text-[color:var(--muted-foreground)] font-[family-name:var(--font-cond)]">
-                      {lang === "es"
-                        ? "URL externa (https://...) abre en nueva pestaña · ruta interna (/publicaciones) o ancla (#seccion) en la misma"
-                        : "External URL (https://...) opens new tab · internal path (/publicaciones) or anchor (#section) same tab"}
-                    </span>
-                  </div>
+              <div className="grid sm:grid-cols-2 gap-4 pl-0 sm:pl-[44px]">
+                <div className="space-y-2">
+                  <span className={labelCls}>{fieldLabel("Botón 2 — Texto", "Button 2 — Label", lang)}</span>
+                  <input type="text" className={inputCls + " h-[42px]"} maxLength={100} value={lang === "es" ? (banner.btn2_label_es ?? "") : (banner.btn2_label_en ?? "")} onChange={e => updateField(banner.id, lang === "es" ? "btn2_label_es" : "btn2_label_en", e.target.value)} />
                 </div>
-              )}
+                <div className="space-y-2">
+                  <span className={labelCls}>{fieldLabel("Botón 2 — Enlace", "Button 2 — Link", lang)}</span>
+                  <input type="text" className={inputCls + " h-[42px]"} maxLength={500} placeholder="https://... · /ruta · #ancla" value={banner.btn2_href ?? ""} onChange={e => updateField(banner.id, "btn2_href", e.target.value)} />
+                  <span className="text-[10.5px] text-[color:var(--muted-foreground)] font-[family-name:var(--font-cond)]">
+                    {lang === "es"
+                      ? "URL externa (https://...) abre en nueva pestaña · ruta interna (/publicaciones) o ancla (#seccion) en la misma"
+                      : "External URL (https://...) opens new tab · internal path (/publicaciones) or anchor (#section) same tab"}
+                  </span>
+                </div>
+              </div>
 
               <div className="flex justify-end pl-0 sm:pl-[44px]">
                 <BrandButton type="button" variant="navy" onClick={() => saveTextos(banner)} disabled={savingId === banner.id}>
@@ -238,6 +282,73 @@ export function Banners() {
           ))}
         </div>
       </Panel>
+
+      {createOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 grid place-items-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl border-2 p-5 w-full max-w-xl my-8" style={{borderColor:"var(--brand-line)"}}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[16px] font-bold font-[family-name:var(--font-cond)] uppercase" style={{color:"var(--brand-navy)"}}>
+                {lang === "es" ? "Nuevo banner" : "New banner"}
+              </div>
+              <button type="button" onClick={() => setCreateOpen(false)} className="text-[color:var(--muted-foreground)] hover:text-[color:var(--brand-navy)] text-[22px] leading-none">&times;</button>
+            </div>
+            <div className="grid gap-4">
+              <div>
+                <span className={labelCls}>{fieldLabel("Imagen o video", "Image or video", lang)}</span>
+                <div className="mt-1 flex items-center gap-2">
+                  <button type="button" onClick={() => createFileRef.current?.click()} className="h-11 px-4 rounded-lg border-2 text-[12px] font-bold uppercase font-[family-name:var(--font-cond)] inline-flex items-center gap-2 hover:bg-[color:var(--brand-mist)] transition" style={{borderColor:"var(--brand-line)",color:"var(--brand-navy)"}}>
+                    <Upload className="w-3.5 h-3.5" /> {nuevoFile ? nuevoFile.name : (lang==="es" ? "Subir archivo" : "Upload file")}
+                  </button>
+                  <input ref={createFileRef} type="file" accept="image/*,video/*" className="hidden" onChange={e => setNuevoFile(e.target.files?.[0] ?? null)} />
+                  {nuevoFile && <button type="button" onClick={() => setNuevoFile(null)} className="text-[12px] text-[color:var(--brand-red)] font-bold uppercase">{lang==="es"?"Quitar":"Remove"}</button>}
+                </div>
+              </div>
+              <label className="block">
+                <span className={labelCls}>{fieldLabel("Video URL", "Video URL", lang)}</span>
+                <input type="text" value={nuevo.video_url} onChange={e => setNuevo({ ...nuevo, video_url: e.target.value })} placeholder="https://youtu.be/... o vimeo.com/..." className={inputCls + " h-[42px]"} />
+              </label>
+              <label className="block">
+                <span className={labelCls}>{fieldLabel("Kicker", "Kicker", lang)}</span>
+                <textarea className={textareaCls} rows={1} maxLength={200} value={nuevo.kicker} onChange={e => setNuevo({ ...nuevo, kicker: e.target.value })} />
+              </label>
+              <label className="block">
+                <span className={labelCls}>{fieldLabel("Título", "Title", lang)} <span className="text-[color:var(--brand-cyan)] normal-case tracking-normal font-normal">· *palabra* = resaltado</span></span>
+                <textarea className={textareaCls} rows={2} maxLength={500} value={nuevo.titulo} onChange={e => setNuevo({ ...nuevo, titulo: e.target.value })} />
+              </label>
+              <label className="block">
+                <span className={labelCls}>{fieldLabel("Párrafo", "Paragraph", lang)}</span>
+                <textarea className={textareaCls} rows={3} maxLength={2000} value={nuevo.parrafo} onChange={e => setNuevo({ ...nuevo, parrafo: e.target.value })} />
+              </label>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <span className={labelCls}>{fieldLabel("Botón 1 — Texto", "Button 1 — Label", lang)}</span>
+                  <input type="text" className={inputCls + " h-[42px]"} maxLength={100} value={nuevo.btn1_label} onChange={e => setNuevo({ ...nuevo, btn1_label: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <span className={labelCls}>{fieldLabel("Botón 1 — Enlace", "Button 1 — Link", lang)}</span>
+                  <input type="text" className={inputCls + " h-[42px]"} maxLength={500} placeholder="https://... · /ruta · #ancla" value={nuevo.btn1_href} onChange={e => setNuevo({ ...nuevo, btn1_href: e.target.value })} />
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <span className={labelCls}>{fieldLabel("Botón 2 — Texto", "Button 2 — Label", lang)}</span>
+                  <input type="text" className={inputCls + " h-[42px]"} maxLength={100} value={nuevo.btn2_label} onChange={e => setNuevo({ ...nuevo, btn2_label: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <span className={labelCls}>{fieldLabel("Botón 2 — Enlace", "Button 2 — Link", lang)}</span>
+                  <input type="text" className={inputCls + " h-[42px]"} maxLength={500} placeholder="https://... · /ruta · #ancla" value={nuevo.btn2_href} onChange={e => setNuevo({ ...nuevo, btn2_href: e.target.value })} />
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button type="button" onClick={() => setCreateOpen(false)} className="h-10 px-4 rounded-lg border-2 text-[12px] font-bold uppercase" style={{borderColor:"var(--brand-line)"}}>{lang==="es"?"Cancelar":"Cancel"}</button>
+                <BrandButton type="button" variant="navy" onClick={crearBanner} disabled={creating}>
+                  {creating ? (lang==="es" ? "Creando..." : "Creating...") : (lang==="es" ? "Crear banner" : "Create banner")}
+                </BrandButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {uploadModal?.open && (
         <div className="fixed inset-0 z-50 bg-black/60 grid place-items-center p-4">
