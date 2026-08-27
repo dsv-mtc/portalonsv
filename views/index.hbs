@@ -86,78 +86,30 @@
 
 <section id="heroCarousel" class="carousel slide carousel-fade hero">
   <div class="carousel-inner slides">
-      <div class="carousel-item slide {{#if banners.[0].archivo}}active{{/if}}">
-        {{#if banners.[0].video_embed}}
-        <div class="bg video-bg"><iframe src="{{banners.[0].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-        {{else if banners.[0].is_video_file}}
-        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[0].preview_url}}" src="{{banners.[0].archivo}}"></video></div>
+    {{#each banners}}
+      <div class="carousel-item slide {{#if @first}}active{{/if}}">
+        {{#if this.video_embed}}
+        <div class="bg video-bg"><iframe src="{{this.video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+        {{else if this.is_video_file}}
+        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{this.preview_url}}" src="{{this.archivo}}"></video></div>
         {{else}}
-        <div class="bg" style="background-image: url('{{banners.[0].archivo}}');"></div>
+        <div class="bg" style="background-image: url('{{this.archivo}}');"></div>
         {{/if}}
         <div class="veil"></div>
         
         <div class="hero-in">
           <div class="hero-card">
-            <div class="kick">{{{banners.[0].kicker}}}</div>
-            <h2>{{{banners.[0].titulo}}}</h2>
-            <p>{{{banners.[0].parrafo}}}</p>
+            <div class="kick">{{{this.kicker}}}</div>
+            <h2>{{{this.titulo}}}</h2>
+            <p>{{{this.parrafo}}}</p>
             <div class="btns">
-              <a class="btn-hero btn-white" href="{{banners.[0].btn1_href}}"{{#if banners.[0].btn1_externo}} target="_blank"{{/if}}>{{banners.[0].btn1_label}} →</a>
-              {{#if banners.[0].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[0].btn2_href}}"{{#if banners.[0].btn2_externo}} target="_blank"{{/if}}>{{banners.[0].btn2_label}} →</a>{{/if}}
+              <a class="btn-hero btn-white" href="{{this.btn1_href}}"{{#if this.btn1_externo}} target="_blank"{{/if}}>{{this.btn1_label}} →</a>
+              {{#if this.btn2_label}}<a class="btn-hero btn-ghost" href="{{this.btn2_href}}"{{#if this.btn2_externo}} target="_blank"{{/if}}>{{this.btn2_label}} →</a>{{/if}}
             </div>
           </div>
         </div>
       </div>
-
-      {{#if banners.[1].archivo}}
-      <div class="carousel-item slide{{#unless banners.[0].archivo}} active{{/unless}}">
-        {{#if banners.[1].video_embed}}
-        <div class="bg video-bg"><iframe src="{{banners.[1].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-        {{else if banners.[1].is_video_file}}
-        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[1].preview_url}}" src="{{banners.[1].archivo}}"></video></div>
-        {{else}}
-        <div class="bg" style="background-image: url('{{banners.[1].archivo}}');"></div>
-        {{/if}}
-        <div class="veil"></div>
-        
-        <div class="hero-in">
-          <div class="hero-card">
-            <div class="kick">{{{banners.[1].kicker}}}</div>
-            <h2>{{{banners.[1].titulo}}}</h2>
-            <p>{{{banners.[1].parrafo}}}</p>
-            <div class="btns">
-              <a class="btn-hero btn-white" href="{{banners.[1].btn1_href}}"{{#if banners.[1].btn1_externo}} target="_blank"{{/if}}>{{banners.[1].btn1_label}} →</a>
-              {{#if banners.[1].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[1].btn2_href}}"{{#if banners.[1].btn2_externo}} target="_blank"{{/if}}>{{banners.[1].btn2_label}} →</a>{{/if}}
-            </div>
-          </div>
-        </div>
-      </div>
-      {{/if}}
-
-      {{#if banners.[2].archivo}}
-      <div class="carousel-item slide{{#unless banners.[0].archivo}}{{#unless banners.[1].archivo}} active{{/unless}}{{/unless}}">
-        {{#if banners.[2].video_embed}}
-        <div class="bg video-bg"><iframe src="{{banners.[2].video_embed}}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-        {{else if banners.[2].is_video_file}}
-        <div class="bg video-bg"><video autoplay muted loop playsinline preload="auto" disableRemotePlayback crossorigin="anonymous" poster="{{banners.[2].preview_url}}" src="{{banners.[2].archivo}}"></video></div>
-        {{else}}
-        <div class="bg" style="background-image: url('{{banners.[2].archivo}}');"></div>
-        {{/if}}
-        <div class="veil"></div>
-        
-        <div class="hero-in">
-          <div class="hero-card">
-            <div class="kick">{{{banners.[2].kicker}}}</div>
-            <h2>{{{banners.[2].titulo}}}</h2>
-            <p>{{{banners.[2].parrafo}}}</p>
-            <div class="btns">
-              <a class="btn-hero btn-white" href="{{banners.[2].btn1_href}}"{{#if banners.[2].btn1_externo}} target="_blank"{{/if}}>{{banners.[2].btn1_label}} →</a>
-              {{#if banners.[2].btn2_label}}<a class="btn-hero btn-ghost" href="{{banners.[2].btn2_href}}"{{#if banners.[2].btn2_externo}} target="_blank"{{/if}}>{{banners.[2].btn2_label}} →</a>{{/if}}
-            </div>
-          </div>
-        </div>
-      </div>
-      {{/if}}
+    {{/each}}
   </div>
 
   <ol class="hero-capsules" id="heroCapsules">

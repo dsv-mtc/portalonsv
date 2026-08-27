@@ -1406,6 +1406,45 @@ router.get("/banners", isAuthenticated, async (req, res) => {
   res.json(result);
 });
 
+router.post("/banners", isAuthenticated, async (req, res) => {
+  const { idioma, kicker, titulo, parrafo, btn1_label, btn1_href, btn2_label, btn2_href, video_url } = req.body || {};
+  if (idioma !== 'es' && idioma !== 'en') {
+    return res.status(400).json({ success: false, message: "Idioma inválido" });
+  }
+  let vurl = null;
+  if (video_url != null) {
+    const s = String(video_url).trim();
+    vurl = s && /^https?:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)/i.test(s) ? s : null;
+  }
+  const result = await mysql.createBanner({
+    idioma,
+    archivo: '',
+    kicker: asteriskToEm(kicker),
+    titulo: asteriskToEm(titulo),
+    parrafo: asteriskToEm(parrafo),
+    btn1_label: asteriskToEm(btn1_label),
+    btn1_href: (btn1_href == null ? null : String(btn1_href).trim() || null),
+    btn2_label: asteriskToEm(btn2_label),
+    btn2_href: (btn2_href == null ? null : String(btn2_href).trim() || null),
+    video_url: vurl,
+  });
+  if (result.success && result.data) {
+    const log = await logAction('created', 'Banner', result.data.insertId, 'Se creó un nuevo banner', req);
+    return res.json({ ...result, log: log || undefined });
+  }
+  res.status(500).json(result);
+});
+
+router.delete("/banners/:id", isAuthenticated, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) {
+    return res.status(400).json({ success: false, message: "ID inválido" });
+  }
+  const result = await mysql.deleteBanner(id);
+  const log = await logAction('deleted', 'Banner', id, 'Se eliminó un banner', req);
+  res.json({ ...result, log: log || undefined });
+});
+
 router.put("/banners/order", isAuthenticated, async (req, res) => {
   const { orden } = req.body; // [{ id, posicion }, ...]
   if (!Array.isArray(orden) || orden.length === 0) {
