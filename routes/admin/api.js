@@ -1013,6 +1013,13 @@ router.delete("/datos-abiertos-tipos/:id", isAuthenticated, async (req, res) => 
 });
 
 // --- Usuarios ---
+// Helper: resuelve el id del rol administrador (único rol vigente)
+async function getAdminRoleId() {
+  const { data: roles } = await mysql.getRoles();
+  const admin = (roles || []).find(r => String(r.value).toLowerCase() === 'administrador');
+  return admin ? admin.id : null;
+}
+
 router.get("/usuarios", isAuthenticated, async (req, res) => {
   const [{ data: roles }, { data: usuarios }] = await Promise.all([
     mysql.getRoles(),
@@ -1022,17 +1029,21 @@ router.get("/usuarios", isAuthenticated, async (req, res) => {
 });
 
 router.post("/usuarios", isAuthenticated, async (req, res) => {
-  const { user, password, roleId } = req.body;
+  const { user, password } = req.body;
   const estaActivo = req.body.esta_activo ?? req.body.estaActivo;
-  const result = await mysql.createUser({ email: user, password, roleId, estaActivo });
+  const adminRoleId = await getAdminRoleId();
+  if (!adminRoleId) return res.status(500).json({ success: false, message: "Rol administrador no encontrado" });
+  const result = await mysql.createUser({ email: user, password, roleId: adminRoleId, estaActivo });
   const log = await logAction('created', 'Usuario', result.data?.insertId, `Se creó el usuario '${user}'`, req);
   res.json({ ...result, log: log || undefined });
 });
 
 router.put("/usuarios/:id", isAuthenticated, async (req, res) => {
-  const { user, password, roleId } = req.body;
+  const { user, password } = req.body;
   const estaActivo = req.body.esta_activo ?? req.body.estaActivo;
-  const result = await mysql.updateUser({ id: req.params.id, email: user, password, roleId, estaActivo });
+  const adminRoleId = await getAdminRoleId();
+  if (!adminRoleId) return res.status(500).json({ success: false, message: "Rol administrador no encontrado" });
+  const result = await mysql.updateUser({ id: req.params.id, email: user, password, roleId: adminRoleId, estaActivo });
   const log = await logAction('updated', 'Usuario', Number(req.params.id), `Se actualizó el usuario '${user}'`, req);
   res.json({ ...result, log: log || undefined });
 });
@@ -1046,47 +1057,21 @@ router.delete("/usuarios/:id", isAuthenticated, async (req, res) => {
   res.json({ ...result, log: log || undefined });
 });
 
-// --- Roles ---
+// --- Roles (desactivado: todos los usuarios son administrador) ---
 router.get("/roles", isAuthenticated, async (req, res) => {
-  const { data: roles } = await mysql.getRolesWithPermissions();
-  const allPermissions = Object.values(require('../../controllers/permission').Permission);
-
-  const PERMISSION_ACTION_ALIASES = { read: 'Acceder', create: 'Crear', update: 'Actualizar', delete: 'Eliminar' };
-
-  const mapped = roles.map(role => ({
-    ...role,
-    permissions: role.permissions.map(p => {
-      const aliasSufix = allPermissions.find(crud => Object.values(crud).includes(p.value))?.meta?.alias || '';
-      const action = p.value.split('.')[1];
-      return { ...p, alias: `${PERMISSION_ACTION_ALIASES[action] || action} ${aliasSufix}` };
-    }),
-    permissionValuesString: JSON.stringify(role.permissions.map(p => p.value))
-  }));
-
-  res.json({ success: true, data: { roles: mapped, permisos: allPermissions } });
+  return res.status(410).json({ success: false, message: "Gestión de roles deshabilitada. Todos los usuarios son administrador." });
 });
 
 router.post("/roles", isAuthenticated, async (req, res) => {
-  const { value, permissionIds } = req.body;
-  const result = await mysql.createRole({ value, permissionIds });
-  const log = await logAction('created', 'Rol', null, `Se creó el rol '${value}'`, req);
-  res.json({ ...result, log: log || undefined });
+  return res.status(410).json({ success: false, message: "Gestión de roles deshabilitada" });
 });
 
 router.put("/roles/:id", isAuthenticated, async (req, res) => {
-  const { value, permissionIds } = req.body;
-  const result = await mysql.updateRole({ id: req.params.id, value, permissionIds });
-  const log = await logAction('updated', 'Rol', Number(req.params.id), `Se actualizó el rol '${value}'`, req);
-  res.json({ ...result, log: log || undefined });
+  return res.status(410).json({ success: false, message: "Gestión de roles deshabilitada" });
 });
 
 router.delete("/roles/:id", isAuthenticated, async (req, res) => {
-  const id = Number(req.params.id);
-  const { data: roles } = await mysql.getRoles();
-  const name = roles?.find(r => r.id === id)?.value || '';
-  const result = await mysql.deleteRole(id);
-  const log = await logAction('deleted', 'Rol', id, `Se eliminó el rol '${name}'`, req);
-  res.json({ ...result, log: log || undefined });
+  return res.status(410).json({ success: false, message: "Gestión de roles deshabilitada" });
 });
 
 // --- Dashboard Stats ---
