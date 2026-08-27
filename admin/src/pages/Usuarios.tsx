@@ -6,17 +6,15 @@ import { ConfirmModal } from "../components/ConfirmModal";
 import { apiGet, apiPost, apiPut, apiDelete } from "../lib/api";
 
 type Usuario = { id: number; user: string; role: string; idUserRole: number; esta_activo: boolean };
-type Role = { id: number; value: string };
 
 interface UserForm {
   user: string;
   password: string;
-  roleId: number;
   esta_activo: boolean;
 }
 
 function initUserForm(): UserForm {
-  return { user: "", password: "", roleId: 0, esta_activo: true };
+  return { user: "", password: "", esta_activo: true };
 }
 
 const inputCls = "mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white";
@@ -58,24 +56,17 @@ const ADMIN_EMAIL = "onsv@mtc.gob.pe";
 
 export function Usuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
   const [userForm, setUserForm] = useState<UserForm>(initUserForm());
   const [msg, setMsg] = useState("");
   const [userEditingId, setUserEditingId] = useState<number | null>(null);
   const [userModalOpen, setUserModalOpen] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState<{ type: "user" | "role"; id: number } | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ id: number } | null>(null);
   const [userPage, setUserPage] = useState(1);
-  const [rolPage, setRolPage] = useState(1);
-  const [rolModalOpen, setRolModalOpen] = useState(false);
-  const [rolFormValue, setRolFormValue] = useState("");
-  const [rolEditingId, setRolEditingId] = useState<number | null>(null);
 
   const load = () => {
     setUserPage(1);
-    setRolPage(1);
-    apiGet<{ usuarios: Usuario[]; roles: Role[] }>("/usuarios").then(ud => {
+    apiGet<{ usuarios: Usuario[] }>("/usuarios").then(ud => {
       setUsuarios(ud.usuarios);
-      setRoles(ud.roles);
     }).catch(() => {});
   };
   useEffect(() => { load(); }, []);
@@ -87,14 +78,13 @@ export function Usuarios() {
   }, [msg]);
 
   const userPaginated = usuarios.slice((Math.min(userPage, Math.max(1, Math.ceil(usuarios.length / PER_PAGE))) - 1) * PER_PAGE, Math.min(userPage, Math.max(1, Math.ceil(usuarios.length / PER_PAGE))) * PER_PAGE);
-  const rolPaginated = roles.slice((Math.min(rolPage, Math.max(1, Math.ceil(roles.length / PER_PAGE))) - 1) * PER_PAGE, Math.min(rolPage, Math.max(1, Math.ceil(roles.length / PER_PAGE))) * PER_PAGE);
 
   // --- Users ---
   const openUserCreate = () => { setUserForm(initUserForm()); setUserEditingId(null); setUserModalOpen(true); };
-  const openUserEdit = (item: Usuario) => { setUserForm({ user: item.user, password: "", roleId: item.idUserRole, esta_activo: item.esta_activo ?? true }); setUserEditingId(item.id); setUserModalOpen(true); };
+  const openUserEdit = (item: Usuario) => { setUserForm({ user: item.user, password: "", esta_activo: item.esta_activo ?? true }); setUserEditingId(item.id); setUserModalOpen(true); };
 
   const handleUserSubmit = async () => {
-    if (!userForm.user.trim() || !userForm.roleId) { setMsg("Completa los campos obligatorios (*)"); return; }
+    if (!userForm.user.trim()) { setMsg("Completa los campos obligatorios (*)"); return; }
     if (userEditingId === null && !userForm.password) { setMsg("La contraseña es obligatoria para nuevos usuarios"); return; }
     if (userEditingId !== null) {
       await apiPut(`/usuarios/${userEditingId}`, userForm);
@@ -109,31 +99,11 @@ export function Usuarios() {
     load();
   };
 
-  // --- Roles ---
-  const openRolCreate = () => { setRolFormValue(""); setRolEditingId(null); setRolModalOpen(true); };
-  const openRolEdit = (item: Role) => { setRolFormValue(item.value); setRolEditingId(item.id); setRolModalOpen(true); };
-
-  const handleRolSubmit = async () => {
-    if (!rolFormValue.trim()) { setMsg("Completa los campos obligatorios (*)"); return; }
-    if (rolEditingId !== null) {
-      await apiPut(`/roles/${rolEditingId}`, { value: rolFormValue, permissionIds: [] });
-      setMsg("Rol actualizado");
-    } else {
-      await apiPost("/roles", { value: rolFormValue, permissionIds: [] });
-      setMsg("Rol creado");
-    }
-    setRolModalOpen(false);
-    setRolFormValue("");
-    setRolEditingId(null);
-    load();
-  };
-
   const handleConfirmDelete = async () => {
     if (!confirmDelete) return;
-    const { type, id } = confirmDelete;
+    const { id } = confirmDelete;
     setConfirmDelete(null);
-    if (type === "user") { await apiDelete(`/usuarios/${id}`); setMsg("Usuario eliminado"); }
-    else { await apiDelete(`/roles/${id}`); setMsg("Rol eliminado"); }
+    await apiDelete(`/usuarios/${id}`); setMsg("Usuario eliminado");
     load();
   };
 
@@ -155,7 +125,6 @@ export function Usuarios() {
       {msg && <div className="mb-4 p-3 rounded-lg bg-[#e8f5ec] text-[#1f7a44] text-[13px] font-semibold">{msg}</div>}
 
       <div style={{ display: "flex", gap: 24, marginTop: 75, alignItems: "flex-start" }}>
-        {/* LEFT: Usuarios */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={tableBox}>
             <div className="section-title" style={{ display: "flex", justifyContent: "space-between" }}>
@@ -201,7 +170,7 @@ export function Usuarios() {
                             <Pencil className="w-3 h-3" />
                           </button>
                           {u.user !== ADMIN_EMAIL && (
-                            <button onClick={() => setConfirmDelete({ type: "user", id: u.id })} className={actionBtn} style={{ color: "var(--brand-red)" }}
+                            <button onClick={() => setConfirmDelete({ id: u.id })} className={actionBtn} style={{ color: "var(--brand-red)" }}
                               onMouseEnter={e => e.currentTarget.style.background = "#fdecec"}
                               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                               <Trash2 className="w-3 h-3" />
@@ -215,54 +184,6 @@ export function Usuarios() {
               </table>
             </div>
             <Pag page={userPage} total={usuarios.length} setPage={setUserPage} />
-          </div>
-        </div>
-
-        {/* RIGHT: Roles */}
-        <div style={{ flex: "0 0 340px" }}>
-          <div style={tableBox}>
-            <div className="section-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span>Roles</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <Chip color="cyan">{roles.length}</Chip>
-                <button onClick={openRolCreate}
-                  style={{ border: "none", background: "none", cursor: "pointer", color: "var(--brand-red)", padding: 0, display: "flex", alignItems: "center" }}>
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-                <thead>
-                  <tr style={{ borderBottom: "2px solid var(--brand-line)" }}>
-                    <th style={thStyle}>Rol</th>
-                    <th style={{ width: 56, padding: "8px 6px" }}></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rolPaginated.map(r => (
-                    <tr key={r.id} style={{ borderBottom: "1px solid var(--brand-line)" }}>
-                      <td style={{ ...tdStyle, fontWeight: 600, color: "var(--brand-navy)" }}>{r.value}</td>
-                      <td style={tdStyle}>
-                        <div style={{ display: "flex", gap: 2 }}>
-                          <button onClick={() => openRolEdit(r)} className={actionBtn} style={{ color: "#101a34" }}
-                            onMouseEnter={e => e.currentTarget.style.background = "#e8ebf0"}
-                            onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                            <Pencil className="w-3 h-3" />
-                          </button>
-                          <button onClick={() => setConfirmDelete({ type: "role", id: r.id })} className={actionBtn} style={{ color: "var(--brand-red)" }}
-                            onMouseEnter={e => e.currentTarget.style.background = "#fdecec"}
-                            onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <Pag page={rolPage} total={roles.length} setPage={setRolPage} />
           </div>
         </div>
       </div>
@@ -298,16 +219,6 @@ export function Usuarios() {
                   className={inputCls} style={{ borderColor: "var(--brand-line)" }}
                   placeholder={userEditingId !== null ? "Dejar vacío para no cambiar" : ""} />
               </label>
-              <label className="block" style={{ marginBottom: 14 }}>
-                <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
-                  Rol <span style={{ color: "var(--brand-red)" }}>*</span>
-                </span>
-                <select value={userForm.roleId} onChange={e => setUserForm(p => ({ ...p, roleId: Number(e.target.value) }))}
-                  className="mt-1 w-full h-11 rounded-lg border-2 px-3 text-[13px] outline-none bg-white" style={{ borderColor: "var(--brand-line)" }}>
-                  <option value={0}>Seleccionar...</option>
-                  {roles.map(r => <option key={r.id} value={r.id}>{r.value}</option>)}
-                </select>
-              </label>
               <div className="flex items-center gap-2" style={{ marginBottom: 14 }}>
                 <input type="checkbox" id="userActive" checked={userForm.esta_activo} onChange={e => setUserForm(p => ({ ...p, esta_activo: e.target.checked }))}
                   className="w-4 h-4 rounded border-2 accent-[color:var(--brand-navy)]" />
@@ -325,46 +236,10 @@ export function Usuarios() {
         </Modal>
       )}
 
-      {/* Rol Modal */}
-      {rolModalOpen && (
-        <Modal onClose={() => setRolModalOpen(false)}>
-          <div style={{ width: 360, maxWidth: "90vw" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 20 }}>
-              <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: 18, fontWeight: 800, color: "#14213D", margin: 0, fontFamily: "var(--font-display)" }}>
-                  {rolEditingId !== null ? "Editar rol" : "Nuevo rol"}
-                </h3>
-              </div>
-              <button onClick={() => setRolModalOpen(false)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#5c6273", padding: 4, borderRadius: 6, flexShrink: 0 }}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <label className="block">
-              <span className="text-[10px] uppercase tracking-[0.08em] font-bold font-[family-name:var(--font-cond)]" style={{ color: "var(--brand-navy)" }}>
-                Nombre <span style={{ color: "var(--brand-red)" }}>*</span>
-              </span>
-              <input value={rolFormValue} onChange={e => setRolFormValue(e.target.value)}
-                className={inputCls} style={{ borderColor: "var(--brand-line)" }}
-                onKeyDown={e => { if (e.key === "Enter") handleRolSubmit(); }} />
-            </label>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20 }}>
-              <span className="text-[13px] font-semibold" style={{ color: "var(--brand-red)" }}>*: Campos obligatorios</span>
-              <div style={{ display: "flex", gap: 10 }}>
-                <BrandButton variant="outline" onClick={() => setRolModalOpen(false)}>Cancelar</BrandButton>
-                <BrandButton onClick={handleRolSubmit}>{rolEditingId !== null ? "Guardar" : "Crear"}</BrandButton>
-              </div>
-            </div>
-          </div>
-        </Modal>
-      )}
-
       <ConfirmModal
         open={confirmDelete !== null}
-        title={confirmDelete?.type === "user" ? "Eliminar usuario" : "Eliminar rol"}
-        message={confirmDelete?.type === "user"
-          ? "¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer."
-          : "¿Estás seguro de eliminar este rol? Esta acción no se puede deshacer."}
+        title="Eliminar usuario"
+        message="¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer."
         onConfirm={handleConfirmDelete}
         onCancel={() => setConfirmDelete(null)}
       />
