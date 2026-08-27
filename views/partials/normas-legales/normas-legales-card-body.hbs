@@ -1,12 +1,11 @@
 <article class="rsp-res-blk new-card">
-	<div class="card-badge">{{#if categoryTag}}{{categoryTag}}{{else}}Norma{{/if}}</div>
 	<a href="{{endpointPostParse (parseHttp url) lang}}">
 		<img class="card-img" src="{{parseHttpImage feature_image}}" alt="{{title}}">
 	</a>
 	<div class="card-content">
 		<h3 class="card-title">{{title}}</h3>
 		<div class="card-meta">
-			<i class="fal fa-calendar-alt"></i> {{parseDate published_at}}
+			<i class="fal fa-calendar-alt"></i> {{parseDate published_at}}<span class="card-sep"> - </span><span class="card-region">{{#if categoryTag}}{{categoryTag}}{{else}}Norma{{/if}}</span>
 		</div>
 		<a href="{{endpointPostParse (parseHttp url) lang}}" class="btn btn-rsp ft-bold">{{t lang "Descargar"}} <i class="fal fa-long-arrow-right pl-2"></i></a>
 	</div>
